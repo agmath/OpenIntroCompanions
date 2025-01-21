@@ -38,8 +38,11 @@ In August of 2012, news outlets ranging from the [Washington Post](http://www.wa
 
 ###
 
-<div id="license">
-This is a derivative of a product of OpenIntro that is released under a [Creative Commons Attribution-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-sa/3.0){target="_blank"}. The oiginal lab was written for OpenIntro by Andrew Bray and Mine &Ccedil;etinkaya-Rundel.</div>
+:::{.callout-note}
+## Licensing Note
+
+This is a derivative of a product of OpenIntro that is released under a [Creative Commons Attribution-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-sa/3.0){target="_blank"}. The oiginal lab was written for OpenIntro by Andrew Bray and Mine &Ccedil;etinkaya-Rundel.
+:::
 
 ###
 
@@ -51,27 +54,70 @@ You can find the press-release for the WIN-Gallup International poll on the Glob
 #| edit: false
 #| output: false
 #| define:
-#|   - ok_reponse
+#|   - ok_response
 library(htmltools)
-ok_reponse <- function(reponse, n) {
-  if (is.na(reponse)) HTML("")
-  else if (reponse == n) div(HTML("Correct ✓"), style = "color: green")
+ok_response <- function(response, n) {
+  if (is.na(response)) HTML("")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
   else div(HTML("Incorrect ✗"), style = "color: red")
 }
 ```
 
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_checkbox
+ok_checkbox <- function(response, n) {
+  if (is.na(response)) HTML("")
+  else if (identical(paste(sort(response), collapse = ", "), paste(sort(n), collapse = ", "))) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+**Question 1:** In the first paragraph, several key findings are reported. Do these percentages appear to be *sample statistics* (derived from the data sample) or *population parameters*?
+
 ```{ojs}
 //| echo: false
-mutable ok_reponse = (reponse, n) => { return html`Loading...` };
+mutable ok_response = (response, n) => { return html`Loading...` };
 viewof q1 = Inputs.radio(
   new Map([
-    ["First choice.\n", 1],
-    ["Second choice.\n", 2],
-    ["Third choice.\n", 3],
-    ["Fourth choice.\n", 4]
+    ["A mix of both", 1],
+    ["Population Parameters", 2],
+    ["Sample Statistics", 3]
   ])
 );
-ok_reponse(q1, 2);
+ok_response(q1, 3);
+```
+
+**Question 2:** The title of the report is Global Index of Religiosity and Atheism. To generalize the report’s findings to the global human population, what must we assume about the sampling method?
+
+```{ojs}
+//| echo: false
+viewof q2 = Inputs.radio(
+  new Map([
+  ["The sample should include people of all religions, so samples should be taken near a diverse set of places of worship", 1],
+  ["The sample must contain at least 10% of the global population", 2],
+  ["The survey should be done on the phone to make sure that respondents understand the question being asked", 3],
+  ["The sample must be random and representative of the global community", 4]
+  ])
+);
+ok_response(q2, 4);
+```
+
+**Question 3:** Do you expect that the required assumption was satisfied? What are the implications of this?
+
+```{ojs}
+//| echo: false
+viewof q3 = Inputs.radio(
+  new Map([
+    ["No. In order to apply results to the global community the pollsters would need to conduct a census.", 1],
+    ["Yes. Win-Gallup is a reputable polling organization.", 2],
+    ["Yes. The study included a very large number of respondents.", 3],
+    ["No. The study results can only be extended to countries and regions for which the sample data is representative.", 4]
+  ])
+);
+ok_response(q3, 4);
 ```
 
 ###
@@ -83,19 +129,22 @@ Turn your attention to Table 6 (pages 14 and 15) in the Religiosity and Atheism 
 
 ```
 
+**Question 4:** What does each row of `Table 6` correspond to? What does each row of the `atheism` data frame correspond to?
+
 ```{ojs}
 //| echo: false
-
-viewof q2 = Inputs.radio(
+viewof q4 = Inputs.radio(
   new Map([
-    ["First choice.", 1],
-    ["Second choice.", 2],
-    ["Third choice", 3],
-    ["Fourth choice.", 4]
-  ])
+    ["Each row of `Table 6` contains the summarized responses by country while each row of `atheism` contains the response of an individual respondent.", 1],
+    ["Each row of `Table 6` contains the response of an individual respondent while each row of `atheism` contains the summarized responses by country.", 2],
+    ["Each row of both `Table 6` and the `atheism` data frame contain the response of an individual respondent.", 3],
+    ["Each row of both `Table 6` and the `atheism` data frame contain the summarized responses by country.", 4]
+])
 );
-ok_reponse(q2, 2);
+ok_response(q4, 1)
 ```
+
+
 
 ###
 
@@ -168,20 +217,31 @@ Use the code block below to help you answer the question that follows.
 
 ```
 
-*Hint.* (Wrap in collapsed div) The margin of error is half the width of the confidence interval. You might think of this as the "radius" of the confidence interval.*
+::: { .hint exercise="calculator-cell-2"}
+::: { .callout-note collapse="false"}
+## Hint 1
+
+The margin of error is half the width of the confidence interval. You might think of this as the "radius" of the confidence interval.
+
+:::
+:::
+
+**Question 5:** Based on the R output, what is the margin of error for the estimate of the proportion of the proportion of atheists in US in 2012?
 
 ```{ojs}
 //| echo: false
 
-viewof q3 = Inputs.radio(
+viewof q5 = Inputs.radio(
   new Map([
-    ["First choice.", 1],
-    ["Second choice.", 2],
-    ["Third choice", 3],
-    ["Fourth choice.", 4]
+    ["0.0069", 1],
+    ["0.0364", 2],
+    ["0.0135", 3],
+    ["0.0634", 4],
+    ["0.0499", 5]
   ])
 );
-ok_reponse(q3, 2);
+
+ok_response(q5, 3);
 ```
 
 ###
@@ -250,18 +310,34 @@ ggplot() +
 
 ###
 
+**Question 6:** Describe the relationship between the population proportion, $p$, and margin of error.
+
 ```{ojs}
 //| echo: false
-
-viewof q4 = Inputs.radio(
+viewof q6 = Inputs.radio(
   new Map([
-    ["First choice.", 1],
-    ["Second choice.", 2],
-    ["Third choice", 3],
-    ["Fourth choice.", 4]
+    ["The margin of error is smaller for larger values of the population proportion.", 1],
+    ["The margin of error is small if the population proportion is near 0 or 1 but is largest for values near 0.5", 2],
+    ["The margin of error is larger for larger values of the population proportion.", 3],
+    ["There is no meaningful relationship between the population proportion and margin of error.", 4]
   ])
 );
-ok_reponse(q4, 2);
+ok_response(q6, 2);
+```
+
+**Question 7:** Which of the following are implications of your answer above?
+
+```{ojs}
+//| echo: false
+mutable ok_checkbox = (response, n) => { return html`Loading...` };
+viewof q7 = Inputs.radio(
+  new Map([
+    ["In order to estimate a population proportion to within a desired margin of error, larger sample sizes will be needed if the true population proportion is near 0.5.", 1],
+    ["Margins of error, and therefore confidence intervals, will be widest when the population proportion to be captured is close to 0.5", 2],
+    ["Both are true", 3]
+  ])
+);
+ok_checkbox(q7, 3);
 ```
 
 ###
@@ -369,21 +445,23 @@ Same idea here. Update the sample size and the population proportion from the or
 :::
 :::
 
-###
+**Question 8:** If you refer to `Table 6` again in [the WIN-Gallup report](www/Religiosity_and_Atheism.pdf){target=_"blank"}, you’ll find that Australia has a sample proportion of 0.1 on a sample size of 1040, and that Ecuador has a sample proportion of 0.02 on 400 subjects. Let’s suppose for this exercise that these point estimates are actually the truth. Then given the shape of their respective sampling distributions, do you think it is sensible to proceed with inference and report margin of errors, as the reports does?
 
 ```{ojs}
 //| echo: false
 
-viewof q5 = Inputs.radio(
+viewof q8 = Inputs.radio(
   new Map([
-    ["First choice.", 1],
-    ["Second choice.", 2],
-    ["Third choice", 3],
-    ["Fourth choice.", 4]
+    ["The report should not proceed with inference on Ecuador since the success-failure condition is not satisfied. The report can safely proceed with inference on Australia though.", 1],
+    ["The report can proceed with inference on all countries. Since there were over 50,000 responses, the success-failure condition is satisfied.", 2],
+    ["The report should not proceed with inference on either Ecuador or Australia, since the success-failure condition may not be satisfied for either country.", 3]
   ])
 );
-ok_reponse(q5, 2);
+ok_response(q8, 1)
 ```
+
+###
+
 
 ## On your own
 
@@ -451,6 +529,7 @@ Since you have no idea what proportion of residents attend a religious service o
 
 ## Submit
 
+Hash code generation is not currently supported for these Quarto-Live versions of the interactive notebooks.
 
 ## Summary
 
@@ -458,5 +537,7 @@ Good work. I hope that this workbook has helped make inferential techniques a bi
 
 ###
 
-<div id="license">
-This is lab a derivative of a product of OpenIntro that is released under a [Creative Commons Attribution-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-sa/3.0). The oiginal lab was written for OpenIntro by Andrew Bray and Mine &Ccedil;etinkaya-Rundel.</div>
+:::{.callout-note}
+## Licensing Note
+This is lab a derivative of a product of OpenIntro that is released under a [Creative Commons Attribution-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-sa/3.0). The oiginal lab was written for OpenIntro by Andrew Bray and Mine &Ccedil;etinkaya-Rundel.
+:::

@@ -1,0 +1,1634 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.43">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Topic 17: Inference for Numerical Data (Lab)</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="17_InferenceNumericalLab_files/libs/clipboard/clipboard.min.js"></script>
+<script src="17_InferenceNumericalLab_files/libs/quarto-html/quarto.js"></script>
+<script src="17_InferenceNumericalLab_files/libs/quarto-html/popper.min.js"></script>
+<script src="17_InferenceNumericalLab_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="17_InferenceNumericalLab_files/libs/quarto-html/anchor.min.js"></script>
+<link href="17_InferenceNumericalLab_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="17_InferenceNumericalLab_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="17_InferenceNumericalLab_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="17_InferenceNumericalLab_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="17_InferenceNumericalLab_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="17_InferenceNumericalLab_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
+<link href="17_InferenceNumericalLab_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
+<script type="module" src="17_InferenceNumericalLab_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="17_InferenceNumericalLab_files/libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Topic 17: Inference for Numerical Data (Lab)</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell" data-edit="false">
+<div>
+<div id="webr-1" class="exercise-cell">
+
+</div>
+<script type="webr-1-contents">
+eyJhdHRyIjp7ImVkaXQiOmZhbHNlLCJldmFsIjp0cnVlLCJvdXRwdXQiOmZhbHNlfSwiY29kZSI6IndlYnI6Omluc3RhbGwoXCJncmFkZXRoaXNcIiwgcXVpZXQgPSBUUlVFKVxubGlicmFyeShncmFkZXRoaXMpXG5vcHRpb25zKHdlYnIuZXhlcmNpc2UuY2hlY2tlciA9IGZ1bmN0aW9uKFxuICBsYWJlbCwgdXNlcl9jb2RlLCBzb2x1dGlvbl9jb2RlLCBjaGVja19jb2RlLCBlbnZpcl9yZXN1bHQsIGV2YWx1YXRlX3Jlc3VsdCxcbiAgZW52aXJfcHJlcCwgbGFzdF92YWx1ZSwgZW5naW5lLCBzdGFnZSwgLi4uXG4pIHtcbiAgaWYgKGlzLm51bGwoY2hlY2tfY29kZSkpIHtcbiAgICAjIE5vIGdyYWRpbmcgY29kZSwgc28ganVzdCBza2lwIGdyYWRpbmdcbiAgICBpbnZpc2libGUoTlVMTClcbiAgfSBlbHNlIGlmIChpcy5udWxsKGxhYmVsKSkge1xuICAgIGxpc3QoXG4gICAgICBjb3JyZWN0ID0gRkFMU0UsXG4gICAgICB0eXBlID0gXCJ3YXJuaW5nXCIsXG4gICAgICBtZXNzYWdlID0gXCJBbGwgZXhlcmNpc2VzIG11c3QgaGF2ZSBhIGxhYmVsLlwiXG4gICAgKVxuICB9IGVsc2UgaWYgKGlzLm51bGwoc29sdXRpb25fY29kZSkpIHtcbiAgICBsaXN0KFxuICAgICAgY29ycmVjdCA9IEZBTFNFLFxuICAgICAgdHlwZSA9IFwid2FybmluZ1wiLFxuICAgICAgbWVzc2FnZSA9IGh0bWx0b29sczo6dGFncyRkaXYoXG4gICAgICAgIGh0bWx0b29sczo6dGFncyRwKFwiQSBwcm9ibGVtIG9jY3VycmVkIGdyYWRpbmcgdGhpcyBleGVyY2lzZS5cIiksXG4gICAgICAgIGh0bWx0b29sczo6dGFncyRwKFxuICAgICAgICAgIFwiTm8gc29sdXRpb24gY29kZSB3YXMgZm91bmQuIE5vdGUgdGhhdCBncmFkaW5nIGV4ZXJjaXNlcyB1c2luZyB0aGUgXCIsXG4gICAgICAgICAgaHRtbHRvb2xzOjp0YWdzJGNvZGUoXCJncmFkZXRoaXNcIiksXG4gICAgICAgICAgXCJwYWNrYWdlIHJlcXVpcmVzIGEgbW9kZWwgc29sdXRpb24gdG8gYmUgaW5jbHVkZWQgaW4gdGhlIGRvY3VtZW50LlwiXG4gICAgICAgIClcbiAgICAgIClcbiAgICApXG4gIH0gZWxzZSB7XG4gICAgZ3JhZGV0aGlzOjpncmFkZXRoaXNfZXhlcmNpc2VfY2hlY2tlcihcbiAgICAgIGxhYmVsID0gbGFiZWwsIHNvbHV0aW9uX2NvZGUgPSBzb2x1dGlvbl9jb2RlLCB1c2VyX2NvZGUgPSB1c2VyX2NvZGUsXG4gICAgICBjaGVja19jb2RlID0gY2hlY2tfY29kZSwgZW52aXJfcmVzdWx0ID0gZW52aXJfcmVzdWx0LFxuICAgICAgZXZhbHVhdGVfcmVzdWx0ID0gZXZhbHVhdGVfcmVzdWx0LCBlbnZpcl9wcmVwID0gZW52aXJfcHJlcCxcbiAgICAgIGxhc3RfdmFsdWUgPSBsYXN0X3ZhbHVlLCBzdGFnZSA9IHN0YWdlLCBlbmdpbmUgPSBlbmdpbmUpXG4gIH1cbn0pIn0=
+</script>
+</div>
+</div>
+<div class="cell" data-edit="false" data-define="ok_response">
+<div>
+<div id="webr-2" class="exercise-cell">
+
+</div>
+<script type="webr-2-contents">
+eyJhdHRyIjp7Im91dHB1dCI6ZmFsc2UsImVkaXQiOmZhbHNlLCJkZWZpbmUiOlsib2tfcmVzcG9uc2UiXSwiZXZhbCI6dHJ1ZX0sImNvZGUiOiJsaWJyYXJ5KGh0bWx0b29scylcbm9rX3Jlc3BvbnNlIDwtIGZ1bmN0aW9uKHJlc3BvbnNlLCBuKSB7XG4gIGlmIChpcy5uYShyZXNwb25zZSkpIEhUTUwoXCJcIilcbiAgZWxzZSBpZiAocmVzcG9uc2UgPT0gbikgZGl2KEhUTUwoXCJDb3JyZWN0IOKck1wiKSwgc3R5bGUgPSBcImNvbG9yOiBncmVlblwiKVxuICBlbHNlIGRpdihIVE1MKFwiSW5jb3JyZWN0IOKcl1wiKSwgc3R5bGUgPSBcImNvbG9yOiByZWRcIilcbn0ifQ==
+</script>
+</div>
+</div>
+<div class="cell" data-edit="false" data-define="ok_checkbox">
+<div>
+<div id="webr-3" class="exercise-cell">
+
+</div>
+<script type="webr-3-contents">
+eyJhdHRyIjp7Im91dHB1dCI6ZmFsc2UsImVkaXQiOmZhbHNlLCJkZWZpbmUiOlsib2tfY2hlY2tib3giXSwiZXZhbCI6dHJ1ZX0sImNvZGUiOiJva19jaGVja2JveCA8LSBmdW5jdGlvbihyZXNwb25zZSwgbikge1xuICBpZiAoaXMubmEocmVzcG9uc2UpKSBIVE1MKFwiXCIpXG4gIGVsc2UgaWYgKGlkZW50aWNhbChwYXN0ZShzb3J0KHJlc3BvbnNlKSwgY29sbGFwc2UgPSBcIiwgXCIpLCBwYXN0ZShzb3J0KG4pLCBjb2xsYXBzZSA9IFwiLCBcIikpKSBkaXYoSFRNTChcIkNvcnJlY3Qg4pyTXCIpLCBzdHlsZSA9IFwiY29sb3I6IGdyZWVuXCIpXG4gIGVsc2UgZGl2KEhUTUwoXCJJbmNvcnJlY3Qg4pyXXCIpLCBzdHlsZSA9IFwiY29sb3I6IHJlZFwiKVxufSJ9
+</script>
+</div>
+</div>
+<p>In this workbook, we consider multiple variables measured on a random sample of pregnancies in 2004. During that year, the state of North Carolina released a large data set containing information on births recorded in this state. This data set is useful to researchers studying the relation between habits and practices of expectant mothers and the birth of their children. We will work with a random sample of observations from this data set. The data has been loaded into this workbook as <code>nc</code>.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Licensing Note
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This is a product of OpenIntro that is released under a <a href="http://creativecommons.org/licenses/by-sa/3.0">Creative Commons Attribution-ShareAlike 3.0 Unported</a>. This lab was adapted for OpenIntro by Mine Çetinkaya-Rundel from a lab written by the faculty and TAs of UCLA Statistics.</p>
+</div>
+</div>
+<p>In the <code>nc</code> dataset we have observations on 13 different variables, some categorical and some numerical. The meaning of each variable is as follows.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 28%">
+<col style="width: 71%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>variable</th>
+<th>description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>fage</code></td>
+<td>father’s age in years.</td>
+</tr>
+<tr class="even">
+<td><code>mage</code></td>
+<td>mother’s age in years.</td>
+</tr>
+<tr class="odd">
+<td><code>mature</code></td>
+<td>maturity status of mother.</td>
+</tr>
+<tr class="even">
+<td><code>weeks</code></td>
+<td>length of pregnancy in weeks.</td>
+</tr>
+<tr class="odd">
+<td><code>premie</code></td>
+<td>whether the birth was classified as premature (premie) or full-term.</td>
+</tr>
+<tr class="even">
+<td><code>visits</code></td>
+<td>number of hospital visits during pregnancy.</td>
+</tr>
+<tr class="odd">
+<td><code>marital</code></td>
+<td>whether mother is <code>married</code> or <code>not married</code> at birth.</td>
+</tr>
+<tr class="even">
+<td><code>gained</code></td>
+<td>weight gained by mother during pregnancy in pounds.</td>
+</tr>
+<tr class="odd">
+<td><code>weight</code></td>
+<td>weight of the baby at birth in pounds.</td>
+</tr>
+<tr class="even">
+<td><code>lowbirthweight</code></td>
+<td>whether baby was classified as low birthweight (<code>low</code>) or not (<code>not low</code>).</td>
+</tr>
+<tr class="odd">
+<td><code>gender</code></td>
+<td>gender of the baby, <code>female</code> or <code>male</code>.</td>
+</tr>
+<tr class="even">
+<td><code>habit</code></td>
+<td>status of the mother as a <code>nonsmoker</code> or a <code>smoker</code>.</td>
+</tr>
+<tr class="odd">
+<td><code>whitemom</code></td>
+<td>whether mom is <code>white</code> or <code>not white</code>.</td>
+</tr>
+</tbody>
+</table>
+<p>Use the code block below to answer the questions that follow.</p>
+<div class="cell" data-exercise="nc-cases-questions">
+<div>
+<div id="webr-4" class="exercise-cell">
+
+</div>
+<script type="webr-4-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV4ZXJjaXNlIjoibmMtY2FzZXMtcXVlc3Rpb25zIiwiZXZhbCI6dHJ1ZX0sImNvZGUiOiIifQ==
+</script>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="nc-cases-questions">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Use some of your basic exploratory functions from earlier notebooks to gain top-level insights into the data in the <code>nc</code> data frame.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="nc-cases-questions">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Running <code>nc</code> on its own will print out the first few rows of the data frame and provide information about the total number of rows in the data frame.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="nc-cases-questions">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-4" class="callout-4-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>You could also pipe (<code>%&gt;%</code>) <code>nc</code> into other functions like <code>dim()</code> or <code>glimpse()</code> to obtain different insights.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Question 1
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>What are the <em>cases</em> in the <code>nc</code> data set?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="117" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 116;"><span id="cb1-117"><a href="#cb1-117" aria-hidden="true" tabindex="-1"></a>mutable ok_response <span class="op">=</span> (response<span class="op">,</span> n) <span class="kw">=&gt;</span> { <span class="cf">return</span> <span class="fu">html</span><span class="vs">`Loading...`</span> }<span class="op">;</span></span>
+<span id="cb1-118"><a href="#cb1-118" aria-hidden="true" tabindex="-1"></a>viewof q1 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb1-119"><a href="#cb1-119" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb1-120"><a href="#cb1-120" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Each case corresponds to a pregnancy."</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb1-121"><a href="#cb1-121" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Each case corresponds to a woman."</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb1-122"><a href="#cb1-122" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Each case corresponds to a doctor visit."</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb1-123"><a href="#cb1-123" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Each case corresponds to a baby."</span><span class="op">,</span> <span class="dv">4</span>]</span>
+<span id="cb1-124"><a href="#cb1-124" aria-hidden="true" tabindex="-1"></a>  ])</span>
+<span id="cb1-125"><a href="#cb1-125" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb1-126"><a href="#cb1-126" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-127"><a href="#cb1-127" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q1<span class="op">,</span> <span class="dv">1</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-1-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Question 2
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>How many <em>cases</em> are there in our sample?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="139" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 138;"><span id="cb2-139"><a href="#cb2-139" aria-hidden="true" tabindex="-1"></a>viewof q2 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb2-140"><a href="#cb2-140" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb2-141"><a href="#cb2-141" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"1,000"</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb2-142"><a href="#cb2-142" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"246"</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb2-143"><a href="#cb2-143" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"1,387"</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb2-144"><a href="#cb2-144" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"13"</span><span class="op">,</span> <span class="dv">4</span>]<span class="op">,</span></span>
+<span id="cb2-145"><a href="#cb2-145" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"963"</span><span class="op">,</span> <span class="dv">5</span>]</span>
+<span id="cb2-146"><a href="#cb2-146" aria-hidden="true" tabindex="-1"></a>  ])</span>
+<span id="cb2-147"><a href="#cb2-147" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb2-148"><a href="#cb2-148" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-149"><a href="#cb2-149" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q2<span class="op">,</span> <span class="dv">1</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-2-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<section id="section" class="level3">
+<h3 class="anchored" data-anchor-id="section"></h3>
+<p>As a first step in the analysis, we should consider summaries of the data. This can be done using base-R’s <code>summary()</code> command or using <code>skim()</code> from the <code>{skimr}</code> package. Pipe the <code>nc</code> data frame to one of these functions below and use the output to help you answer the questions that follow.</p>
+<div class="cell" data-exercise="nc-summary">
+<div>
+<div id="webr-5" class="exercise-cell">
+
+</div>
+<script type="webr-5-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV4ZXJjaXNlIjoibmMtc3VtbWFyeSIsImV2YWwiOnRydWV9LCJjb2RlIjoiIn0=
+</script>
+</div>
+</div>
+</section>
+<section id="section-1" class="level3">
+<h3 class="anchored" data-anchor-id="section-1"></h3>
+<p>As you review the variable summaries, consider which variables are categorical and which are numerical. For numerical variables, are there outliers? If you aren’t sure or want to take a closer look at the data, make a graph. You can use the code block below to experiment.</p>
+<div class="cell" data-exercise="nc-explore-num-cat-out">
+<div>
+<div id="webr-6" class="exercise-cell">
+
+</div>
+<script type="webr-6-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV4ZXJjaXNlIjoibmMtZXhwbG9yZS1udW0tY2F0LW91dCIsImV2YWwiOnRydWV9LCJjb2RlIjoiIn0=
+</script>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Question 3
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Which of the variables in the <code>nc</code> dataset are numerical? Check all that apply.</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="178" data-source-offset="-0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 177;"><span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a>mutable ok_checkbox <span class="op">=</span> (response<span class="op">,</span> n) <span class="kw">=&gt;</span> { <span class="cf">return</span> <span class="fu">html</span><span class="vs">`Loading...`</span> }<span class="op">;</span></span>
+<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a>viewof q3 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
+<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"fage"</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb3-182"><a href="#cb3-182" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"mage"</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb3-183"><a href="#cb3-183" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"mature"</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb3-184"><a href="#cb3-184" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"weeks"</span><span class="op">,</span> <span class="dv">4</span>]<span class="op">,</span></span>
+<span id="cb3-185"><a href="#cb3-185" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"premie"</span><span class="op">,</span> <span class="dv">5</span>]<span class="op">,</span></span>
+<span id="cb3-186"><a href="#cb3-186" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"visits"</span><span class="op">,</span> <span class="dv">6</span>]<span class="op">,</span></span>
+<span id="cb3-187"><a href="#cb3-187" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"marital"</span><span class="op">,</span> <span class="dv">7</span>]<span class="op">,</span></span>
+<span id="cb3-188"><a href="#cb3-188" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"gained"</span><span class="op">,</span> <span class="dv">8</span>]<span class="op">,</span></span>
+<span id="cb3-189"><a href="#cb3-189" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"weight"</span><span class="op">,</span> <span class="dv">9</span>]<span class="op">,</span></span>
+<span id="cb3-190"><a href="#cb3-190" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"lowbirthweight"</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span></span>
+<span id="cb3-191"><a href="#cb3-191" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"gender"</span><span class="op">,</span> <span class="dv">11</span>]<span class="op">,</span></span>
+<span id="cb3-192"><a href="#cb3-192" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"habit"</span><span class="op">,</span> <span class="dv">12</span>]<span class="op">,</span></span>
+<span id="cb3-193"><a href="#cb3-193" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"whitemom"</span><span class="op">,</span> <span class="dv">13</span>]</span>
+<span id="cb3-194"><a href="#cb3-194" aria-hidden="true" tabindex="-1"></a>  ])</span>
+<span id="cb3-195"><a href="#cb3-195" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb3-196"><a href="#cb3-196" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-197"><a href="#cb3-197" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_checkbox</span>(q3<span class="op">,</span> [<span class="dv">1</span><span class="op">,</span> <span class="dv">2</span><span class="op">,</span> <span class="dv">4</span><span class="op">,</span> <span class="dv">6</span><span class="op">,</span> <span class="dv">8</span><span class="op">,</span> <span class="dv">9</span>])<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Consider the possible relationship between a mother’s smoking habit and the weight of her baby. Plotting the data is a useful first step because it helps us quickly visualize trends, identify strong associations, and develop research questions.</p>
+<p>Make a side-by-side boxplot of <code>habit</code> and <code>weight</code>. What does the plot highlight about the relationship between these two variables?</p>
+<div class="cell" data-exercise="plot-habit-weight">
+<div>
+<div id="webr-7" class="exercise-cell">
+
+</div>
+<script type="webr-7-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV4ZXJjaXNlIjoicGxvdC1oYWJpdC13ZWlnaHQiLCJldmFsIjp0cnVlfSwiY29kZSI6IiJ9
+</script>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="plot-habit-weight">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-8-contents" aria-controls="callout-8" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-8" class="callout-8-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Start by piping the <code>nc</code> data frame into <code>ggplot()</code></p>
+</div>
+</div>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="plot-habit-weight">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-9" class="callout-9-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Add a boxplot layer to your <code>ggplot()</code>. Remember that you add layers to a plot with the plus sign (<code>+</code>) operator.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>nc <span class="sc">%&gt;%</span> </span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="plot-habit-weight">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-10-contents" aria-controls="callout-10" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-10" class="callout-10-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>We can create boxplots with the <code>geom_boxplot()</code> layer.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>nc <span class="sc">%&gt;%</span> </span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  ______</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="plot-habit-weight">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-11" class="callout-11-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>You’ll want at least two aesthetic mappings here, they’ll be <code>x</code> and `y. Where you put your numeric variable will determine whether your boxplots will be vertical or horizontal. Either direction is okay!</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>nc <span class="sc">%&gt;%</span> </span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> ______, <span class="at">y =</span> ______))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="plot-habit-weight">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-12-contents" aria-controls="callout-12" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-12" class="callout-12-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Now add labels to your plot.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>nc <span class="sc">%&gt;%</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> habit, <span class="at">y =</span> weight)) <span class="sc">+</span> </span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"______"</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">""</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"______"</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>Clicking <em>next hint</em> will show a full solution</p>
+</div>
+</div>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="plot-habit-weight">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-13-contents" aria-controls="callout-13" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-13" class="callout-13-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>nc <span class="sc">%&gt;%</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>() <span class="sc">+</span> </span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_boxplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> habit, <span class="at">y =</span> weight)) <span class="sc">+</span> </span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"Birthweight by Smoking Status"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">""</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Birthweight (lbs)"</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The box plots show how the medians of the two distributions compare, but we can also compare the means of the distributions. We can use <code>dplyr</code>’s <code>group_by()</code> to group our data according to the <code>habit</code> variable, and then <code>summarize()</code> the <code>weight</code> variable using the <code>mean()</code>. Consider the following code, guess what the result will look like, then run the code to see if you were right. What does the output tell you?</p>
+<div class="cell" data-exercise="by-means">
+<div>
+<div id="webr-8" class="exercise-cell">
+
+</div>
+<script type="webr-8-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV4ZXJjaXNlIjoiYnktbWVhbnMiLCJldmFsIjp0cnVlfSwiY29kZSI6IlxubmMgJT4lXG4gIGdyb3VwX2J5KGhhYml0KSAlPiVcbiAgc3VtbWFyaXplKGF2Z19iaXJ0aF93ZWlnaHQgPSBtZWFuKHdlaWdodCkpIn0=
+</script>
+</div>
+</div>
+<p>There is an observed difference in average birth weights, but is this difference statistically significant? In order to answer this question we will conduct a hypothesis test.</p>
+</section>
+<section id="inference" class="level2">
+<h2 class="anchored" data-anchor-id="inference">Inference</h2>
+<p>Check if the conditions necessary for inference are satisfied. Note that you will need to obtain sample sizes to check the conditions. You can compute the group size by piping <code>nc</code> into the <code>count()</code> function and passing the column of interest as an argument to the <code>count()</code> function.</p>
+<div class="cell" data-exercise="check-inference-conditions-habit">
+<div>
+<div id="webr-9" class="exercise-cell">
+
+</div>
+<script type="webr-9-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV4ZXJjaXNlIjoiY2hlY2staW5mZXJlbmNlLWNvbmRpdGlvbnMtaGFiaXQiLCJldmFsIjp0cnVlfSwiY29kZSI6IiJ9
+</script>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="check-inference-conditions-habit">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-14-contents" aria-controls="callout-14" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-14" class="callout-14-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Fill in the blank to count the number of observations in each smoking (<code>habit</code>) group.</p>
+<div class="cell">
+<div>
+<div id="webr-10" class="exercise-cell">
+
+</div>
+<script type="webr-10-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoibmMgJT4lXG4gIF9fX19fXyJ9
+</script>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="check-inference-conditions-habit">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-15-contents" aria-controls="callout-15" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-15" class="callout-15-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Fill in the blank to count the number of observations in each smoking (<code>habit</code>) group.</p>
+<div class="cell">
+<div>
+<div id="webr-11" class="exercise-cell">
+
+</div>
+<script type="webr-11-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoibmMgJT4lXG4gIGNvdW50KF9fX19fXykifQ==
+</script>
+</div>
+</div>
+<p>Clicking <em>next hint</em> will show the full solution.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="check-inference-conditions-habit">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-16-contents" aria-controls="callout-16" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Solution
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-16" class="callout-16-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<div class="cell">
+<div>
+<div id="webr-12" class="exercise-cell">
+
+</div>
+<script type="webr-12-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV2YWwiOnRydWV9LCJjb2RlIjoibmMgJT4lXG4gIGNvdW50KGhhYml0KSJ9
+</script>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="cell" data-exercise="check-inference-conditions-habit" data-solution="true">
+<div class="webr-ojs-exercise exercise-solution d-none" data-exercise="check-inference-conditions-habit">
+<code id="interpolate-14" class="solution-code d-none">
+nc %&gt;%
+  count(habit)</code>
+<div class="sourceCode cell-code" id="interpolate-15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="interpolate-15-1"><a href="#interpolate-15-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="interpolate-15-2"><a href="#interpolate-15-2" aria-hidden="true" tabindex="-1"></a>nc <span class="sc">%&gt;%</span></span>
+<span id="interpolate-15-3"><a href="#interpolate-15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">count</span>(habit)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="cell" data-exercise="check-inference-conditions-habit" data-check="true">
+<script type="exercise-check-check-inference-conditions-habit-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImNoZWNrIjp0cnVlLCJleGVyY2lzZSI6ImNoZWNrLWluZmVyZW5jZS1jb25kaXRpb25zLWhhYml0IiwiZXZhbCI6dHJ1ZX0sImNvZGUiOiJcbmdyYWRlX2NvZGUoKSJ9
+</script>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Question 4
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>How many groups are being considered?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb9" data-startfrom="391" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 390;"><span id="cb9-391"><a href="#cb9-391" aria-hidden="true" tabindex="-1"></a>viewof q4 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb9-392"><a href="#cb9-392" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb9-393"><a href="#cb9-393" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"One"</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb9-394"><a href="#cb9-394" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Two"</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb9-395"><a href="#cb9-395" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"More than two"</span><span class="op">,</span> <span class="dv">3</span>]</span>
+<span id="cb9-396"><a href="#cb9-396" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb9-397"><a href="#cb9-397" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb9-398"><a href="#cb9-398" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q4<span class="op">,</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Question 5
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Which of the following are the groups?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb10" data-startfrom="410" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 409;"><span id="cb10-410"><a href="#cb10-410" aria-hidden="true" tabindex="-1"></a>viewof q5 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
+<span id="cb10-411"><a href="#cb10-411" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb10-412"><a href="#cb10-412" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Pregnancies with mothers who are non-smokers"</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb10-413"><a href="#cb10-413" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Pregnancies resulting in babies not having low birthweight"</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb10-414"><a href="#cb10-414" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Pregnancies resulting in babies of low birthweight"</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb10-415"><a href="#cb10-415" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Pregnancies with mothers who are smokers"</span><span class="op">,</span> <span class="dv">4</span>]<span class="op">,</span></span>
+<span id="cb10-416"><a href="#cb10-416" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Pregnancies not resulting in premature births"</span><span class="op">,</span> <span class="dv">5</span>]<span class="op">,</span></span>
+<span id="cb10-417"><a href="#cb10-417" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Pregnancies resulting in premature births"</span><span class="op">,</span> <span class="dv">6</span>]</span>
+<span id="cb10-418"><a href="#cb10-418" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb10-419"><a href="#cb10-419" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb10-420"><a href="#cb10-420" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_checkbox</span>(q5<span class="op">,</span> [<span class="dv">1</span><span class="op">,</span> <span class="dv">4</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Question 6
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Are the conditions for inference satisfied?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb11" data-startfrom="432" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 431;"><span id="cb11-432"><a href="#cb11-432" aria-hidden="true" tabindex="-1"></a>viewof q6 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb11-433"><a href="#cb11-433" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb11-434"><a href="#cb11-434" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"No, there is skew in the data."</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb11-435"><a href="#cb11-435" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"No, the group sizes are imbalanced."</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb11-436"><a href="#cb11-436" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Yes, the group sizes are large enough to overcome any skew in the population distributions."</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb11-437"><a href="#cb11-437" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"No, the groups are too small."</span><span class="op">,</span> <span class="dv">4</span>]</span>
+<span id="cb11-438"><a href="#cb11-438" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb11-439"><a href="#cb11-439" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-440"><a href="#cb11-440" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q6<span class="op">,</span> <span class="dv">3</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-6-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-6-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Question 7
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Write the hypotheses for testing if the average weights of babies born to smoking and non-smoking mothers are different. The hypotheses for the test are:</p>
+<p><span class="math inline">\((A)~~ \begin{array}{ll} H_0: &amp; p_{\text{smoker}} = p_{\text{non-smoker}}\\ H_a: &amp; p_{\text{smoker}} \neq p_{\text{non-smoker}}\end{array}~~~~~~~~(B)~~ \begin{array}{ll} H_0: &amp; \mu_{\text{smoker}} = \mu_{\text{non-smoker}}\\ H_a: &amp; \mu_{\text{smoker}} &gt; \mu_{\text{non-smoker}}\end{array}\)</span></p>
+<p><span class="math inline">\((C)~~ \begin{array}{ll} H_0: &amp; \mu_{\text{smoker}} = \mu_{\text{non-smoker}}\\ H_a: &amp; \mu_{\text{smoker}} &lt; \mu_{\text{non-smoker}}\end{array}~~~~~~~~(D)~~\begin{array}{ll} H_0: &amp; \mu_{\text{smoker}} = \mu_{\text{non-smoker}}\\ H_a: &amp; \mu_{\text{smoker}} \neq \mu_{\text{non-smoker}}\end{array}\)</span></p>
+<p><span class="math inline">\((E)~~ \begin{array}{ll} H_0: &amp; p_{\text{smoker}} = p_{\text{non-smoker}}\\ H_a: &amp; p_{\text{smoker}} &lt; p_{\text{non-smoker}}\end{array}~~~~~~~~(F)~~\begin{array}{ll} H_0: &amp; p_{\text{smoker}} = p_{\text{non-smoker}}\\ H_a: &amp; p_{\text{smoker}} &lt; p_{\text{non-smoker}}\end{array}\)</span></p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb12" data-startfrom="458" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 457;"><span id="cb12-458"><a href="#cb12-458" aria-hidden="true" tabindex="-1"></a>viewof q7 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb12-459"><a href="#cb12-459" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb12-460"><a href="#cb12-460" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"A"</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb12-461"><a href="#cb12-461" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"B"</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb12-462"><a href="#cb12-462" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"C"</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb12-463"><a href="#cb12-463" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"D"</span><span class="op">,</span> <span class="dv">4</span>]<span class="op">,</span></span>
+<span id="cb12-464"><a href="#cb12-464" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"E"</span><span class="op">,</span> <span class="dv">5</span>]<span class="op">,</span></span>
+<span id="cb12-465"><a href="#cb12-465" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"F"</span><span class="op">,</span> <span class="dv">6</span>]</span>
+<span id="cb12-466"><a href="#cb12-466" aria-hidden="true" tabindex="-1"></a>])</span>
+<span id="cb12-467"><a href="#cb12-467" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb12-468"><a href="#cb12-468" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-469"><a href="#cb12-469" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q7<span class="op">,</span> <span class="dv">4</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-7-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-7-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>Next, we remind ourselves of the <code>inference()</code> function from <code>{statsr}</code>, that we will use for conducting hypothesis tests and constructing confidence intervals.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inference</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> weight, </span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> habit,</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> nc, </span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">statistic =</span> <span class="st">"mean"</span>, </span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"ht"</span>, </span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">null =</span> <span class="dv">0</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">alternative =</span> <span class="st">"twosided"</span>, </span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"theoretical"</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<p>As a reminder, we’ll go through the arguments of this custom function. The first argument is <code>y</code>, which is the response variable that we are interested in: <code>weight</code>. The second argument is the explanatory variable, <code>x</code>, which is the variable that splits the data into two groups, smokers and non-smokers: <code>habit</code>. The third argument, <code>data</code>, is the data frame where both the <code>weight</code> and <code>habit</code> columns can be found. Next comes <code>statistic</code>, the parameter we’re interested in: <code>"mean"</code> (other options are <code>"median"</code>, or <code>"proportion"</code>.) Then we decide on the <code>type</code> of inference we want: a hypothesis test (<code>"ht"</code>) or a confidence interval (<code>"ci"</code>). When performing a hypothesis test, we also need to supply the <code>null</code> value, which in this case is <code>0</code>, since the null hypothesis sets the two population means equal to each other. The <code>alternative</code> hypothesis can be <code>"less"</code>, <code>"greater"</code>, or <code>"twosided"</code>. Lastly, the <code>method</code> of inference can be <code>"theoretical"</code> or <code>"simulation"</code> based.</p>
+<p>You should feel comfortable using your knowledge of inference to describe what this function must do for the parameter selections <code>type = "ht"</code> and for <code>type = "ci"</code>.</p>
+<p>The initial <code>inference()</code> example code appears below. Think about the code and what you expect the output should look like. Run the code and check your expectations of the output. Once you understand the output, change the <code>type</code> argument to <code>"ci"</code> to construct and record a confidence interval for the difference between the weights of babies born to smoking and non-smoking mothers. Be sure to get rid of any additional unnecessary arguments as well.</p>
+<div class="cell" data-exercise="first-inference-run">
+<div>
+<div id="webr-17" class="exercise-cell">
+
+</div>
+<script type="webr-17-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV4ZXJjaXNlIjoiZmlyc3QtaW5mZXJlbmNlLXJ1biIsImV2YWwiOnRydWV9LCJjb2RlIjoiXG5pbmZlcmVuY2UoXG4gIHkgPSB3ZWlnaHQsIFxuICB4ID0gaGFiaXQsIFxuICBkYXRhID0gbmMsXG4gIHN0YXRpc3RpYyA9IFwibWVhblwiLCBcbiAgdHlwZSA9IFwiaHRcIiwgXG4gIG51bGwgPSAwLCBcbiAgYWx0ZXJuYXRpdmUgPSBcInR3b3NpZGVkXCIsIFxuICBtZXRob2QgPSBcInRoZW9yZXRpY2FsXCJcbiAgKSJ9
+</script>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="first-inference-run">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-21-contents" aria-controls="callout-21" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 1
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-21" class="callout-21-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>First, just run the code “as-is” to conduct the hypothesis test. What are the results? How do you know?</p>
+</div>
+</div>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="first-inference-run">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-22-contents" aria-controls="callout-22" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 2
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-22" class="callout-22-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Next, edit the arguments to inference() so that a confidence interval for the difference in average birth weights is constructed.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="first-inference-run">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-23-contents" aria-controls="callout-23" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 3
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-23" class="callout-23-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Change the <code>type</code> from <code>"ht"</code> (hypothesis test) to <code>"ci"</code> (confidence interval).</p>
+</div>
+</div>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="first-inference-run">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-24-contents" aria-controls="callout-24" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 4
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-24" class="callout-24-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Confidence intervals don’t have hypotheses…</p>
+</div>
+</div>
+</div>
+</div>
+<div class="hint webr-ojs-exercise exercise-hint d-none" data-exercise="first-inference-run">
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-25-contents" aria-controls="callout-25" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Hint 5
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-25" class="callout-25-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Remove the <code>null</code> and <code>alternative</code> arguments and re-run the code cell.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="cell" data-exercise="first-inference-run" data-solution="true">
+<div class="webr-ojs-exercise exercise-solution d-none" data-exercise="first-inference-run">
+<code id="interpolate-19" class="solution-code d-none">inference(
+  y = weight, 
+  x = habit, 
+  data = nc,
+  statistic = "mean", 
+  type = "ci", 
+  method = "theoretical")</code>
+<div class="sourceCode cell-code" id="interpolate-20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="interpolate-20-1"><a href="#interpolate-20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">inference</span>(</span>
+<span id="interpolate-20-2"><a href="#interpolate-20-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> weight, </span>
+<span id="interpolate-20-3"><a href="#interpolate-20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> habit, </span>
+<span id="interpolate-20-4"><a href="#interpolate-20-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> nc,</span>
+<span id="interpolate-20-5"><a href="#interpolate-20-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">statistic =</span> <span class="st">"mean"</span>, </span>
+<span id="interpolate-20-6"><a href="#interpolate-20-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"ci"</span>, </span>
+<span id="interpolate-20-7"><a href="#interpolate-20-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"theoretical"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</div>
+<div class="cell" data-exercise="first-inference-run" data-check="true">
+<script type="exercise-check-first-inference-run-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImNoZWNrIjp0cnVlLCJleGVyY2lzZSI6ImZpcnN0LWluZmVyZW5jZS1ydW4iLCJldmFsIjp0cnVlfSwiY29kZSI6IlxuZ3JhZGVfY29kZSgpIn0=
+</script>
+</div>
+<p>The results you see show that by default the function reports an interval for (<span class="math inline">\(\mu_{nonsmoker} - \mu_{smoker}\)</span>) because <span class="math inline">\(\tt{R}\)</span> orders levels by alphabetical order. We can easily change this order by using the <code>order</code> argument. Inspect the code below to identify what has been added and then run it to see the result.</p>
+<div class="cell" data-exercise="inference-ci-ordered">
+<div>
+<div id="webr-22" class="exercise-cell">
+
+</div>
+<script type="webr-22-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV4ZXJjaXNlIjoiaW5mZXJlbmNlLWNpLW9yZGVyZWQiLCJldmFsIjp0cnVlfSwiY29kZSI6IlxuaW5mZXJlbmNlKFxuICB5ID0gd2VpZ2h0LCBcbiAgeCA9IGhhYml0LCBcbiAgZGF0YSA9IG5jLFxuICBzdGF0aXN0aWMgPSBcIm1lYW5cIiwgXG4gIHR5cGUgPSBcImNpXCIsIFxuICBtZXRob2QgPSBcInRoZW9yZXRpY2FsXCIsIFxuICBvcmRlciA9IGMoXCJzbW9rZXJcIixcIm5vbnNtb2tlclwiKVxuICApIn0=
+</script>
+</div>
+</div>
+</section>
+<section id="on-your-own" class="level2">
+<h2 class="anchored" data-anchor-id="on-your-own">On your own</h2>
+<p>Since you’ve worked through this workbook, you should now feel prepared to answer the following. Use the code block below to address the tasks and check your understanding.</p>
+<div class="cell" data-exercise="own-probs">
+<div>
+<div id="webr-23" class="exercise-cell">
+
+</div>
+<script type="webr-23-contents">
+eyJhdHRyIjp7ImVkaXQiOnRydWUsImV4ZXJjaXNlIjoib3duLXByb2JzIiwiZXZhbCI6dHJ1ZX0sImNvZGUiOiIifQ==
+</script>
+</div>
+</div>
+<ol type="1">
+<li>Calculate a 95% confidence interval for the average length of pregnancies (<code>weeks</code>) and interpret it in context. Note that since you’re doing inference on a single population parameter, there is no explanatory variable, so you can omit the <code>x</code> variable from the function.</li>
+</ol>
+<blockquote class="blockquote">
+<details>
+<summary>
+💡Click for Hint 1💡
+</summary>
+<p>
+Use the <code>inference()</code> function.
+</p>
+</details>
+<details>
+<summary>
+💡Click for Hint 2💡
+</summary>
+<p>
+You aren’t comparing groups, so you’ll use the <code>y</code> parameter for the <code>weeks</code> variable and leave out the <code>x</code> parameter.
+</p>
+</details>
+</blockquote>
+<ol start="2" type="1">
+<li>Calculate a new confidence interval for the same parameter at the 90% confidence level. You can change the confidence level by adding a new argument to the function: <code>conf_level = 0.90</code>.</li>
+</ol>
+<blockquote class="blockquote">
+<details>
+<summary>
+💡Click for a Hint💡
+</summary>
+<p>
+As mentioned, just add a new argument, <code>conf_level = 0.90</code> inside of the <code>inference()</code> function. As a reminder, arguments are separated by commas and we’ve been placing each argument on a new line for improved readability.
+</p>
+</details>
+</blockquote>
+<ol start="3" type="1">
+<li>Conduct a hypothesis test evaluating whether the average weight gained by younger mothers is different than the average weight gained by mature mothers.</li>
+</ol>
+<blockquote class="blockquote">
+<details>
+<summary>
+💡Click for a Hint💡
+</summary>
+<p>
+Use the <code>inference()</code> function again, but be sure to set the type to <code>"ht"</code> (hypothesis test). You’ll also need a <code>null</code> and <code>alternative</code> hypothesis, and you shouldn’t include a confidence level since those only apply to confidence intervals.
+</p>
+</details>
+</blockquote>
+<ol start="4" type="1">
+<li>Now, a non-inference task: Determine the age cutoff for younger and mature mothers. Use a method of your choice, and explain how your method works.</li>
+</ol>
+<blockquote class="blockquote">
+<details>
+<summary>
+💡Click for Hint 1💡
+</summary>
+<p>
+You’ll need some way to find the <em>oldest young mother</em> and the <em>youngest mature mother</em>.
+</p>
+</details>
+<details>
+<summary>
+💡Click for Hint 2💡
+</summary>
+<p>
+One way to do this is with <code>group_by()</code> and <code>summarize()</code>.
+</p>
+</details>
+<details>
+<summary>
+💡Click for Hint 3💡
+</summary>
+<p>
+<em>Oldest</em> sounds like the <code>max</code>imum <code>age</code>, and <em>youngest</em> sounds like the <code>min</code>imum <code>age</code>.
+</p>
+</details>
+</blockquote>
+<ol start="5" type="1">
+<li>Pick a pair of numerical and categorical variables and come up with a research question evaluating the relationship between these variables. Formulate the question in a way that it can be answered using a hypothesis test and/or a confidence interval. Answer your question using the <code>inference()</code> function, report the statistical results, and also provide an explanation in plain language.</li>
+</ol>
+</section>
+<section id="submit" class="level2">
+<h2 class="anchored" data-anchor-id="submit">Submit</h2>
+<p>Hash code generation is not currently supported for these Quarto-Live versions of the interactive notebooks.</p>
+<p><br></p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+License Comment
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This lab is a product of OpenIntro that is released under a <a href="http://creativecommons.org/licenses/by-sa/3.0">Creative Commons Attribution-ShareAlike 3.0 Unported</a>. This lab was adapted for OpenIntro by Mine Çetinkaya-Rundel from a lab written by the faculty and TAs of UCLA Statistics.</p>
+</div>
+</div>
+<script type="webr-data">
+eyJyZW5kZXJfZGYiOiJkZWZhdWx0IiwicGFja2FnZXMiOnsicGtncyI6WyJldmFsdWF0ZSIsImtuaXRyIiwiaHRtbHRvb2xzIiwiZ2dwbG90MiIsImRwbHlyIiwiZ3JhZGV0aGlzIiwic3RhdHNyIl0sInJlcG9zIjpbXX0sIm9wdGlvbnMiOnsiYmFzZVVybCI6Imh0dHBzOi8vd2Vici5yLXdhc20ub3JnL3YwLjQuMi8ifX0=
+</script>
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3siY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0yMyIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMjM7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlfSx7ImNlbGxOYW1lIjoid2Vici0yMyIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfMjMgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici0yMy1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIC8vIERlZmF1bHQgZXhlcmNpc2UgY29uZmlndXJhdGlvblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbihcbiAgICB7XG4gICAgICBpZDogXCJ3ZWJyLTIzLWNvbnRlbnRzXCIsXG4gICAgICBlbnZpcjogYGV4ZXJjaXNlLWVudi0ke2Jsb2NrLmF0dHIuZXhlcmNpc2V9YCxcbiAgICAgIGVycm9yOiBmYWxzZSxcbiAgICAgIGNhcHRpb246ICdFeGVyY2lzZScsXG4gICAgfSxcbiAgICBibG9jay5hdHRyXG4gICk7XG5cbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG52aWV3b2YgX3dlYnJfdmFsdWVfMjMgPSB3ZWJST2pzLnByb2Nlc3MoX3dlYnJfZWRpdG9yXzIzLCB7fSk7XG5fd2Vicl9mZWVkYmFja18yMyA9IHtcbiAgY29uc3QgeyBXZWJSR3JhZGVyIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBlbXB0eUZlZWRiYWNrID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnZGl2Jyk7XG5cbiAgY29uc3QgZ3JhZGVyID0gbmV3IFdlYlJHcmFkZXIoX3dlYnJfdmFsdWVfMjMuZXZhbHVhdG9yKTtcbiAgY29uc3QgZmVlZGJhY2sgPSBhd2FpdCBncmFkZXIuZ3JhZGVFeGVyY2lzZSgpO1xuICBpZiAoIWZlZWRiYWNrKSByZXR1cm4gZW1wdHlGZWVkYmFjaztcbiAgcmV0dXJuIGZlZWRiYWNrO1xufVxuIiwibWV0aG9kTmFtZSI6ImludGVycHJldCIsImlubGluZSI6ZmFsc2V9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0yMiIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMjI7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlfSx7ImNlbGxOYW1lIjoid2Vici0yMiIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfMjIgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici0yMi1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIC8vIERlZmF1bHQgZXhlcmNpc2UgY29uZmlndXJhdGlvblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbihcbiAgICB7XG4gICAgICBpZDogXCJ3ZWJyLTIyLWNvbnRlbnRzXCIsXG4gICAgICBlbnZpcjogYGV4ZXJjaXNlLWVudi0ke2Jsb2NrLmF0dHIuZXhlcmNpc2V9YCxcbiAgICAgIGVycm9yOiBmYWxzZSxcbiAgICAgIGNhcHRpb246ICdFeGVyY2lzZScsXG4gICAgfSxcbiAgICBibG9jay5hdHRyXG4gICk7XG5cbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG52aWV3b2YgX3dlYnJfdmFsdWVfMjIgPSB3ZWJST2pzLnByb2Nlc3MoX3dlYnJfZWRpdG9yXzIyLCB7fSk7XG5fd2Vicl9mZWVkYmFja18yMiA9IHtcbiAgY29uc3QgeyBXZWJSR3JhZGVyIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBlbXB0eUZlZWRiYWNrID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnZGl2Jyk7XG5cbiAgY29uc3QgZ3JhZGVyID0gbmV3IFdlYlJHcmFkZXIoX3dlYnJfdmFsdWVfMjIuZXZhbHVhdG9yKTtcbiAgY29uc3QgZmVlZGJhY2sgPSBhd2FpdCBncmFkZXIuZ3JhZGVFeGVyY2lzZSgpO1xuICBpZiAoIWZlZWRiYWNrKSByZXR1cm4gZW1wdHlGZWVkYmFjaztcbiAgcmV0dXJuIGZlZWRiYWNrO1xufVxuIiwibWV0aG9kTmFtZSI6ImludGVycHJldCIsImlubGluZSI6ZmFsc2V9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0xNyIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTc7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlfSx7ImNlbGxOYW1lIjoid2Vici0xNyIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfMTcgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici0xNy1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIC8vIERlZmF1bHQgZXhlcmNpc2UgY29uZmlndXJhdGlvblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbihcbiAgICB7XG4gICAgICBpZDogXCJ3ZWJyLTE3LWNvbnRlbnRzXCIsXG4gICAgICBlbnZpcjogYGV4ZXJjaXNlLWVudi0ke2Jsb2NrLmF0dHIuZXhlcmNpc2V9YCxcbiAgICAgIGVycm9yOiBmYWxzZSxcbiAgICAgIGNhcHRpb246ICdFeGVyY2lzZScsXG4gICAgfSxcbiAgICBibG9jay5hdHRyXG4gICk7XG5cbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG52aWV3b2YgX3dlYnJfdmFsdWVfMTcgPSB3ZWJST2pzLnByb2Nlc3MoX3dlYnJfZWRpdG9yXzE3LCB7fSk7XG5fd2Vicl9mZWVkYmFja18xNyA9IHtcbiAgY29uc3QgeyBXZWJSR3JhZGVyIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBlbXB0eUZlZWRiYWNrID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnZGl2Jyk7XG5cbiAgY29uc3QgZ3JhZGVyID0gbmV3IFdlYlJHcmFkZXIoX3dlYnJfdmFsdWVfMTcuZXZhbHVhdG9yKTtcbiAgY29uc3QgZmVlZGJhY2sgPSBhd2FpdCBncmFkZXIuZ3JhZGVFeGVyY2lzZSgpO1xuICBpZiAoIWZlZWRiYWNrKSByZXR1cm4gZW1wdHlGZWVkYmFjaztcbiAgcmV0dXJuIGZlZWRiYWNrO1xufVxuIiwibWV0aG9kTmFtZSI6ImludGVycHJldCIsImlubGluZSI6ZmFsc2V9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0xMiIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTI7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlfSx7ImNlbGxOYW1lIjoid2Vici0xMiIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfMTIgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici0xMi1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIGNvbnN0IG9wdGlvbnMgPSBPYmplY3QuYXNzaWduKHsgaWQ6IGB3ZWJyLTEyLWNvbnRlbnRzYCB9LCBibG9jay5hdHRyKTtcbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcblxuICByZXR1cm4gZWRpdG9yLmNvbnRhaW5lcjtcbn1cbl93ZWJyX3ZhbHVlXzEyID0gd2ViUk9qcy5wcm9jZXNzKF93ZWJyX2VkaXRvcl8xMiwge30pO1xuIiwibWV0aG9kTmFtZSI6ImludGVycHJldCIsImlubGluZSI6ZmFsc2V9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0xMSIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTE7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlfSx7ImNlbGxOYW1lIjoid2Vici0xMSIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfMTEgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici0xMS1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIGNvbnN0IG9wdGlvbnMgPSBPYmplY3QuYXNzaWduKHsgaWQ6IGB3ZWJyLTExLWNvbnRlbnRzYCB9LCBibG9jay5hdHRyKTtcbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcblxuICByZXR1cm4gZWRpdG9yLmNvbnRhaW5lcjtcbn1cbl93ZWJyX3ZhbHVlXzExID0gd2ViUk9qcy5wcm9jZXNzKF93ZWJyX2VkaXRvcl8xMSwge30pO1xuIiwibWV0aG9kTmFtZSI6ImludGVycHJldCIsImlubGluZSI6ZmFsc2V9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0xMCIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTA7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlfSx7ImNlbGxOYW1lIjoid2Vici0xMCIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfMTAgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici0xMC1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIGNvbnN0IG9wdGlvbnMgPSBPYmplY3QuYXNzaWduKHsgaWQ6IGB3ZWJyLTEwLWNvbnRlbnRzYCB9LCBibG9jay5hdHRyKTtcbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcblxuICByZXR1cm4gZWRpdG9yLmNvbnRhaW5lcjtcbn1cbl93ZWJyX3ZhbHVlXzEwID0gd2ViUk9qcy5wcm9jZXNzKF93ZWJyX2VkaXRvcl8xMCwge30pO1xuIiwibWV0aG9kTmFtZSI6ImludGVycHJldCIsImlubGluZSI6ZmFsc2V9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC05Iiwic291cmNlIjoie1xuICAvLyBXYWl0IGZvciBvdXRwdXQgdG8gYmUgd3JpdHRlbiB0byB0aGUgRE9NLCB0aGVuIHRyaWdnZXIgd2lkZ2V0IHJlbmRlcmluZ1xuICBhd2FpdCBfd2Vicl92YWx1ZV85O1xuICBpZiAod2luZG93LkhUTUxXaWRnZXRzKSB7XG4gICAgd2luZG93LkhUTUxXaWRnZXRzLnN0YXRpY1JlbmRlcigpO1xuICB9XG4gIGlmICh3aW5kb3cuUGFnZWRUYWJsZURvYykge1xuICAgIHdpbmRvdy5QYWdlZFRhYmxlRG9jLmluaXRBbGwoKTtcbiAgfVxufVxuIiwibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0IiwiaW5saW5lIjpmYWxzZX0seyJjZWxsTmFtZSI6IndlYnItOSIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfOSA9IHtcbiAgY29uc3QgeyBXZWJSRXhlcmNpc2VFZGl0b3IsIGI2NERlY29kZSB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3Qgc2NyaXB0Q29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ3ZWJyLTktY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICAvLyBEZWZhdWx0IGV4ZXJjaXNlIGNvbmZpZ3VyYXRpb25cbiAgY29uc3Qgb3B0aW9ucyA9IE9iamVjdC5hc3NpZ24oXG4gICAge1xuICAgICAgaWQ6IFwid2Vici05LWNvbnRlbnRzXCIsXG4gICAgICBlbnZpcjogYGV4ZXJjaXNlLWVudi0ke2Jsb2NrLmF0dHIuZXhlcmNpc2V9YCxcbiAgICAgIGVycm9yOiBmYWxzZSxcbiAgICAgIGNhcHRpb246ICdFeGVyY2lzZScsXG4gICAgfSxcbiAgICBibG9jay5hdHRyXG4gICk7XG5cbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG52aWV3b2YgX3dlYnJfdmFsdWVfOSA9IHdlYlJPanMucHJvY2Vzcyhfd2Vicl9lZGl0b3JfOSwge30pO1xuX3dlYnJfZmVlZGJhY2tfOSA9IHtcbiAgY29uc3QgeyBXZWJSR3JhZGVyIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBlbXB0eUZlZWRiYWNrID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnZGl2Jyk7XG5cbiAgY29uc3QgZ3JhZGVyID0gbmV3IFdlYlJHcmFkZXIoX3dlYnJfdmFsdWVfOS5ldmFsdWF0b3IpO1xuICBjb25zdCBmZWVkYmFjayA9IGF3YWl0IGdyYWRlci5ncmFkZUV4ZXJjaXNlKCk7XG4gIGlmICghZmVlZGJhY2spIHJldHVybiBlbXB0eUZlZWRiYWNrO1xuICByZXR1cm4gZmVlZGJhY2s7XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiaW5saW5lIjpmYWxzZX0seyJjZWxsTmFtZSI6IndlYnItd2lkZ2V0LTgiLCJzb3VyY2UiOiJ7XG4gIC8vIFdhaXQgZm9yIG91dHB1dCB0byBiZSB3cml0dGVuIHRvIHRoZSBET00sIHRoZW4gdHJpZ2dlciB3aWRnZXQgcmVuZGVyaW5nXG4gIGF3YWl0IF93ZWJyX3ZhbHVlXzg7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlfSx7ImNlbGxOYW1lIjoid2Vici04Iiwic291cmNlIjoidmlld29mIF93ZWJyX2VkaXRvcl84ID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItOC1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIC8vIERlZmF1bHQgZXhlcmNpc2UgY29uZmlndXJhdGlvblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbihcbiAgICB7XG4gICAgICBpZDogXCJ3ZWJyLTgtY29udGVudHNcIixcbiAgICAgIGVudmlyOiBgZXhlcmNpc2UtZW52LSR7YmxvY2suYXR0ci5leGVyY2lzZX1gLFxuICAgICAgZXJyb3I6IGZhbHNlLFxuICAgICAgY2FwdGlvbjogJ0V4ZXJjaXNlJyxcbiAgICB9LFxuICAgIGJsb2NrLmF0dHJcbiAgKTtcblxuICBjb25zdCBlZGl0b3IgPSBuZXcgV2ViUkV4ZXJjaXNlRWRpdG9yKHdlYlJPanMud2ViUlByb21pc2UsIGJsb2NrLmNvZGUsIG9wdGlvbnMpO1xuICByZXR1cm4gZWRpdG9yLmNvbnRhaW5lcjtcbn1cbnZpZXdvZiBfd2Vicl92YWx1ZV84ID0gd2ViUk9qcy5wcm9jZXNzKF93ZWJyX2VkaXRvcl84LCB7fSk7XG5fd2Vicl9mZWVkYmFja184ID0ge1xuICBjb25zdCB7IFdlYlJHcmFkZXIgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IGVtcHR5RmVlZGJhY2sgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdkaXYnKTtcblxuICBjb25zdCBncmFkZXIgPSBuZXcgV2ViUkdyYWRlcihfd2Vicl92YWx1ZV84LmV2YWx1YXRvcik7XG4gIGNvbnN0IGZlZWRiYWNrID0gYXdhaXQgZ3JhZGVyLmdyYWRlRXhlcmNpc2UoKTtcbiAgaWYgKCFmZWVkYmFjaykgcmV0dXJuIGVtcHR5RmVlZGJhY2s7XG4gIHJldHVybiBmZWVkYmFjaztcbn1cbiIsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJpbmxpbmUiOmZhbHNlfSx7ImNlbGxOYW1lIjoid2Vici13aWRnZXQtNyIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfNztcbiAgaWYgKHdpbmRvdy5IVE1MV2lkZ2V0cykge1xuICAgIHdpbmRvdy5IVE1MV2lkZ2V0cy5zdGF0aWNSZW5kZXIoKTtcbiAgfVxuICBpZiAod2luZG93LlBhZ2VkVGFibGVEb2MpIHtcbiAgICB3aW5kb3cuUGFnZWRUYWJsZURvYy5pbml0QWxsKCk7XG4gIH1cbn1cbiIsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsImlubGluZSI6ZmFsc2V9LHsiY2VsbE5hbWUiOiJ3ZWJyLTciLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzcgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici03LWNvbnRlbnRzXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgYmxvY2sgPSBKU09OLnBhcnNlKGI2NERlY29kZShzY3JpcHRDb250ZW50KSk7XG5cbiAgLy8gRGVmYXVsdCBleGVyY2lzZSBjb25maWd1cmF0aW9uXG4gIGNvbnN0IG9wdGlvbnMgPSBPYmplY3QuYXNzaWduKFxuICAgIHtcbiAgICAgIGlkOiBcIndlYnItNy1jb250ZW50c1wiLFxuICAgICAgZW52aXI6IGBleGVyY2lzZS1lbnYtJHtibG9jay5hdHRyLmV4ZXJjaXNlfWAsXG4gICAgICBlcnJvcjogZmFsc2UsXG4gICAgICBjYXB0aW9uOiAnRXhlcmNpc2UnLFxuICAgIH0sXG4gICAgYmxvY2suYXR0clxuICApO1xuXG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG4gIHJldHVybiBlZGl0b3IuY29udGFpbmVyO1xufVxudmlld29mIF93ZWJyX3ZhbHVlXzcgPSB3ZWJST2pzLnByb2Nlc3MoX3dlYnJfZWRpdG9yXzcsIHt9KTtcbl93ZWJyX2ZlZWRiYWNrXzcgPSB7XG4gIGNvbnN0IHsgV2ViUkdyYWRlciB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3QgZW1wdHlGZWVkYmFjayA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2RpdicpO1xuXG4gIGNvbnN0IGdyYWRlciA9IG5ldyBXZWJSR3JhZGVyKF93ZWJyX3ZhbHVlXzcuZXZhbHVhdG9yKTtcbiAgY29uc3QgZmVlZGJhY2sgPSBhd2FpdCBncmFkZXIuZ3JhZGVFeGVyY2lzZSgpO1xuICBpZiAoIWZlZWRiYWNrKSByZXR1cm4gZW1wdHlGZWVkYmFjaztcbiAgcmV0dXJuIGZlZWRiYWNrO1xufVxuIiwibWV0aG9kTmFtZSI6ImludGVycHJldCIsImlubGluZSI6ZmFsc2V9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC02Iiwic291cmNlIjoie1xuICAvLyBXYWl0IGZvciBvdXRwdXQgdG8gYmUgd3JpdHRlbiB0byB0aGUgRE9NLCB0aGVuIHRyaWdnZXIgd2lkZ2V0IHJlbmRlcmluZ1xuICBhd2FpdCBfd2Vicl92YWx1ZV82O1xuICBpZiAod2luZG93LkhUTUxXaWRnZXRzKSB7XG4gICAgd2luZG93LkhUTUxXaWRnZXRzLnN0YXRpY1JlbmRlcigpO1xuICB9XG4gIGlmICh3aW5kb3cuUGFnZWRUYWJsZURvYykge1xuICAgIHdpbmRvdy5QYWdlZFRhYmxlRG9jLmluaXRBbGwoKTtcbiAgfVxufVxuIiwibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0IiwiaW5saW5lIjpmYWxzZX0seyJjZWxsTmFtZSI6IndlYnItNiIsInNvdXJjZSI6InZpZXdvZiBfd2Vicl9lZGl0b3JfNiA9IHtcbiAgY29uc3QgeyBXZWJSRXhlcmNpc2VFZGl0b3IsIGI2NERlY29kZSB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3Qgc2NyaXB0Q29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ3ZWJyLTYtY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICAvLyBEZWZhdWx0IGV4ZXJjaXNlIGNvbmZpZ3VyYXRpb25cbiAgY29uc3Qgb3B0aW9ucyA9IE9iamVjdC5hc3NpZ24oXG4gICAge1xuICAgICAgaWQ6IFwid2Vici02LWNvbnRlbnRzXCIsXG4gICAgICBlbnZpcjogYGV4ZXJjaXNlLWVudi0ke2Jsb2NrLmF0dHIuZXhlcmNpc2V9YCxcbiAgICAgIGVycm9yOiBmYWxzZSxcbiAgICAgIGNhcHRpb246ICdFeGVyY2lzZScsXG4gICAgfSxcbiAgICBibG9jay5hdHRyXG4gICk7XG5cbiAgY29uc3QgZWRpdG9yID0gbmV3IFdlYlJFeGVyY2lzZUVkaXRvcih3ZWJST2pzLndlYlJQcm9taXNlLCBibG9jay5jb2RlLCBvcHRpb25zKTtcbiAgcmV0dXJuIGVkaXRvci5jb250YWluZXI7XG59XG52aWV3b2YgX3dlYnJfdmFsdWVfNiA9IHdlYlJPanMucHJvY2Vzcyhfd2Vicl9lZGl0b3JfNiwge30pO1xuX3dlYnJfZmVlZGJhY2tfNiA9IHtcbiAgY29uc3QgeyBXZWJSR3JhZGVyIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBlbXB0eUZlZWRiYWNrID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudCgnZGl2Jyk7XG5cbiAgY29uc3QgZ3JhZGVyID0gbmV3IFdlYlJHcmFkZXIoX3dlYnJfdmFsdWVfNi5ldmFsdWF0b3IpO1xuICBjb25zdCBmZWVkYmFjayA9IGF3YWl0IGdyYWRlci5ncmFkZUV4ZXJjaXNlKCk7XG4gIGlmICghZmVlZGJhY2spIHJldHVybiBlbXB0eUZlZWRiYWNrO1xuICByZXR1cm4gZmVlZGJhY2s7XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiaW5saW5lIjpmYWxzZX0seyJjZWxsTmFtZSI6IndlYnItd2lkZ2V0LTUiLCJzb3VyY2UiOiJ7XG4gIC8vIFdhaXQgZm9yIG91dHB1dCB0byBiZSB3cml0dGVuIHRvIHRoZSBET00sIHRoZW4gdHJpZ2dlciB3aWRnZXQgcmVuZGVyaW5nXG4gIGF3YWl0IF93ZWJyX3ZhbHVlXzU7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlfSx7ImNlbGxOYW1lIjoid2Vici01Iiwic291cmNlIjoidmlld29mIF93ZWJyX2VkaXRvcl81ID0ge1xuICBjb25zdCB7IFdlYlJFeGVyY2lzZUVkaXRvciwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItNS1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIC8vIERlZmF1bHQgZXhlcmNpc2UgY29uZmlndXJhdGlvblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbihcbiAgICB7XG4gICAgICBpZDogXCJ3ZWJyLTUtY29udGVudHNcIixcbiAgICAgIGVudmlyOiBgZXhlcmNpc2UtZW52LSR7YmxvY2suYXR0ci5leGVyY2lzZX1gLFxuICAgICAgZXJyb3I6IGZhbHNlLFxuICAgICAgY2FwdGlvbjogJ0V4ZXJjaXNlJyxcbiAgICB9LFxuICAgIGJsb2NrLmF0dHJcbiAgKTtcblxuICBjb25zdCBlZGl0b3IgPSBuZXcgV2ViUkV4ZXJjaXNlRWRpdG9yKHdlYlJPanMud2ViUlByb21pc2UsIGJsb2NrLmNvZGUsIG9wdGlvbnMpO1xuICByZXR1cm4gZWRpdG9yLmNvbnRhaW5lcjtcbn1cbnZpZXdvZiBfd2Vicl92YWx1ZV81ID0gd2ViUk9qcy5wcm9jZXNzKF93ZWJyX2VkaXRvcl81LCB7fSk7XG5fd2Vicl9mZWVkYmFja181ID0ge1xuICBjb25zdCB7IFdlYlJHcmFkZXIgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IGVtcHR5RmVlZGJhY2sgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KCdkaXYnKTtcblxuICBjb25zdCBncmFkZXIgPSBuZXcgV2ViUkdyYWRlcihfd2Vicl92YWx1ZV81LmV2YWx1YXRvcik7XG4gIGNvbnN0IGZlZWRiYWNrID0gYXdhaXQgZ3JhZGVyLmdyYWRlRXhlcmNpc2UoKTtcbiAgaWYgKCFmZWVkYmFjaykgcmV0dXJuIGVtcHR5RmVlZGJhY2s7XG4gIHJldHVybiBmZWVkYmFjaztcbn1cbiIsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJpbmxpbmUiOmZhbHNlfSx7ImNlbGxOYW1lIjoid2Vici13aWRnZXQtNCIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfNDtcbiAgaWYgKHdpbmRvdy5IVE1MV2lkZ2V0cykge1xuICAgIHdpbmRvdy5IVE1MV2lkZ2V0cy5zdGF0aWNSZW5kZXIoKTtcbiAgfVxuICBpZiAod2luZG93LlBhZ2VkVGFibGVEb2MpIHtcbiAgICB3aW5kb3cuUGFnZWRUYWJsZURvYy5pbml0QWxsKCk7XG4gIH1cbn1cbiIsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsImlubGluZSI6ZmFsc2V9LHsiY2VsbE5hbWUiOiJ3ZWJyLTQiLCJzb3VyY2UiOiJ2aWV3b2YgX3dlYnJfZWRpdG9yXzQgPSB7XG4gIGNvbnN0IHsgV2ViUkV4ZXJjaXNlRWRpdG9yLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici00LWNvbnRlbnRzXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgYmxvY2sgPSBKU09OLnBhcnNlKGI2NERlY29kZShzY3JpcHRDb250ZW50KSk7XG5cbiAgLy8gRGVmYXVsdCBleGVyY2lzZSBjb25maWd1cmF0aW9uXG4gIGNvbnN0IG9wdGlvbnMgPSBPYmplY3QuYXNzaWduKFxuICAgIHtcbiAgICAgIGlkOiBcIndlYnItNC1jb250ZW50c1wiLFxuICAgICAgZW52aXI6IGBleGVyY2lzZS1lbnYtJHtibG9jay5hdHRyLmV4ZXJjaXNlfWAsXG4gICAgICBlcnJvcjogZmFsc2UsXG4gICAgICBjYXB0aW9uOiAnRXhlcmNpc2UnLFxuICAgIH0sXG4gICAgYmxvY2suYXR0clxuICApO1xuXG4gIGNvbnN0IGVkaXRvciA9IG5ldyBXZWJSRXhlcmNpc2VFZGl0b3Iod2ViUk9qcy53ZWJSUHJvbWlzZSwgYmxvY2suY29kZSwgb3B0aW9ucyk7XG4gIHJldHVybiBlZGl0b3IuY29udGFpbmVyO1xufVxudmlld29mIF93ZWJyX3ZhbHVlXzQgPSB3ZWJST2pzLnByb2Nlc3MoX3dlYnJfZWRpdG9yXzQsIHt9KTtcbl93ZWJyX2ZlZWRiYWNrXzQgPSB7XG4gIGNvbnN0IHsgV2ViUkdyYWRlciB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3QgZW1wdHlGZWVkYmFjayA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoJ2RpdicpO1xuXG4gIGNvbnN0IGdyYWRlciA9IG5ldyBXZWJSR3JhZGVyKF93ZWJyX3ZhbHVlXzQuZXZhbHVhdG9yKTtcbiAgY29uc3QgZmVlZGJhY2sgPSBhd2FpdCBncmFkZXIuZ3JhZGVFeGVyY2lzZSgpO1xuICBpZiAoIWZlZWRiYWNrKSByZXR1cm4gZW1wdHlGZWVkYmFjaztcbiAgcmV0dXJuIGZlZWRiYWNrO1xufVxuIiwibWV0aG9kTmFtZSI6ImludGVycHJldCIsImlubGluZSI6ZmFsc2V9LHsiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0zIiwic291cmNlIjoie1xuICAvLyBXYWl0IGZvciBvdXRwdXQgdG8gYmUgd3JpdHRlbiB0byB0aGUgRE9NLCB0aGVuIHRyaWdnZXIgd2lkZ2V0IHJlbmRlcmluZ1xuICBhd2FpdCBfd2Vicl92YWx1ZV8zO1xuICBpZiAod2luZG93LkhUTUxXaWRnZXRzKSB7XG4gICAgd2luZG93LkhUTUxXaWRnZXRzLnN0YXRpY1JlbmRlcigpO1xuICB9XG4gIGlmICh3aW5kb3cuUGFnZWRUYWJsZURvYykge1xuICAgIHdpbmRvdy5QYWdlZFRhYmxlRG9jLmluaXRBbGwoKTtcbiAgfVxufVxuIiwibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0IiwiaW5saW5lIjpmYWxzZX0seyJjZWxsTmFtZSI6IndlYnItMyIsInNvdXJjZSI6Il93ZWJyX3ZhbHVlXzMgPSB7XG4gIGNvbnN0IHsgaGlnaGxpZ2h0UiwgYjY0RGVjb2RlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBzY3JpcHRDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcIndlYnItMy1jb250ZW50c1xcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGJsb2NrID0gSlNPTi5wYXJzZShiNjREZWNvZGUoc2NyaXB0Q29udGVudCkpO1xuXG4gIC8vIERlZmF1bHQgZXZhbHVhdGlvbiBjb25maWd1cmF0aW9uXG4gIGNvbnN0IG9wdGlvbnMgPSBPYmplY3QuYXNzaWduKHtcbiAgICBpZDogXCJ3ZWJyLTMtY29udGVudHNcIixcbiAgICBlY2hvOiB0cnVlLFxuICAgIG91dHB1dDogdHJ1ZVxuICB9LCBibG9jay5hdHRyKTtcblxuICAvLyBFdmFsdWF0ZSB0aGUgcHJvdmlkZWQgUiBjb2RlXG4gIGNvbnN0IHJlc3VsdCA9IHdlYlJPanMucHJvY2Vzcyh7Y29kZTogYmxvY2suY29kZSwgb3B0aW9uc30sIHt9KTtcblxuICAvLyBFYXJseSB5aWVsZCB3aGlsZSB3ZSB3YWl0IGZvciB0aGUgZmlyc3QgZXZhbHVhdGlvbiBhbmQgcmVuZGVyXG4gIGlmIChvcHRpb25zLm91dHB1dCAmJiAhKFwiM1wiIGluIHdlYlJPanMucmVuZGVyZWRPanMpKSB7XG4gICAgY29uc3QgY29udGFpbmVyID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudChcImRpdlwiKTtcbiAgICBjb25zdCBzcGlubmVyID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudChcImRpdlwiKTtcblxuICAgIGlmIChvcHRpb25zLmVjaG8pIHtcbiAgICAgIC8vIFNob3cgb3V0cHV0IGFzIGhpZ2hsaWdodGVkIHNvdXJjZVxuICAgICAgY29uc3QgcHJlRWxlbSA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoXCJwcmVcIik7XG4gICAgICBjb250YWluZXIuY2xhc3NOYW1lID0gXCJzb3VyY2VDb2RlXCI7XG4gICAgICBwcmVFbGVtLmNsYXNzTmFtZSA9IFwic291cmNlQ29kZSByXCI7XG4gICAgICBwcmVFbGVtLmFwcGVuZENoaWxkKGhpZ2hsaWdodFIoYmxvY2suY29kZSkpO1xuICAgICAgc3Bpbm5lci5jbGFzc05hbWUgPSBcInNwaW5uZXItZ3JvdyBzcGlubmVyLWdyb3ctc20gbS0yIHBvc2l0aW9uLWFic29sdXRlIHRvcC0wIGVuZC0wXCI7XG4gICAgICBwcmVFbGVtLmFwcGVuZENoaWxkKHNwaW5uZXIpO1xuICAgICAgY29udGFpbmVyLmFwcGVuZENoaWxkKHByZUVsZW0pO1xuICAgIH0gZWxzZSB7XG4gICAgICBzcGlubmVyLmNsYXNzTmFtZSA9IFwic3Bpbm5lci1ib3JkZXIgc3Bpbm5lci1ib3JkZXItc21cIjtcbiAgICAgIGNvbnRhaW5lci5hcHBlbmRDaGlsZChzcGlubmVyKTtcbiAgICB9XG5cbiAgICB5aWVsZCBjb250YWluZXI7XG4gIH1cblxuICB3ZWJST2pzLnJlbmRlcmVkT2pzW1wiM1wiXSA9IHRydWU7XG4gIHlpZWxkIGF3YWl0IHJlc3VsdDtcbn1cbiIsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJpbmxpbmUiOmZhbHNlfSx7ImNlbGxOYW1lIjoid2Vici13aWRnZXQtMiIsInNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMjtcbiAgaWYgKHdpbmRvdy5IVE1MV2lkZ2V0cykge1xuICAgIHdpbmRvdy5IVE1MV2lkZ2V0cy5zdGF0aWNSZW5kZXIoKTtcbiAgfVxuICBpZiAod2luZG93LlBhZ2VkVGFibGVEb2MpIHtcbiAgICB3aW5kb3cuUGFnZWRUYWJsZURvYy5pbml0QWxsKCk7XG4gIH1cbn1cbiIsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsImlubGluZSI6ZmFsc2V9LHsiY2VsbE5hbWUiOiJ3ZWJyLTIiLCJzb3VyY2UiOiJfd2Vicl92YWx1ZV8yID0ge1xuICBjb25zdCB7IGhpZ2hsaWdodFIsIGI2NERlY29kZSB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3Qgc2NyaXB0Q29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ3ZWJyLTItY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICAvLyBEZWZhdWx0IGV2YWx1YXRpb24gY29uZmlndXJhdGlvblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbih7XG4gICAgaWQ6IFwid2Vici0yLWNvbnRlbnRzXCIsXG4gICAgZWNobzogdHJ1ZSxcbiAgICBvdXRwdXQ6IHRydWVcbiAgfSwgYmxvY2suYXR0cik7XG5cbiAgLy8gRXZhbHVhdGUgdGhlIHByb3ZpZGVkIFIgY29kZVxuICBjb25zdCByZXN1bHQgPSB3ZWJST2pzLnByb2Nlc3Moe2NvZGU6IGJsb2NrLmNvZGUsIG9wdGlvbnN9LCB7fSk7XG5cbiAgLy8gRWFybHkgeWllbGQgd2hpbGUgd2Ugd2FpdCBmb3IgdGhlIGZpcnN0IGV2YWx1YXRpb24gYW5kIHJlbmRlclxuICBpZiAob3B0aW9ucy5vdXRwdXQgJiYgIShcIjJcIiBpbiB3ZWJST2pzLnJlbmRlcmVkT2pzKSkge1xuICAgIGNvbnN0IGNvbnRhaW5lciA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoXCJkaXZcIik7XG4gICAgY29uc3Qgc3Bpbm5lciA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoXCJkaXZcIik7XG5cbiAgICBpZiAob3B0aW9ucy5lY2hvKSB7XG4gICAgICAvLyBTaG93IG91dHB1dCBhcyBoaWdobGlnaHRlZCBzb3VyY2VcbiAgICAgIGNvbnN0IHByZUVsZW0gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KFwicHJlXCIpO1xuICAgICAgY29udGFpbmVyLmNsYXNzTmFtZSA9IFwic291cmNlQ29kZVwiO1xuICAgICAgcHJlRWxlbS5jbGFzc05hbWUgPSBcInNvdXJjZUNvZGUgclwiO1xuICAgICAgcHJlRWxlbS5hcHBlbmRDaGlsZChoaWdobGlnaHRSKGJsb2NrLmNvZGUpKTtcbiAgICAgIHNwaW5uZXIuY2xhc3NOYW1lID0gXCJzcGlubmVyLWdyb3cgc3Bpbm5lci1ncm93LXNtIG0tMiBwb3NpdGlvbi1hYnNvbHV0ZSB0b3AtMCBlbmQtMFwiO1xuICAgICAgcHJlRWxlbS5hcHBlbmRDaGlsZChzcGlubmVyKTtcbiAgICAgIGNvbnRhaW5lci5hcHBlbmRDaGlsZChwcmVFbGVtKTtcbiAgICB9IGVsc2Uge1xuICAgICAgc3Bpbm5lci5jbGFzc05hbWUgPSBcInNwaW5uZXItYm9yZGVyIHNwaW5uZXItYm9yZGVyLXNtXCI7XG4gICAgICBjb250YWluZXIuYXBwZW5kQ2hpbGQoc3Bpbm5lcik7XG4gICAgfVxuXG4gICAgeWllbGQgY29udGFpbmVyO1xuICB9XG5cbiAgd2ViUk9qcy5yZW5kZXJlZE9qc1tcIjJcIl0gPSB0cnVlO1xuICB5aWVsZCBhd2FpdCByZXN1bHQ7XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiaW5saW5lIjpmYWxzZX0seyJjZWxsTmFtZSI6IndlYnItd2lkZ2V0LTEiLCJzb3VyY2UiOiJ7XG4gIC8vIFdhaXQgZm9yIG91dHB1dCB0byBiZSB3cml0dGVuIHRvIHRoZSBET00sIHRoZW4gdHJpZ2dlciB3aWRnZXQgcmVuZGVyaW5nXG4gIGF3YWl0IF93ZWJyX3ZhbHVlXzE7XG4gIGlmICh3aW5kb3cuSFRNTFdpZGdldHMpIHtcbiAgICB3aW5kb3cuSFRNTFdpZGdldHMuc3RhdGljUmVuZGVyKCk7XG4gIH1cbiAgaWYgKHdpbmRvdy5QYWdlZFRhYmxlRG9jKSB7XG4gICAgd2luZG93LlBhZ2VkVGFibGVEb2MuaW5pdEFsbCgpO1xuICB9XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlfSx7ImNlbGxOYW1lIjoid2Vici0xIiwic291cmNlIjoiX3dlYnJfdmFsdWVfMSA9IHtcbiAgY29uc3QgeyBoaWdobGlnaHRSLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici0xLWNvbnRlbnRzXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgYmxvY2sgPSBKU09OLnBhcnNlKGI2NERlY29kZShzY3JpcHRDb250ZW50KSk7XG5cbiAgLy8gRGVmYXVsdCBldmFsdWF0aW9uIGNvbmZpZ3VyYXRpb25cbiAgY29uc3Qgb3B0aW9ucyA9IE9iamVjdC5hc3NpZ24oe1xuICAgIGlkOiBcIndlYnItMS1jb250ZW50c1wiLFxuICAgIGVjaG86IHRydWUsXG4gICAgb3V0cHV0OiB0cnVlXG4gIH0sIGJsb2NrLmF0dHIpO1xuXG4gIC8vIEV2YWx1YXRlIHRoZSBwcm92aWRlZCBSIGNvZGVcbiAgY29uc3QgcmVzdWx0ID0gd2ViUk9qcy5wcm9jZXNzKHtjb2RlOiBibG9jay5jb2RlLCBvcHRpb25zfSwge30pO1xuXG4gIC8vIEVhcmx5IHlpZWxkIHdoaWxlIHdlIHdhaXQgZm9yIHRoZSBmaXJzdCBldmFsdWF0aW9uIGFuZCByZW5kZXJcbiAgaWYgKG9wdGlvbnMub3V0cHV0ICYmICEoXCIxXCIgaW4gd2ViUk9qcy5yZW5kZXJlZE9qcykpIHtcbiAgICBjb25zdCBjb250YWluZXIgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KFwiZGl2XCIpO1xuICAgIGNvbnN0IHNwaW5uZXIgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KFwiZGl2XCIpO1xuXG4gICAgaWYgKG9wdGlvbnMuZWNobykge1xuICAgICAgLy8gU2hvdyBvdXRwdXQgYXMgaGlnaGxpZ2h0ZWQgc291cmNlXG4gICAgICBjb25zdCBwcmVFbGVtID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudChcInByZVwiKTtcbiAgICAgIGNvbnRhaW5lci5jbGFzc05hbWUgPSBcInNvdXJjZUNvZGVcIjtcbiAgICAgIHByZUVsZW0uY2xhc3NOYW1lID0gXCJzb3VyY2VDb2RlIHJcIjtcbiAgICAgIHByZUVsZW0uYXBwZW5kQ2hpbGQoaGlnaGxpZ2h0UihibG9jay5jb2RlKSk7XG4gICAgICBzcGlubmVyLmNsYXNzTmFtZSA9IFwic3Bpbm5lci1ncm93IHNwaW5uZXItZ3Jvdy1zbSBtLTIgcG9zaXRpb24tYWJzb2x1dGUgdG9wLTAgZW5kLTBcIjtcbiAgICAgIHByZUVsZW0uYXBwZW5kQ2hpbGQoc3Bpbm5lcik7XG4gICAgICBjb250YWluZXIuYXBwZW5kQ2hpbGQocHJlRWxlbSk7XG4gICAgfSBlbHNlIHtcbiAgICAgIHNwaW5uZXIuY2xhc3NOYW1lID0gXCJzcGlubmVyLWJvcmRlciBzcGlubmVyLWJvcmRlci1zbVwiO1xuICAgICAgY29udGFpbmVyLmFwcGVuZENoaWxkKHNwaW5uZXIpO1xuICAgIH1cblxuICAgIHlpZWxkIGNvbnRhaW5lcjtcbiAgfVxuXG4gIHdlYlJPanMucmVuZGVyZWRPanNbXCIxXCJdID0gdHJ1ZTtcbiAgeWllbGQgYXdhaXQgcmVzdWx0O1xufVxuIiwibWV0aG9kTmFtZSI6ImludGVycHJldCIsImlubGluZSI6ZmFsc2V9LHsiY2VsbE5hbWUiOiJpbnRlcnBvbGF0ZS0xNCIsInNvdXJjZSI6IntcbiAgY29uc3QgeyBpbnRlcnBvbGF0ZSB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3QgYmxvY2tfaWQgPSBcIjE0XCI7XG4gIGNvbnN0IGxhbmd1YWdlID0gXCJub25lXCI7XG4gIGNvbnN0IGRlZl9tYXAgPSB7XG59O1xuICBjb25zdCBlbGVtID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoYGludGVycG9sYXRlLSR7YmxvY2tfaWR9YCk7XG5cbiAgLy8gU3RvcmUgb3JpZ2luYWwgdGVtcGxhdGVkIEhUTUwgZm9yIHJlZmVyZW5jZSBpbiBmdXR1cmUgcmVhY3RpdmUgdXBkYXRlc1xuICBpZiAoIWVsZW0ub3JpZ0hUTUwpIGVsZW0ub3JpZ0hUTUwgPSBlbGVtLmlubmVySFRNTDtcblxuICAvLyBJbnRlcnBvbGF0ZSByZWFjdGl2ZSBPSlMgdmFyaWFibGVzIGludG8gZXN0YWJsaXNoZWQgSFRNTCBlbGVtZW50XG4gIGVsZW0uaW5uZXJIVE1MID0gZWxlbS5vcmlnSFRNTDtcbiAgT2JqZWN0LmtleXMoZGVmX21hcCkuZm9yRWFjaCgoZGVmKSA9PlxuICAgIGludGVycG9sYXRlKGVsZW0sIFwiJHtcIiArIGRlZiArIFwifVwiLCBkZWZfbWFwW2RlZl0sIGxhbmd1YWdlKVxuICApO1xufVxuIiwibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0IiwiaW5saW5lIjpmYWxzZX0seyJjZWxsTmFtZSI6ImludGVycG9sYXRlLTE1Iiwic291cmNlIjoie1xuICBjb25zdCB7IGludGVycG9sYXRlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lO1xuICBjb25zdCBibG9ja19pZCA9IFwiMTVcIjtcbiAgY29uc3QgbGFuZ3VhZ2UgPSBcInJcIjtcbiAgY29uc3QgZGVmX21hcCA9IHtcbn07XG4gIGNvbnN0IGVsZW0gPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZChgaW50ZXJwb2xhdGUtJHtibG9ja19pZH1gKTtcblxuICAvLyBTdG9yZSBvcmlnaW5hbCB0ZW1wbGF0ZWQgSFRNTCBmb3IgcmVmZXJlbmNlIGluIGZ1dHVyZSByZWFjdGl2ZSB1cGRhdGVzXG4gIGlmICghZWxlbS5vcmlnSFRNTCkgZWxlbS5vcmlnSFRNTCA9IGVsZW0uaW5uZXJIVE1MO1xuXG4gIC8vIEludGVycG9sYXRlIHJlYWN0aXZlIE9KUyB2YXJpYWJsZXMgaW50byBlc3RhYmxpc2hlZCBIVE1MIGVsZW1lbnRcbiAgZWxlbS5pbm5lckhUTUwgPSBlbGVtLm9yaWdIVE1MO1xuICBPYmplY3Qua2V5cyhkZWZfbWFwKS5mb3JFYWNoKChkZWYpID0+XG4gICAgaW50ZXJwb2xhdGUoZWxlbSwgXCIke1wiICsgZGVmICsgXCJ9XCIsIGRlZl9tYXBbZGVmXSwgbGFuZ3VhZ2UpXG4gICk7XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlfSx7ImNlbGxOYW1lIjoiaW50ZXJwb2xhdGUtMTkiLCJzb3VyY2UiOiJ7XG4gIGNvbnN0IHsgaW50ZXJwb2xhdGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IGJsb2NrX2lkID0gXCIxOVwiO1xuICBjb25zdCBsYW5ndWFnZSA9IFwibm9uZVwiO1xuICBjb25zdCBkZWZfbWFwID0ge1xufTtcbiAgY29uc3QgZWxlbSA9IGRvY3VtZW50LmdldEVsZW1lbnRCeUlkKGBpbnRlcnBvbGF0ZS0ke2Jsb2NrX2lkfWApO1xuXG4gIC8vIFN0b3JlIG9yaWdpbmFsIHRlbXBsYXRlZCBIVE1MIGZvciByZWZlcmVuY2UgaW4gZnV0dXJlIHJlYWN0aXZlIHVwZGF0ZXNcbiAgaWYgKCFlbGVtLm9yaWdIVE1MKSBlbGVtLm9yaWdIVE1MID0gZWxlbS5pbm5lckhUTUw7XG5cbiAgLy8gSW50ZXJwb2xhdGUgcmVhY3RpdmUgT0pTIHZhcmlhYmxlcyBpbnRvIGVzdGFibGlzaGVkIEhUTUwgZWxlbWVudFxuICBlbGVtLmlubmVySFRNTCA9IGVsZW0ub3JpZ0hUTUw7XG4gIE9iamVjdC5rZXlzKGRlZl9tYXApLmZvckVhY2goKGRlZikgPT5cbiAgICBpbnRlcnBvbGF0ZShlbGVtLCBcIiR7XCIgKyBkZWYgKyBcIn1cIiwgZGVmX21hcFtkZWZdLCBsYW5ndWFnZSlcbiAgKTtcbn1cbiIsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsImlubGluZSI6ZmFsc2V9LHsiY2VsbE5hbWUiOiJpbnRlcnBvbGF0ZS0yMCIsInNvdXJjZSI6IntcbiAgY29uc3QgeyBpbnRlcnBvbGF0ZSB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3QgYmxvY2tfaWQgPSBcIjIwXCI7XG4gIGNvbnN0IGxhbmd1YWdlID0gXCJyXCI7XG4gIGNvbnN0IGRlZl9tYXAgPSB7XG59O1xuICBjb25zdCBlbGVtID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoYGludGVycG9sYXRlLSR7YmxvY2tfaWR9YCk7XG5cbiAgLy8gU3RvcmUgb3JpZ2luYWwgdGVtcGxhdGVkIEhUTUwgZm9yIHJlZmVyZW5jZSBpbiBmdXR1cmUgcmVhY3RpdmUgdXBkYXRlc1xuICBpZiAoIWVsZW0ub3JpZ0hUTUwpIGVsZW0ub3JpZ0hUTUwgPSBlbGVtLmlubmVySFRNTDtcblxuICAvLyBJbnRlcnBvbGF0ZSByZWFjdGl2ZSBPSlMgdmFyaWFibGVzIGludG8gZXN0YWJsaXNoZWQgSFRNTCBlbGVtZW50XG4gIGVsZW0uaW5uZXJIVE1MID0gZWxlbS5vcmlnSFRNTDtcbiAgT2JqZWN0LmtleXMoZGVmX21hcCkuZm9yRWFjaCgoZGVmKSA9PlxuICAgIGludGVycG9sYXRlKGVsZW0sIFwiJHtcIiArIGRlZiArIFwifVwiLCBkZWZfbWFwW2RlZl0sIGxhbmd1YWdlKVxuICApO1xufVxuIiwibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0IiwiaW5saW5lIjpmYWxzZX0seyJjZWxsTmFtZSI6IndlYnItcHJlbHVkZSIsInNvdXJjZSI6IndlYlJPanMgPSB7XG4gIGNvbnN0IHsgV2ViUiwgQ2hhbm5lbFR5cGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWUuV2ViUjtcbiAgY29uc3Qge1xuICAgIFdlYlJFdmFsdWF0b3IsXG4gICAgV2ViUkVudmlyb25tZW50TWFuYWdlcixcbiAgICBzZXR1cFIsXG4gICAgYjY0RGVjb2RlLFxuICAgIGNvbGxhcHNlUGF0aFxuICB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcblxuICBjb25zdCBzdGF0dXNDb250YWluZXIgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZChcImV4ZXJjaXNlLWxvYWRpbmctc3RhdHVzXCIpO1xuICBjb25zdCBpbmRpY2F0b3JDb250YWluZXIgPSBkb2N1bWVudC5nZXRFbGVtZW50QnlJZChcImV4ZXJjaXNlLWxvYWRpbmctaW5kaWNhdG9yXCIpO1xuICBpbmRpY2F0b3JDb250YWluZXIuY2xhc3NMaXN0LnJlbW92ZShcImQtbm9uZVwiKTtcblxuICBsZXQgc3RhdHVzVGV4dCA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoXCJkaXZcIilcbiAgc3RhdHVzVGV4dC5jbGFzc0xpc3QgPSBcImV4ZXJjaXNlLWxvYWRpbmctZGV0YWlsc1wiO1xuICBzdGF0dXNUZXh0ID0gc3RhdHVzQ29udGFpbmVyLmFwcGVuZENoaWxkKHN0YXR1c1RleHQpO1xuICBzdGF0dXNUZXh0LnRleHRDb250ZW50ID0gYEluaXRpYWxpc2VgO1xuXG4gIC8vIEhvaXN0IGluZGljYXRvciBvdXQgZnJvbSBmaW5hbCBzbGlkZSB3aGVuIHJ1bm5pbmcgdW5kZXIgcmV2ZWFsXG4gIGNvbnN0IHJldmVhbFN0YXR1cyA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoXCIucmV2ZWFsIC5leGVyY2lzZS1sb2FkaW5nLWluZGljYXRvclwiKTtcbiAgaWYgKHJldmVhbFN0YXR1cykge1xuICAgIHJldmVhbFN0YXR1cy5yZW1vdmUoKTtcbiAgICBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKFwiLnJldmVhbCA+IC5zbGlkZXNcIikuYXBwZW5kQ2hpbGQocmV2ZWFsU3RhdHVzKTtcbiAgfVxuXG4gIC8vIE1ha2UgYW55IHJldmVhbCBzbGlkZXMgd2l0aCBsaXZlIGNlbGxzIHNjcm9sbGFibGVcbiAgZG9jdW1lbnQucXVlcnlTZWxlY3RvckFsbChcIi5yZXZlYWwgLmV4ZXJjaXNlLWNlbGxcIikuZm9yRWFjaCgoZWwpID0+IHtcbiAgICBlbC5jbG9zZXN0KCdzZWN0aW9uLnNsaWRlJykuY2xhc3NMaXN0LmFkZChcInNjcm9sbGFibGVcIik7XG4gIH0pXG5cbiAgLy8gd2ViUiBzdXBwbGVtZW50YWwgZGF0YSBhbmQgb3B0aW9uc1xuICBjb25zdCBkYXRhQ29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ3ZWJyLWRhdGFcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBkYXRhID0gSlNPTi5wYXJzZShiNjREZWNvZGUoZGF0YUNvbnRlbnQpKTtcblxuICAvLyBHcmFiIGxpc3Qgb2YgcmVzb3VyY2VzIHRvIGJlIGRvd25sb2FkZWRcbiAgY29uc3QgZmlsZXNDb250ZW50ID0gZG9jdW1lbnQucXVlcnlTZWxlY3Rvcihgc2NyaXB0W3R5cGU9XFxcInZmcy1maWxlXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgZmlsZXMgPSBKU09OLnBhcnNlKGI2NERlY29kZShmaWxlc0NvbnRlbnQpKTtcblxuICAvLyBVc2UgUG9zdE1lc3NhZ2UgY2hhbm5lbCBmb3IgYXN5bmMgY29tbXVuaWNhdGlvblxuICAvLyBXZSBkbyBub3QgZXhwZWN0IHRvIHRha2UgbmVzdGVkIHByb21wdCBpbnB1dCBpbiBRdWFydG8gTGl2ZSBjZWxsc1xuICBkYXRhLm9wdGlvbnMuY2hhbm5lbFR5cGUgPSBDaGFubmVsVHlwZS5Qb3N0TWVzc2FnZTtcblxuICAvLyBJbml0aWFsaXNlIHdlYlIgYW5kIHNldHVwIGZvciBSIGNvZGUgZXZhbHVhdGlvblxuICBsZXQgd2ViUlByb21pc2UgPSAoYXN5bmMgKHdlYlIpID0+IHtcbiAgICBzdGF0dXNUZXh0LnRleHRDb250ZW50ID0gYERvd25sb2FkaW5nIHdlYlJgO1xuICAgIGF3YWl0IHdlYlIuaW5pdCgpO1xuXG4gICAgLy8gSW5zdGFsbCBwcm92aWRlZCBsaXN0IG9mIHBhY2thZ2VzXG4gICAgLy8gRW5zdXJlIHdlYlIgZGVmYXVsdCByZXBvIGlzIGluY2x1ZGVkXG4gICAgZGF0YS5wYWNrYWdlcy5yZXBvcy5wdXNoKFwiaHR0cHM6Ly9yZXBvLnItd2FzbS5vcmdcIilcbiAgICBhd2FpdCBkYXRhLnBhY2thZ2VzLnBrZ3MubWFwKChwa2cpID0+ICgpID0+IHtcbiAgICAgIHN0YXR1c1RleHQudGV4dENvbnRlbnQgPSBgRG93bmxvYWRpbmcgcGFja2FnZTogJHtwa2d9YDtcbiAgICAgIHJldHVybiB3ZWJSLmV2YWxSVm9pZChgXG4gICAgICAgIHdlYnI6Omluc3RhbGwocGtnLCByZXBvcyA9IHJlcG9zKVxuICAgICAgICBsaWJyYXJ5KHBrZywgY2hhcmFjdGVyLm9ubHkgPSBUUlVFKVxuICAgICAgYCwgeyBlbnY6IHtcbiAgICAgICAgcGtnOiBwa2csXG4gICAgICAgIHJlcG9zOiBkYXRhLnBhY2thZ2VzLnJlcG9zLFxuICAgICAgfX0pO1xuICAgIH0pLnJlZHVjZSgoY3VyLCBuZXh0KSA9PiBjdXIudGhlbihuZXh0KSwgUHJvbWlzZS5yZXNvbHZlKCkpO1xuXG4gICAgLy8gRG93bmxvYWQgYW5kIGluc3RhbGwgcmVzb3VyY2VzXG4gICAgYXdhaXQgZmlsZXMubWFwKChmaWxlKSA9PiBhc3luYyAoKSA9PiB7XG4gICAgICBjb25zdCBuYW1lID0gZmlsZS5zdWJzdHJpbmcoZmlsZS5sYXN0SW5kZXhPZignLycpICsgMSk7XG4gICAgICBzdGF0dXNUZXh0LnRleHRDb250ZW50ID0gYERvd25sb2FkaW5nIHJlc291cmNlOiAke25hbWV9YDtcbiAgICAgIGNvbnN0IHJlc3BvbnNlID0gYXdhaXQgZmV0Y2goZmlsZSk7XG4gICAgICBpZiAoIXJlc3BvbnNlLm9rKSB7XG4gICAgICAgIHRocm93IG5ldyBFcnJvcihgQ2FuJ3QgZG93bmxvYWQgXFxgJHtmaWxlfVxcYC4gRXJyb3IgJHtyZXNwb25zZS5zdGF0dXN9OiBcIiR7cmVzcG9uc2Uuc3RhdHVzVGV4dH1cIi5gKTtcbiAgICAgIH1cbiAgICAgIGNvbnN0IGRhdGEgPSBhd2FpdCByZXNwb25zZS5hcnJheUJ1ZmZlcigpO1xuXG4gICAgICAvLyBTdG9yZSBVUkxzIGluIHRoZSBjd2Qgd2l0aG91dCBhbnkgc3ViZGlyZWN0b3J5IHN0cnVjdHVyZVxuICAgICAgaWYgKGZpbGUuaW5jbHVkZXMoXCI6Ly9cIikpIHtcbiAgICAgICAgZmlsZSA9IG5hbWU7XG4gICAgICB9XG5cbiAgICAgIC8vIENvbGxhcHNlIGhpZ2hlciBkaXJlY3Rvcnkgc3RydWN0dXJlXG4gICAgICBmaWxlID0gY29sbGFwc2VQYXRoKGZpbGUpO1xuXG4gICAgICAvLyBDcmVhdGUgZGlyZWN0b3J5IHRyZWUsIGlnbm9yaW5nIFwiZGlyZWN0b3J5IGV4aXN0c1wiIFZGUyBlcnJvcnNcbiAgICAgIGNvbnN0IHBhcnRzID0gZmlsZS5zcGxpdCgnLycpLnNsaWNlKDAsIC0xKTtcbiAgICAgIGxldCBwYXRoID0gJyc7XG4gICAgICB3aGlsZSAocGFydHMubGVuZ3RoID4gMCkge1xuICAgICAgICBwYXRoICs9IHBhcnRzLnNoaWZ0KCkgKyAnLyc7XG4gICAgICAgIHRyeSB7XG4gICAgICAgICAgYXdhaXQgd2ViUi5GUy5ta2RpcihwYXRoKTtcbiAgICAgICAgfSBjYXRjaCAoZSkge1xuICAgICAgICAgIGlmICghZS5tZXNzYWdlLmluY2x1ZGVzKFwiRlMgZXJyb3JcIikpIHtcbiAgICAgICAgICAgIHRocm93IGU7XG4gICAgICAgICAgfVxuICAgICAgICB9XG4gICAgICB9XG5cbiAgICAgIC8vIFdyaXRlIHRoaXMgZmlsZSB0byB0aGUgVkZTXG4gICAgICByZXR1cm4gYXdhaXQgd2ViUi5GUy53cml0ZUZpbGUoZmlsZSwgbmV3IFVpbnQ4QXJyYXkoZGF0YSkpO1xuICAgIH0pLnJlZHVjZSgoY3VyLCBuZXh0KSA9PiBjdXIudGhlbihuZXh0KSwgUHJvbWlzZS5yZXNvbHZlKCkpO1xuXG4gICAgc3RhdHVzVGV4dC50ZXh0Q29udGVudCA9IGBJbnN0YWxsaW5nIHdlYlIgc2hpbXNgO1xuICAgIGF3YWl0IHdlYlIuZXZhbFJWb2lkKGB3ZWJyOjpzaGltX2luc3RhbGwoKWApO1xuXG4gICAgc3RhdHVzVGV4dC50ZXh0Q29udGVudCA9IGBXZWJSIGVudmlyb25tZW50IHNldHVwYDtcbiAgICBhd2FpdCBzZXR1cFIod2ViUiwgZGF0YSk7XG5cbiAgICBzdGF0dXNUZXh0LnJlbW92ZSgpO1xuICAgIGlmIChzdGF0dXNDb250YWluZXIuY2hpbGRyZW4ubGVuZ3RoID09IDApIHtcbiAgICAgIHN0YXR1c0NvbnRhaW5lci5wYXJlbnROb2RlLnJlbW92ZSgpO1xuICAgIH1cbiAgICByZXR1cm4gd2ViUjtcbiAgfSkobmV3IFdlYlIoZGF0YS5vcHRpb25zKSk7XG5cbiAgLy8gS2VlcCB0cmFjayBvZiBpbml0aWFsIE9KUyBibG9jayByZW5kZXJcbiAgY29uc3QgcmVuZGVyZWRPanMgPSB7fTtcblxuICBjb25zdCBwcm9jZXNzID0gYXN5bmMgKGNvbnRleHQsIGlucHV0cykgPT4ge1xuICAgIGNvbnN0IHdlYlIgPSBhd2FpdCB3ZWJSUHJvbWlzZTtcbiAgICBjb25zdCBldmFsdWF0b3IgPSBuZXcgV2ViUkV2YWx1YXRvcih3ZWJSLCBjb250ZXh0KVxuICAgIGF3YWl0IGV2YWx1YXRvci5wcm9jZXNzKGlucHV0cyk7XG4gICAgcmV0dXJuIGV2YWx1YXRvci5jb250YWluZXI7XG4gIH1cblxuICByZXR1cm4ge1xuICAgIHByb2Nlc3MsXG4gICAgd2ViUlByb21pc2UsXG4gICAgcmVuZGVyZWRPanMsXG4gIH07XG59XG4iLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJpbmxpbmUiOmZhbHNlfV19
+</script>
+<div id="exercise-loading-indicator" class="exercise-loading-indicator d-none d-flex align-items-center gap-2">
+<div id="exercise-loading-status" class="d-flex gap-2">
+
+</div>
+<div class="spinner-grow spinner-grow-sm">
+
+</div>
+</div>
+<script type="vfs-file">
+W10=
+</script>
+</section>
+
+</main>
+<!-- /main column -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Im11dGFibGUgb2tfcmVzcG9uc2UgPSAocmVzcG9uc2UsIG4pID0+IHsgcmV0dXJuIGh0bWxgTG9hZGluZy4uLmAgfTtcbnZpZXdvZiBxMSA9IElucHV0cy5yYWRpbyhcbiAgbmV3IE1hcChbXG4gICAgW1wiRWFjaCBjYXNlIGNvcnJlc3BvbmRzIHRvIGEgcHJlZ25hbmN5LlwiLCAxXSxcbiAgICBbXCJFYWNoIGNhc2UgY29ycmVzcG9uZHMgdG8gYSB3b21hbi5cIiwgMl0sXG4gICAgW1wiRWFjaCBjYXNlIGNvcnJlc3BvbmRzIHRvIGEgZG9jdG9yIHZpc2l0LlwiLCAzXSxcbiAgICBbXCJFYWNoIGNhc2UgY29ycmVzcG9uZHMgdG8gYSBiYWJ5LlwiLCA0XVxuICBdKVxuKTtcblxub2tfcmVzcG9uc2UocTEsIDEpO1xuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0yIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG52aWV3b2YgcTIgPSBJbnB1dHMucmFkaW8oXG4gIG5ldyBNYXAoW1xuICAgIFtcIjEsMDAwXCIsIDFdLFxuICAgIFtcIjI0NlwiLCAyXSxcbiAgICBbXCIxLDM4N1wiLCAzXSxcbiAgICBbXCIxM1wiLCA0XSxcbiAgICBbXCI5NjNcIiwgNV1cbiAgXSlcbik7XG5cbm9rX3Jlc3BvbnNlKHEyLCAxKTtcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Im11dGFibGUgb2tfY2hlY2tib3ggPSAocmVzcG9uc2UsIG4pID0+IHsgcmV0dXJuIGh0bWxgTG9hZGluZy4uLmAgfTtcbnZpZXdvZiBxMyA9IElucHV0cy5jaGVja2JveChcbiAgbmV3IE1hcChbXG4gICAgW1wiZmFnZVwiLCAxXSxcbiAgICBbXCJtYWdlXCIsIDJdLFxuICAgIFtcIm1hdHVyZVwiLCAzXSxcbiAgICBbXCJ3ZWVrc1wiLCA0XSxcbiAgICBbXCJwcmVtaWVcIiwgNV0sXG4gICAgW1widmlzaXRzXCIsIDZdLFxuICAgIFtcIm1hcml0YWxcIiwgN10sXG4gICAgW1wiZ2FpbmVkXCIsIDhdLFxuICAgIFtcIndlaWdodFwiLCA5XSxcbiAgICBbXCJsb3diaXJ0aHdlaWdodFwiLCAxMF0sXG4gICAgW1wiZ2VuZGVyXCIsIDExXSxcbiAgICBbXCJoYWJpdFwiLCAxMl0sXG4gICAgW1wid2hpdGVtb21cIiwgMTNdXG4gIF0pXG4pO1xuXG5va19jaGVja2JveChxMywgWzEsIDIsIDQsIDYsIDgsIDldKTtcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNCIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ilxudmlld29mIHE0ID0gSW5wdXRzLnJhZGlvKFxuICBuZXcgTWFwKFtcbiAgICBbXCJPbmVcIiwgMV0sXG4gICAgW1wiVHdvXCIsIDJdLFxuICAgIFtcIk1vcmUgdGhhbiB0d29cIiwgM11cbl0pXG4pO1xub2tfcmVzcG9uc2UocTQsIDIpXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTUiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbnZpZXdvZiBxNSA9IElucHV0cy5jaGVja2JveChcbiAgbmV3IE1hcChbXG4gICAgW1wiUHJlZ25hbmNpZXMgd2l0aCBtb3RoZXJzIHdobyBhcmUgbm9uLXNtb2tlcnNcIiwgMV0sXG4gICAgW1wiUHJlZ25hbmNpZXMgcmVzdWx0aW5nIGluIGJhYmllcyBub3QgaGF2aW5nIGxvdyBiaXJ0aHdlaWdodFwiLCAyXSxcbiAgICBbXCJQcmVnbmFuY2llcyByZXN1bHRpbmcgaW4gYmFiaWVzIG9mIGxvdyBiaXJ0aHdlaWdodFwiLCAzXSxcbiAgICBbXCJQcmVnbmFuY2llcyB3aXRoIG1vdGhlcnMgd2hvIGFyZSBzbW9rZXJzXCIsIDRdLFxuICAgIFtcIlByZWduYW5jaWVzIG5vdCByZXN1bHRpbmcgaW4gcHJlbWF0dXJlIGJpcnRoc1wiLCA1XSxcbiAgICBbXCJQcmVnbmFuY2llcyByZXN1bHRpbmcgaW4gcHJlbWF0dXJlIGJpcnRoc1wiLCA2XVxuXSlcbik7XG5va19jaGVja2JveChxNSwgWzEsIDRdKVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC02IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG52aWV3b2YgcTYgPSBJbnB1dHMucmFkaW8oXG4gIG5ldyBNYXAoW1xuICAgIFtcIk5vLCB0aGVyZSBpcyBza2V3IGluIHRoZSBkYXRhLlwiLCAxXSxcbiAgICBbXCJObywgdGhlIGdyb3VwIHNpemVzIGFyZSBpbWJhbGFuY2VkLlwiLCAyXSxcbiAgICBbXCJZZXMsIHRoZSBncm91cCBzaXplcyBhcmUgbGFyZ2UgZW5vdWdoIHRvIG92ZXJjb21lIGFueSBza2V3IGluIHRoZSBwb3B1bGF0aW9uIGRpc3RyaWJ1dGlvbnMuXCIsIDNdLFxuICAgIFtcIk5vLCB0aGUgZ3JvdXBzIGFyZSB0b28gc21hbGwuXCIsIDRdXG5dKVxuKVxub2tfcmVzcG9uc2UocTYsIDMpXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTciLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbnZpZXdvZiBxNyA9IElucHV0cy5yYWRpbyhcbiAgbmV3IE1hcChbXG4gICAgW1wiQVwiLCAxXSxcbiAgICBbXCJCXCIsIDJdLFxuICAgIFtcIkNcIiwgM10sXG4gICAgW1wiRFwiLCA0XSxcbiAgICBbXCJFXCIsIDVdLFxuICAgIFtcIkZcIiwgNl1cbl0pXG4pO1xuXG5va19yZXNwb25zZShxNywgNClcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgncTEnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgncTInKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgncTMnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgncTQnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgncTUnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgncTYnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgncTcnKSJ9XX0=
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../..";
+window._ojs.paths.runtimeToRoot = "../../..";
+window._ojs.paths.docToRoot = "";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

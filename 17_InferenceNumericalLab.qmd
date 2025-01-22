@@ -1,13 +1,18 @@
 ---
 title: "Topic 17: Inference for Numerical Data (Lab)"
 engine: knitr
-format: live-html
-webr:
-  packages:
-    - ggplot2
-    - dplyr
-    - gradethis
-    - statsr
+format: 
+  live-html:
+    webr:
+      packages:
+        - ggplot2
+        - dplyr
+        - gradethis
+        - statsr
+      cell-options: 
+        persist: true
+    live:
+      show-solutions: false
 ---
 
 {{< include ./_extensions/r-wasm/live/_knitr.qmd >}}

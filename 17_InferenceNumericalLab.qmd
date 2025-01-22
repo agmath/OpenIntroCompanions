@@ -592,55 +592,171 @@ inference(
 
 Since you've worked through this workbook, you should now feel prepared to answer the following. Use the code block below to address the tasks and check your understanding.
 
+1. Calculate a 95% confidence interval for the average length of pregnancies (`weeks`) and interpret it in context. Note that since you're doing inference on a single population parameter, there is no explanatory variable, so you can omit the `x` variable from the function.
+
 ```{webr}
-#| exercise: own-probs
+#| exercise: on-own-1
 
 ```
 
-1. Calculate a 95% confidence interval for the average length of pregnancies (`weeks`) and interpret it in context. Note that since you're doing inference on a single population parameter, there is no explanatory variable, so you can omit the `x` variable from the function.
+::: { .hint exercise="on-own-1"}
+::: { .callout-note collapse="false"}
+## Hint 1
 
-> <details>
->   <summary>💡Click for Hint 1💡</summary>
->    <p> Use the `inference()` function. </p>
-> </details> 
->
-> <details>
->   <summary>💡Click for Hint 2💡</summary>
->    <p> You aren't comparing groups, so you'll use the `y` parameter for the `weeks` variable and leave out the `x` parameter. </p>
-> </details> 
+Use the `inference()` function.
+
+:::
+:::
+
+::: { .hint exercise="on-own-1"}
+::: { .callout-note collapse="false"}
+## Hint 2
+
+You aren't comparing groups, so you'll use the `y` parameter for the `weeks` variable and leave out to `x` parameter.
+
+:::
+:::
+
+```{webr}
+#| exercise: on-own-1
+#| solution: true
+
+inference(y = weeks, data = nc, 
+          type = "ci", method = "theoretical", 
+          statistic = "mean")
+```
+
+```{webr}
+#| exercise: on-own-1
+#| check: true
+
+grade_code()
+```
 
 2. Calculate a new confidence interval for the same parameter at the 90% confidence level. You can change the confidence level by adding a new argument to the function: `conf_level = 0.90`.
 
-> <details>
->   <summary>💡Click for a Hint💡</summary>
->    <p> As mentioned, just add a new argument, `conf_level = 0.90` inside of the `inference()` function. As a reminder, arguments are separated by commas and we've been placing each argument on a new line for improved readability. </p>
-> </details> 
+```{webr}
+#| exercise: on-own-2
+
+```
+
+::: { .hint exercise="on-own-2"}
+::: { .callout-note collapse="false"}
+## Hint 1
+
+As mentioned, just add a new argument, `conf_level = 0.90` inside of the `inference()` function. As a reminder, arguments are separated by commas and we've been placing each argument on a new line for improved readability.
+
+:::
+:::
+
+```{webr}
+#| exercise: on-own-2
+#| solution: true
+
+inference(y = weeks, data = nc, 
+          statistic = "mean", type = "ci", 
+          conf_level = 0.90, method = "theoretical")
+```
+
+```{webr}
+#| exercise: on-own-2
+#| check: true
+
+grade_code()
+```
 
 3. Conduct a hypothesis test evaluating whether the average weight gained by younger mothers is different than the average weight gained by mature mothers.
 
-> <details>
->   <summary>💡Click for a Hint💡</summary>
->    <p> Use the `inference()` function again, but be sure to set the type to `"ht"` (hypothesis test). You'll also need a `null` and `alternative` hypothesis, and you shouldn't include a confidence level since those only apply to confidence intervals. </p>
-> </details> 
+```{webr}
+#| exercise: on-own-3
+
+```
+
+::: { .hint exercise="on-own-3"}
+::: { .callout-note collapse="false"}
+## Hint 1
+
+Use the `inference()` function again, but be sure to set the type to `"ht"` (hypothesis test). You'll also need a `null` and `alternative` hypothesis, and you shouldn't include a confidence level since that only applies to confidence intervals.
+
+:::
+:::
+
+```{webr}
+#| exercise: on-own-3
+#| solution: true
+
+inference(y = gained, x = mature, data = nc,
+          statistic = "mean", type = "ht",
+          method = "theoretical",
+          null = 0, alternative = "twosided")
+```
+
+```{webr}
+#| exercise: on-own-3
+#| check: true
+grade_code()
+```
 
 4. Now, a non-inference task: Determine the age cutoff for younger and mature mothers. Use a method of your choice, and explain how your method works.
 
-> <details>
->   <summary>💡Click for Hint 1💡</summary>
->    <p> You'll need some way to find the *oldest young mother* and the *youngest mature mother*. </p>
-> </details> 
->
-> <details>
->   <summary>💡Click for Hint 2💡</summary>
->    <p> One way to do this is with `group_by()` and `summarize()`. </p>
-> </details> 
->
-> <details>
->   <summary>💡Click for Hint 3💡</summary>
->    <p> *Oldest* sounds like the `max`imum `age`, and *youngest* sounds like the `min`imum `age`. </p>
-> </details> 
+```{webr}
+#| exercise: on-own-4
+
+```
+
+::: { .hint exercise="on-own-4"}
+::: { .callout-note collapse="false"}
+## Hint 1
+
+You'll need some way to find the *oldest young mother* and the *youngest mature mother*.
+
+:::
+:::
+
+::: { .hint exercise="on-own-4"}
+::: { .callout-note collapse="false"}
+## Hint 2
+
+One way to do this is with `group_by()` and `summarize()`.
+
+:::
+:::
+
+::: { .hint exercise="on-own-4"}
+::: { .callout-note collapse="false"}
+## Hint 3
+
+*Oldest* sounds like the `max`imum `age`, and *youngest* sounds like the `min`imum `age`.
+
+Clicking *next hint* will show a possible solution.
+
+:::
+:::
+
+::: { .hint exercise="on-own-4"}
+::: { .callout-note collapse="false"}
+## Possible Solution
+
+```{r}
+#| eval: false
+
+nc %>%
+  group_by(mature) %>%
+  summarize(
+    min_age = min(mage),
+    max_age = max(mage)
+  )
+```
+
+:::
+:::
 
 5. Pick a pair of numerical and categorical variables and come up with a research question evaluating the relationship between these variables. Formulate the question in a way that it can be answered using a hypothesis test and/or a confidence interval. Answer your question using the `inference()` function, report the statistical results, and also provide an explanation in plain language.
+
+```{webr}
+#| exercise: on-own-5
+
+```
 
 ## Submit
 

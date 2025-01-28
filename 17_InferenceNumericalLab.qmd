@@ -51,9 +51,10 @@ ok_response <- function(response, n) {
 #| output: false
 #| define:
 #|   - ok_checkbox
+
 ok_checkbox <- function(response, n) {
   if (is.na(response)) HTML("")
-  else if (identical(paste(sort(response), collapse = ", "), paste(sort(n), collapse = ", "))) div(HTML("Correct ✓"), style = "color: green")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
   else div(HTML("Incorrect ✗"), style = "color: red")
 }
 ```
@@ -199,7 +200,22 @@ viewof q3 = Inputs.checkbox(
   ])
 );
 
-ok_checkbox(q3, [1, 2, 4, 6, 8, 9]);
+//viewof checkAnswer = Inputs.button("Check Answer");
+
+ok_checkbox(q3.toString(), "1,2,4,6,8,9");
+
+//checkAnswer;
+
+//correctAnswers = "1,2,4,6,8,9";
+
+//{
+  // When the button is clicked, `checkAnswer` will change
+//  if (checkAnswer > 0) {
+//    ok_checkbox(q3.toString(), correctAnswers);
+//  } else {
+//    html`<em>Select your answers and click "Check Answer".</em>`;
+//  }
+//}
 ```
 
 :::
@@ -422,7 +438,7 @@ viewof q5 = Inputs.checkbox(
     ["Pregnancies resulting in premature births", 6]
 ])
 );
-ok_checkbox(q5, [1, 4])
+ok_checkbox(q5.toString(), "1,4")
 ```
 
 :::

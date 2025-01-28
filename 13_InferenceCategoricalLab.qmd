@@ -144,10 +144,10 @@ What does each row of `Table 6` correspond to? What does each row of the `atheis
 //| echo: false
 viewof q4 = Inputs.radio(
   new Map([
-    ["Each row of `Table 6` contains the summarized responses by country while each row of `atheism` contains the response of an individual respondent.", 1],
-    ["Each row of `Table 6` contains the response of an individual respondent while each row of `atheism` contains the summarized responses by country.", 2],
-    ["Each row of both `Table 6` and the `atheism` data frame contain the response of an individual respondent.", 3],
-    ["Each row of both `Table 6` and the `atheism` data frame contain the summarized responses by country.", 4]
+    ["Each row of Table 6 contains the summarized responses by country while each row of atheism contains the response of an individual respondent.", 1],
+    ["Each row of Table 6 contains the response of an individual respondent while each row of atheism contains the summarized responses by country.", 2],
+    ["Each row of both Table 6 and the atheism data frame contain the response of an individual respondent.", 3],
+    ["Each row of both Table 6 and the atheism data frame contain the summarized responses by country.", 4]
 ])
 );
 ok_response(q4, 1)

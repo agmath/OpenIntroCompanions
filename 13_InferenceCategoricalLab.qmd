@@ -517,7 +517,7 @@ Since you have no idea what proportion of residents attend a religious service o
 
 ## Submit
 
-Hash code generation is not currently supported for these Quarto-Live versions of the interactive notebooks.
+Hash code generation is not currently supported for these Quarto-Live versions of the interactive notebooks. It will be added as soon as that functionality is developed.
 
 ## Summary
 

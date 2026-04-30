@@ -4,10 +4,7 @@ format:
   live-html:
     webr:
       packages:
-        - ggplot2
-        - dplyr
         - gradethis
-        - statsr
       cell-options: 
         persist: true
     live:

@@ -70,7 +70,7 @@ library(scales)
 
 theme_set(theme_bw(base_size = 18))
 
-set.seed(42)
+#set.seed(42)
 
 houses <- read.csv("https://raw.githubusercontent.com/NikhilKumarMutyala/Linear-Regression-from-scartch-on-KC-House-Dataset/master/kc_house_data.csv")
 

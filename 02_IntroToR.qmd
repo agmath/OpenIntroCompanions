@@ -456,19 +456,19 @@ We typically aren't just working with scalars (single values) or a handful of ve
 #| label: diamonds-df
 #| echo: false
 
-diamonds %>% 
-  head() %>% 
-  kable() %>%
+diamonds |> 
+  head() |> 
+  kable() |>
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-We can call a column of a dataframe in several different ways. For example, `diamonds$cut`, `diamonds[ , "cut"]`, `diamonds[ , 3]`, and `diamonds %>% select(cut)` all access the `cut` column of the `diamonds` data frame but the first method returns a vector of values while the others return a data frame. The last option makes use of a special operator (`%>%`), called the *pipe*. We'll see that pipes make data manipulation really convenient. Explore each method of selecting a column in the code cell below. After you are done exploring and comparing the results, alter the original code so that you access the `carat` column instead of the `cut` and return the result as a data frame. Be sure to use the pipe.
+We can call a column of a dataframe in several different ways. For example, `diamonds$cut`, `diamonds[ , "cut"]`, `diamonds[ , 3]`, and `diamonds |> select(cut)` all access the `cut` column of the `diamonds` data frame but the first method returns a vector of values while the others return a data frame. The last option makes use of a special operator (`|>`), called the *pipe*. We'll see that pipes make data manipulation really convenient. Explore each method of selecting a column in the code cell below. After you are done exploring and comparing the results, alter the original code so that you access the `carat` column instead of the `cut` and return the result as a data frame. Be sure to use the pipe.
 
 ```{webr}
 #| exercise: column-access
 #| eval: true
 
-diamonds %>%
+diamonds |>
   select(cut)
 ```
 
@@ -481,7 +481,7 @@ diamonds %>%
 #| eval: false
 
 #replace cut with carat inside of select()
-diamonds %>%
+diamonds |>
   select(cut)
 ```
 
@@ -492,7 +492,7 @@ diamonds %>%
 #| exercise: column-access
 #| solution: true
 
-diamonds %>%
+diamonds |>
   select(carat)
 ```
 
@@ -523,6 +523,6 @@ Okay, that's enough of an introduction for now. Here's a quick recap.
   + A data frame has rows and columns, and we can access columns of a data frame in multiple ways. 
   
     + The use of the `$` operator (for example, `diamonds$price`) returns the column as a vector (an ordered list of values).
-    + Piping (`%>%`) the dataset into the `select()` function, allows us to select one or more columns from the dataset, returning the result as a data frame. (**Note:** the pipe actually returns the result as a *tibble*, which is a special type of data frame, but it makes no difference in our course)
+    + Piping (`|>`) the dataset into the `select()` function, allows us to select one or more columns from the dataset, returning the result as a data frame. (**Note:** the pipe actually returns the result as a *tibble*, which is a special type of data frame, but it makes no difference in our course)
 
 We'll learn more about R as we progress through these workbooks. Remember, you are **not** expected to have a programming background as a prerequisite -- stumbling with the coding is to be expected. Be sure to ask for help when you need it.

@@ -9,7 +9,6 @@ format:
         persist: true
     live:
       show-solutions: false
-description: "An introduction to data, variable types (numeric and categorical variables), and strategies for data collection."
 ---
 
 {{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
@@ -82,6 +81,12 @@ houses <- houses %>%
 housesSubset <- houses %>%
   select(id, month, price, sqft_living, sqft_lot, waterfront, exterior)
 ```
+
+:::{.callout-note}
+## About
+
+This activity covers an introduction to data, variable types (numeric and categorical variables), and strategies for data collection.
+:::
 
 ## Data and Sampling
 
@@ -498,7 +503,7 @@ A variation on clustering is called *two-stage* or *multi-stage* sampling. With 
 
 ::::
 
-The *convenience sample* is the most commonly used sampling method. Unfortunately, it is also the worst. When researchers sample from individuals they have "easy access" to, they are conducting a convenience sample. There are always hidden biases in these samples. [Here's a famous example](https://youtu.be/JwZo28RKdvU) in which the Literary Digest incorrectly predicted a landslide victory for Alf Landon over FDR in the 1936 US Presidential Election. In addition, much of the error in predicting the results of the 2016 presidential election may be attributable to convenience sampling.
+The *convenience sample* is the most commonly used sampling method. Unfortunately, it is also the worst. When researchers sample from individuals they have "easy access" to, they are conducting a convenience sample. There are always hidden biases in these samples. [Here's a famous example](https://youtu.be/JwZo28RKdvU){target="_blank"} in which the Literary Digest incorrectly predicted a landslide victory for Alf Landon over FDR in the 1936 US Presidential Election. In addition, much of the error in predicting the results of the 2016 presidential election may be attributable to convenience sampling.
 
 ## Experimental Design
 
@@ -506,13 +511,13 @@ The *convenience sample* is the most commonly used sampling method. Unfortunatel
 
 **Predictor versus Response Variables**: Typically in statistics we will identify a question (a claim about a response variable) with respect to a population. We will take a representative sample of that population and collect observed responses as well as observations on other variables (perhaps age, level of formal education, political affiliation, etc). These additional variables are called *predictor variables*. In general, predictor variables are quantities which we expect *may be associated with* the response variable.
 
-There's lots more to learn about experimental design, but it is beyond the scope of this notebook. You should read pages 32 through 35 of [OpenIntro Statistics, 4Ed](https://www.openintro.org/book/os/) as a starting point.
+There's lots more to learn about experimental design, but it is beyond the scope of this notebook. You should read pages 32 through 35 of [OpenIntro Statistics, 4Ed](https://www.openintro.org/book/os/){target="_blank"} as a starting point.
 
 ## Submit
 
 :::{.callout-warning}
 
-Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, then please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402) or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html).
+Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, then please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
 
 :::
 

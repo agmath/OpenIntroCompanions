@@ -1,0 +1,528 @@
+---
+title: "Topic 2: An Introduction to R"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - gradethis
+      cell-options: 
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) HTML("")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_checkbox
+
+ok_checkbox <- function(response, n) {
+  if (is.na(response)) HTML("")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Not Yet! ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - normalize_checkbox_response
+
+normalize_checkbox_response <- function(x) {
+  return(cat(sort(x), sep = ","))
+}
+```
+
+```{r setup, include=FALSE}
+#knitr::opts_chunk$set(eval = FALSE)
+library(dplyr)
+library(ggplot2)
+library(gradethis)
+library(kableExtra)
+```
+
+:::{.callout-note}
+## About
+
+This notebook is a first introduction to the R language for data analysis. Learn about calculation, variables, scalars, vectors, data frames and how to work with each in R.
+:::
+
+## An Introduction to R
+
+Through these workbooks you'll be interacting with data using the R programming language. Alongside Python, R is one of the most widely used tools for statistics and data science. This workbook is a first introduction to working with data using R. 
+
+## Why R?
+
+You might be asking why do I need to use R rather than a different software like Minitab, SPSS, SAS, or a number of others. Consider the following three points.
+
++ R is *open source* -- you are guaranteed that it will always be available (and free).
++ Since R is a language rather than a fully developed piece of software with a point and click interface (a GUI), you aren't limited to what a team of developers though you might want to do at the time the software was developed. With R, you can do virtually anything you want (although I admit that is easier said than done).
++ We live in a world where we are constantly interacting with software. It isn't a bad thing to learn what code looks like -- plus, you'll be learning a transferable skill in addition to learning statistics.
+
+This workbook will introduce you to interacting with R through executable code chunks. Whenever you see a code chunk, feel free to play around with any code that appears in the chunk and see how your changes impact the results of the code. You can execute code chunks by hitting the *Run* button, using `ctrl+Enter`, or `cmd+Enter`. If you see a *Submit Answer* button, then you are interacting with an exercise that can give you feedback. Click *Submit Answer* rather than the *Run* button to run your code and see if you got it right. Don't worry if you got it wrong, you can always try again! 
+
+Try editing the following chunk to execute `2 + 3` rather than `2 + 2`, as is preset.
+
+```{webr}
+#| exercise: a-first-operation
+#We can use R to add, subtract, multiply, and divide
+
+2 + 2
+```
+
+```{webr}
+#| exercise: a-first-operation
+#| solution: true
+
+2 + 3
+```
+
+```{webr}
+#| exercise: a-first-operation
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+## A few warnings
+
+Coding can be frustrating -- you are certain to run into errors. Here are a few common things to watch out for.
+
++ Spelling counts! If you are getting an error, check to see that you've spelled everything correctly, including both function and object names.
++ Capitalization counts! Again, check to see that everything is typed exactly as it should be.
++ Be sure to ask for help when you need it.
+  + For most functionality, R has built-in help documentation. You can find help on a function, package, or dataset by typing a question mark (?) followed immediately by the package name and executing that line. For example, running `?max` will generate the help vignette for R's `max()` function. Unfortunately the help documentation won't populate within these interactive workbooks, but if you go back to RStudio, then running these commands from the prompt (`>`) in the console (the lower left pane) will work as described.
+  + If you are struggling with troubleshooting your code, ask a teacher, mentor, or friend. Speaking from experience, it is really hard to identify small issues like a misplaced comma in code. A fresh set of eyes often does the trick.
+  + Google is your friend here. If you are having an issue, chances are that someone else has had the same issue. Try a descriptive Google search, such as *how do I find the mean of a list of numbers in R*. The website *StackExchange* is a question and answer site that will commonly be listed in your search results -- check to see that the question of the top of the page is relevant to what you asked, and then scroll down to the answer with the green check mark next to it. This has been marked as the accepted solution.  
+    + While Google and the wider web can be great resources, they can also lead you to very complex solutions. The interactive code blocks in these notebooks will either ask you to implement functionality that has been previously introduced, or to make small edits to existing code. Web-based solutions that look quite complex are almost surely not the intended solutions to any code block task.
++ If you find yourself smashing keys and getting frustrated, it is time for a break. Those fresh eyes I mentioned earlier don't always need to be somebody else's. Coding is hard work and takes time, but with patience and practice you'll improve quickly.
+
+## Hello World!
+
+If you've never coded before (or even if you have), type `print("Hello World!")` in the interactive R chunk below and run it by hitting `crtl+Enter` or `cmd+Enter` for MAC users.
+
+```{webr}
+#| exercise: hello-world
+______
+```
+
+```{webr}
+#| exercise: hello-world
+#| solution: true
+
+print("Hello World!")
+```
+
+```{webr}
+#| exercise: hello-world
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+## An R Primer
+
+The following subsections constitute a primer for working in R. You'll be exposed to R as a simple calculator and also as a tool for interfacing with data frames. Think of data frames (sometimes called data matrices or data arrays) as tables of data, just like Excel Spreadsheets. We'll start by working with R as a calculator though, which you've actually done already in this workbook -- when you changed the code cell to evaluate `2 + 3` instead of `2 + 2`.
+
+###
+
+### R can be used as a Calculator
+
+You can (and will) use R to perform basic calculation tasks. You will not need the use of an additional calculator for this course -- R is capable of everything your old calculator was and also much more.
+
+Use the code block below to experiment.
+
+```{webr}
+#| exercise: simple-operations
+#| eval: true
+
+#As you've seen, we can use R to add, subtract,
+#multiply, and divide
+
+1 + 1  - (5*2) + (8/4) 
+```
+
+Use the code block below to evaluate the expression `4^3 - 16`.
+
+```{webr}
+#| exercise: arithmetic-exercise
+______
+```
+
+```{webr}
+#| exercise: arithmetic-exercise
+#| solution: true
+
+4^3 - 16
+```
+
+```{webr}
+#| exercise: arithmetic-exercise
+#| check: true
+
+gradethis::grade_this({
+  # custom checking code appears here
+  if (.result == .solution) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+R has built in functions to handle operations like the square root (`sqrt()`), logarithm (`log()`), etc. Google is your friend here -- if you need to carry out an operation, do a quick internet search to discover how you can call it in R.
+
+We can also piece together more complicated expressions in R by making use of parentheses `()` for grouping. Beware that none of the other brackets (square brackets or curly braces) may be used for grouping since they have special meaning in R -- we'll see them in action later in our course. For now, use the code block below to evaluate $\displaystyle{\frac{54 - 50}{8/\sqrt{20}}}$.
+
+```{webr}
+#| exercise: test-stat-eval
+______
+```
+
+::: { .hint exercise="test-stat-eval"}
+::: { .callout-note collapse="false"}
+## Hint 1
+
+```{r}
+#| echo: true
+#| eval: false
+
+#replace each blank with an appropriate 
+#value or expression
+(___)/(___)
+```
+
+:::
+:::
+
+::: { .hint exercise="test-stat-eval"}
+::: { .callout-note collapse="false"}
+## Hint 2
+
+```{r}
+#| echo: true
+#| eval: false
+
+#replace each blank with an appropriate 
+#value or expression
+(___ - ___)/(___/___)
+```
+
+:::
+:::
+
+::: { .hint exercise="test-stat-eval"}
+::: { .callout-note collapse="false"}
+## Hint 3
+
+```{r}
+#| echo: true
+#| eval: false
+
+#replace each blank with an appropriate 
+#value or expression
+(___ - ___)/(___/sqrt(___))
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: test-stat-eval
+#| solution: true
+
+(54 - 50)/(8/sqrt(20))
+```
+
+```{webr}
+#| exercise: test-stat-eval
+#| check: true
+
+gradethis::grade_this({
+  # custom checking code appears here
+  if (.result == .solution) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Add parentheses to the expression below so that it evaluates to `1`.
+
+```{webr}
+#| exercise: parens-exercise
+#| eval: true
+
+8 - 6 / 2 + 5*3*4 - 12
+
+```
+
+::: { .hint exercise="parens-exercise"}
+::: { .callout-note collapse="false"}
+## Hint 1
+
+```{r}
+#| echo: true
+#| eval: false
+
+#start by grouping the 8 - 6
+(8 - 6)/2 + 5*3*4 - 12
+```
+
+:::
+:::
+
+::: { .hint exercise="parens-exercise}
+::: { .callout-note collapse="false"}
+## Hint 2
+
+
+```{r}
+#| echo: true
+#| eval: false
+
+#notice (8 - 6)/2 is 1; can you add another set 
+#of parentheses to "zero-out" all but this first 
+#term?
+(8 - 6)/2 + 5*3*4 - 12
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: parens-exercise
+#| solution: true
+
+(8 - 6)/2 + 5*(3*4 - 12)
+```
+
+```{webr}
+#| exercise: parens-exercise
+#| check: true
+
+gradethis::grade_this({
+  # custom checking code appears here
+  if (.result == .solution) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Were you able to get the code to evaluate to 1 just by introducing parentheses? If not, check the solution code for a possible answer.
+
+### Defining Objects in R
+
+In R we can define objects via the `<-` operator. For example, we can define the value 4 to the container `x` using `x <- 4`. Use the code block below to change the value stored in `x` from 4 to `-22`.
+
+```{webr}
+#| exercise: redefine
+#| eval: true
+
+x <- 4
+```
+
+```{webr}
+#| exercise: redefine
+#| solution: true
+
+x <- -22
+```
+
+```{webr}
+#| exercise: redefine
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+Use the code block below to store the value `-3` in the container `y` and then compute the quantity `x*y - y`.
+
+```{webr}
+#| exercise: define-and-compute
+#| setup: true
+
+x <- -22
+```
+
+```{webr}
+#| exercise: define-and-compute
+
+```
+
+::: { .hint exercise="define-and-compute"}
+::: { .callout-note collapse="false"}
+## Hint 1
+
+```{r}
+#| echo: true
+#| eval: false
+
+#x is already defined, start by defining y as -3
+
+```
+
+:::
+:::
+
+::: { .hint exercise="define-and-compute"}
+::: { .callout-note collapse="false"}
+## Hint 2
+
+
+```{r}
+#| echo: true
+#| eval: false
+
+y <- -3
+#now compute x*y - y below
+
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: define-and-compute
+#| solution: true
+
+y <- -3
+x*y - y
+```
+
+```{webr}
+#| exercise: define-and-compute
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+In R, it is helpful to think of objects as either vectors (lists of objects) or data frames (tables), because that's how R treats its objects. We can create an object called `numVec` which is a vector of six numerical values (1, 8, -2, 2, -99, 43) using `numVec <- c(1, 8, -2, 2, -99, 43)`. Any time we wish to reference or provide a list of items in R, we use the `c()` operator to *combine* those items. Once we have a vector, we can operate with it.
+
+```{r}
+#| label: vector operations
+
+numVec <- c(1, 8, -2, 2, -99, 43)
+numVec + c(1, 1, 1, 0, -2, 4)
+1 + numVec
+2*numVec
+```
+
+Notice that we can add two vectors of the same length to one another and the addition is completed coordinatewise. We can also add a single value to a vector and that single value is *recycled* and added to each component of the vector (each of the values). The same works for multiplication or division (and subtraction too). While this behavior may seem convenient (and it is), it does require that we be aware of a few possible pitfalls. If we try to add two vectors that do not have the same length, R will indeed perform the operation but will warn us if the shorter vector is not *recycled* a full number of times while the operation is completed. If the recycling works without issue, then R does not report a warning to us. This can be problematic, because typically we don't want to add vectors of different sizes -- we need to pay close attention.
+
+```{r}
+#| label: vector-recycling
+#| eval: true
+
+numVec1 <- c(1, 2, 9, 7, 3, 4)
+numVec2 <- c(2, 9, -2, 4)
+numVec3 <- c(1, 7)
+
+numVec1 + numVec2
+
+numVec1 + numVec3
+```
+
+## Data Frames
+
+We typically aren't just working with scalars (single values) or a handful of vectors. Usually a statistician, analyst, or data scientist will be working with a table (or many tables) filled with raw data. We'll call these tables *data frames*, and you can see the first six rows of the `diamonds` data frame below. You may remember the `diamonds` dataset from our first notebook.
+
+```{r}
+#| label: diamonds-df
+#| echo: false
+
+diamonds %>% 
+  head() %>% 
+  kable() %>%
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+We can call a column of a dataframe in several different ways. For example, `diamonds$cut`, `diamonds[ , "cut"]`, `diamonds[ , 3]`, and `diamonds %>% select(cut)` all access the `cut` column of the `diamonds` data frame but the first method returns a vector of values while the others return a data frame. The last option makes use of a special operator (`%>%`), called the *pipe*. We'll see that pipes make data manipulation really convenient. Explore each method of selecting a column in the code cell below. After you are done exploring and comparing the results, alter the original code so that you access the `carat` column instead of the `cut` and return the result as a data frame. Be sure to use the pipe.
+
+```{webr}
+#| exercise: column-access
+#| eval: true
+
+diamonds %>%
+  select(cut)
+```
+
+::: { .hint exercise="column-access"}
+::: { .callout-note collapse="false"}
+## Hint 1
+
+```{r}
+#| echo: true
+#| eval: false
+
+#replace cut with carat inside of select()
+diamonds %>%
+  select(cut)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: column-access
+#| solution: true
+
+diamonds %>%
+  select(carat)
+```
+
+```{webr}
+#| exercise: column-access
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+## Submit
+
+:::{.callout-warning}
+
+Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, then please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402) or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html).
+
+:::
+
+## Summary
+
+Okay, that's enough of an introduction for now. Here's a quick recap.
+
++ R can be used as a simple calculator -- in the same way as any hand-held calculator you've used in your previous coursework.
++ When doing multiplication in R, we must include the asterisk (`*`), otherwise R will throw an error. For example, `5(4)` results in an error stating that you asked R to apply a non-function to the value 4, but `5*(4)` results in 20, as expected.
++ The real advantage with R comes in interacting with large datasets (called data frames).
+  
+  + A *data frame* is just like a single tab of an Excel or Google Sheets file.
+  + A data frame has rows and columns, and we can access columns of a data frame in multiple ways. 
+  
+    + The use of the `$` operator (for example, `diamonds$price`) returns the column as a vector (an ordered list of values).
+    + Piping (`%>%`) the dataset into the `select()` function, allows us to select one or more columns from the dataset, returning the result as a data frame. (**Note:** the pipe actually returns the result as a *tibble*, which is a special type of data frame, but it makes no difference in our course)
+
+We'll learn more about R as we progress through these workbooks. Remember, you are **not** expected to have a programming background as a prerequisite -- stumbling with the coding is to be expected. Be sure to ask for help when you need it.

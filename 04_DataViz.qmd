@@ -11,6 +11,8 @@ format:
       packages:
         - dplyr
         - gradethis
+        - skimr
+        - ggplot2
       cell-options: 
         persist: true
     live:

@@ -1,0 +1,1644 @@
+---
+title: "Topic 5: Discrete Probability Distributions"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - gradethis
+      cell-options: 
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) HTML("")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_checkbox
+
+ok_checkbox <- function(response, n) {
+  if (is.na(response)) HTML("")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Not Yet! ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - normalize_checkbox_response
+
+normalize_checkbox_response <- function(x) {
+  return(cat(sort(x), sep = ","))
+}
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(gradethis)
+library(patchwork)
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+
+library(ggplot2)
+```
+
+
+:::{.callout-note}
+## About
+
+This activity provides an introduction to discrete probability, including basic probability through counting outcomes, and calculating probabilities associated with outcomes of binomial experiments using the binomial distribution.
+:::
+
+## Discrete Probabilty Distributions
+
+Throughout this activity you'll be introduced to the notion of probability and will explore applications of probability and discrete random variables. In particular we will focus on binomial experiments and using the binomial distribution to find probabilities of prescribed outcomes.
+
+:::{.callout-tip}
+## Limitations 
+
+There are entire courses devoted to probability -- we will only cover probability to the extent that it is necessary for use in this course. If you are interested in a more detailed treatment of probability, seek out one of the many great courses available.
+:::
+
+## Objectives
+
+**Workbook Objectives:** After completing this workbook you should be able to:
+
++ Define, discuss, and interpret the probability of an event as its likelihood.
++ Apply fundamental counting principles and the notion of independence to compute the probability associated with the occurrence of a sequence of events.
++ Use the definition of binomial experiments to identify scenarios to which the binomial distribution can be applied. 
++ Apply the distribution in appropriate scenarios to find probabilities associated with specified outcomes. 
++ Given a binomial experiment, compute the expected number of successful outcomes as well as the standard deviation for number of successes.
+
+## Basic Probability
+
+**Definition of Probability (*frequentist*):** For a given random process, the probability of an event $A$ is the proportion of time we would observe outcome $A$ if the random process were repeated an infinite number of times.
+
+**Example:** Given a fair coin, the probability of a flip turning up heads is $0.5$ (or 50%). Similarly, given a fair six-sided die, the probability of a roll resulting in a number greater than four is $1/3$ (or about 33.3%) because there are two outcomes satifying the criteria (rolling a 5 or rolling a 6) out of the six total possible outcomes.
+
+**Try It!** Now it is your turn. Try the next few problems. Be sure to note any questions you have as you work through them.
+
+:::{.callout-caution}
+## Check Your Understanding: Basic Probability I
+
+Given one fair, six-sided die, what is the probabilty of rolling a three?
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.radio(
+  new Map([
+    ["0 / 6", 1],
+    ["1 / 6", 2],
+    ["2 / 6", 3],
+    ["3 / 6", 4],
+    ["4 / 6", 5],
+    ["5 / 6", 6],
+    ["6 / 6", 7]
+  ])
+);
+
+ok_response(q1, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Basic Probability II
+
+Given one fair, six-sided die, what is the probability of rolling a two, four, or six?
+
+```{ojs}
+//| echo: false
+
+viewof q2 = Inputs.radio(
+  new Map([
+    ["0 / 6", 1],
+    ["1 / 6", 2],
+    ["2 / 6", 3],
+    ["3 / 6", 4],
+    ["4 / 6", 5],
+    ["5 / 6", 6],
+    ["6 / 6", 7]
+  ])
+);
+
+ok_response(q2, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Basic Probability III
+
+Given two fair, six-sided die, which is larger?
+
+```{ojs}
+//| echo: false
+
+viewof q3 = Inputs.radio(
+  new Map([
+    ["The probability of rolling a total of two.", 1],
+    ["The probability of rolling a total of five", 2]
+  ])
+);
+
+ok_response(q3, "2");
+```
+
+:::
+
+Good work on that last set of questions. In those problems you could find the probability by counting the number of ways the desired outcome could occur and then dividing that number by the total number of outcomes possible. In the last question, there were simply more ways to roll a five (four ways to do it) than to roll a two (just one way). What if we try doing something a bit more complicated? Say we wanted to know the probability of rolling at least a two on a single roll of a die *and then* flipping a "tails" on a single flip of a coin?
+
+**Probability and Independent Events:** If $A$ and $B$ are independent events (that is, the probability that $B$ occurs does not depend on whether or not $A$ occurred and vice-versa), then the probability of $A$ and $B$ occurring is the product of the probability of $A$ occurring and the probability of $B$ occurring. Mathematically, we write: $\mathbb{P}\left[A~\text{and}~B\right] = \mathbb{P}\left[A\right]\cdot\mathbb{P}\left[B\right]$.
+
+:::{.callout-caution}
+## Check Your Understanding: Probability and Independent Events I
+
+Given a single roll of a fair, six-sided die, what is the probability of rolling at least a two?
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.radio(
+  new Map([
+    ["0 / 6", 1],
+    ["1 / 6", 2],
+    ["2 / 6", 3],
+    ["3 / 6", 4],
+    ["4 / 6", 5],
+    ["5 / 6", 6],
+    ["6 / 6", 7]
+  ])
+);
+
+ok_response(q4, "6");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Probability and Independent Events II
+
+Given a single flip of a fair coin, what is the probability of the coin landing with *tails* facing upwards?
+
+```{ojs}
+//| echo: false
+
+viewof q5 = Inputs.radio(
+  new Map([
+    ["0 / 2", 1],
+    ["1 / 2", 2],
+    ["2 / 2", 3]
+  ])
+);
+
+ok_response(q5, "6");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Probability and Independent Events III
+
+Use the code block below to compute the probability that in a single roll of a fair die and a flip of a coin we observe a roll of at least two and a flip of tails.
+
+```{webr}
+#| exercise: prob-a-and-b
+______
+```
+
+:::{.hint exercise="prob-a-and-b"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+```{r}
+#| echo: true
+#| eval: false
+
+#Use the probabilities you identified above.
+
+```
+
+:::
+:::
+
+:::{.hint exercise="prob-a-and-b"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+```{r}
+#| echo: true
+#| eval: false
+#Use the probabilities you identified above.
+#The flip of a coin and roll of a die are 
+#independent events.
+
+```
+
+:::
+:::
+
+:::{.hint exercise="prob-a-and-b"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+```{r pAandB-hint-3}
+#Since the events are independent, we can 
+#multiply the probabilities of the individual 
+#outcomes together.
+
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: prob-a-and-b
+#| solution: true
+
+(5/6)*(1/2)
+```
+
+```{webr}
+#| exercise: prob-a-and-b
+#| check: true
+
+gradethis::grade_this({
+  # custom checking code appears here
+  if (.result == .solution) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::
+
+Good work so far. Let's say you forgot to study for your chemistry quiz today. It is a four question multiple choice quiz with answer options $a)$ - $e)$ on each question. You decide that your best option is to guess randomly on each of the questions. Answer the following, using the empty code block below to carry out any necessary computations.
+
+```{webr}
+#| exercise: calc-box
+
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Guessing on a Quiz I
+
+For a single question, what is the probability that you get that question correct?
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["0", 1],
+    ["0.10", 2],
+    ["0.20", 3],
+    ["0.25", 4],
+    ["0.50", 5],
+    ["0.80", 6],
+    ["1", 7]
+  ])
+);
+
+ok_response(q6, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Guessing on a Quiz II
+
+What is the probability that you get every one of the questions correct?
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["0", 1],
+    ["0.0016", 2],
+    ["0.01", 3],
+    ["0.20", 4],
+    ["0.4096", 5],
+    ["0.5555", 6],
+    ["0.998", 7],
+    ["1", 8]
+  ])
+);
+
+ok_response(q7, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Guessing on a Quiz III
+
+What is the probability that you get every one of the questions wrong?
+
+```{ojs}
+//| echo: false
+
+viewof q8 = Inputs.radio(
+  new Map([
+    ["0", 1],
+    ["0.0016", 2],
+    ["0.01", 3],
+    ["0.20", 4],
+    ["0.4096", 5],
+    ["0.5555", 6],
+    ["0.998", 7],
+    ["1", 8]
+  ])
+);
+
+ok_response(q8, "5");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Guessing on a Quiz IV
+
+What is the probability that the first one you get wrong is question three?
+
+```{ojs}
+//| echo: false
+
+viewof q9 = Inputs.radio(
+  new Map([
+    ["0", 1],
+    ["0.015", 2],
+    ["0.032", 3],
+    ["0.0064", 4],
+    ["0.20", 5],
+    ["1.2", 6]
+  ])
+);
+
+ok_response(q9, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Guessing on a Quiz V
+
+What is the probability that you get exactly two questions right?
+
+```{ojs}
+//| echo: false
+
+viewof q10 = Inputs.radio(
+  new Map([
+    ["0", 1],
+    ["0.04", 2],
+    ["0.08", 3],
+    ["0.256", 4],
+    ["0.20", 5],
+    ["0.40", 6],
+    ["0.64", 7],
+    ["None of These", 8]
+  ])
+);
+
+ok_response(q10, "8");
+```
+
+:::
+
+So in the last question, none of the choices were correct -- but why? There are lots of ways that we could get two of the questions right. We could get the first two right, the first and last right, the middle two right, and more! We need to account for all of these possibilities.
+
+## Binomial Experiments and the Binomial Distribution
+
+**Binomial Experiments:** A binomial experiment satisfies each of the following three criteria:
+
++ There are $n$ repeated trials.
++ Each trial has two possible outcomes (usually called *success* and *failure* for convenience)
++ The trials are independent of one another. That is, for each trial, the probability of success is $p$ (which remains constant).
+
+**Binomial Distribution:** Let $X$ be the number of successes resulting from a binomial experiment with $n$ trials. We can compute the following probabilities:
+
++ The probability of <u>exactly</u> $k$ successes is given by
+<center> $\displaystyle{\mathbb{P}\left[X = k\right] = \binom{n}{k}\cdot p^k\left(1 - p\right)^{n-k} \approx \tt{dbinom(k, n, p)}}$</center>
++ The probability of <u>at most</u> $k$ successes is given by
+<center> $\displaystyle{\mathbb{P}\left[X \leq k\right] = \sum_{i=0}^{k}{\binom{n}{i}\cdot p^i\left(1 - p\right)^{n-i}} \approx \tt{pbinom(k, n, p)}}$</center>
+
+In the equations above, $\binom{n}{k} = \frac{n!}{k!\left(n-k\right)!}$ counts the number of ways to arrange the $k$ successes amongst the $n$ trials. That being said, the `R` functionality, `dbinom()` and `pbinom()` allow us to bypass the messy formulas -- but you'll still need to know what these functions do in order to use them correctly!
+
+:::{.callout-tip}
+## Tip: Binomial Distribution
+
+We need to use the binomial distribution to find probabilities associated with numbers of successesful (or failing) outcomes in which *we do not know for certain the trials on which the successes (or failures) occur*.
+:::
+
+
+The code block below is set up to find the probability of exactly two flips of a coin landing heads-up out of seven total flips. Edit the code block that that it finds the probability that you got exactly two of the four questions on your chemistry quiz from earlier correct. As a reminder, there were five answer options for each question and you were guessing randomly.
+
+```{webr}
+#| exercise: chem-quiz-binom
+
+dbinom(2, 7, 0.5)
+```
+
+:::{.hint exercise="chem-quiz-binom"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+```{r}
+#| echo: true
+#| eval: false
+#The arguments to dbinom() are, in-order:
+#####number of successful outcomes
+#####total number of trials
+#####probability of a successful outcome on one trial
+
+```
+
+:::
+:::
+
+:::{.hint exercise="chem-quiz-binom"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+```{r}
+#| echo: true
+#| eval: false
+#You are interested in two successful outcomes,
+#so the first argument doesn't need changing. 
+#The other two will need to be changed though.
+
+```
+
+:::
+:::
+
+:::{.hint exercise="chem-quiz-binom"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+```{r}
+#| echo: true
+#| eval: false
+#For the second argument, how many questions
+#are on the quiz?
+dbinom(2, ___, ___)
+
+```
+
+:::
+:::
+
+:::{.hint exercise="chem-quiz-binom"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+```{r}
+#| echo: true
+#| eval: false
+#For the third argument, what is the probability 
+#of guessing correct on a single question?
+dbinom(2, 4, ___)
+
+```
+
+:::
+:::
+
+:::{.hint exercise="chem-quiz-binom"}
+:::{.callout-note collapse="false"}
+## Hint 5 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+#Since each question has five possible choices,
+#one of which is correct, the probability of 
+#a correct response one one question is 0.2
+dbinom(2, 4, 0.2)
+
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: chem-quiz-binom
+#| solution: true
+#Since each question has five possible choices,
+#one of which is correct, the probability of 
+#a correct response one one question is 0.2
+dbinom(2, 4, 0.2)
+
+```
+
+```{webr}
+#| exercise: chem-quiz-binom
+#| check: true
+
+gradethis::grade_this({
+  # custom checking code appears here
+  if ((abs(.result - .solution) < 0.001)) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Good work. Now you'll get to try a few more problems! As you work through the next set of questions, you may want to check out [this example and solution](www/BinomialExample.pdf){target="_blank"}. Note that in that document, I mention that drawing a simple picture for each problem will help you decide which function(s) you might use and whether you might need to make multiple computations. This is a really important strategy that will help you in developing a strategy to solve each problem.
+
+**Practice:** For each of the following, consider a scenario in which a random sample of 18 students is asked (in private) whether they've failed to hand in at least one assignment this semester. We assume that about 34% of students fail to hand in at least one assignment.
+
+1. Given a single, randomly chosen student, what is the probability that the student will have failed to hand in at least one assignment this semester?
+
+```{webr}
+#| exercise: binom-assignments-ex1
+______
+```
+
+:::{.hint exercise="binom-assignments-ex1"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+```{r}
+#| echo: true
+#| eval: false
+#If we had 100 randomly chosen students, how 
+#many might you expect failed to hand in 
+#at least one assignment?
+#How did you know that? What, mathematically, 
+#did you do?
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex1"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+```{r}
+#| echo: true
+#| eval: false
+#We might expect about 34 students our of 
+#this random sample to have failed to hand 
+#in at least one assignment. 
+#This is because 34% of 100 is 34. The math
+#you likely did in your head was 100*0.34.
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex1"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+```{r}
+#| echo: true
+#| eval: false
+#The 0.34 you used in your calculation is the 
+#probability of a single, randomly selected 
+#student having failed to hand in at least 
+#one assignment
+
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: binom-assignments-ex1
+#| solution: true
+
+0.34
+```
+
+```{webr}
+#| exercise: binom-assignments-ex1
+#| check: true
+
+gradethis::grade_this({
+  # custom checking code appears here
+  if (.result == .solution) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+2. Find the probability that exactly 7 of the 18 students have failed to hand in at least one assignment.
+
+```{webr}
+#| exercise: binom-assignments-ex2
+______
+```
+
+:::{.hint exercise="binom-assignments-ex2"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+```{r}
+#| echo: true
+#| eval: false
+#We don't know exactly which of the 18 students
+#are failing to hand in at least one 
+#assignment here. We'll need a special 
+#function to account for the different 
+#combinations of students.
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex2"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+```{r}
+#| echo: true
+#| eval: false
+#Which function is more appropriate?
+### dbinom() or pbinom()?
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex2"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+```{r}
+#| echo: true
+#| eval: false
+#We'll use dbinom() since we want the
+#probability of **exactly** two students 
+#failing to hand in an assignment.
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex2"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+```{r}
+#| echo: true
+#| eval: false
+#Fill in the blanks to calculate the desired 
+#probability
+dbinom(___, ___, ___)
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex2"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+```{r}
+#| echo: true
+#| eval: false
+#The first argument is the number of successes. 
+#If a **success** is a student having failed 
+#to hand in at least one assignment, how many 
+#successes are you interested in?
+
+dbinom(___, ___, ___)
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex2"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+```{r}
+#| echo: true
+#| eval: false
+#We wanted exactly seven students to have failed 
+#to hand in at least one assignment. Now, the 
+#second argument is the total number of trials. 
+#How many trials are being "run" here?
+
+dbinom(7, ___, ___)
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex2"}
+:::{.callout-note collapse="false"}
+## Hint 7
+
+```{r}
+#| echo: true
+#| eval: false
+#There are 18 students total in our random sample,
+#so there are 18 trials.
+#The final argument is the probability of a 
+#"successful" outcome. We labeled a "success"
+#as a student failing to hand in at least one
+#assignment. What is the probability of failing
+#to hand in at least one assignment for a 
+#single student?
+
+dbinom(7, 18, ___)
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex2"}
+:::{.callout-note collapse="false"}
+## Hint 8 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+dbinom(7, 18, 0.34)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: binom-assignments-ex2
+#| solution: true
+dbinom(7, 18, 0.34)
+```
+
+```{webr}
+#| exercise: binom-assignments-ex2
+#| check: true
+
+gradethis::grade_this({
+  # custom checking code appears here
+  if (abs(.result - .solution) < 0.0001) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+3. Find the probability that at most 9 of the 18 students have failed to hand in at least one assignment.
+
+```{webr}
+#| exercise: binom-assignments-ex3
+______
+```
+
+:::{.hint exercise="binom-assignments-ex3"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+```{r}
+#| echo: true
+#| eval: false
+#Similar to the previous question, we don't
+#know exactly which of the 7 students are 
+#failing to hand in at least one assignment 
+#here. We'll need a special function to account 
+#for the different combinations of students.
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex3"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+```{r}
+#| echo: true
+#| eval: false
+#Which function is more appropriate?
+### dbinom() or pbinom()?
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex3"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+```{r}
+#| echo: true
+#| eval: false
+#We'll use pbinom() since we want the
+#probability of **at most** two students 
+#failing to hand in an assignment.
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex3"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+```{r}
+#| echo: true
+#| eval: false
+#Fill in the blanks to calculate the desired 
+#probability
+pbinom(___, ___, ___)
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex3"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+```{r}
+#| echo: true
+#| eval: false
+#The number of trials and the probability of 
+#a "success" haven't changed. Fill them in below.
+
+pbinom(___, ___, ___)
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex3"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+```{r}
+#| echo: true
+#| eval: false
+#For the pbinom() function, the first argument 
+#is the maximum number of successes you are 
+#willing to consider observing. If a **success** 
+#is a student having failed to hand in at 
+#least one assignment, what is the maximum 
+#number of successes are you are interested in?
+
+pbinom(___, 18, 0.34)
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex3"}
+:::{.callout-note collapse="false"}
+## Hint 7 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+
+pbinom(9, 18, 0.34)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: binom-assignments-ex3
+#| solution: true
+
+pbinom(9, 18, 0.34)
+```
+
+```{webr}
+#| exercise: binom-assignments-ex3
+#| check: true
+
+gradethis::grade_this({
+  # custom checking code appears here
+  if (abs(.result - .solution) < 0.0001) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+4. Find the probability that at least 11 of the 18 students have failed to hand in at least one assignment.
+
+```{webr}
+#| exercise: binom-assignments-ex4
+______
+```
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+```{r}
+#| echo: true
+#| eval: false
+#Again, we'll need a special function because
+#we don't know which of the 18 students will 
+#have failed to hand in an assignment.
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+```{r}
+#| echo: true
+#| eval: false
+#Unfortunately, neither the dbinom() or pbinom()
+#functions are a perfect fit for this scenario.
+#Is either one *better*-suited to this scenario?
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+```{r}
+#| echo: true
+#| eval: false
+#The pbinom() function can handle multiple 
+#possible outcomes, while dbinom() is most useful 
+#when we are interested in exactly one outcome.
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+```{r}
+#| echo: true
+#| eval: false
+#Is there are way that we could utilize the 
+#pbinom() function here?
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+```{r}
+#| echo: true
+#| eval: false
+#The challenge is that pbinom() will find the 
+#probability of **at most** some number of successes, 
+#not the probability of **at least** some number
+#of successes.
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+```{r}
+#| echo: true
+#| eval: false
+#Here's a start, but it's wrong...why?
+
+pbinom(11, 18, 0.34)
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 7
+
+```{r}
+#| echo: true
+#| eval: false
+#The function call below will calculate the 
+#probability of 0 successes, 1 success, ..., up
+#to 11 successes. That's not what we want.
+
+pbinom(11, 18, 0.34)
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 8
+
+```{r}
+#| echo: true
+#| eval: false
+#Could we maybe start will the probability of 
+#any (all) outcomes, and then just remove the 
+#probability of the events we don't want?
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 9
+
+```{r}
+#| echo: true
+#| eval: false
+#What is the probability that somewhere between 
+#0 and 18 students (inclusive), out of 18 students 
+#fail to hand in at least one assignment?
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 10
+
+```{r}
+#| echo: true
+#| eval: false
+#Since we only have 18 students, it must be the 
+#case that somewhere between 0 and 18 students 
+#fail to hand in at least one assignment. 
+#Nothing else is possible. 
+#This probability is 1 (or 100%).
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 11
+
+```{r}
+#| echo: true
+#| eval: false
+#Fill in the blanks to answer the question.
+
+1 - pbinom(___, ___, ___)
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 12
+
+```{r}
+#| echo: true
+#| eval: false
+#Something is wrong with the attempt below.
+#What needs to be fixed?
+
+1 - pbinom(11, 18, 0.34)
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 13
+
+```{r}
+#| echo: true
+#| eval: false
+#The call from the previous hint removes the 
+#probability of at most 11 students failing to 
+#hand in at least one assignment. This only 
+#leaves the probability of at least 12
+#students failing to hand in at least one 
+#assignment. Replace the first argument to find 
+#the correct probability.
+
+1 - pbinom(___, 18, 0.34)
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 14 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+1 - pbinom(10, 18, 0.34)
+
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: binom-assignments-ex4
+#| solution: true
+
+1 - pbinom(10, 18, 0.34)
+```
+
+```{webr}
+#| exercise: binom-assignments-ex4
+#| check: true
+
+gradethis::grade_this({
+  # custom checking code appears here
+  if (abs(.result - .solution) < 0.0001) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+5. Find the probability that between a minimum of 6 and a maximum of 12 out of the 18 students have failed to hand in at least one assignment.
+
+```{webr}
+#| exercise: binom-assignments-ex5
+______
+```
+
+:::{.hint exercise="binom-assignments-ex5"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+```{r}
+#| echo: true
+#| eval: false
+#Similar to the previous question, neither the 
+#dbinom() or pbinom() functions are perfect fits
+#here. We should prefer the pbinom() function 
+#though, since we are interested in a collection
+#of outcomes rather than exactly a single outcome.
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex5"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+```{r}
+#| echo: true
+#| eval: false
+#The strategy we used in the previous question 
+#won't **exactly** work either. Maybe we can 
+#use a similar idea though!
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex5"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+```{r}
+#| echo: true
+#| eval: false
+#Which of the following corresponds to a probability
+#that is definitely too big?
+
+pbinom(6, 18, 0.34)
+pbinom(12, 18, 0.34)
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex5"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+```{r}
+#| echo: true
+#| eval: false
+#The result of the function call below is a 
+#probability that is larger than the probability
+#we are looking for because it accounts for all
+#of the outcomes we are interested in as well as
+#some additional outcomes.
+#Can we subtract something from this to obtain 
+#the probability of only the events we are 
+#interested in?
+
+pbinom(12, 18, 0.34)
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex5"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+```{r}
+#| echo: true
+#| eval: false
+#Fill in the blanks to calculate the probability
+#we are interested in.
+
+pbinom(12, 18, 0.34) - ___(___, 18, 0.34)
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex5"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+```{r}
+#| echo: true
+#| eval: false
+#How many events do we need to remove the probability of?
+#Is it **exactly one** event, or is it a collection
+#of events?
+
+pbinom(12, 18, 0.34) - ___(___, 18, 0.34)
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex5"}
+:::{.callout-note collapse="false"}
+## Hint 7
+
+```{r}
+#| echo: true
+#| eval: false
+#Think carefully about the events we need to 
+#remove the probability of. What number goes 
+#in the blank?
+
+pbinom(12, 18, 0.34) - pbinom(___, 18, 0.34)
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex5"}
+:::{.callout-note collapse="false"}
+## Hint 8
+
+```{r}
+#| echo: true
+#| eval: false
+#The code below is wrong, why?
+
+pbinom(12, 18, 0.34) - pbinom(6, 18, 0.34)
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex5"}
+:::{.callout-note collapse="false"}
+## Hint 9
+
+```{r}
+#| echo: true
+#| eval: false
+#This leaves us with only the probability of 
+#7 students failing to hand in an assignment, 
+#8 students failing to hand in an assignment, ...
+#up to 12 students failing to hand in an assignment.
+#That's not quite what we wanted, is it?
+
+pbinom(12, 18, 0.34) - pbinom(6, 18, 0.34)
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex5"}
+:::{.callout-note collapse="false"}
+## Hint 10 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+pbinom(12, 18, 0.34) - pbinom(5, 18, 0.34)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: binom-assignments-ex5
+#| solution: true
+
+pbinom(12, 18, 0.34) - pbinom(5, 18, 0.34)
+```
+
+```{webr}
+#| exercise: binom-assignments-ex5
+#| check: true
+
+gradethis::grade_this({
+  # custom checking code appears here
+  if (abs(.result - .solution) < 0.0001) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+6. The expected number of successes in a binomial experiment is sometimes denoted by $\mathbb{E}\left[X\right]$ and can be computed as $\mathbb{E}\left[X\right] = n\cdot p$, where $n$ denotes the number of trials run and $p$ denotes the probability of success on a single trial. Sometimes it is convenient to think of the expected number of successes as "the mean". Use the code block below to compute the expected number of students who have failed to hand in at least one assignent:
+
+```{webr}
+#| exercise: binom-assignments-ex6
+______
+```
+
+:::{.hint exercise="binom-assignments-ex6"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+```{r}
+#| echo: true
+#| eval: false
+#Use the formula n*p from the problem statement 
+#to compute the expected value.
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex6"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+```{r}
+#| echo: true
+#| eval: false
+#Note that n stands for the number of trials.
+#How many trials are there here?
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex6"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+```{r}
+#| echo: true
+#| eval: false
+#Note that p stands for the probability of 
+#success on a single trial. Here "success" is 
+#a student failing to hand in at least one 
+#assignment. What is the value of p?
+
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex6"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+
+18*0.34
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: binom-assignments-ex6
+#| solution: true
+
+18*0.34
+```
+
+```{webr}
+#| exercise: binom-assignments-ex6
+#| check: true
+
+gradethis::grade_this({
+  # custom checking code appears here
+  if (.result == .solution) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+7. The standard deviation in the number of successes for a binomial experiment can also be computed. The quantity $\displaystyle{s_X = \sqrt{n\cdot p\left(1 - p\right)}}$, where $n$ denotes the number of trials run and $p$ denotes the probability of success on a single trial is the standard deviation in number of successes. Use the code block below to compute the standard deviation in number of students who have failed to hand in at least one assignent from random samples of 18 students:
+
+```{webr}
+#| exercise: binom-assignments-ex7
+______
+```
+
+:::{.hint exercise="binom-assignments-ex7"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+```{r}
+#| echo: true
+#| eval: false
+#Again, use the formula from the statement of 
+#the question to compute the answer.
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex7"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+```{r}
+#| echo: true
+#| eval: false
+#Recall that you can compute the square root in
+#R using the sqrt() function.
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex7"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+```{r}
+#| echo: true
+#| eval: false
+#Remember that n is still the number of trials 
+#and p is still the probability of a student 
+#failing to hand in at least one assignment.
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex7"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+```{r}
+#| echo: true
+#| eval: false
+#Fill in the blanks
+
+sqrt(___*___*(___))
+```
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex7"}
+:::{.callout-note collapse="false"}
+## Hint 5 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+
+sqrt(18*0.34*(1 - 0.34))
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: binom-assignments-ex7
+#| solution: true
+
+sqrt(18*0.34*(1 - 0.34))
+```
+
+```{webr}
+#| exercise: binom-assignments-ex7
+#| check: true
+
+gradethis::grade_this({
+  # custom checking code appears here
+  if (abs(.result - .solution) < 0.001) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Be sure to write down what questions you had as you worked through these problems and to have a teacher, colleague, or tutor help clarify things for you.
+
+## Submit
+
+:::{.callout-warning}
+
+Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, then please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402) or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html).
+
+:::
+
+## Summary
+
+Up to this point you've been exposed to basic probability, binomial experiments, and using the binomial distribution. Here's a quick recap.
+
++ The probability of an event $A$ is a measure of the likelihood of $A$ occurring, and is denoted by $\mathbb{P}\left[A\right]$.
++ The probability of any event must be between $0$ and $1$
++ A binomial experiment satisfies each of the following
+  + The experiment consists of $n$ repeated trials
+  + Each trial has two possible outcomes
+  + The trials are independent of one another
++ If $X$ denotes the number of successes resulting from a binomial experiment with $n$ trials and probability of success on a single trial equal to $p$, then
+  + $\mathbb{P}\left[X = k\right] \approx \tt{dbinom(k, n, p)}$
+  + $\mathbb{P}\left[X\leq k\right] \approx \tt{pbinom(k, n, p)}$
+  + Drawing a picture is a crucial step along the way to solving a probability problem. The two functions above are enough to compute the probability of any type of outcome associated with a binomial experiment -- the trick is in finding how to put these tools to use -- drawing a picture will guide you.
+  + The expected value of $X$ (expected number of successes) is given by $\mathbb{E}\left[X\right] = n\cdot p$
+  + The standard deviation of $X$ (standard deviation of number of successes) is given by $s_X = \sqrt{n\cdot p\left(1 - p\right)}$

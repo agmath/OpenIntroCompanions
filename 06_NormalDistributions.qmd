@@ -1885,7 +1885,7 @@ There are `{ojs} chickPoxSampSize` adults being surveyed, they are from a random
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-At the end of the Topic 5 notebook, you were introduced to the expected value formula for binomial random variables: $\mathbb{E}[X] = n \cdot p$, where $n$ is the total number of trials and $p$ is the probability of success on any given trial.
+At the end of the Topic 5 activity, you were introduced to the expected value formula for binomial random variables: $\mathbb{E}[X] = n \cdot p$, where $n$ is the total number of trials and $p$ is the probability of success on any given trial.
 
 :::
 :::
@@ -1942,7 +1942,7 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-You were introduced to the formula for the standard deviation of a binomial random variable at the end of the Topic 5 notebook.
+You were introduced to the formula for the standard deviation of a binomial random variable at the end of the Topic 5 activity.
 
 :::
 :::
@@ -2009,7 +2009,7 @@ ok_checkbox(q9.toString(), "1,2");
 
 :::
 
-While you answer the following questions, it might be useful to refer back to [the Game of Dreidel example and solution](www/BinomialExample.pdf){target="_blank"} from the Topic 5 notebook.
+While you answer the following questions, it might be useful to refer back to [the Game of Dreidel example and solution](www/BinomialExample.pdf){target="_blank"} from the Topic 5 activity.
 
 3. Find the probability that exactly `{ojs} chickPox_exact1` adults in your sample of `{ojs} chickPoxSampSize` will have had chickenpox.
 
@@ -2732,7 +2732,7 @@ gradethis::grade_this({
 
 :::{.callout-warning}
 
-Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+Grading function is not currently available for these web-based activities. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
 
 :::
 

@@ -651,7 +651,7 @@ mpg |>
 :::
 
 :::{.hint exercise="boxplot-hwy-cyl"}
-:::{.callout-note collapse="false}
+:::{.callout-note collapse="false"}
 ## Hint 3
 
 ```{r}
@@ -1353,11 +1353,7 @@ Grading function is not currently available for these web-based notebooks. If yo
 
 ## Summary
 
-###
-
 Congratulations! You made it through a first discussion on data visualization. You should know, however, that this is just the "tip of the iceberg" -- there's much more to learn. I've already suggested the Data Visualization chapter of Hadley Wickham's *R for Data Science*, but he also has an entire book devoted to the `ggplot2` package in R -- check it out if you are interested in learning more! Additionally, you might follow `#TidyTuesday` on Twitter to see (and maybe even participate in) a social community on data visualization. 
-
-###
 
 In this workbook you learned the following:
 
@@ -1373,6 +1369,8 @@ data_frame_name |>
 
 + There are entire courses devoted to data visualization. You've had a crash course here but there is much more to be learned. Check out the two Wickham books, use the `ggplot2` [documentation](https://ggplot2.tidyverse.org/reference/), or check out [this cheatsheet](https://posit.co/wp-content/uploads/2022/10/data-visualization-1.pdf) for more inspiration!
 
-###
+:::{.callout-note}
+## Loaded Libraries
 
-**A final note:** These interactive workbooks allow me to hide some of the setup requirements from you so that we can focus on the task at hand -- in this workbook, plotting. When you make the switch to using a standalone R instance you'll need to install and load libraries to expand R's functionality. You can do this with the `install.packages()` and `library()` functions. You would need `{ggplot2}` as well as `{dplyr}`, `{skimr}`, and `{ggmosaic}` to run the code for this workbook in a local R session.
+These interactive workbooks allow me to hide some of the setup requirements from you so that we can focus on the task at hand -- in this workbook, plotting. When you make the switch to using a standalone R instance you'll need to install and load libraries to expand R's functionality. You can do this with the `install.packages()` and `library()` functions. You would need `{ggplot2}` as well as `{dplyr}`, `{skimr}`, and `{ggmosaic}` to run the code for this workbook in a local R session.
+:::

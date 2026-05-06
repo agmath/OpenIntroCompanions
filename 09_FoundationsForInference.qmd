@@ -1,0 +1,951 @@
+---
+title: "Topic 9: Foundations for Inference"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        .exercise-editor-body { max-height: 300px; overflow-y: auto; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - ggplot2
+        - gradethis
+      cell-options:
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+
+theme_set(theme_bw(base_size = 10))
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+
+theme_set(theme_bw(base_size = 10))
+```
+
+:::{.callout-note}
+## About
+
+This activity provides an introduction to the Central Limit Theorem. We'll see the Central Limit Theorem in action through several simulations which construct the sampling distribution. We'll have opportunities to change parameters of the population distribution and the size of the samples being drawn. The goal is to discover connections between population parameters, sample size, and the resulting sampling distribution.
+:::
+
+## Foundations for Inference
+
+In this activity we'll begin investigating the true power of statistics — using sample data to make accurate claims about a population, even when we don't have access to the entire population. We start here by exploring the connection between a *population distribution* and the distribution of sample means, often called the *sampling distribution*. We'll do this through a series of interactive code blocks which you will run and use to answer questions.
+
+## Exploring the Connection Between Population and Sampling Distributions
+
+Start by viewing the following video from the New York Times.
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/jvoxEYmQHNM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+The video claimed that the sampling distribution can help us answer questions about the population. This is really important because, as we mentioned in our first activity, a census is almost always impossible. Use the code blocks below to explore the connection between the population and the sampling distribution for various different populations.
+
+:::{.callout-note}
+## The Sampling Distribution of the Sample Mean
+
+The *sampling distribution of the sample mean* is a theoretical distribution consisting of the means of all possible samples of a fixed size ($n$ elements) drawn from a population.
+
+This will be our central object of study in this activity. Our goal will be to understand how the *sampling distributon of the sample mean* is connected to:
+
+i. the population distribution, and
+ii. the sample size.
+:::
+
+:::{.callout-tip}
+## How to Use The Code Blocks
+
+You'll encounter several large code blocks in this activity. You do not need to understand all of the code in each block — focus on the pictures that result each time you run the code, instead. You are invited to change the first few lines of each block (the parameters), and you should do so! You are not expected to modify the remaining code though.
+:::
+
+### A Normally Distributed Population
+
+Work with the following code block to explore the connection between the population distribution and *sampling distribution* when the population follows a normal distribution. Use your explorations to answer the questions that follow.
+
+```{webr}
+#| exercise: norm-pop-samp-dist
+#| message: false
+#| warning: false
+
+# Define the population mean (feel free to change)
+mean <- 80
+# Define the population standard deviation (feel free to change)
+sd <- 5
+# Define the sample size (feel free to change)
+size <- 1
+# Define the number of samples to be taken (feel free to change)
+numSamps <- 10000
+
+#######################################
+## Function to take samples, compute
+## means and build sampling distribution
+## Please don't edit below this line.
+#######################################
+drawN <- function(n, times){
+  vals <- rep(NA, times)
+  for(i in 1:times){
+    draws <- rnorm(n, mean, sd)
+    vals[i] <- mean(draws)
+  }
+  return(vals)
+}
+
+# Use the function to take the samples
+trials <- drawN(size, numSamps)
+
+# Plot the population distribution and histogram of sample means
+p1 <- ggplot() + 
+  geom_histogram(aes(x = trials, y = after_stat(density))) + 
+  geom_line(aes(x = seq(mean - (3*sd), mean + (3*sd), length.out = 200), 
+                          y = dnorm(seq(mean - (3*sd), mean + (3*sd), length.out = 200), 
+                                    mean, sd)), 
+            lwd = 2, color = "blue") + 
+  labs(title = "Population Distribution Curve and\nHistogram of Sample Means",
+       x = "Sample Mean", y = "Density")
+
+# Plot the sampling distribution and histogram of sample means
+p2 <- ggplot() + 
+  geom_histogram(aes(x = trials, y = after_stat(density))) + 
+  geom_line(aes(x = seq(mean - (3*sd/sqrt(size)), 
+                                  mean + (3*sd/sqrt(size)), 
+                                  length.out = 200), 
+                          y = dnorm(seq(mean - (3*sd/sqrt(size)), 
+                                        mean + (3*sd/sqrt(size)), 
+                                        length.out = 200), 
+                                    mean, sd/sqrt(size))), 
+            lwd = 2, color = "blue") + 
+  xlim(mean - (3*sd), mean + (3*sd)) + 
+  labs(title = "Sampling Distribution Curve and\nHistogram of Sample Means",
+       x = "Sample Mean", y = "Density")
+
+p1 + p2
+```
+
+:::{.hint exercise="norm-pop-samp-dist"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Try changing the following parameters one at a time and re-running the code — the `mean`, the standard deviation (`sd`), the sample `size`, and the number of samples (`numSamps`). What changes do you notice about the population distribution? What changes do you notice about the sampling distribution?
+
+:::
+:::
+
+:::{.hint exercise="norm-pop-samp-dist"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Pay particular attention to what happens to the shape and spread of the sampling distribution (the second plot) as you change the sample `size`. What do you notice?
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Normal Population I
+
+Which of the following regarding the population and sampling distributions is true?
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.radio(
+  new Map([
+    ["The population distribution and sampling distribution are identical in the case where sample size is 1.", 1],
+    ["The population distribution and sampling distribution are always identical.", 2],
+    ["The population distribution and sampling distribution are never identical.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+);
+
+localStorage.setItem("q1", JSON.stringify(q1));
+ok_response(q1, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Normal Population II
+
+Try various different values for sample `size`. What is true about the mean of the sampling distribution?
+
+```{ojs}
+//| echo: false
+
+viewof q2 = Inputs.radio(
+  new Map([
+    ["The larger the sample size, the smaller the mean of the sampling distribution.", 1],
+    ["The mean of the sampling distribution always falls near the mean of the population distribution.", 2],
+    ["The larger the sample size, the larger the mean of the sampling distribution.", 3],
+    ["The mean of the population distribution and mean of the sampling distribution are independent of one another.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+);
+
+localStorage.setItem("q2", JSON.stringify(q2));
+ok_response(q2, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Normal Population III
+
+Try various values of the mean, standard deviation, and sample size. What can be said about the sampling distribution?
+
+```{ojs}
+//| echo: false
+
+viewof q3 = Inputs.radio(
+  new Map([
+    ["The sampling distribution is always the same as the population distribution.", 1],
+    ["The sampling distribution is always uniform.", 2],
+    ["The sampling distribution is completely unpredictable.", 3],
+    ["The sampling distribution is always nearly normal.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+);
+
+localStorage.setItem("q3", JSON.stringify(q3));
+ok_response(q3, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Normal Population IV
+
+Now that you've tried various values for the parameters, what can be said about the connection between sample size and the spread of the sampling distribution?
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.radio(
+  new Map([
+    ["The larger the sample size, the wider the sampling distribution becomes.", 1],
+    ["The larger the sample size, the more narrow the sampling distribution becomes.", 2],
+    ["The larger the sample size, the less normal the sampling distribution becomes.", 3],
+    ["The sample size and spread of the sampling distribution are independent of one another.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+);
+
+localStorage.setItem("q4", JSON.stringify(q4));
+ok_response(q4, "2");
+```
+
+:::
+
+:::{.callout-tip}
+## Recap: Normally Distributed Populations
+
+Okay, so if a population distribution is *approximately normal*, then the *sampling distribution* is also *nearly normal* -- what's the big deal? 
+
+The real takeaway here is that, if it's reasonable to assume that our data comes from an approximately normal population, then our sample mean is a reliable estimate of the true population mean — and the larger our sample, the more reliable that estimate becomes.
+
+This might seem obvious, but it's actually the foundation of everything that follows in our course. We almost never have access to an entire population, so we rely on samples. Knowing that our sample mean is a trustworthy stand-in for the population mean — and being able to quantify how trustworthy it is based on sample size — is what makes statistical inference possible.
+:::
+
+Okay, so what if we can't assume that the population we are interested in follows a "nearly"-normal distribution? Do you believe in "magic"? (Disclaimer: There is actually no magic, or trickery, involved in what you are about to see -- just rock-solid mathematics. Get ready to have your mind blown!)
+
+### A Uniformly Distributed Population
+
+A population is said to be uniformly distributed between some minimum value `A` and a maximum value `B` if all values between `A` and `B` are equally likely to be observed.
+
+Work with the following code block to explore the connection between the population distribution and sampling distribution when the population follows a uniform distribution. Note that in the first plot, assuming a normal distribution for the population is an extremely poor choice. Use your explorations to answer the questions that follow.
+
+```{webr}
+#| exercise: uniform-pop-samp-dist
+#| message: false
+#| warning: false
+
+# Define the minimum value (feel free to change)
+min <- 50
+# Define the maximum value (feel free to change)
+max <- 100
+# Define the sample size (feel free to change)
+size <- 1
+# Define the number of samples to be taken (feel free to change)
+numSamps <- 10000
+
+#######################################
+## Function to take samples, compute
+## means and build sampling distribution
+## Please don't edit below this line.
+#######################################
+drawNunif <- function(n, times){
+  vals <- rep(NA, times)
+  for(i in 1:times){
+    draws <- runif(n, min = min, max = max)
+    vals[i] <- mean(draws)
+  }
+  return(vals)
+}
+
+mean <- (min + max) / 2
+sd <- sqrt((max - min)^2 / 12)
+
+# Use the function to take the samples
+trials <- drawNunif(size, numSamps)
+
+# Plot the assumed normal population distribution and histogram of sample means
+p1 <- ggplot() + 
+  geom_histogram(mapping = aes(x = trials, y = after_stat(density))) + 
+  geom_line(mapping = aes(x = seq(mean - (3*sd), mean + (3*sd), length.out = 200), 
+                          y = dnorm(seq(mean - (3*sd), mean + (3*sd), length.out = 200), 
+                                    mean, sd)), 
+            lwd = 2, color = "blue") + 
+  labs(title = "Assumed Normal Population Distribution\nCurve and Histogram of Sample Means",
+       x = "Sample Mean", y = "Density")
+
+# Plot the sampling distribution and histogram of sample means
+p2 <- ggplot() + 
+  geom_histogram(mapping = aes(x = trials, y = after_stat(density))) + 
+  geom_line(mapping = aes(x = seq(mean - (3*sd/sqrt(size)), 
+                                  mean + (3*sd/sqrt(size)), 
+                                  length.out = 200), 
+                          y = dnorm(seq(mean - (3*sd/sqrt(size)), 
+                                        mean + (3*sd/sqrt(size)), 
+                                        length.out = 200), 
+                                    mean, sd/sqrt(size))), 
+            lwd = 2, color = "blue") + 
+  xlim(mean - (3*sd), mean + (3*sd)) + 
+  labs(title = "Sampling Distribution Curve and\nHistogram of Sample Means",
+       x = "Sample Mean", y = "Density")
+
+p1 + p2
+```
+
+:::{.hint exercise="uniform-pop-samp-dist"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Again, try changing the `min`imum value, `max`imum value, sample `size`, and number of samples (`numSamps`) one at a time and re-running the code. What changes do you notice about the population distribution? What changes do you notice about the sampling distribution?
+
+:::
+:::
+
+:::{.hint exercise="uniform-pop-samp-dist"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Pay particular attention to what happens to the shape of the sampling distribution (the second plot) even for very small sample sizes like 2 or 3. How does this compare to what you observed with the normally distributed population?
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Uniform Population I
+
+Which of the following regarding the sampling distributions is true?
+
+```{ojs}
+//| echo: false
+
+viewof q5 = Inputs.radio(
+  new Map([
+    ["The sampling distribution is nearly normal as long as the sample size is at least 2.", 1],
+    ["The sampling distribution is always normal.", 2],
+    ["The sampling distribution is never nearly normal.", 3],
+    ["The sampling distribution always shares a common shape with the population distribution.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+);
+
+localStorage.setItem("q5", JSON.stringify(q5));
+ok_response(q5, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Uniform Population II
+
+Try various different values for sample `size`. What is true about the mean of the sampling distribution?
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["The larger the sample size, the smaller the mean of the sampling distribution.", 1],
+    ["The larger the sample size, the larger the mean of the sampling distribution.", 2],
+    ["The mean of the sampling distribution always falls near the mean of the population distribution.", 3],
+    ["The mean of the population distribution and mean of the sampling distribution are independent of one another.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+);
+
+localStorage.setItem("q6", JSON.stringify(q6));
+ok_response(q6, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Uniform Population III
+
+Try various values for the parameters. What can be said about the connection between sample size and the spread of the sampling distribution?
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["The larger the sample size, the wider the sampling distribution becomes.", 1],
+    ["The larger the sample size, the less normal the sampling distribution becomes.", 2],
+    ["The larger the sample size, the more narrow the sampling distribution becomes.", 3],
+    ["The sample size and spread of the sampling distribution are independent of one another.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+);
+
+localStorage.setItem("q7", JSON.stringify(q7));
+ok_response(q7, "3");
+```
+
+:::
+
+:::{.callout-tip}
+## Recap: Uniformly Distributed Populations
+
+Given a *uniformly distributed* population, the *sampling distribution* is approximately normal for samples of size 2 or greater.
+
++ The mean of the sampling distribution is the population mean.
++ The spread of the sampling distribution is related to the sample size -- larger samples result in more narrow distributions.
+:::
+
+### The Impact of Skew on the Sampling Distribution
+
+We've seen that the sampling distribution is nearly normal for any sample size when the population is nearly normally distributed, and nearly normal for samples of size at least two when the population is uniformly distributed. What if we move in a very different direction and consider a population that is *extremely* skewed?
+
+We've encountered *skew* in our course already, and we know that it describes the effect of the *mean* being pulled away from the center of our distribution. This witchcraft (read: mathematics) certainly cannot apply in the face of strongly skewed distributions, can it?
+
+Work with the following code block to explore the connection between the population distribution and sampling distribution when the population follows a strongly skewed distribution. Use your explorations to answer the questions that follow.
+
+```{webr}
+#| exercise: skew-pop-samp-dist
+#| warning: false
+#| message: false
+
+# Define the first shape parameter (feel free to change)
+shape <- 0.5
+# Define the second shape parameter (feel free to change)
+rate <- 2
+# Define the sample size (feel free to change)
+size <- 1
+# Define the number of samples to be taken (feel free to change)
+numSamps <- 10000
+
+#######################################
+## Function to take samples, compute
+## means and build sampling distribution
+## Please don't edit below this line.
+#######################################
+drawNgamma <- function(n, times){
+  vals <- rep(NA, times)
+  for(i in 1:times){
+    draws <- rgamma(n, shape = shape, rate = rate)
+    vals[i] <- mean(draws)
+  }
+  return(vals)
+}
+
+mean <- shape / rate
+sd <- sqrt(shape / (rate^2))
+
+# Use the function to take the samples
+trials <- drawNgamma(size, numSamps)
+
+# Plot the assumed normal population distribution and histogram of sample means
+p1 <- ggplot() + 
+  geom_histogram(mapping = aes(x = trials, y = after_stat(density))) + 
+  geom_line(mapping = aes(x = seq(mean - (3*sd), mean + (3*sd), length.out = 200), 
+                          y = dnorm(seq(mean - (3*sd), mean + (3*sd), length.out = 200), 
+                                    mean, sd)), 
+            lwd = 2, color = "blue") + 
+  labs(title = "Assumed Normal Population Distribution\nCurve and Histogram of Sample Means",
+       x = "Sample Mean", y = "Density")
+
+# Plot the sampling distribution and histogram of sample means
+p2 <- ggplot() + 
+  geom_histogram(mapping = aes(x = trials, y = after_stat(density))) + 
+  geom_line(mapping = aes(x = seq(mean - (3*sd/sqrt(size)), 
+                                  mean + (3*sd/sqrt(size)), 
+                                  length.out = 200), 
+                          y = dnorm(seq(mean - (3*sd/sqrt(size)), 
+                                        mean + (3*sd/sqrt(size)), 
+                                        length.out = 200), 
+                                    mean, sd/sqrt(size))), 
+            lwd = 2, color = "blue") + 
+  xlim(mean - (3*sd), mean + (3*sd)) + 
+  labs(title = "Sampling Distribution Curve and\nHistogram of Sample Means",
+       x = "Sample Mean", y = "Density")
+
+p1 + p2
+```
+
+:::{.hint exercise="skew-pop-samp-dist"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Try changing the shape and rate parameters one at a time — can you figure out what each one controls by watching how the first plot changes? Then try increasing the sample size gradually. What do you observe?
+
+:::
+:::
+
+:::{.hint exercise="skew-pop-samp-dist"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Try sample sizes of 5, 10, 20, 30, 50, and 100 in sequence. How does the shape of the sampling distribution (the second plot) change as the sample size grows? How does this compare to what you observed with the uniform population?
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Skewed Population I
+
+Try running the code with samples of size 5, 10, and 20. Are the resulting sampling distributions nearly normal?
+
+```{ojs}
+//| echo: false
+
+viewof q8 = Inputs.radio(
+  new Map([
+    ["The sampling distribution is always normal.", 1],
+    ["No, the distributions are getting closer to the assumed normal sampling distribution, but still exhibit some skew in the opposite direction as the population distribution.", 2],
+    ["No, the distributions are getting closer to the assumed normal sampling distribution, but still exhibit some skew in the same direction as the population distribution.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+);
+
+localStorage.setItem("q8", JSON.stringify(q8));
+ok_response(q8, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Skewed Population II
+
+Try samples of size 30, 50, and 100. What can be said about the resulting sampling distributions?
+
+```{ojs}
+//| echo: false
+
+viewof q9 = Inputs.radio(
+  new Map([
+    ["The sampling distributions become closer to the assumed normal sampling distribution as sample size increases.", 1],
+    ["There is no connection between the shape of the sampling distribution and the sample size.", 2],
+    ["The sampling distribution always maintains the same shape as the population distribution.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9") ?? "null")}
+);
+
+localStorage.setItem("q9", JSON.stringify(q9));
+ok_response(q9, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Skewed Population III
+
+Try various different values for the other parameters. What is true about the mean of the sampling distribution?
+
+```{ojs}
+//| echo: false
+
+viewof q10 = Inputs.radio(
+  new Map([
+    ["The larger the sample size, the smaller the mean of the sampling distribution.", 1],
+    ["The mean of the sampling distribution always falls near the mean of the population distribution.", 2],
+    ["The larger the sample size, the larger the mean of the sampling distribution.", 3],
+    ["The mean of the population distribution and mean of the sampling distribution are independent of one another.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
+);
+
+localStorage.setItem("q10", JSON.stringify(q10));
+ok_response(q10, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Skewed Population IV
+
+Since you've tried various values for the parameters, what can be said about the connection between sample size and the spread of the sampling distribution?
+
+```{ojs}
+//| echo: false
+
+viewof q11 = Inputs.radio(
+  new Map([
+    ["The larger the sample size, the wider the sampling distribution becomes.", 1],
+    ["The larger the sample size, the less normal the sampling distribution becomes.", 2],
+    ["The sample size and spread of the sampling distribution are independent of one another.", 3],
+    ["The larger the sample size, the more narrow the sampling distribution becomes.", 4],
+  ]),
+  {value: JSON.parse(localStorage.getItem("q11") ?? "null")}
+);
+
+localStorage.setItem("q11", JSON.stringify(q11));
+ok_response(q11, "4");
+```
+
+:::
+
+Good work through the previous sets of questions. Think about your answers and use them to answer the following questions about the connection between population distributions and sampling distributions in general.
+
+:::{.callout-caution}
+## Check Your Understanding: General I
+
+Consider a generic population distribution. What can be said about the shape of the sampling distribution?
+
+```{ojs}
+//| echo: false
+
+viewof q12 = Inputs.radio(
+  new Map([
+    ["The sampling distribution is always nearly normal.", 1],
+    ["For large enough sample sizes, the sampling distribution is nearly normal.", 2],
+    ["Nothing can be said, since we don't know what the population distribution looks like.", 3],
+    ["The sampling distribution always retains the same general shape as the population distribution.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q12") ?? "null")}
+);
+
+localStorage.setItem("q12", JSON.stringify(q12));
+ok_response(q12, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: General II
+
+For a generic population distribution, what can be said about the mean of the sampling distribution?
+
+```{ojs}
+//| echo: false
+
+viewof q13 = Inputs.radio(
+  new Map([
+    ["The mean of the sampling distribution is generally a close* approximation to the mean of the population distribution.", 1],
+    ["The mean of the sampling distribution is always less than the mean of the population distribution.", 2],
+    ["The mean of the sampling distribution is always greater than the mean of the population distribution.", 3],
+    ["The mean of the sampling distribution and mean of the population distribution are independent of one another.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q13") ?? "null")}
+);
+
+localStorage.setItem("q13", JSON.stringify(q13));
+ok_response(q13, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: General III
+
+For a generic population distribution, what can be said about the connection between sample size and the spread of the sampling distribution?
+
+```{ojs}
+//| echo: false
+
+viewof q14 = Inputs.radio(
+  new Map([
+    ["The larger the sample size, the wider the sampling distribution.", 1],
+    ["The sample size and spread of the sampling distribution are independent of one another.", 2],
+    ["The larger the sample size, the more narrow the sampling distribution.", 3],
+  ]),
+  {value: JSON.parse(localStorage.getItem("q14") ?? "null")}
+);
+
+localStorage.setItem("q14", JSON.stringify(q14));
+ok_response(q14, "3");
+```
+
+:::
+
+:::{.callout-tip}
+## Recap: Putting It All Together
+
+In all of these cases, the *mean* of the sampling distribution falls close to the *mean* of the population distribution — but the more important observation has to do with the *spread* of the sampling distribution.
+
+We've been working backwards here — we assumed we know the population distribution and took many thousands of samples to construct the sampling distributions. This is exactly opposite of the real statistical scenario: we don't know the population distribution, we can't collect thousands of samples, and we generally have just one sample of a fixed size.
+
+Luckily, from the experiments we've run (and from mathematics which has been proven to work), we know that our sample mean falls "near" the population mean, and we can describe what "near" means since it depends on the size of our sample. This is how I was able to draw those normal distributions in all the plots on the right, and it is what makes statistics work!
+:::
+
+## The Central Limit Theorem
+
+What you just discovered through the simulations and questions above is what statisticians call the *Central Limit Theorem* — the result discussed in the CreatureCast video at the beginning of this activity. This is one of the most important theorems in all of statistics, and it is what will allow us to make and test claims about populations for the remainder of our course.
+
+:::{.callout-tip}
+## The Central Limit Theorem (Simplified)
+
+Regardless of the shape of a population distribution, for sample sizes large enough to overcome skew, the distribution of sample means (the *sampling distribution*) is approximately normal. Furthermore:
+
++ The **mean** of the sampling distribution equals the population mean ($\mu$).
++ The **spread** of the sampling distribution is described by the *standard error* ($S_E$), which depends on the population standard deviation and the sample size.
+
+For a population with mean $\mu$ and standard deviation $\sigma$, the sampling distribution of sample means from samples of size $n$ is:
+
+$$\bar{X}_n \sim N\left(\mu,~S_E = \frac{\sigma}{\sqrt{n}}\right)$$
+:::
+
+**Sample Problem:** Suppose you have a 46 square foot wall which you want to cover with spray paint. The brand of spray paint you plan to use is known to have coverage which is approximately normal, with an average coverage of 10 square feet per can and a standard deviation of 1.5 square feet. Use the code block below to answer the questions that follow.
+
+```{webr}
+#| exercise: spraypaint-sandbox
+# Use this code block for scratch calculations
+
+```
+
+:::{.hint exercise="spraypaint-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+For the first question, you have a 46 square foot wall and plan to buy four cans of paint. How many square feet would each can need to cover?
+
+:::
+:::
+
+:::{.hint exercise="spraypaint-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Divide the 46 square feet by 4 to find the required coverage per can.
+
+:::
+:::
+
+:::{.hint exercise="spraypaint-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+For the second question, we know that coverage from a single can of spray paint is approximately normal. Start with a picture of a normal distribution that includes the mean (average coverage) and the boundary value of coverage you are interested in. Shade the region corresponding to the probability you want, then use `pnorm()`.
+
+:::
+:::
+
+:::{.hint exercise="spraypaint-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+You're looking for the probability of at least 11.5 square feet of coverage. This means you're looking for the probability of being to the right of that boundary value. Use `1 - pnorm()`.
+
+:::
+:::
+
+:::{.hint exercise="spraypaint-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+Use `1 - pnorm(11.5, 10, 1.5)` to find the probability that a single can covers at least 11.5 square feet.
+
+:::
+:::
+
+:::{.hint exercise="spraypaint-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+For the third question, draw another picture — but this time use what you learned about the Central Limit Theorem. The sampling distribution is also approximately normal (since the population is), with the same mean but a smaller spread. The spread of the sampling distribution is the standard error: $S_E = \sigma / \sqrt{n}$.
+
+:::
+:::
+
+:::{.hint exercise="spraypaint-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 7
+
+The standard error in coverage for a random sample of four cans is $S_E = 1.5 / \sqrt{4} = 0.75$.
+
+:::
+:::
+
+:::{.hint exercise="spraypaint-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 8
+
+Similar to the second question, use `1 - pnorm()` to find the probability of the cans providing an *average* coverage of at least 11.5 square feet.
+
+:::
+:::
+
+:::{.hint exercise="spraypaint-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 9
+
+Using `1 - pnorm(11.5, 10, 1.5/sqrt(4))` will calculate the probability for you.
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Spray Paint I
+
+How many square feet would each can need to cover if you wanted to use only four cans to cover the entire 46 square foot wall?
+
+```{ojs}
+//| echo: false
+
+viewof q15 = Inputs.radio(
+  new Map([
+    ["10", 1],
+    ["10.5", 2],
+    ["11", 3],
+    ["11.5", 4],
+    ["12", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q15") ?? "null")}
+);
+
+localStorage.setItem("q15", JSON.stringify(q15));
+ok_response(q15, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Spray Paint II
+
+What is the probability that a single can of spray paint covers at least 11.5 square feet?
+
+```{ojs}
+//| echo: false
+
+viewof q16 = Inputs.radio(
+  new Map([
+    ["0.5000", 1],
+    ["0.9772", 2],
+    ["0.1587", 3],
+    ["0.8413", 4],
+    ["0.0228", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q16") ?? "null")}
+);
+
+localStorage.setItem("q16", JSON.stringify(q16));
+ok_response(q16, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Spray Paint III
+
+What is the probability that a random sample of four cans of spray paint covers an average of at least 11.5 square feet?
+
+```{ojs}
+//| echo: false
+
+viewof q17 = Inputs.radio(
+  new Map([
+    ["0.5000", 1],
+    ["0.9772", 2],
+    ["0.1587", 3],
+    ["0.8413", 4],
+    ["0.0228", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q17") ?? "null")}
+);
+
+localStorage.setItem("q17", JSON.stringify(q17));
+ok_response(q17, "5");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Spray Paint IV
+
+Should we expect to cover the entire wall with only four cans of spray paint, or should we plan to buy five?
+
+```{ojs}
+//| echo: false
+
+viewof q18 = Inputs.radio(
+  new Map([
+    ["We will probably be fine with four cans — 11.5 square feet is not much more than the expected average of 10 square feet.", 1],
+    ["Since 11.5 square feet is within one standard deviation of the expected value, it is likely that four will be enough.", 2],
+    ["We should plan to buy five since it is unlikely (less than 5% chance) that four cans will suffice to cover the whole wall.", 3],
+    ["We should plan to buy five cans — four cans will only cover 40 square feet.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q18") ?? "null")}
+);
+
+localStorage.setItem("q18", JSON.stringify(q18));
+ok_response(q18, "3");
+```
+
+:::
+
+## Submit
+
+:::{.callout-warning}
+
+Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+
+:::
+
+## Summary
+
+In this activity you discovered one of the most important results in all of statistics through hands-on simulation. Here are the key takeaways and a look at what's ahead.
+
+:::{.callout-tip}
+## Main Takeaways
+
++ **The sampling distribution describes the behavior of sample means.** When we take many samples of size $n$ from a population and compute the mean of each, the resulting distribution of those means is called the sampling distribution.
++ **The mean of the sampling distribution equals the population mean.** Regardless of the population shape or sample size, the center of the sampling distribution is always close to the true population mean $\mu$.
++ **Larger samples produce narrower sampling distributions.** The spread of the sampling distribution — measured by the standard error $S_E = \sigma / \sqrt{n}$ — shrinks as sample size grows. Larger samples give us more precise estimates of the population mean.
++ **This is the Central Limit Theorem.** For large enough sample sizes, the sampling distribution is approximately normal, regardless of the shape of the population distribution. For normally distributed populations, any sample size works. For skewed populations, larger sample sizes (30 or more for moderate skew) are needed.
++ **Skew increases the required sample size.** The more extreme the skew in the population distribution, the larger the sample size must be before the sampling distribution becomes approximately normal.
++ **The CLT is what makes statistical inference possible.** Because we can predict the shape and spread of the sampling distribution, we can make reliable probability statements about how close a single sample mean is likely to be to the true population mean — even when we only have one sample.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+Now that you understand *why* sample means behave predictably, the next activities will put this to work. We'll use the Central Limit Theorem as the foundation for **confidence intervals** — a way of expressing how precisely a sample mean estimates the population mean — and **hypothesis tests** — a formal framework for deciding whether observed data is consistent with a specific claim about a population. Everything you've built intuition for in this activity will be essential going forward.
+:::

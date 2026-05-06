@@ -143,8 +143,11 @@ viewof q1 = Inputs.checkbox(
     ["sqft_lot", 5],
     ["waterfront", 6],
     ["exterior", 7]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "[]")}
 );
+
+localStorage.setItem("q1", JSON.stringify(q1))
 
 ok_checkbox(q1.toString(), "3,4,5");
 ```
@@ -169,8 +172,11 @@ viewof q2 = Inputs.checkbox(
     ["sqft_lot", 5],
     ["waterfront", 6],
     ["exterior", 7]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "[]")}
 );
+
+localStorage.setItem("q2", JSON.stringify(q2))
 
 ok_checkbox(q2.toString(), "2,6,7");
 ```
@@ -195,8 +201,11 @@ viewof q3 = Inputs.checkbox(
     ["sqft_lot", 5],
     ["waterfront", 6],
     ["exterior", 7]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "[]")}
 );
+
+localStorage.setItem("q3", JSON.stringify(q3))
 
 ok_checkbox(q3.toString(), "1");
 ```
@@ -269,8 +278,11 @@ viewof q4 = Inputs.checkbox(
     ["Carat versus Price", 1],
     ["Depth versus Carat", 2],
     ["Length by Width", 3]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "[]")}
 );
+
+localStorage.setItem("q4", JSON.stringify(q4))
 
 ok_checkbox(q4.toString(), "1,3");
 ```
@@ -291,8 +303,11 @@ viewof q5 = Inputs.radio(
     ["Carat versus Price", 1],
     ["Depth versus Carat", 2],
     ["Length by Width", 3]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
 );
+
+localStorage.setItem("q5", JSON.stringify(q5))
 
 ok_response(q5, "2");
 ```
@@ -313,8 +328,11 @@ viewof q6 = Inputs.radio(
     ["Carat versus Price", 1],
     ["Depth versus Carat", 2],
     ["Length by Width", 3]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
 );
+
+localStorage.setItem("q6", JSON.stringify(q6))
 
 ok_response(q6, "3");
 ```
@@ -368,8 +386,11 @@ viewof q7 = Inputs.radio(
   new Map([
     ["Price by Waterfront Status", 1],
     ["Exterior Covering and Waterfront Status", 2]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
 );
+
+localStorage.setItem("q7", JSON.stringify(q7))
 
 ok_response(q7, "1");
 ```

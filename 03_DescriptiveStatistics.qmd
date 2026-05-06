@@ -338,8 +338,11 @@ viewof q1 = Inputs.radio(
     ["The mean is generally smaller than the median", 2],
     ["The mean is usually close to the median", 3],
     ["The mean is more strongly distorted by outliers (unusually large or small observed values) than the median is", 4]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
 );
+
+localStorage.setItem("q1", JSON.stringify(q1))
 
 ok_response(q1, "4");
 ```
@@ -362,8 +365,11 @@ viewof q2 = Inputs.radio(
     ["The mean from `Sample_One` is too low", 2],
     ["Each of the sample means provides an estimate for the population mean", 3],
     ["The population mean is equal to the sample means", 4]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
 );
+
+localStorage.setItem("q2", JSON.stringify(q2))
 
 ok_response(q2, "3");
 ```
@@ -385,8 +391,11 @@ viewof q3 = Inputs.checkbox(
     ["Take samples using smaller sample sizes", 3],
     ["Stratify the diamonds according to price (low, medium, and high) and take a random sample of diamonds of each price category", 4],
     ["Take samples including more diamonds", 5]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "[]")}
 );
+
+localStorage.setItem("q3", JSON.stringify(q3))
 
 ok_checkbox(q3.toString(), "1,2,5");
 ```
@@ -472,8 +481,11 @@ viewof q4 = Inputs.checkbox(
     ["Worker A and Worker B had the same mean and median number of doors knocked", 1],
     ["Worker A and Worker B had identical door-knocking strategies", 2],
     ["Measures of center alone are not enough to describe numerical data", 3]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "[]")}
 );
+
+localStorage.setItem("q4", JSON.stringify(q4))
 
 ok_checkbox(q4.toString(), "1,3");
 ```
@@ -516,8 +528,11 @@ viewof q5 = Inputs.radio(
     ["Sample One", 1],
     ["Sample Two", 2],
     ["Sample Three", 3]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
 );
+
+localStorage.setItem("q5", JSON.stringify(q5))
 
 ok_response(q5, "3");
 ```
@@ -536,8 +551,11 @@ viewof q6 = Inputs.radio(
   new Map([
     ["Standard Deviation", 1],
     ["Interquartile Range", 2]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
 );
+
+localStorage.setItem("q6", JSON.stringify(q6))
 
 ok_response(q6, "1");
 ```

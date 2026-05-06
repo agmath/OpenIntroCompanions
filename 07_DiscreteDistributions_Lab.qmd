@@ -1123,3 +1123,23 @@ p1 + p2
 Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
 
 :::
+
+## Summary
+
+In this lab you explored the power of computer simulation as a tool for informally examining hypotheses about real-world processes. Below are the key takeaways and a heads-up about what to expect moving forward.
+
+:::{.callout-tip}
+## Main Takeaways
+
++ **Simulation allows us to model independent processes.** By using R's `sample()` function with appropriate outcome spaces and probabilities, we can generate data from a process we fully control — one where we *know* shots are independent.
++ **The `prob` argument in `sample()` lets us tune our simulation to match real-world conditions.** Setting `prob = c(0.45, 0.55)` ensures our simulated shooter has the same shooting percentage as Kobe Bryant, making the comparison meaningful.
++ **Streak length is a useful summary of shooting patterns.** The `calc_streak()` function converts a sequence of hits and misses into a distribution of streak lengths, which gives us a way to compare Kobe's actual performance to what we'd expect from an independent shooter.
++ **Comparing observed data to simulated data is a form of informal hypothesis testing.** If Kobe's streak distribution *looks* similar to those of our simulated independent shooters, we have little evidence of a hot hand. If it looks dramatically different, we might reconsider.
++ **Simulation results vary from run to run.** Each simulated shooter produces a slightly different streak distribution, which is a reminder that random processes are inherently variable — we should look for consistent *patterns* across many simulations rather than drawing conclusions from a single run.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+In this lab you used simulation *informally* — generating data from a known process and comparing it to observed data by eye. While we won't continue using simulation as our primary tool, the underlying logic carries forward throughout the rest of the course. In the coming activities we'll formalize this process of comparing what we observe to what we'd expect if some assumption were true, and we'll develop rigorous statistical methods for deciding when the difference between the two is large enough to matter. That process — *hypothesis testing* — is one of the most important ideas in all of statistics, and everything you did in this lab was quietly building intuition for it.
+:::

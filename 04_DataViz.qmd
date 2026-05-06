@@ -158,8 +158,11 @@ viewof q1 = Inputs.checkbox(
     ["A heatmap", 3],
     ["A dotplot", 4],
     ["Side-by-side boxplots", 5]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "[]")}
 );
+
+localStorage.setItem("q1", JSON.stringify(q1))
 
 ok_checkbox(q1.toString(), "2,3");
 ```
@@ -283,8 +286,11 @@ viewof q2 = Inputs.radio(
     ["234", 3],
     ["245", 4],
     ["2574", 5]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
 );
+
+localStorage.setItem("q2", JSON.stringify(q2))
 
 ok_response(q2, "2");
 ```
@@ -306,8 +312,11 @@ viewof q3 = Inputs.radio(
     ["234", 3],
     ["245", 4],
     ["2574", 5]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
 );
+
+localStorage.setItem("q3", JSON.stringify(q3))
 
 ok_response(q3, "3");
 ```
@@ -335,8 +344,11 @@ viewof q4 = Inputs.checkbox(
     ["hwy (highway fuel economy)", 9],
     ["fl (fuel type)", 10],
     ["class (vehicle class)", 11]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "[]")}
 );
+
+localStorage.setItem("q4", JSON.stringify(q4))
 
 ok_checkbox(q4.toString(), "3,4,6,8,9");
 ```
@@ -399,8 +411,11 @@ viewof q5 = Inputs.radio(
     ["Highway miles per gallon and engine displacement are associated", 2],
     ["It is impossible to tell whenther the variables are associated or independent", 3],
     ["Highway miles per gallon and engine displacement are both independent and associated", 4]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
 );
+
+localStorage.setItem("q5", JSON.stringify(q5))
 
 ok_response(q5, "2");
 ```
@@ -421,8 +436,11 @@ viewof q6 = Inputs.radio(
     ["Engine displacement and highway miles per gallon share a positive, linear relationship", 2],
     ["Engine displacement and highway miles per gallon share a negative, non-linear relationship", 3],
     ["Engine displacement and highway miles per gallon share a positive, non-linear relationship", 4]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
 );
+
+localStorage.setItem("q6", JSON.stringify(q6))
 
 ok_response(q6, "3");
 ```
@@ -443,8 +461,11 @@ viewof q7 = Inputs.radio(
     ["Generally, engines with higher displacement are associated with higher average highway miles per gallon ratings", 2],
     ["Higher engine displacement causes lower average highway miles per gallon ratings", 3],
     ["Engine displacement causes higher average highway miles per gallon ratings", 4]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
 );
+
+localStorage.setItem("q7", JSON.stringify(q7))
 
 ok_response(q7, "1");
 ```
@@ -755,8 +776,11 @@ viewof q8 = Inputs.radio(
     ["At least one of the two variables is not numerical", 2],
     ["A scatterplot would be okay but there are better options", 3],
     ["There isn't enough data for a scatterplot", 4]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
 );
+
+localStorage.setItem("q8", JSON.stringify(q8))
 
 ok_response(q8, "2");
 ```
@@ -778,8 +802,11 @@ viewof q9 = Inputs.checkbox(
     ["A bar graph with fill color", 3],
     ["A heatmap", 4],
     ["A mosaicplot", 5]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9") ?? "[]")}
 );
+
+localStorage.setItem("q9", JSON.stringify(q9))
 
 ok_checkbox(q9.toString(), "3,4,5");
 ```
@@ -1079,8 +1106,11 @@ viewof q10 = Inputs.radio(
     ["It tells R to try arranging the plots into two rows", 3],
     ["It tells R to include two plots per row", 4],
     ["Nothing -- it is irrelevant and ignored", 5]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
 );
+
+localStorage.setItem("q10", JSON.stringify(q10))
 
 ok_response(q10, "3");
 ```

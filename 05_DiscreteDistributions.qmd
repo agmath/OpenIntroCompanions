@@ -128,8 +128,11 @@ viewof q1 = Inputs.radio(
     ["4 / 6", 5],
     ["5 / 6", 6],
     ["6 / 6", 7]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
 );
+
+localStorage.setItem("q1", JSON.stringify(q1))
 
 ok_response(q1, "2");
 ```
@@ -153,8 +156,11 @@ viewof q2 = Inputs.radio(
     ["4 / 6", 5],
     ["5 / 6", 6],
     ["6 / 6", 7]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
 );
+
+localStorage.setItem("q2", JSON.stringify(q2))
 
 ok_response(q2, "4");
 ```
@@ -173,8 +179,11 @@ viewof q3 = Inputs.radio(
   new Map([
     ["The probability of rolling a total of two.", 1],
     ["The probability of rolling a total of five", 2]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
 );
+
+localStorage.setItem("q3", JSON.stringify(q3))
 
 ok_response(q3, "2");
 ```
@@ -202,8 +211,11 @@ viewof q4 = Inputs.radio(
     ["4 / 6", 5],
     ["5 / 6", 6],
     ["6 / 6", 7]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
 );
+
+localStorage.setItem("q4", JSON.stringify(q4))
 
 ok_response(q4, "6");
 ```
@@ -223,8 +235,11 @@ viewof q5 = Inputs.radio(
     ["0 / 2", 1],
     ["1 / 2", 2],
     ["2 / 2", 3]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
 );
+
+localStorage.setItem("q5", JSON.stringify(q5))
 
 ok_response(q5, "6");
 ```
@@ -332,8 +347,11 @@ viewof q6 = Inputs.radio(
     ["0.50", 5],
     ["0.80", 6],
     ["1", 7]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
 );
+
+localStorage.setItem("q6", JSON.stringify(q6))
 
 ok_response(q6, "3");
 ```
@@ -358,8 +376,11 @@ viewof q7 = Inputs.radio(
     ["0.5555", 6],
     ["0.998", 7],
     ["1", 8]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
 );
+
+localStorage.setItem("q7", JSON.stringify(q7))
 
 ok_response(q7, "2");
 ```
@@ -384,8 +405,11 @@ viewof q8 = Inputs.radio(
     ["0.5555", 6],
     ["0.998", 7],
     ["1", 8]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
 );
+
+localStorage.setItem("q8", JSON.stringify(q8))
 
 ok_response(q8, "5");
 ```
@@ -408,8 +432,11 @@ viewof q9 = Inputs.radio(
     ["0.0064", 4],
     ["0.20", 5],
     ["1.2", 6]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9") ?? "null")}
 );
+
+localStorage.setItem("q9", JSON.stringify(q9))
 
 ok_response(q9, "3");
 ```
@@ -434,8 +461,11 @@ viewof q10 = Inputs.radio(
     ["0.40", 6],
     ["0.64", 7],
     ["None of These", 8]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
 );
+
+localStorage.setItem("q10", JSON.stringify(q10))
 
 ok_response(q10, "8");
 ```

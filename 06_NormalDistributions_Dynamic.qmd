@@ -313,8 +313,11 @@ viewof q1 = Inputs.radio(
     ["95%", 3],
     ["Nearly 100%", 4],
     ["It is impossible to tell", 5]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
 );
+
+localStorage.setItem("q1", JSON.stringify(q1))
 
 ok_response(q1, "2");
 ```
@@ -339,8 +342,11 @@ viewof q2 = Inputs.checkbox(
     ["90", 5],
     ["95", 6],
     ["100", 7]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "[]")}
 );
+
+localStorage.setItem("q2", JSON.stringify(q2))
 
 ok_checkbox(q2.toString(), "3,6");
 ```
@@ -537,8 +543,11 @@ viewof q3 = Inputs.radio(
     ["-1.58", 3],
     ["1.76", 4],
     ["-1.76", 5]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
 );
+
+localStorage.setItem("q3", JSON.stringify(q3))
 
 ok_response(q3, "1");
 ```
@@ -560,8 +569,11 @@ viewof q4 = Inputs.radio(
     ["-1.58", 3],
     ["1.76", 4],
     ["-1.76", 5]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
 );
+
+localStorage.setItem("q4", JSON.stringify(q4));
 
 ok_response(q4, "4");
 ```
@@ -582,8 +594,11 @@ viewof q5 = Inputs.radio(
     ["Bob, since his z-score was 1.58 which is closer to the mean than Sally's z-score of 1.76.", 2],
     ["Bob, since his score was 1400 and Sally's score was only 31.", 3],
     ["Bob, since the SAT had a larger standard deviation it is a harder exam.", 4]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
 );
+
+localStorage.setItem("q5", JSON.stringify(q5));
 
 ok_response(q5, "1");
 ```
@@ -738,8 +753,11 @@ viewof q6 = Inputs.radio(
     ["0.4431", 3],
     ["0.9608", 4],
     ["0.0392", 5]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
 );
+
+localStorage.setItem("q6", JSON.stringify(q6));
 
 ok_response(q6, "1");
 ```
@@ -761,8 +779,11 @@ viewof q7 = Inputs.radio(
     ["0.4431", 3],
     ["0.9607", 4],
     ["0.0392", 5]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
 );
+
+localStorage.setItem("q7", JSON.stringify(q7));
 
 ok_response(q7, "4");
 ```
@@ -783,8 +804,11 @@ viewof q8 = Inputs.radio(
     ["Bob, since he scored in a lower percentile than Sally.", 2],
     ["Bob, since he scored closer to the mean.", 3],
     ["Bob, since his percentile score was so high even though the standard deviation on the SAT was so large.", 4]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
 );
+
+localStorage.setItem("q8", JSON.stringify(q8));
 
 ok_response(q8, "1");
 ```
@@ -1953,8 +1977,11 @@ viewof q9 = Inputs.checkbox(
     ["Yes. We should be surprised by any result at all — we can't know what will happen ahead of time.", 3],
     ["No. A result like this one is certainly possible.", 4],
     ["No. This result does not fall more than two standard deviations from the expected value.", 5]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9") ?? "[]")}
 );
+
+localStorage.setItem("q9", JSON.stringify(q9));
 
 ok_checkbox(q9.toString(), "1,2");
 ```
@@ -2431,8 +2458,11 @@ viewof q10 = Inputs.radio(
     ["Sophia scored relatively higher on the Quantitative Reasoning exam since her Quantitative Reasoning z-score was larger.", 2],
     ["Sophia scored relatively higher on the Quantitative Reasoning exam since her Quantitative Reasoning z-score was closer to 0.", 3],
     ["It is impossible to tell which exam Sophia performed better on since the means and standard deviations are different.", 4]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
 );
+
+localStorage.setItem("q10", JSON.stringify(q10));
 
 ok_response(q10, "1");
 ```

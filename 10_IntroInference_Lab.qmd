@@ -1,0 +1,1673 @@
+---
+title: "Topic 10: Introduction to Inference Lab"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        .exercise-editor-body { max-height: 300px; overflow-y: auto; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - ggplot2
+        - gradethis
+        - openintro
+      cell-options:
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_checkbox
+
+ok_checkbox <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Not Yet! ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(dplyr)
+library(ggplot2)
+library(openintro)
+library(patchwork)
+
+data(ames)
+
+area  <- ames$area
+price <- ames$price
+
+theme_set(theme_bw(base_size = 12))
+
+plot_ci <- function(lo, hi, m) {
+  par(mar = c(2, 1, 1, 1), mgp = c(2.7, 0.7, 0))
+  k <- length(lo)
+  ci.max <- max(rowSums(matrix(c(-1 * lo, hi), ncol = 2)))
+
+  xR <- m + ci.max * c(-1, 1)
+  yR <- c(0, 41 * k / 40)
+
+  plot(xR, yR, type = "n", xlab = "", ylab = "", axes = FALSE)
+  abline(v = m, lty = 2, col = "#00000088")
+  axis(1, at = m, paste("mu =", round(m, 4)), cex.axis = 1.15)
+
+  for (i in 1:k) {
+    x  <- mean(c(hi[i], lo[i]))
+    ci <- c(lo[i], hi[i])
+    if ((m < hi[i] & m > lo[i]) == FALSE) {
+      col <- "#F05133"
+      points(x, i, cex = 1.4, col = col)
+      lines(ci, rep(i, 2), col = col, lwd = 5)
+    } else {
+      col <- 1
+      points(x, i, pch = 20, cex = 1.2, col = col)
+      lines(ci, rep(i, 2), col = col)
+    }
+  }
+}
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(openintro)
+library(patchwork)
+
+data(ames)
+
+area  <- ames$area
+price <- ames$price
+
+theme_set(theme_bw(base_size = 12))
+```
+
+:::{.callout-note}
+## About
+
+In this lab, we investigate the ways in which statistics from a random sample can serve as point estimates for population parameters. We dig deeper into the Central Limit Theorem, explore connections between sample size and uncertainty, and introduce the notion of the confidence interval.
+:::
+
+:::{.callout-note}
+## License
+
+This is a derivative of a product of OpenIntro that is released under a [Creative Commons Attribution-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-sa/3.0) license. This lab was adapted for OpenIntro by Andrew Bray and Mine Çetinkaya-Rundel from a lab written by Mark Hansen of UCLA Statistics.
+:::
+
+## Intro to Inference Lab
+
+In this activity, we investigate the ways in which statistics from a random sample of data can serve as point estimates for population parameters. This activity builds off of the content from Topic 9, where we were exposed to the *sampling distribution* and the *Central Limit Theorem*. Here we will work to become more familiar with these two ideas and how we can use the sampling distribution to make claims about population-level data.
+
+## The Data
+
+We consider real estate data from the city of Ames, Iowa. The details of every real estate transaction in Ames is recorded by the City Assessor's office. Our particular focus for this lab will be a dataset containing all residential home sales in Ames between 2006 and 2010. This collection represents our *population* of interest. While we typically don't have access to population-level data, this will allow us to see the Central Limit Theorem in action and to see how close our estimates come to the corresponding true population mean.
+
+In this lab we investigate what we can learn about the full population of these home sales by taking smaller samples. We'll see how well our small samples can be used to estimate a population parameter. The data has been loaded for you in a dataset called `ames`.
+
+Use the code block below to answer some basic questions about the `ames` dataset.
+
+```{webr}
+#| exercise: explore-ames
+# Explore the ames dataset
+
+```
+
+:::{.hint exercise="explore-ames"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+You can call a data frame by name to print it out. You can also use functions like `head()`, `dim()`, and `glimpse()` to gain information as well.
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: The `ames` Dataset I
+
+What does each observation in the `ames` dataset represent?
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.radio(
+  new Map([
+    ["The sale of a home in Ames, Iowa during the time period 2006 to 2010.", 1],
+    ["A house in Ames, Iowa.", 2],
+    ["A person.", 3],
+    ["A house listed for sale in Ames, Iowa.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+);
+
+localStorage.setItem("q1", JSON.stringify(q1));
+ok_response(q1, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: The `ames` Dataset II
+
+How many observations are there in the `ames` dataset?
+
+```{ojs}
+//| echo: false
+
+viewof q2 = Inputs.radio(
+  new Map([
+    ["1", 1],
+    ["82", 2],
+    ["2,006", 3],
+    ["2,930", 4],
+    ["It is impossible to tell.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+);
+
+localStorage.setItem("q2", JSON.stringify(q2));
+ok_response(q2, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: The `ames` Dataset III
+
+How many variables are there in the `ames` dataset?
+
+```{ojs}
+//| echo: false
+
+viewof q3 = Inputs.radio(
+  new Map([
+    ["1", 1],
+    ["82", 2],
+    ["2,006", 3],
+    ["2,930", 4],
+    ["It is impossible to tell.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+);
+
+localStorage.setItem("q3", JSON.stringify(q3));
+ok_response(q3, "2");
+```
+
+:::
+
+We see that there are quite a few variables in the data set — enough to do a very in-depth analysis. For this lab, we'll restrict our attention to just two of the variables: the above ground living `area` of the house in square feet and the sale `price`. To save some effort throughout the lab, we'll create two variables with short names that represent these two variables. The code block below is pre-set to define the `area` vector — add a second line which creates the `price` vector.
+
+```{webr}
+#| exercise: assign
+
+area <- ames |>
+  pull(area)
+```
+
+:::{.hint exercise="assign"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Start by copying the existing code and making changes to it. What needs to change?
+
+```{r}
+#| echo: true
+#| eval: false
+
+area <- ames |>
+  pull(area)
+
+area <- ames |>
+  pull(area)
+```
+
+:::
+:::
+
+:::{.hint exercise="assign"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+We want to use a different variable name because (i) we don't want to overwrite the existing `area` variable, and (ii) we want the name to be meaningful.
+
+We also don't want to extract the `area` column again.
+
+```{r}
+#| echo: true
+#| eval: false
+
+area <- ames |>
+  pull(area)
+
+___ <- ames |>
+  pull(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="assign"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Store the results into a new variable called `price`, as requested in the prompt. What column from the `ames` data frame do you want to extract?
+
+```{r}
+#| echo: true
+#| eval: false
+
+area <- ames |>
+  pull(area)
+
+price <- ames |>
+  pull(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="assign"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+Store the results into a new variable called `price`, as requested in the prompt. You want to extract the `price` column.
+
+```{r}
+#| echo: true
+#| eval: false
+
+area <- ames |>
+  pull(area)
+
+price <- ames |>
+  pull(price)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: assign
+#| solution: true
+
+area <- ames |>
+  pull(area)
+
+price <- ames |>
+  pull(price)
+```
+
+```{webr}
+#| exercise: assign
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+## Initial Exploration
+
+Let's look at the distributions of `price` and `area` in our population of home sales by calculating a few summary statistics. Use the code block below to find the mean and median for both `price` and `area`. Use your results to answer the questions that follow.
+
+```{webr}
+#| exercise: eda-sandbox
+# Compute summary statistics for area and price
+
+```
+
+:::{.hint exercise="eda-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+The `area` and `price` objects are vectors of values. Pass them, one at a time, to the `mean()` and `median()` functions.
+
+:::
+:::
+
+:::{.hint exercise="eda-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Fill in the blanks:
+
+```{r}
+#| echo: true
+#| eval: false
+
+mean(___)
+median(___)
+mean(___)
+median(___)
+```
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Summary Statistics I
+
+Which of the following is the mean of the `price` variable?
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.radio(
+  new Map([
+    ["$160,000", 1],
+    ["$167,842.47", 2],
+    ["$180,796.10", 3],
+    ["$200,000", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+);
+
+localStorage.setItem("q4", JSON.stringify(q4));
+ok_response(q4, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Summary Statistics II
+
+Which of the following is the median of the `price` variable?
+
+```{ojs}
+//| echo: false
+
+viewof q5 = Inputs.radio(
+  new Map([
+    ["$160,000", 1],
+    ["$167,842.47", 2],
+    ["$180,796.10", 3],
+    ["$200,000", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+);
+
+localStorage.setItem("q5", JSON.stringify(q5));
+ok_response(q5, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Summary Statistics III
+
+What does the relationship between the mean and median tell you about the distribution of `price`?
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["The `price` variable is skewed right.", 1],
+    ["The `price` variable is skewed left.", 2],
+    ["The `price` variable is bimodal.", 3],
+    ["The `price` variable is symmetric.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+);
+
+localStorage.setItem("q6", JSON.stringify(q6));
+ok_response(q6, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Summary Statistics IV
+
+Which of the following is the mean of the `area` variable?
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["1,442 sqft", 1],
+    ["1,458.42 sqft", 2],
+    ["1,462.5 sqft", 3],
+    ["1,499.69 sqft", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+);
+
+localStorage.setItem("q7", JSON.stringify(q7));
+ok_response(q7, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Summary Statistics V
+
+Which of the following is the median of the `area` variable?
+
+```{ojs}
+//| echo: false
+
+viewof q8 = Inputs.radio(
+  new Map([
+    ["1,442 sqft", 1],
+    ["1,458.42 sqft", 2],
+    ["1,462.5 sqft", 3],
+    ["1,499.69 sqft", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+);
+
+localStorage.setItem("q8", JSON.stringify(q8));
+ok_response(q8, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Summary Statistics VI
+
+What does the relationship between the mean and median tell you about the distribution of `area`?
+
+```{ojs}
+//| echo: false
+
+viewof q9 = Inputs.radio(
+  new Map([
+    ["The `area` variable is skewed right.", 1],
+    ["The `area` variable is skewed left.", 2],
+    ["The `area` variable is bimodal.", 3],
+    ["The `area` variable is symmetric.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9") ?? "null")}
+);
+
+localStorage.setItem("q9", JSON.stringify(q9));
+ok_response(q9, "1");
+```
+
+:::
+
+Use the code block below to verify your answers about the shapes of the distributions. The code to produce the histogram and boxplot for `area` is already present. Add the code necessary to produce a histogram and boxplot for `price`. Are you able to see the skew in the distributions?
+
+```{webr}
+#| exercise: plot-area-price-dists
+#| message: false
+#| warning: false
+
+ggplot() + 
+  geom_histogram(aes(x = area)) + 
+  labs(title = "Histogram of Home Size",
+       x = "Size (sq ft)", y = "Count")
+
+ggplot() + 
+  geom_boxplot(aes(x = area)) + 
+  labs(title = "Boxplot of Home Sizes",
+       x = "Size (sq ft)")
+```
+
+:::{.hint exercise="plot-area-price-dists"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Start by copying and pasting the code for the existing plots. What needs to be changed?
+
+```{r}
+#| echo: true
+#| eval: false
+
+ggplot() + 
+  geom_histogram(aes(x = area)) + 
+  labs(title = "Histogram of Home Size",
+       x = "Size (sq ft)", y = "Count")
+
+ggplot() + 
+  geom_boxplot(aes(x = area)) + 
+  labs(title = "Boxplot of Home Sizes",
+       x = "Size (sq ft)")
+
+ggplot() + 
+  geom_histogram(aes(x = area)) + 
+  labs(title = "Histogram of Home Size",
+       x = "Size (sq ft)", y = "Count")
+
+ggplot() + 
+  geom_boxplot(aes(x = area)) + 
+  labs(title = "Boxplot of Home Sizes",
+       x = "Size (sq ft)")
+```
+
+:::
+:::
+
+:::{.hint exercise="plot-area-price-dists"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+In the second set of plots, we'll need to replace the variable being plotted and rewrite the labels to describe what's being plotted.
+
+```{r}
+#| echo: true
+#| eval: false
+
+ggplot() + 
+  geom_histogram(aes(x = area)) + 
+  labs(title = "Histogram of Home Size",
+       x = "Size (sq ft)", y = "Count")
+
+ggplot() + 
+  geom_boxplot(aes(x = area)) + 
+  labs(title = "Boxplot of Home Sizes",
+       x = "Size (sq ft)")
+
+ggplot() + 
+  geom_histogram(aes(x = ___)) + 
+  labs(title = "Histogram of ___",
+       x = "___", y = "Count")
+
+ggplot() + 
+  geom_boxplot(aes(x = ___)) + 
+  labs(title = "Boxplot of ___",
+       x = "___")
+```
+
+:::
+:::
+
+:::{.hint exercise="plot-area-price-dists"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+You'll want to map `price` to the `x` aesthetic in both the histogram and boxplot.
+
+```{r}
+#| echo: true
+#| eval: false
+
+ggplot() + 
+  geom_histogram(aes(x = area)) + 
+  labs(title = "Histogram of Home Size",
+       x = "Size (sq ft)", y = "Count")
+
+ggplot() + 
+  geom_boxplot(aes(x = area)) + 
+  labs(title = "Boxplot of Home Sizes",
+       x = "Size (sq ft)")
+
+ggplot() + 
+  geom_histogram(aes(x = price)) + 
+  labs(title = "Histogram of ___",
+       x = "___", y = "Count")
+
+ggplot() + 
+  geom_boxplot(aes(x = price)) + 
+  labs(title = "Boxplot of ___",
+       x = "___")
+```
+
+:::
+:::
+
+:::{.hint exercise="plot-area-price-dists"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+Now provide meaningful titles and axis labels.
+
+```{r}
+#| echo: true
+#| eval: false
+
+ggplot() + 
+  geom_histogram(aes(x = area)) + 
+  labs(title = "Histogram of Home Size",
+       x = "Size (sq ft)", y = "Count")
+
+ggplot() + 
+  geom_boxplot(aes(x = area)) + 
+  labs(title = "Boxplot of Home Sizes",
+       x = "Size (sq ft)")
+
+ggplot() + 
+  geom_histogram(aes(x = price)) + 
+  labs(title = "Histogram of Selling Prices",
+       x = "Sale Price ($)", y = "Count")
+
+ggplot() + 
+  geom_boxplot(aes(x = price)) + 
+  labs(title = "Boxplot of Selling Prices",
+       x = "Sale Price ($)")
+```
+
+:::
+:::
+
+## Taking Samples
+
+In this lab we have access to the entire population, but this is rarely the case in real life. Gathering information on an entire population is often extremely costly or impossible. Because of this, we usually take a sample of the population and use that to understand the properties of the population.
+
+If we were interested in estimating the mean living area in Ames based on a sample, we can use the `sample()` function to survey the population. Try running the code in the block below a few times — what happens?
+
+```{webr}
+#| exercise: samp1
+
+samp1 <- sample(area, 50)
+samp1
+```
+
+This command collects a simple random sample of size 50 from the vector `area` and assigns it to `samp1`. This is like going into the City Assessor's database and pulling up the files on 50 random home sales. Working with these 50 files would be considerably simpler than working with all 2,930 home sales.
+
+Run the code block below to produce a histogram of all observations in the population alongside a histogram of only those houses in our sample. How does the sample distribution compare to the population distribution?
+
+```{webr}
+#| exercise: plot-dist-sampl
+#| message: false
+#| warning: false
+
+# Take a sample
+samp <- sample(area, 50)
+
+# Store a histogram of the entire population
+p1 <- ggplot() + 
+  geom_histogram(aes(x = area)) + 
+  labs(title = "Population",
+       x = "Living Area (sq ft)", y = "Count") + 
+  xlim(c(0, 6000))
+
+# Store a histogram of the sample
+p2 <- ggplot() + 
+  geom_histogram(aes(x = samp)) + 
+  labs(title = "Sample (n = 50)",
+       x = "Living Area (sq ft)", y = "Count") + 
+  xlim(c(0, 6000))
+
+p1 + p2
+```
+
+If we're interested in estimating the average living area of homes in Ames using our sample, our best single guess is the sample mean. Run the code block below and use the result to answer the question that follows.
+
+```{webr}
+#| exercise: mean-samp1
+
+samp1 <- sample(area, 50)
+mean(samp1)
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Point Estimates
+
+Which of the following is true?
+
+```{ojs}
+//| echo: false
+
+viewof q10 = Inputs.radio(
+  new Map([
+    ["The sample mean is an estimate for the true population mean.", 1],
+    ["The sample mean is the true population mean.", 2],
+    ["We are unable to say anything about the relationship between the sample mean and population mean.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
+);
+
+localStorage.setItem("q10", JSON.stringify(q10));
+ok_response(q10, "1");
+```
+
+:::
+
+Depending on which 50 homes you selected, your estimate could be a bit above or a bit below the true population mean of 1,499.69 square feet. In general, though, the sample mean turns out to be a pretty good estimate of the average living area, and we were able to get it by sampling less than 3% of the population.
+
+Use the code block below to take a second sample, also of size 50, and call it `samp2`. How does the mean of `samp2` compare with the mean of `samp1`?
+
+```{webr}
+#| exercise: second-sample
+# Take a second sample of size 50 and compare its mean to samp1
+
+```
+
+:::{.hint exercise="second-sample"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Copy and paste the code from the previous code block. What should be changed?
+
+```{r}
+#| echo: true
+#| eval: false
+samp1 <- sample(area, 50)
+samp1
+```
+
+:::
+:::
+
+:::{.hint exercise="second-sample"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+Change `samp1` to `samp2` in both lines.
+
+```{r}
+#| echo: true
+#| eval: false
+samp2 <- sample(area, 50)
+samp2
+```
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sample Size
+
+If you took a sample of size 50, a sample of size 100, and a sample of size 200, which sample would you expect to result in the most accurate estimate of the population mean?
+
+```{ojs}
+//| echo: false
+
+viewof q11 = Inputs.radio(
+  new Map([
+    ["Sample of size 50", 1],
+    ["Sample of size 100", 2],
+    ["Sample of size 200", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q11") ?? "null")}
+);
+
+localStorage.setItem("q11", JSON.stringify(q11));
+ok_response(q11, "3");
+```
+
+:::
+
+## Constructing a Sampling Distribution
+
+Not surprisingly, every time we take another random sample, we get a different sample mean. It's useful to get a sense of just how much variability we should expect when estimating the population mean this way. The *sampling distribution* can help us understand this variability. Because we have access to the entire population, we can build up the sampling distribution for the sample mean by repeating the above steps many times.
+
+The code below generates 5,000 samples of size 50 and computes the sample mean of each. Run the code to see the distribution of sample means.
+
+```{webr}
+#| exercise: loop
+#| message: false
+#| warning: false
+
+sample_means50 <- rep(NA, 5000)
+
+for(i in 1:5000){
+  samp <- sample(area, 50)
+  sample_means50[i] <- mean(samp)
+}
+
+ggplot() + 
+  geom_histogram(aes(x = sample_means50)) + 
+  labs(title = "Sampling Distribution of Sample Means (n = 50)",
+       x = "Avg Living Area (sq ft)", y = "Count")
+```
+
+You may notice a warning message about bin width. The following code block shows how to adjust the number of bins using the `bins` argument. Run it to see the difference.
+
+```{webr}
+#| exercise: hist-breaks
+#| message: false
+#| warning: false
+
+sample_means50 <- rep(NA, 5000)
+
+for(i in 1:5000){
+  samp <- sample(area, 50)
+  sample_means50[i] <- mean(samp)
+}
+
+ggplot() + 
+  geom_histogram(aes(x = sample_means50), bins = 8) + 
+  labs(title = "Sampling Distribution of Sample Means (n = 50)",
+       x = "Avg Living Area (sq ft)", y = "Count")
+```
+
+:::{.callout-caution}
+## Check Your Understanding: `sample_means50` I
+
+How many elements are there in `sample_means50`?
+
+```{ojs}
+//| echo: false
+
+viewof q12 = Inputs.radio(
+  new Map([
+    ["50", 1],
+    ["82", 2],
+    ["2,930", 3],
+    ["5,000", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q12") ?? "null")}
+);
+
+localStorage.setItem("q12", JSON.stringify(q12));
+ok_response(q12, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: `sample_means50` II
+
+Where is the sampling distribution centered? That is, what is the mean of the distribution of sample means?
+
+```{ojs}
+//| echo: false
+
+viewof q13 = Inputs.radio(
+  new Map([
+    ["Approximately 1,250 sq ft", 1],
+    ["Approximately 1,500 sq ft", 2],
+    ["Approximately 1,600 sq ft", 3],
+    ["Approximately 2,930 sq ft", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q13") ?? "null")}
+);
+
+localStorage.setItem("q13", JSON.stringify(q13));
+ok_response(q13, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: `sample_means50` III
+
+Would you expect the distribution to change if we instead collected 50,000 sample means instead of 5,000?
+
+```{ojs}
+//| echo: false
+
+viewof q14 = Inputs.radio(
+  new Map([
+    ["No. We would have more sample means, but the shape of the distribution would not likely change much.", 1],
+    ["Yes. The distribution would be more narrow.", 2],
+    ["Yes. The distribution may change drastically since this is an entirely new set of samples.", 3],
+    ["No. The distribution will be exactly the same.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q14") ?? "null")}
+);
+
+localStorage.setItem("q14", JSON.stringify(q14));
+ok_response(q14, "1");
+```
+
+:::
+
+## Interlude: The `for` Loop
+
+Let's take a break from the statistics for a moment to understand the code you used to generate all of those sample means and build the sampling distribution.
+
+You may have just run your first ever `for` loop — a cornerstone of computer programming. The idea behind the `for` loop is *iteration*: it allows you to execute code as many times as you want without having to type it out over and over again. Without the `for` loop, filling in just the first four entries of `sample_means50` would require code like this:
+
+```{r}
+#| echo: true
+#| eval: false
+
+sample_means50 <- rep(NA, 5000)
+
+samp <- sample(area, 50)
+sample_means50[1] <- mean(samp)
+
+samp <- sample(area, 50)
+sample_means50[2] <- mean(samp)
+
+samp <- sample(area, 50)
+sample_means50[3] <- mean(samp)
+
+samp <- sample(area, 50)
+sample_means50[4] <- mean(samp)
+```
+
+You would only need to copy and paste that pattern 4,996 more times to fill in the entire vector! With the `for` loop, those thousands of lines are compressed into a handful. Here's a simple loop — read the code and guess what will happen, then run it and see if you were right.
+
+```{webr}
+#| exercise: simple-loop
+
+total <- 0
+
+for(i in 1:10){
+  total <- total + i
+  print(total)
+}
+```
+
+Now, back to the original code. Let's consider it line by line:
+
+```{r}
+#| echo: true
+#| eval: false
+
+sample_means50 <- rep(NA, 5000)
+
+for(i in 1:5000){
+  samp <- sample(area, 50)
+  sample_means50[i] <- mean(samp)
+}
+```
+
++ **Line 1** initializes a vector of 5,000 `NA` entries called `sample_means50`. This vector will store the results generated within the `for` loop.
++ **Line 3** calls the `for` loop. It can be read as: *"for every integer `i` from 1 to 5000, run the following lines of code."* The loop runs once when `i = 1`, once when `i = 2`, and so on up to (and including) `i = 5000`.
++ **Lines 4–5** are the *body* of the loop — the code that runs on every iteration. Each time through, we take a random sample of size 50 from `area`, compute its mean, and store it as the $i^{th}$ element of `sample_means50`.
+
+To make sure you understand what you've done, build and run a smaller version in the code block below. Initialize a vector of 100 zeros called `sample_means_small`, run a loop that takes a sample of size 50 from `area` and stores the sample mean in `sample_means_small`, iterating from 1 to 100. Print the output by including `sample_means_small` after the loop.
+
+```{webr}
+#| exercise: small-loop
+______
+```
+
+:::{.hint exercise="small-loop"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Start with the original `for` loop which creates `sample_means50`. What needs to be changed?
+
+```{r}
+#| echo: true
+#| eval: false
+
+sample_means50 <- rep(NA, 5000)
+
+for(i in 1:5000){
+  samp <- sample(area, 50)
+  sample_means50[i] <- mean(samp)
+}
+```
+
+:::
+:::
+
+:::{.hint exercise="small-loop"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+We'll actually be changing quite a few items. We'll also want to print out the resulting list of sample means.
+
+```{r}
+#| echo: true
+#| eval: false
+
+___ <- rep(___, ___)
+
+for(i in 1:___){
+  samp <- sample(area, 50)
+  ___[i] <- mean(samp)
+}
+
+#Print out the list of sample means
+___
+```
+
+:::
+:::
+
+:::{.hint exercise="small-loop"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+In the first line, the name of the container will be `sample_means_small`, and it will be initialized by repeating zero 100 times. We can initialize that container with any value we like (`NA` or 0 are natural choices) because they'll just be overwritten shortlyly.
+
+```{r}
+#| echo: true
+#| eval: false
+
+sample_means_small <- rep(0, 100)
+
+for(i in 1:___){
+  samp <- sample(area, 50)
+  ___[i] <- mean(samp)
+}
+
+#Print out the list of sample means
+___
+```
+
+:::
+:::
+
+:::{.hint exercise="small-loop"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+In the third line, the `for` loop needs to overwrite all of the entries in the `sample_means_small` container, one element at a time. There are 100 slots in `sample_means_small`, so the `for` loop will run for `i` between 1 and 100.
+
+```{r}
+#| echo: true
+#| eval: false
+
+sample_means_small <- rep(0, 100)
+
+for(i in 1:100){
+  samp <- sample(area, 50)
+  ___[i] <- mean(samp)
+}
+
+#Print out the list of sample means
+___
+```
+
+:::
+:::
+
+:::{.hint exercise="small-loop"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+In the last line inside of the `for` loop, we're overwriting the contents of `sample_means_small` one slot at a time. Fill that blank with `sample_means_small`. 
+
+```{r}
+#| echo: true
+#| eval: false
+
+sample_means_small <- rep(0, 100)
+
+for(i in 1:100){
+  samp <- sample(area, 50)
+  sample_means_small[i] <- mean(samp)
+}
+
+#Print out the list of sample means
+___
+```
+
+:::
+:::
+
+:::{.hint exercise="small-loop"}
+:::{.callout-note collapse="false"}
+## Hint 6 (Solved)
+
+The sample means are now contained in `sample_means_small`. Print them out by typing `sample_means_small` in place of the blank on the last line.
+
+```{r}
+#| echo: true
+#| eval: false
+
+sample_means_small <- rep(0, 100)
+
+for(i in 1:100){
+  samp <- sample(area, 50)
+  sample_means_small[i] <- mean(samp)
+}
+
+#Print out the list of sample means
+sample_means_small
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: small-loop
+#| solution: true
+
+sample_means_small <- rep(0, 100)
+
+for(i in 1:100){
+  samp <- sample(area, 50)
+  sample_means_small[i] <- mean(samp)
+}
+
+sample_means_small
+```
+
+```{webr}
+#| exercise: small-loop
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+:::{.callout-caution}
+## Check Your Understanding: `sample_means_small` I
+
+How many elements are there in `sample_means_small`?
+
+```{ojs}
+//| echo: false
+
+viewof q15 = Inputs.radio(
+  new Map([
+    ["10", 1],
+    ["50", 2],
+    ["100", 3],
+    ["2,930", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q15") ?? "null")}
+);
+
+localStorage.setItem("q15", JSON.stringify(q15));
+ok_response(q15, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: `sample_means_small` II
+
+What does each element of `sample_means_small` represent?
+
+```{ojs}
+//| echo: false
+
+viewof q16 = Inputs.radio(
+  new Map([
+    ["The living area of a house in square feet.", 1],
+    ["The average living area of a random sample of 50 houses in square feet.", 2],
+    ["The average living area of a random sample of 100 houses in square feet.", 3],
+    ["The average living area of a random sample of 5,000 houses in square feet.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q16") ?? "null")}
+);
+
+localStorage.setItem("q16", JSON.stringify(q16));
+ok_response(q16, "2");
+```
+
+:::
+
+## Sample Size and the Sampling Distribution
+
+Now that we have a better understanding of the mechanics of our code, let's return to the reason we used a `for` loop: to compute an approximation for the *sampling distribution*. To get a sense of the effect that sample size has on the sampling distribution, build up two more sampling distributions: one based on a sample size of 10 and another based on a sample size of 100. Call them `sample_means10` and `sample_means100` respectively. The code to create `sample_means50` is pre-populated for reference.
+
+```{webr}
+#| exercise: samp10-samp100
+#| message: false
+#| warning: false
+
+# Samples of 50 houses at a time
+sample_means50 <- rep(NA, 5000)
+
+for(i in 1:5000){
+  samp <- sample(area, 50)
+  sample_means50[i] <- mean(samp)
+}
+```
+
+:::{.hint exercise="samp10-samp100"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Copy and paste all of the code to create `sample_means50` twice and update it to create `sample_means10` and `sample_means100`.
+
+:::
+:::
+
+:::{.hint exercise="samp10-samp100"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Fill in the blanks for both new objects:
+
+```{r}
+#| echo: true
+#| eval: false
+
+sample_means50 <- rep(NA, 5000)
+for(i in 1:5000){
+  samp <- sample(area, 50)
+  sample_means50[i] <- mean(samp)
+}
+
+___ <- rep(___, ___)
+for(i in 1:___){
+  samp <- sample(area, ___)
+  ___[i] <- mean(samp)
+}
+
+___ <- rep(___, ___)
+for(i in 1:___){
+  samp <- sample(area, ___)
+  ___[i] <- mean(samp)
+}
+```
+
+:::
+:::
+
+:::{.hint exercise="samp10-samp100"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Fill in the blanks for `sample_means100` similarly:
+
+```{r}
+#| echo: true
+#| eval: false
+
+sample_means50 <- rep(NA, 5000)
+for(i in 1:5000){
+  samp <- sample(area, 50)
+  sample_means50[i] <- mean(samp)
+}
+
+sample_means10 <- rep(NA, 5000)
+for(i in 1:5000){
+  samp <- sample(area, 10)
+  sample_means10[i] <- mean(samp)
+}
+
+sample_means100 <- rep(___, ___)
+for(i in 1:___){
+  samp <- sample(area, ___)
+  ___[i] <- mean(samp)
+}
+```
+
+:::
+:::
+
+:::{.hint exercise="samp10-samp100"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+Fill in the blanks for `sample_means100` similarly:
+
+```{r}
+#| echo: true
+#| eval: false
+
+sample_means50 <- rep(NA, 5000)
+for(i in 1:5000){
+  samp <- sample(area, 50)
+  sample_means50[i] <- mean(samp)
+}
+
+sample_means10 <- rep(NA, 5000)
+for(i in 1:5000){
+  samp <- sample(area, 10)
+  sample_means10[i] <- mean(samp)
+}
+
+sample_means100 <- rep(NA, 5000)
+for(i in 1:5000){
+  samp <- sample(area, 100)
+  sample_means100[i] <- mean(samp)
+}
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: samp10-samp100
+#| solution: true
+
+# Samples of 50 houses at a time
+sample_means50 <- rep(NA, 5000)
+for(i in 1:5000){
+  samp <- sample(area, 50)
+  sample_means50[i] <- mean(samp)
+}
+
+# Samples of 10 houses at a time
+sample_means10 <- rep(NA, 5000)
+for(i in 1:5000){
+  samp <- sample(area, 10)
+  sample_means10[i] <- mean(samp)
+}
+
+# Samples of 100 houses at a time
+sample_means100 <- rep(NA, 5000)
+for(i in 1:5000){
+  samp <- sample(area, 100)
+  sample_means100[i] <- mean(samp)
+}
+```
+
+```{webr}
+#| exercise: samp10-samp100
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+Now that you've created the three sampling distributions, I've done a bit of "behind the scenes" work to combine them into a single data frame. This makes it convenient to compare them in a single faceted plot. Run the code block below to see the effect that different sample sizes have on the sampling distribution.
+
+```{webr}
+#| exercise: plot-samp-dists
+#| setup: true
+#| echo: false
+
+sample_means50  <- rep(NA, 5000)
+sample_means10  <- rep(NA, 5000)
+sample_means100 <- rep(NA, 5000)
+
+for(i in 1:5000){
+  sample_means10[i]  <- mean(sample(area, 10))
+  sample_means50[i]  <- mean(sample(area, 50))
+  sample_means100[i] <- mean(sample(area, 100))
+}
+
+df10  <- data.frame(SampDist = "sample_means10",  SampleMean = sample_means10)
+df50  <- data.frame(SampDist = "sample_means50",  SampleMean = sample_means50)
+df100 <- data.frame(SampDist = "sample_means100", SampleMean = sample_means100)
+
+sample_means <- bind_rows(df10, df50, df100)
+sample_means$SampDist <- factor(
+  sample_means$SampDist,
+  levels = c("sample_means10", "sample_means50", "sample_means100"),
+  ordered = TRUE
+)
+```
+
+```{webr}
+#| exercise: plot-samp-dists
+#| message: false
+#| warning: false
+
+ggplot(data = sample_means) + 
+  geom_histogram(aes(x = SampleMean)) + 
+  facet_wrap(~ SampDist, nrow = 3) +
+  labs(title = "Sampling Distributions (n = 10, 50, 100)",
+       x = "Avg Living Area (sq ft)", y = "Count")
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Effect of Sample Size I
+
+When the sample size is larger, what happens to the center of the sampling distribution?
+
+```{ojs}
+//| echo: false
+
+viewof q17 = Inputs.radio(
+  new Map([
+    ["The center stays near the population mean (about 1,500 sq ft).", 1],
+    ["The center bounces around uncontrollably.", 2],
+    ["The center stayed near the population mean, but if we ran this a second time the results could be quite different.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q17") ?? "null")}
+);
+
+localStorage.setItem("q17", JSON.stringify(q17));
+ok_response(q17, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Effect of Sample Size II
+
+What happens to the spread of the sampling distribution as the sample size increases?
+
+```{ojs}
+//| echo: false
+
+viewof q18 = Inputs.radio(
+  new Map([
+    ["The larger the sample size, the wider the sampling distribution.", 1],
+    ["The larger the sample size, the more narrow the sampling distribution.", 2],
+    ["The sample size and spread of the sampling distribution are independent.", 3],
+    ["Larger sample sizes resulted in a more narrow spread this time, but if we built new sampling distributions we may not reproduce this.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q18") ?? "null")}
+);
+
+localStorage.setItem("q18", JSON.stringify(q18));
+ok_response(q18, "2");
+```
+
+:::
+
+## Confidence Intervals
+
+Based on a sample, what can we infer about the population? In practice, we'll have just a single sample. In this case, the best estimate of the average living area of houses sold in Ames would be the sample mean $\bar{x}$. That serves as a reasonable *point estimate*, but it would be useful to also communicate how uncertain we are of that estimate. This can be captured by using a *confidence interval*.
+
+We can calculate a 95% confidence interval for a sample mean by adding and subtracting a certain number of standard errors to the point estimate. For a 95% confidence interval, that number comes from the normal distribution — specifically, the value that cuts off 2.5% in each tail. If you remember the Empirical Rule, you'll recall that approximately 95% of observations fall within two standard deviations of the mean. A more precise value is 1.96, and for now we'll use this as our multiplier.
+
+:::{.callout-tip}
+## A Note on 1.96
+
+Using 1.96 assumes we know quite a bit about the population. In practice, we almost never do — and in later activities we'll introduce a refinement that accounts for this uncertainty. For now, 1.96 gives us a good working approximation and lets us focus on the core idea: that a confidence interval puts a range of plausible values around our point estimate.
+:::
+
+Use the code block below to take a single sample of size 60 of areas from houses in Ames. Call it `samp`.
+
+```{webr}
+#| exercise: samp60
+______
+```
+
+:::{.hint exercise="samp60"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Look earlier in the activity for where we took samples of square footage areas for homes. Adapt that code here.
+
+```{r}
+#| echo: true
+#| eval: false
+
+___ <- sample(___, ___)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: samp60
+#| solution: true
+
+samp <- sample(area, 60)
+```
+
+```{webr}
+#| exercise: samp60
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+Run the code below to construct the confidence interval.
+
+```{webr}
+#| exercise: ci
+#| setup: true
+#| echo: false
+
+set.seed(241)
+samp <- sample(area, 60)
+```
+
+```{webr}
+#| exercise: ci
+
+# Calculate the sample mean
+sample_mean <- mean(samp)
+
+# Calculate the standard error
+se <- sd(samp) / sqrt(60)
+
+# Compute the limits of the confidence interval
+lower <- sample_mean - 1.96 * se
+upper <- sample_mean + 1.96 * se
+
+# Print out the bounds
+c(lower, upper)
+```
+
+:::{.callout-tip}
+## Interpreting a Confidence Interval
+
+This is an important inference: even though we don't know what the full population looks like, ***we're 95% confident that the true average size of houses in Ames lies between the calculated `lower` and `upper` bounds calculated***. 
+:::
+
+There are a few conditions that must be met for this interval to be valid -- the questions that follow test what you recall from our previous discussion on the *Central Limit Theorem*.
+
+:::{.callout-caution}
+## Check Your Understanding: Confidence Interval Conditions
+
+For the confidence interval to be valid, the sample mean must be normally distributed and have standard error $s / \sqrt{n}$. What conditions must be met for this to be true? Select all that apply.
+
+```{ojs}
+//| echo: false
+
+mutable ok_checkbox = (response, n) => { return html`Loading...` };
+viewof q19 = Inputs.checkbox(
+  new Map([
+    ["The population must be normally distributed.", 1],
+    ["The sample size must be large enough to overcome any skew in the population (usually at least 30 for moderate skew).", 2],
+    ["The sample taken must be random and representative of the population.", 3],
+    ["The confidence interval must contain the true population mean.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q19") ?? "[]")}
+);
+
+localStorage.setItem("q19", JSON.stringify(q19));
+ok_checkbox(q19.toString(), "2,3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Interpreting the Confidence Interval
+
+Which of the following is the correct interpretation of the 95% confidence interval?
+
+```{ojs}
+//| echo: false
+
+viewof q20 = Inputs.radio(
+  new Map([
+    ["We are 95% confident that the true population mean square footage of living area for houses sold in Ames, Iowa between 2006 and 2010 is between the lower and upper bound calculated.", 1],
+    ["There is a 95% chance that the true population mean square footage of living area for houses sold in Ames, Iowa between 2006 and 2010 is between the lower and upper bound.", 2],
+    ["We are 95% confident that the sample mean square footage of living area for houses sold in Ames, Iowa between 2006 and 2010 is between the lower and upper bound.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q20") ?? "null")}
+);
+
+localStorage.setItem("q20", JSON.stringify(q20));
+ok_response(q20, "1");
+```
+
+:::
+
+In this case we have the luxury of knowing the true population mean since we have data on the entire population. We calculated it earlier — it is `r round(mean(area), 2)` square feet.
+
+Every time you run the code to build `samp` and construct the confidence interval you will get a slightly different confidence interval.
+
+:::{.callout-caution}
+## Check Your Understanding: Coverage of Confidence Intervals
+
+If you built these confidence intervals over and over, about what proportion of the intervals do you expect to contain the true population mean?
+
+```{ojs}
+//| echo: false
+
+viewof q21 = Inputs.radio(
+  new Map([
+    ["Around 50%", 1],
+    ["About 90%", 2],
+    ["About 95%", 3],
+    ["100%", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q21") ?? "null")}
+);
+
+localStorage.setItem("q21", JSON.stringify(q21));
+ok_response(q21, "3");
+```
+
+:::
+
+:::{.callout-important}
+## Clarifying the Meaning of the Confidence Level
+
+Your response to the previous question highlights a real intricacy. The level of confidence -- here 95% -- indicates the confidence that we have in the *procedure*. That is, in the long run, if we were to collect data and construct confidence intervals for the average square footage of homes sold, about 95% of those intervals would contain the population mean ($\mu$).
+:::
+
+The claim in the box above can be difficult to grasp. We'll use visuals to clarify what is being said. We're going to recreate many samples (a hundred of them) and construct a confidence interval from the randomly chosen properties in each. Here is the rough outline:
+
+1. Obtain a random sample.
+2. Calculate and store the sample's mean and standard deviation.
+3. Repeat steps 1 and 2 one hundred times.
+4. Use these stored statistics to calculate many confidence intervals.
+
+Read the code below — does it make sense to you? What do you think the result will be? Once you think you know, run the code block and see if you were right. Run it multiple times and observe what changes. What do the red highlighted intervals indicate? About how many red intervals do you observe on average?
+
+```{webr}
+#| exercise: lots-of-ci
+
+samp_mean <- rep(NA, 100)
+samp_sd   <- rep(NA, 100)
+n <- 60
+
+for(i in 1:100){
+  samp <- sample(area, n)
+  samp_mean[i] <- mean(samp)
+  samp_sd[i]   <- sd(samp)
+}
+
+lower_vector <- samp_mean - 1.96 * samp_sd / sqrt(n) 
+upper_vector <- samp_mean + 1.96 * samp_sd / sqrt(n)
+
+plot_ci(lower_vector, upper_vector, mean(area))
+```
+
+Good work through this activity. I hope it has made the Central Limit Theorem and sampling distributions a bit more intuitive. We'll do more with confidence intervals in the coming activities. If you are interested in doing more, go back through this activity using the `price` data in place of `area`.
+
+## Submit
+
+:::{.callout-warning}
+
+Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+
+:::
+
+:::{.callout-note}
+## License
+
+This is a derivative of a product of OpenIntro that is released under a [Creative Commons Attribution-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-sa/3.0) license. This lab was adapted for OpenIntro by Andrew Bray and Mine Çetinkaya-Rundel from a lab written by Mark Hansen of UCLA Statistics.
+:::
+
+## Summary
+
+In this activity you connected the abstract machinery of the Central Limit Theorem to a concrete application — estimating the average home size in Ames, Iowa. Here are the key takeaways and a look at what's ahead.
+
+:::{.callout-tip}
+## Main Takeaways
+
++ **Sample statistics are point estimates for population parameters.** The sample mean $\bar{x}$ is our best single guess for the population mean $\mu$, but we must acknowledge that the estimate $\bar{x}$ will vary from sample to sample.
++ **The sampling distribution describes that variability.** By simulating many samples and computing each mean, we can see how much our estimate is likely to fluctuate — and that fluctuation decreases as sample size grows.
++ **Larger samples produce more precise estimates.** The standard error $S_E = s/\sqrt{n}$ quantifies this — as $n$ increases, $S_E$ decreases, and our sampling distribution narrows.
++ **A confidence interval quantifies our uncertainty.** A 95% confidence interval is constructed as $\bar{x} \pm 1.96 \times S_E$. Rather than a single point estimate, it gives a range of plausible values for the population mean.
++ **"95% confident" has a specific meaning.** If we repeated the sampling process many times and built a confidence interval each time, approximately 95% of those intervals would contain the true population mean. Any single interval either contains the true mean or it doesn't — we just don't know which.
++ **The `for` loop is a powerful tool for simulation.** It allowed us to build entire sampling distributions and collections of confidence intervals that would be impossibly tedious to construct by hand.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+In this activity you built confidence intervals informally using the formula $\bar{x} \pm 1.96 \times S_E$. In the coming activities we'll formalize this process, explore some intricacies, and extend these ideas to comparing two groups and investigating specific claims about populations.
+:::

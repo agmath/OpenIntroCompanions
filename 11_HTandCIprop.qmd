@@ -1,0 +1,1101 @@
+---
+title: "Topic 11: Hypothesis Tests and Confidence Intervals for Categorical Data"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        .exercise-editor-body { max-height: 300px; overflow-y: auto; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - ggplot2
+        - gradethis
+      cell-options:
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_checkbox
+
+ok_checkbox <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Not Yet! ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(dplyr)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+:::{.callout-note}
+## About
+
+This activity formally introduces confidence intervals and hypothesis tests as tools for statistical inference. We work through two motivating problems — one confidence interval and one hypothesis test — in the context of real survey data about immigration policy.
+:::
+
+## Hypothesis Testing and Confidence Intervals for Categorical Data
+
+In this activity, we continue our exploration of statistical inference. We'll cover the basic hypothesis testing framework in addition to discussing confidence intervals more formally than we did in the previous activity.
+
+We'll motivate this activity by watching three short videos from volunteers at OpenIntro.org. The first two are from Dr. David Diez, a data scientist, and the last is from Dr. Shannon McLintock, a member of the statistics faculty at Cal Poly. After each video, you'll walk through a hands-on application of the video content to a real scenario.
+
+## Variability in Point Estimates
+
+Our first video discusses *variability in point estimates*. Some of the content will sound familiar from the previous activity. Watch the video, then we'll engage with the ideas by walking through an example together.
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/oLW_uzkPZGA" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+**An Example:** A June 2020 Pew Research survey revealed that [74% of Americans support offering a path to citizenship](https://www.pewresearch.org/fact-tank/2020/06/17/americans-broadly-support-legal-status-for-immigrants-brought-to-the-u-s-illegally-as-children/){target="_blank"} for undocumented immigrants who were brought to the US illegally as children — often referred to as [DREAMers](https://forumtogether.org/article/dreamers-in-the-united-states-an-overview-of-the-dreamer-community-and-proposed-legislation/){target="_blank"}.
+
+We've discussed the impossibility of a true census, so the Pew study did not poll every single American. Instead, they surveyed 9,654 US adults between June 4 and June 10, 2020. You can [find out more about the study logistics here](https://www.pewresearch.org/wp-content/uploads/2020/06/W68-topline_DACA.pdf){target="_blank"} if you are interested. This means that the 74% referenced in the article is the proportion of individuals *from the study* who were in favor of a path to citizenship for the DREAMers.
+
+:::{.callout-caution}
+## Check Your Understanding: Terminology I
+
+The 74% from the Pew Research article is a/an (select all that apply):
+
+```{ojs}
+//| echo: false
+
+mutable ok_checkbox = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.checkbox(
+  new Map([
+    ["sample statistic.", 1],
+    ["population parameter.", 2],
+    ["point estimate.", 3],
+    ["observation.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "[]")}
+);
+
+localStorage.setItem("q1", JSON.stringify(q1));
+ok_checkbox(q1.toString(), "1,3");
+```
+
+:::
+
+:::{.callout-note}
+## Note on Terminology
+
+We often use *sample statistic* and *point estimate* interchangeably. A sample statistic serves as a point estimate for the corresponding population parameter.
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Terminology II
+
+What is the parameter of interest here?
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q2 = Inputs.radio(
+  new Map([
+    ["The sample proportion of American adults who are in favor of a citizenship option for DREAMers.", 1],
+    ["The true proportion of American adults who are in favor of a citizenship option for DREAMers.", 2],
+    ["74% of American adults.", 3],
+    ["All DREAMers.", 4],
+    ["All American adults.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+);
+
+localStorage.setItem("q2", JSON.stringify(q2));
+
+ok_response(q2, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Terminology III
+
+According to the methodology document, the 9,654 participants were a random sample representative of the population of American adults. If the study were completed again with a new set of 9,654 participants, we would expect:
+
+```{ojs}
+//| echo: false
+
+viewof q3 = Inputs.radio(
+  new Map([
+    ["A similar but slightly different result.", 1],
+    ["Exactly the same result.", 2],
+    ["A completely different result.", 3],
+    ["It is impossible to determine.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+);
+
+localStorage.setItem("q3", JSON.stringify(q3));
+ok_response(q3, "1");
+```
+
+:::
+
+The code below simulates a random sample of 9,654 individuals for which there is a 74% chance the individual is in support of a path to citizenship for DREAMers. This should look somewhat familiar if you completed the lab activity where we simulated shots taken by a basketball player in order to investigate the *hot hand* phenomenon. Run the code a few times to see the results.
+
+```{webr}
+#| exercise: sim-dream-support
+
+samp <- sample(c("Support Citizenship", "Do Not Support Citizenship"), 
+               size = 9654, 
+               prob = c(0.74, 0.26), 
+               replace = TRUE)
+table(samp)
+
+paste0("The sample proportion supporting the Citizenship option is: ", 
+       round(table(samp)[2] / 9654, 4))
+
+paste0("This is a sampling error of: ", 
+       round(table(samp)[2] / 9654 - 0.74, 4))
+```
+
+By running the code block above multiple times, you've probably seen that most of the samples resulted in a sample proportion within about one percentage point (0.01) of the assumed proportion $p = 0.74$.
+
+In the video, Dr. Diez discusses how we can use the *Central Limit Theorem* to quantify how much variability we should see in the point estimate from one sample to the next. In the case of a single proportion, the Central Limit Theorem states:
+
+:::{.callout-tip}
+## Central Limit Theorem for a Sample Proportion
+
+When observations are independent and the sample size is sufficiently large, the sample proportion $\hat{p}$ will tend to follow a normal distribution with mean $\mu = p$ (the true population proportion) and standard error $\displaystyle{S_E = \sqrt{\frac{p\left(1-p\right)}{n}}}$. That is:
+
+$$\hat{p} \sim N\!\left(\mu = p,\ S_E = \sqrt{\frac{p\left(1-p\right)}{n}}\right)$$
+
+It is typical to assume that *sufficiently large* means that the *success-failure condition* is satisfied. The condition requires that the sample is large enough that we should *expect* at least 10 "successes" and at least 10 "failures".
+:::
+
+Use the code block below to answer the questions that follow.
+
+```{webr}
+#| exercise: clt-prop-sandbox
+# Use this block for scratch calculations
+
+```
+
+:::{.hint exercise="clt-prop-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Think about the structure of this scenario: 9,654 people are each asked a yes/no question, and they are from a random sample. Does this setup sound familiar from our earlier work on probability?
+
+:::
+:::
+
+:::{.hint exercise="clt-prop-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+This is a binomial experiment. The number of "yes" responses is a binomial random variable with $n = 9{,}654$ and $p = 0.74$.
+
+:::
+:::
+
+:::{.hint exercise="clt-prop-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+For the success-failure condition, recall how we computed expected counts for a binomial random variable. What formula gives the expected number of successes?
+
+:::
+:::
+
+:::{.hint exercise="clt-prop-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+The expected number of successes is $n \cdot p$ and the expected number of failures is $n \cdot (1 - p)$. The success-failure condition requires both to be at least 10.
+
+:::
+:::
+
+:::{.hint exercise="clt-prop-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+For the standard error question, use the formula from the Central Limit Theorem callout above. What are the values of $p$ and $n$ in this problem?
+
+:::
+:::
+
+:::{.hint exercise="clt-prop-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+The standard error is $\sqrt{p(1-p)/n}$. What are the values of `p` and `n`?
+
+```{r}
+#| echo: true
+#| eval: false
+
+sqrt((___ * (1 - ___)) / ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="clt-prop-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 7 (Solved)
+
+The standard error is $\sqrt{p(1-p)/n}$. With $p = 0.74$ and $n = 9{,}654$:
+
+```{r}
+#| echo: true
+#| eval: false
+
+sqrt((0.74 * (1 - 0.74)) / 9654)
+```
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Success-Failure Condition I
+
+The sample size is sufficiently large if the *success-failure* condition is satisfied. What is the success-failure condition? Select all that apply.
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.checkbox(
+  new Map([
+    ["There should be at least an expected 10 observations in each group (here: in favor / not in favor).", 1],
+    ["If the population proportion is p and the sample size is n, then n⋅p ≥ 10 and n⋅(1−p) ≥ 10.", 2],
+    ["There should be a possibility that we succeed but also that we fail.", 3],
+    ["There must be at least one success and one failure.", 4],
+    ["Failure is an option.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "[]")}
+);
+
+localStorage.setItem("q4", JSON.stringify(q4));
+ok_checkbox(q4.toString(), "1,2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Success-Failure Condition II
+
+Is the success-failure condition satisfied for the Pew study with 9,654 participants?
+
+```{ojs}
+//| echo: false
+
+viewof q5 = Inputs.radio(
+  new Map([
+    ["Yes. We should expect at least 10 participants in favor and at least 10 participants opposed.", 1],
+    ["No. We cannot expect at least 10 participants to be in favor.", 2],
+    ["No. We cannot expect at least 10 participants to oppose.", 3],
+    ["No. We cannot expect at least 10 participants in either group.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+);
+
+localStorage.setItem("q5", JSON.stringify(q5));
+ok_response(q5, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Success-Failure Condition III
+
+Would the success-failure condition be satisfied for a small study with only 35 participants?
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["Yes. We should expect at least 10 participants in favor and at least 10 participants opposed.", 1],
+    ["No. We cannot expect at least 10 participants to be in favor.", 2],
+    ["No. We cannot expect at least 10 participants to oppose.", 3],
+    ["No. We cannot expect at least 10 participants in either group.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+);
+
+localStorage.setItem("q6", JSON.stringify(q6));
+ok_response(q6, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Shape of the Sampling Distribution
+
+What will be the shape of the sampling distribution for samples of size 9,654?
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["Approximately normal.", 1],
+    ["Skewed left.", 2],
+    ["Skewed right.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+);
+
+localStorage.setItem("q7", JSON.stringify(q7));
+ok_response(q7, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Standard Error
+
+Which of the following is the expected spread of the sampling distribution, measured by the standard error?
+
+```{ojs}
+//| echo: false
+
+viewof q8 = Inputs.radio(
+  new Map([
+    ["Approximately 0.00002", 1],
+    ["Approximately 0.0045", 2],
+    ["Approximately 0.26", 3],
+    ["Approximately 0.74", 4],
+    ["Approximately 0.1924", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+);
+
+localStorage.setItem("q8", JSON.stringify(q8));
+ok_response(q8, "2");
+```
+
+:::
+
+Notice that the standard error is about half of a percentage point (close to 0.005). Doubling this estimate closely matches what we observed about the sampling error using our simulations. This brings us to our next topic — *confidence intervals*.
+
+## Intro to Confidence Intervals
+
+Watch the next video from Dr. Diez. Once you've watched it, we'll continue with our example about the 2020 Pew Research study.
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/A6_W8qY8zJo" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+As Dr. Diez mentions, a confidence interval can be used to capture a population parameter with some desired degree of certainty. In general, we construct a confidence interval using the following formula:
+
+$$\left(\text{point estimate}\right) \pm \left(\text{critical value}\right) \cdot S_E$$
+
+where the **point estimate** comes from the sample data, the **critical value** is related to the level of confidence, and the **standard error** ($S_E$) measures the spread of the sampling distribution.
+
+Recall that we've been working with a 2020 Pew Research study which included 9,654 participants. The study resulted in 74% of participants being in favor of a path to citizenship for the DREAMers, and we computed the standard error to be approximately 0.0045.
+
+If the sampling distribution is well-modeled by a normal distribution, the following critical values are associated with several common levels of confidence:
+
+| Confidence Level | Critical Value |
+|:---:|:---:|
+| 90% | 1.65 |
+| 95% | 1.96 |
+| 98% | 2.33 |
+| 99% | 2.58 |
+
+Use what you learned in the video and your knowledge of the Pew Research study to answer the following questions. You can use the code block below for any necessary computations.
+
+```{webr}
+#| exercise: build-ci-code-block
+# Use this block for scratch calculations
+
+```
+
+:::{.hint exercise="build-ci-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+For the first three questions, re-read the paragraphs above. What are the three pieces of information needed to construct a confidence interval?
+
+:::
+:::
+
+:::{.hint exercise="build-ci-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+You now have the point estimate, standard error, and critical value. How are they used in constructing a 98% confidence interval?
+
+:::
+:::
+
+:::{.hint exercise="build-ci-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+To find the upper bound, add the margin of error to the point estimate. The margin of error is the critical value multiplied by the standard error.
+
+```{r}
+#| echo: true
+#| eval: false
+
+#Upper Bound:
+___ + (___ * ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="build-ci-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+The point estimate is 0.74, the critical value is 2.33, and the standard error is about 0.0045.
+
+```{r}
+#| echo: true
+#| eval: false
+
+#Upper Bound:
+___ + (___ * ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="build-ci-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+The point estimate is 0.74, the critical value is 2.33, and the standard error is about 0.0045.
+
+Now find the lower bound.
+
+```{r}
+#| echo: true
+#| eval: false
+
+#Upper Bound:
+0.74 + (2.33 * 0.0045)
+
+#Lower Bound: 
+```
+
+:::
+:::
+
+:::{.hint exercise="build-ci-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+The point estimate is 0.74, the critical value is 2.33, and the standard error is about 0.0045.
+
+To find the lower bound, we *subtract* the margin of error from the point estimate.
+
+```{r}
+#| echo: true
+#| eval: false
+
+#Upper Bound:
+0.74 + (2.33 * 0.0045)
+
+#Lower Bound: 
+___ - (___ * ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="build-ci-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 7
+
+The point estimate is 0.74, the critical value is 2.33, and the standard error is about 0.0045.
+
+To find the lower bound, we *subtract* the margin of error from the point estimate. The margin of error is still the critical value times the standard error, and the point estimate is still 0.74.
+
+```{r}
+#| echo: true
+#| eval: false
+
+#Upper Bound:
+0.74 + (2.33 * 0.0045)
+
+#Lower Bound: 
+0.74 - (2.33 * 0.0045)
+```
+
+:::
+:::
+
+:::{.hint exercise="build-ci-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 8
+
+For the final question: a 90% confidence interval uses a smaller critical value (1.65 vs. 2.33), which means a smaller margin of error and therefore a narrower interval.
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Confidence Interval I
+
+The *point estimate* for our confidence interval is:
+
+```{ojs}
+//| echo: false
+
+viewof q9 = Inputs.radio(
+  new Map([
+    ["0.74", 1],
+    ["74", 2],
+    ["7,144", 3],
+    ["9,654", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9") ?? "null")}
+);
+
+localStorage.setItem("q9", JSON.stringify(q9));
+ok_response(q9, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Confidence Interval II
+
+The standard error ($S_E$) is:
+
+```{ojs}
+//| echo: false
+
+viewof q10 = Inputs.radio(
+  new Map([
+    ["0.0045", 1],
+    ["0.5", 2],
+    ["0.74", 3],
+    ["9,653", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
+);
+
+localStorage.setItem("q10", JSON.stringify(q10));
+ok_response(q10, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Confidence Interval III
+
+The appropriate critical value for a 98% confidence interval is:
+
+```{ojs}
+//| echo: false
+
+viewof q11 = Inputs.radio(
+  new Map([
+    ["0.74", 1],
+    ["1.65", 2],
+    ["1.96", 3],
+    ["2.33", 4],
+    ["2.58", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q11") ?? "null")}
+);
+
+localStorage.setItem("q11", JSON.stringify(q11));
+ok_response(q11, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Confidence Interval IV
+
+Which of the following are the bounds for a 98% confidence interval? Select all that apply.
+
+```{ojs}
+//| echo: false
+
+viewof q12 = Inputs.checkbox(
+  new Map([
+    ["0.7295", 1],
+    ["0.7312", 2],
+    ["0.74", 3],
+    ["0.7489", 4],
+    ["0.7505", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q12") ?? "[]")}
+);
+
+localStorage.setItem("q12", JSON.stringify(q12));
+ok_checkbox(q12.toString(), "1,5");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Confidence Interval V
+
+Which of the following is the correct interpretation of the 98% confidence interval?
+
+```{ojs}
+//| echo: false
+
+viewof q13 = Inputs.radio(
+  new Map([
+    ["We are 98% confident that the true population proportion of American adults supporting a path to citizenship for the DREAMers is between the lower bound and the upper bound.", 1],
+    ["The true population proportion of American adults supporting a path to citizenship for the DREAMers is between the lower bound and the upper bound.", 2],
+    ["The probability that the true population proportion of American adults supporting a path to citizenship for the DREAMers is between the lower bound and the upper bound is 98%.", 3],
+    ["We are 98% confident that the sample proportion of American adults supporting a path to citizenship for the DREAMers is between the lower bound and the upper bound.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q13") ?? "null")}
+);
+
+localStorage.setItem("q13", JSON.stringify(q13));
+ok_response(q13, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Confidence Interval VI
+
+Without computing the bounds, a 90% confidence interval would be:
+
+```{ojs}
+//| echo: false
+
+viewof q14 = Inputs.radio(
+  new Map([
+    ["Wider than the 98% confidence interval.", 1],
+    ["More narrow than the 98% confidence interval.", 2],
+    ["Exactly the same as the 98% confidence interval.", 3],
+    ["It is impossible to tell without computing the bounds.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q14") ?? "null")}
+);
+
+localStorage.setItem("q14", JSON.stringify(q14));
+ok_response(q14, "2");
+```
+
+:::
+
+So far, so good! There's one more topic to go. Sometimes we'll want to test a claim about a population parameter rather than build a confidence interval for it. Inferential statistics provides a formal framework called the *hypothesis test* for evaluating statistical claims such as:
+
++ Is a population mean or proportion larger, smaller, or different from some proposed value?
++ Do the population means or proportions differ across multiple groups?
+
+## Intro to Hypothesis Testing
+
+Here's one more video from Dr. Shannon McLintock introducing the notion of the hypothesis test.
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/NVbPE1_Cbx8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+A [2018 poll from NPR](https://www.npr.org/2018/02/06/583402634/npr-poll-2-in-3-support-legal-status-for-dreamers-majority-oppose-building-a-wal){target="_blank"} reported that 65% of Americans supported a path to citizenship for DREAMers. Does the 2020 Pew Research poll provide evidence that support for a pathway to citizenship has grown over the past two years? Use a significance level of $\alpha = 0.05$.
+
+Use what you learned from Dr. McLintock to answer the following questions and complete the hypothesis test. You can use the code block below for any calculations.
+
+```{webr}
+#| exercise: ht-questions-sandbox
+# Use this block for scratch calculations
+
+```
+
+:::{.hint exercise="ht-questions-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+In a hypothesis test, we begin with the *skeptical* position — the null hypothesis ($H_0$) — which assumes nothing has changed. What would that assumption be here?
+
+:::
+:::
+
+:::{.hint exercise="ht-questions-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The null hypothesis assumes the population proportion is still what it was in 2018. The alternative hypothesis reflects the claim being tested — that support has *grown*. Does this suggest a one-sided or two-sided alternative?
+
+:::
+:::
+
+:::{.hint exercise="ht-questions-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+The point estimate is the sample statistic that corresponds to the population parameter being tested. What proportion did the 2020 Pew study find?
+
+:::
+:::
+
+:::{.hint exercise="ht-questions-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+For the standard error, recall that in a hypothesis test we use the *null value* (the value assumed in $H_0$) in place of $p$ in the formula $S_E = \sqrt{p(1-p)/n}$. What is the null value here?
+
+:::
+:::
+
+:::{.hint exercise="ht-questions-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+Now that you have the point estimate, null value, and standard error, you can compute the test statistic using the formula from Dr. McLintock's video:
+
+$$\text{test statistic} = \frac{(\text{point estimate}) - (\text{null value})}{S_E}$$
+
+:::
+:::
+
+:::{.hint exercise="ht-questions-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+To compute the $p$-value, use `pnorm()`. The test statistic is your boundary value. Since the alternative hypothesis says $p > 0.65$, which tail of the distribution corresponds to your $p$-value?
+
+:::
+:::
+
+:::{.hint exercise="ht-questions-sandbox"}
+:::{.callout-note collapse="false"}
+## Hint 7 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+
+# Standard error (using null value p = 0.65)
+se <- sqrt((0.65 * (1 - 0.65)) / 9654)
+
+# Test statistic
+z <- (0.74 - 0.65) / se
+
+# p-value (upper tail, since Ha: p > 0.65)
+1 - pnorm(z)
+```
+
+The $p$-value will be extremely small — much less than $\alpha = 0.05$ — leading us to reject the null hypothesis.
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Hypothesis Test I
+
+Which of the following are the hypotheses used to test this claim?
+
+```{ojs}
+//| echo: false
+
+viewof q15 = Inputs.radio(
+  new Map([
+    ["H₀: p = 0.65, Hₐ: p > 0.65", 1],
+    ["H₀: p = 0.65, Hₐ: p < 0.65", 2],
+    ["H₀: p = 0.65, Hₐ: p ≠ 0.65", 3],
+    ["H₀: p = 0.74, Hₐ: p > 0.74", 4],
+    ["H₀: p = 0.74, Hₐ: p < 0.74", 5],
+    ["H₀: p = 0.74, Hₐ: p ≠ 0.74", 6]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q15") ?? "null")}
+);
+
+localStorage.setItem("q15", JSON.stringify(q15));
+ok_response(q15, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Hypothesis Test II
+
+What is the level of significance for the test?
+
+```{ojs}
+//| echo: false
+
+viewof q16 = Inputs.radio(
+  new Map([
+    ["α = 0.10", 1],
+    ["α = 0.05", 2],
+    ["α = 0.02", 3],
+    ["α = 0.01", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q16") ?? "null")}
+);
+
+localStorage.setItem("q16", JSON.stringify(q16));
+ok_response(q16, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Hypothesis Test III
+
+What is the point estimate?
+
+```{ojs}
+//| echo: false
+
+viewof q17 = Inputs.radio(
+  new Map([
+    ["p̂ = 0.65", 1],
+    ["p̂ = 0.74", 2],
+    ["p̂ = 0.50", 3],
+    ["p̂ = 0.09", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q17") ?? "null")}
+);
+
+localStorage.setItem("q17", JSON.stringify(q17));
+ok_response(q17, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Hypothesis Test IV
+
+What is the null value?
+
+```{ojs}
+//| echo: false
+
+viewof q18 = Inputs.radio(
+  new Map([
+    ["p = 0.65", 1],
+    ["p = 0.74", 2],
+    ["p = 0.50", 3],
+    ["p = 0.09", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q18") ?? "null")}
+);
+
+localStorage.setItem("q18", JSON.stringify(q18));
+ok_response(q18, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Hypothesis Test V
+
+The standard error is computed as $S_E = \sqrt{\frac{p(1-p)}{n}}$, where $p$ is the null value. Which of the following is the standard error? (round to four decimal places)
+
+```{ojs}
+//| echo: false
+
+viewof q19 = Inputs.radio(
+  new Map([
+    ["SE = 0.0042", 1],
+    ["SE = 0.0045", 2],
+    ["SE = 0.0049", 3],
+    ["SE = 0.0052", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q19") ?? "null")}
+);
+
+localStorage.setItem("q19", JSON.stringify(q19));
+ok_response(q19, "3");
+```
+
+:::
+
+:::{.callout-tip}
+## Why Use the Null Value in the Standard Error?
+
+Notice that we use $p = 0.65$ (the null value) rather than $\hat{p} = 0.74$ (the sample proportion) when computing the standard error for the hypothesis test. This is because, during a hypothesis test, we assume the null hypothesis is true — we are asking: *if the true proportion really is 0.65, how surprising is our observed sample?*
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Hypothesis Test VI
+
+The test statistic is computed as $\displaystyle{z = \frac{(\text{point estimate}) - (\text{null value})}{S_E}}$. Which of the following is the test statistic? (round to two decimal places)
+
+```{ojs}
+//| echo: false
+
+viewof q20 = Inputs.radio(
+  new Map([
+    ["z = 1.65", 1],
+    ["z = 2.33", 2],
+    ["z = 18.54", 3],
+    ["z = 20.00", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q20") ?? "null")}
+);
+
+localStorage.setItem("q20", JSON.stringify(q20));
+ok_response(q20, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Hypothesis Test VII
+
+Use `pnorm()` to compute the $p$-value associated with this test.
+
+```{ojs}
+//| echo: false
+
+viewof q21 = Inputs.radio(
+  new Map([
+    ["p-value ≈ 0", 1],
+    ["p-value = 0.05", 2],
+    ["p-value = 1", 3],
+    ["p-value = 0 (exactly)", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q21") ?? "null")}
+);
+
+localStorage.setItem("q21", JSON.stringify(q21));
+ok_response(q21, "1");
+```
+
+:::
+
+:::{.callout-tip}
+## Note on Reported p-values of Zero
+
+If software reports a $p$-value of exactly 0, this simply means the $p$-value is smaller than the precision the software can display. It is more accurate to say the $p$-value is very small, being rounded to 0, approximately 0, or to report it as $p < 0.0001$.
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Hypothesis Test VIII
+
+Which of the following is the conclusion of the hypothesis test?
+
+```{ojs}
+//| echo: false
+
+viewof q22 = Inputs.radio(
+  new Map([
+    ["The p-value is less than α, so we accept the null hypothesis.", 1],
+    ["The p-value is at least as large as α, so we reject the null hypothesis and accept the alternative.", 2],
+    ["The p-value is at least as large as α, so we do not have enough evidence to reject the null hypothesis.", 3],
+    ["The p-value is less than α, so we reject the null hypothesis and accept the alternative.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q22") ?? "null")}
+);
+
+localStorage.setItem("q22", JSON.stringify(q22));
+ok_response(q22, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Hypothesis Test IX
+
+Which of the following is the result of the hypothesis test stated in context?
+
+```{ojs}
+//| echo: false
+
+viewof q23 = Inputs.radio(
+  new Map([
+    ["We do not have evidence to suggest that the proportion of American adults in favor of a path to citizenship has increased since 2018.", 1],
+    ["We have evidence to suggest that the proportion of American adults in favor of a path to citizenship has stayed the same since 2018.", 2],
+    ["We have evidence to suggest that the proportion of American adults in favor of a path to citizenship has increased since 2018.", 3],
+    ["We do not have evidence to suggest that the proportion of American adults in favor of a path to citizenship has stayed the same since 2018.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q23") ?? "null")}
+);
+
+localStorage.setItem("q23", JSON.stringify(q23));
+ok_response(q23, "3");
+```
+
+:::
+
+## Submit
+
+:::{.callout-warning}
+
+Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+
+:::
+
+## Summary
+
+:::{.callout-tip}
+## Main Takeaways
+
+**On point estimates and variability:**
+
++ *Sample statistics* provide *point estimates* for their corresponding *population parameters* — a sample proportion estimates a population proportion, a sample mean estimates a population mean.
++ Sample statistics provide reliable point estimates only when the sample is representative of the population.
++ Every sample produces a slightly different statistic. Much of statistics is focused on quantifying this variability.
+
+**On confidence intervals:**
+
++ A *confidence interval* captures a population parameter with a desired degree of confidence, computed as:
+$$(\text{point estimate}) \pm (\text{critical value}) \cdot S_E$$
++ The **point estimate** is a sample statistic. The **critical value** depends on the desired confidence level. The **standard error** ($S_E$) quantifies the expected variability in the point estimate.
++ A correct interpretation: *"We are XX% confident that the true [population parameter] lies between [lower bound] and [upper bound]."*
++ Higher confidence levels require larger critical values, which produce wider intervals.
+
+**On hypothesis tests:**
+
++ A *hypothesis test* provides a formal framework for evaluating claims about a population parameter.
++ We begin with a **null hypothesis** ($H_0$) representing the status quo and an **alternative hypothesis** ($H_a$) representing the claim to be tested.
++ We set a **significance level** $\alpha$ — the threshold below which a $p$-value is considered surprising enough to reject $H_0$.
++ We compute a **test statistic**: $\displaystyle{z = \frac{(\text{point estimate}) - (\text{null value})}{S_E}}$
++ The **$p$-value** measures the probability of observing a sample at least as favorable to $H_a$ as ours, assuming $H_0$ is true. A $p$-value smaller than $\alpha$ is taken as evidence against $H_0$.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+This activity introduced the general frameworks for confidence intervals and hypothesis tests using proportions. In the coming activities, we'll continue to utilize these tools to help us estimate population parameters and to test claims about them.
+
+As a preview of what's coming, here's a [link to a Standard Error Decision Tree](www/StdErrorDecisionTree.pdf){target="_blank"} that we'll use throughout the remainder of the course. It looks intimidating now, but look at the bottom-right corner — there's the confidence interval formula you just used! And the lower-left corner shows the general test statistic formula. Everything else on the document will be explained in the coming activities.
+:::

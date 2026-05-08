@@ -1,0 +1,2369 @@
+---
+title: "Topic 15: Hypothesis Tests and Confidence Intervals for Numerical Data"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        .exercise-editor-body { max-height: 300px; overflow-y: auto; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - ggplot2
+        - gradethis
+      cell-options:
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+#| define:
+#|   - boundary1
+#|   - df1
+#|   - boundary2
+#|   - df2
+#|   - area3
+#|   - df3
+#|   - clevel4
+#|   - df4
+
+library(dplyr)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 12))
+
+set.seed(241)
+boundary1 <- round(runif(1, 0.75, 2), 2)
+df1       <- sample(5:25, size = 1)
+boundary2 <- round(runif(1, -2, -1.5), 2)
+df2       <- sample(5:25, size = 1)
+area3     <- round(runif(1, 0.05, 0.95), 2)
+df3       <- sample(5:25, size = 1)
+clevel4   <- sample(c(90, 95, 98, 99), size = 1)
+df4       <- sample(5:25, size = 1)
+
+SDNY <- read.csv("https://raw.githubusercontent.com/drs22Col/FedSentencing/master/Data/NYSouthernDistrictData.csv")
+SDNYdrug <- SDNY[grepl("[D,d]rug", SDNY$Offense) & SDNY$SentenceMonths >= 0, ]
+SDNYdrug$Race <- ifelse(SDNYdrug$Race == 1, "White", "Non-White")
+
+whiteSentences    <- SDNYdrug$SentenceMonths[SDNYdrug$Race == "White"]
+nonWhiteSentences <- SDNYdrug$SentenceMonths[SDNYdrug$Race == "Non-White"]
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 12))
+
+set.seed(241)
+boundary1 <- round(runif(1, 0.75, 2), 2)
+df1       <- sample(5:25, size = 1)
+boundary2 <- round(runif(1, -2, -1.5), 2)
+df2       <- sample(5:25, size = 1)
+area3     <- round(runif(1, 0.05, 0.95), 2)
+df3       <- sample(5:25, size = 1)
+clevel4   <- sample(c(90, 95, 98, 99), size = 1)
+df4       <- sample(5:25, size = 1)
+
+SDNY <- read.csv("https://raw.githubusercontent.com/drs22Col/FedSentencing/master/Data/NYSouthernDistrictData.csv")
+SDNYdrug <- SDNY[grepl("[D,d]rug", SDNY$Offense) & SDNY$SentenceMonths >= 0, ]
+SDNYdrug$Race <- ifelse(SDNYdrug$Race == 1, "White", "Non-White")
+
+whiteSentences    <- SDNYdrug$SentenceMonths[SDNYdrug$Race == "White"]
+nonWhiteSentences <- SDNYdrug$SentenceMonths[SDNYdrug$Race == "Non-White"]
+```
+
+:::{.callout-note}
+## About
+
+This activity introduces techniques for inference on a single population mean and for comparing two population means. The $t$-distributions are introduced, historical context is provided, and we work through two applications using federal sentencing data from the Southern District of New York State.
+:::
+
+## Hypothesis Testing and Confidence Intervals for Numerical Data
+
+In this activity, we continue our exploration of statistical inference. Through the past few activities you became more comfortable with hypothesis testing and confidence intervals for categorical variables — here we extend those ideas to numerical variables. We'll first be formally introduced to the family of $t$-distributions, and then work through a pair of applications to real sentencing data.
+
+As a reminder, the [*Standard Error Decision Tree*](https://agmath.github.io/SiteFiles/StdErrorDecisionTree.pdf){target="_blank"}, [*General Strategy for Conducting Hypothesis Tests*](https://agmath.github.io/SiteFiles/HTgeneral.pdf){target="_blank"}, and [*General Strategy for Constructing Confidence Intervals*](https://agmath.github.io/SiteFiles/CIgeneral.pdf){target="_blank"} are all available for reference. The walkthrough video for the decision tree is below.
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5bAylfMIArg?start=16" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+While watching the walkthrough video you probably noticed that the side of the decision tree corresponding to numerical data (inference for the mean $\mu$) is more involved than the side for proportions. Much of this stems from the fact that using a sample standard deviation as an approximation for the population standard deviation adds uncertainty to our approach. To account for this added uncertainty, we utilize a class of *penalized* normal distributions called the $t$-distributions. Watch at least one of the introductory videos below.
+
+**A Detailed Introduction:**
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/bqfcFCjaE1c" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+**A Shorter Introduction:**
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/32CuxWdOlow" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+## What Does the $t$-Distribution Look Like?
+
+We've identified scenarios where we should utilize a $t$-distribution instead of the normal ($z$) distribution. The simple rule to follow: **any time we use a sample standard deviation as a proxy for the population standard deviation in the standard error estimate, we should use a $t$-distribution**.
+
+The plot below shows a standard normal distribution in **black**, a $t$-distribution with 3 degrees of freedom in **red**, and a $t$-distribution with 12 degrees of freedom in **blue**.
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+
+ggplot() + 
+  geom_line(aes(x = seq(-3.5, 3.5, length.out = 200), 
+                y = dnorm(seq(-3.5, 3.5, length.out = 200), 0, 1)), 
+            color = "black", lwd = 1.25) + 
+  geom_line(aes(x = seq(-3.5, 3.5, length.out = 200), 
+                y = dt(seq(-3.5, 3.5, length.out = 200), 3)), 
+            color = "red", lwd = 1.25) + 
+  geom_line(aes(x = seq(-3.5, 3.5, length.out = 200), 
+                y = dt(seq(-3.5, 3.5, length.out = 200), 12)), 
+            color = "blue", lwd = 1.25) + 
+  labs(title = "Normal and t-Distributions", x = "", y = "")
+```
+
+Notice that all three distributions are bell-shaped, but the $t$-distributions have **fatter tails** than the normal distribution. Also notice that the $t$-distribution with 12 degrees of freedom is more similar to the normal than the one with 3 degrees of freedom. As degrees of freedom increase, the $t$-distribution approaches (becomes more like) the normal distribution.
+
+## Using the $t$-Distributions
+
+When we introduced the normal distribution, we identified two helper functions: `pnorm()` to find probabilities (areas to the left of a boundary value) and `qnorm()` to find cutoff values (percentiles). We have analogous functions for the $t$-distribution:
+
++ `pt(q, df)` — finds the probability of falling to the *left* of the boundary value `q` in a $t$-distribution with `df` degrees of freedom.
++ `qt(p, df)` — finds the cutoff value for which the area to the *left* of that cutoff in a $t$-distribution with `df` degrees of freedom is `p`.
+
+Note that these functions have no `mean` or `sd` parameters — we always work with standardized variables (the test statistic formula) when using the $t$-distributions.
+
+Let's practice. Don't forget to draw pictures — you are much more likely to find errors if you skip this step.
+
+---
+
+**Question 1:** Find $\mathbb{P}\left[t <\right.$ `{ojs} boundary1` $\left.\right]$ in a $t$-distribution with `{ojs} df1` degrees of freedom.
+
+```{webr}
+#| exercise: pt-ex1-left
+#| input:
+#|   - boundary1
+#|   - df1
+______
+```
+
+:::{.hint exercise="pt-ex1-left"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Start by drawing a $t$-distribution centered at 0. Where does `{ojs} boundary1` fall — to the left or right of center?
+
+:::
+:::
+
+:::{.hint exercise="pt-ex1-left"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Shade the region to the left of your boundary value. Based on your picture, should your answer be larger or smaller than 0.5?
+
+:::
+:::
+
+:::{.hint exercise="pt-ex1-left"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Use the `pt()` function. Its arguments are the boundary value and the degrees of freedom.
+
+```{r}
+#| echo: true
+#| eval: false
+
+pt(___, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="pt-ex1-left"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+The boundary value is `{ojs} boundary1` and the degrees of freedom is `{ojs} df1`. Fill in the first blank with `{ojs} boundary1` and the second blank with `{ojs} df1`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+pt(___, df = ___)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: pt-ex1-left
+#| solution: true
+#| input:
+#|   - boundary1
+#|   - df1
+
+pt(boundary1, df = df1)
+```
+
+```{webr}
+#| exercise: pt-ex1-left
+#| check: true
+#| input:
+#|   - boundary1
+#|   - df1
+
+gradethis::grade_this({
+  if (abs(.result - pt(boundary1, df = df1)) < 0.001) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+---
+
+**Question 2:** Find $\mathbb{P}\left[t >\right.$ `{ojs} boundary2` $\left.\right]$ in a $t$-distribution with `{ojs} df2` degrees of freedom.
+
+```{webr}
+#| exercise: pt-ex2-right
+#| input:
+#|   - boundary2
+#|   - df2
+______
+```
+
+:::{.hint exercise="pt-ex2-right"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Draw the $t$-distribution. Where does `{ojs} boundary2` fall relative to 0?
+
+:::
+:::
+
+:::{.hint exercise="pt-ex2-right"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+We want the area to the *right* of the boundary value. What does `pt()` give us by default?
+
+:::
+:::
+
+:::{.hint exercise="pt-ex2-right"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+`pt()` gives the area to the *left*. To get the area to the right, subtract from 1.
+
+```{r}
+#| echo: true
+#| eval: false
+
+1 - pt(___, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="pt-ex2-right"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+The boundary value is `{ojs} boundary2` and the degrees of freedom is `{ojs} df2`. Fill in the first blank with `{ojs} boundary2` and the second blank with `{ojs} df2`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+1 - pt(___, df = ___)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: pt-ex2-right
+#| solution: true
+#| input:
+#|   - boundary2
+#|   - df2
+
+1 - pt(boundary2, df = df2)
+```
+
+```{webr}
+#| exercise: pt-ex2-right
+#| check: true
+#| input:
+#|   - boundary2
+#|   - df2
+
+gradethis::grade_this({
+  if (abs(.result - (1 - pt(boundary2, df = df2))) < 0.001) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+---
+
+**Question 3:** Find the cutoff value in a $t$-distribution with `{ojs} df3` degrees of freedom for which the area to the *left* of the cutoff is `{ojs} area3`.
+
+```{webr}
+#| exercise: qt-ex3
+#| input:
+#|   - area3
+#|   - df3
+______
+```
+
+:::{.hint exercise="qt-ex3"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+We are looking for a cutoff (boundary) value this time, rather than a probability. Which function does this — `pt()` or `qt()`?
+
+:::
+:::
+
+:::{.hint exercise="qt-ex3"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Use `qt()` becasue we are looking for a boundary value. Draw a picture of the $t$-distribution with `{ojs} area3` of the area shaded to the left. Should your cutoff value be positive or negative? How do you know?
+
+:::
+:::
+
+:::{.hint exercise="qt-ex3"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Use `qt()` becasue we are looking for a boundary value. Draw a picture of the $t$-distribution with `{ojs} area3` of the area shaded to the left. Should your cutoff value be positive or negative? How do you know?
+
+Since a full half of this distribution contains an area of 0.5, the boundary value we seek must be above the middle of the distibution. Our boundary/cutoff value will be positive.
+
+:::
+:::
+
+:::{.hint exercise="qt-ex3"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+The `qt()` function takes the area to the left and the degrees of freedom as arguments.
+
+```{r}
+#| echo: true
+#| eval: false
+
+qt(___, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="qt-ex3"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+The area to the left is `{ojs} area3` and the degrees of freedom is `{ojs} df3`. Fill in the first blank with `{ojs} area3` and the second blank with `{ojs} df3`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+qt(___, df = ___)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: qt-ex3
+#| solution: true
+#| input:
+#|   - area3
+#|   - df3
+
+qt(area3, df = df3)
+```
+
+```{webr}
+#| exercise: qt-ex3
+#| check: true
+#| input:
+#|   - area3
+#|   - df3
+
+gradethis::grade_this({
+  if (abs(.result - qt(area3, df = df3)) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+---
+
+**Question 4:** Find the critical value associated with a `{ojs} clevel4`% confidence interval using a $t$-distribution with `{ojs} df4` degrees of freedom.
+
+```{webr}
+#| exercise: qt-ex4
+#| input:
+#|   - clevel4
+#|   - df4
+______
+```
+
+:::{.hint exercise="qt-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Draw a $t$-distribution. A `{ojs} clevel4`% confidence interval captures the middle `{ojs} clevel4`% of the distribution. How much area is left over for the two tails combined?
+
+:::
+:::
+
+:::{.hint exercise="qt-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The remaining area is split equally between the two tails. How much area is in each tail?
+
+:::
+:::
+
+:::{.hint exercise="qt-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+The remaining area is split equally between the two tails. How much area is in each tail?
+
+Each of the tails will contain an area of `{ojs} ((1 - (clevel4/100))/2).toFixed(3)`.
+
+:::
+:::
+
+:::{.hint exercise="qt-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+The critical value is the boundary value separating the upper tail from the middle. What is the total area to the *left* of this boundary value?
+
+:::
+:::
+
+:::{.hint exercise="qt-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+The area to the left of the critical value is the lower tail area plus the middle area. Here that is `{ojs} ((1 - (clevel4/100))/2).toFixed(3)` + `{ojs} clevel4/100`. Use `qt()` with this area and the degrees of freedom.
+
+```{r}
+#| echo: true
+#| eval: false
+
+qt(___, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="qt-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+Fill the first blank with `{ojs} ((1 - (clevel4/100))/2 + (clevel4/100)).toFixed(3)`, the total area to the left of the critical value.
+
+```{r}
+#| echo: true
+#| eval: false
+
+qt(___, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="qt-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 7 (Solved)
+
+Fill the first blank with `{ojs} ((1 - (clevel4/100))/2 + (clevel4/100)).toFixed(3)`, the total area to the left of the critical value.
+
+Fill in the second blank with `{ojs} df4`, the degrees of freedom.
+
+```{r}
+#| echo: true
+#| eval: false
+
+qt(___, df = ___)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: qt-ex4
+#| solution: true
+#| input:
+#|   - clevel4
+#|   - df4
+
+qt(1 - (1 - clevel4/100)/2, df = df4)
+```
+
+```{webr}
+#| exercise: qt-ex4
+#| check: true
+#| input:
+#|   - clevel4
+#|   - df4
+
+gradethis::grade_this({
+  if (abs(.result - qt(1 - (1 - clevel4/100)/2, df = df4)) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+## Applications to Criminal Sentencing
+
+We'll work with a [dataset on Federal Sentencing from the Southern District of New York State](https://github.com/drs22Col/FedSentencing){target="_blank"}. A subset of the data, consisting only of drug-related charges, has been loaded for you as `SDNYdrug`.
+
+---
+
+### Question 1: Confidence Interval for Average Sentence Length
+
+Compute a 95% confidence interval for the average sentence length for a drug-related charge in the Southern District of New York State.
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing CI, Part I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.radio(
+  new Map([
+    ["Compute a probability.", 1],
+    ["Construct a confidence interval.", 2],
+    ["Conduct a hypothesis test.", 3],
+    ["Calculate a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+);
+
+localStorage.setItem("q1", JSON.stringify(q1));
+ok_response(q1, "2");
+```
+
+:::
+
+Use the code block below to compute the point estimate for average sentence length (`SentenceMonths`).
+
+```{webr}
+#| exercise: sentencing-ci-2
+______
+```
+
+:::{.hint exercise="sentencing-ci-2"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+What summary statistic serves as the point estimate for a population mean?
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-2"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Pipe the `SDNYdrug` data frame into `summarize()` and compute the mean of `SentenceMonths`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+SDNYdrug |>
+  summarize(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-2"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+
+SDNYdrug |>
+  summarize(avg_sentence = mean(SentenceMonths))
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ci-2
+#| solution: true
+
+SDNYdrug |>
+  summarize(avg_sentence = mean(SentenceMonths))
+```
+
+```{webr}
+#| exercise: sentencing-ci-2
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - mean(SDNYdrug$SentenceMonths)) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing CI, Part II
+
+The standard error formula is:
+
+```{ojs}
+//| echo: false
+
+viewof q2 = Inputs.radio(
+  new Map([
+    ["SE = sqrt(p(1-p)/n)", 1],
+    ["SE = sigma/sqrt(n)", 2],
+    ["SE = s/sqrt(n)", 3],
+    ["SE = sqrt(p1(1-p1)/n1 + p2(1-p2)/n2)", 4],
+    ["SE = sqrt(s1²/n1 + s2²/n2)", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+);
+
+localStorage.setItem("q2", JSON.stringify(q2));
+ok_response(q2, "3");
+```
+
+:::
+
+Use the code block below to compute the standard error.
+
+```{webr}
+#| exercise: sentencing-ci-4
+______
+```
+
+:::{.hint exercise="sentencing-ci-4"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+The standard error formula $S_E = s/\sqrt{n}$ requires two quantities. What are they?
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-4"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+You need the sample standard deviation and the sample size. How would you find each from the `SDNYdrug` data frame?
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-4"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+One way is to start by piping `SDNYdrug` into `summarize()` again.
+
+```{r}
+#| echo: true
+#| eval: false
+
+SDNYdrug |>
+  summarize(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-4"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+One way is to start by piping `SDNYdrug` into `summarize()` again. We need the standard deviation and the number of observations.
+
+```{r}
+#| echo: true
+#| eval: false
+
+SDNYdrug |>
+  summarize(
+    sd = ___,
+    n = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-4"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+One way is to start by piping `SDNYdrug` into `summarize()` again. We need the standard deviation and the number of observations.
+
++ We can compute the standard deviation using the `sd()` function. We'll need to pass the column whose standard deviation we want into the `sd()` function. 
++ Similarly, we can count the number of rows with the `n()` function. The `n()` function takes no arguments.
+
+```{r}
+#| echo: true
+#| eval: false
+
+SDNYdrug |>
+  summarize(
+    sd = sd(___),
+    n = n())
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-4"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+One way is to start by piping `SDNYdrug` into `summarize()` again. We need the standard deviation and the number of observations.
+
++ We can compute the standard deviation using the `sd()` function. We'll need to pass `SentenceMonths` to `sd()` in order to calculate its stanadard deviation. 
++ Similarly, we can count the number of rows with the `n()` function. The `n()` function takes no arguments.
+
+```{r}
+#| echo: true
+#| eval: false
+
+SDNYdrug |>
+  summarize(
+    sd = sd(SentenceMonths),
+    n = n())
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-4"}
+:::{.callout-note collapse="false"}
+## Hint 7 (Solved)
+
+Now that you have the standard deviation and number of observations, you can compute the standard error. Carry out the arithmetic in a new line, dividing the discovered standard deviation by the square root of the sample size.
+
+```{r}
+#| echo: true
+#| eval: false
+
+SDNYdrug |>
+  summarize(
+    sd = sd(SentenceMonths),
+    n = n())
+
+___ / sqrt(___)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ci-4
+#| solution: true
+
+sd(SDNYdrug$SentenceMonths) / sqrt(nrow(SDNYdrug))
+```
+
+```{webr}
+#| exercise: sentencing-ci-4
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - sd(SDNYdrug$SentenceMonths) / sqrt(nrow(SDNYdrug))) < 0.0005) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing CI, Part III
+
+The distribution to be used is:
+
+```{ojs}
+//| echo: false
+
+viewof q3 = Inputs.radio(
+  new Map([
+    ["Normal.", 1],
+    ["t-distribution with df = n - 1.", 2],
+    ["t-distribution with df = min(n1-1, n2-1).", 3],
+    ["t-distribution with df = n_diff - 1.", 4],
+    ["We should not use either distribution.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+);
+
+localStorage.setItem("q3", JSON.stringify(q3));
+ok_response(q3, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing CI, Part IV
+
+The desired level of confidence is:
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.radio(
+  new Map([
+    ["90%", 1],
+    ["0.95%", 2],
+    ["95%", 3],
+    ["98%", 4],
+    ["99%", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+);
+
+localStorage.setItem("q4", JSON.stringify(q4));
+ok_response(q4, "3");
+```
+
+:::
+
+Use the code block below to compute the critical value for the confidence interval.
+
+```{webr}
+#| exercise: sentencing-ci-7
+______
+```
+
+:::{.hint exercise="sentencing-ci-7"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+You'll use `qt()` here. What is the area to the left of the critical value for a 95% confidence interval?
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-7"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+For a 95% confidence interval, we capture 95% of the area in the center of the distribution. How much area remains in each of the two tails?
+
+```{r}
+#| echo: true
+#| eval: false
+
+qt(___, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-7"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+For a 95% confidence interval, the two tails together hold 5% of the area, so each tail holds 2.5%. The area to the left of the upper critical value is $1 - 0.025 = 0.975$.
+
+```{r}
+#| echo: true
+#| eval: false
+
+qt(___, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-7"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+The critical value is the boundary/cutoff for the upper tail. How much of the area in the distribution falls below that upper tail?
+
+```{r}
+#| echo: true
+#| eval: false
+
+qt(___, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-7"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+The critical value is the boundary/cutoff for the upper tail. How much of the area in the distribution falls below that upper tail?
+
+The total area to the left includes the lower-tail area (0.025) plus the middle area (0.95).
+
+```{r}
+#| echo: true
+#| eval: false
+
+qt(___, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-7"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+The critical value is the boundary/cutoff for the upper tail. How much of the area in the distribution falls below that upper tail?
+
+The total area to the left includes the lower-tail area (0.025) plus the middle area (0.95). Replace the first blank with `0.025 + 0.95` or, more simply, `0.975`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+qt(0.025 + 0.95, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-7"}
+:::{.callout-note collapse="false"}
+## Hint 7
+
+The critical value is the boundary/cutoff for the upper tail. How much of the area in the distribution falls below that upper tail?
+
+The second blank is filled in by the degrees of freedom. Here, that's one less than the number of observations we have.
+
+```{r}
+#| echo: true
+#| eval: false
+
+qt(0.025 + 0.95, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-7"}
+:::{.callout-note collapse="false"}
+## Hint 7 (Solved)
+
+The critical value is the boundary/cutoff for the upper tail. How much of the area in the distribution falls below that upper tail?
+
+The second blank is filled in by the degrees of freedom. Here, that's one less than the number of observations we have. We have 280 observations, so fill the second blank with `280 - 1` or, more simply, by `279`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+qt(0.025 + 0.95, df = 280 - 1)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ci-7
+#| solution: true
+
+qt(0.975, df = nrow(SDNYdrug) - 1)
+```
+
+```{webr}
+#| exercise: sentencing-ci-7
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - qt(0.975, df = nrow(SDNYdrug) - 1)) < 0.005) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-tip}
+## A Note on the Critical Value
+
+With so many observations, the correct critical value differed very little from 1.96 (the value used with the normal distribution). Remember that the critical values on the Standard Error Decision Tree are for the normal distribution only. Any time we use a sample standard deviation as a stand-in for the population standard deviation, we should use `qt()` — this will make a real difference when sample sizes are smaller.
+:::
+
+Use the code block below to compute the lower bound of the 95% confidence interval.
+
+```{webr}
+#| exercise: sentencing-ci-8
+______
+```
+
+:::{.hint exercise="sentencing-ci-8"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+The formula for a confidence interval is: $(\text{point estimate}) \pm (\text{critical value}) \times S_E$. For the lower bound, which operation do you use?
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-8"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+For the lower bound, subtract the margin of error from the point estimate.
+
+```{r}
+#| echo: true
+#| eval: false
+
+___ - (___ * ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-8"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+You calculated all of these values in earlier code cells.
+
++ The *point estimate* (the sample average sentence length) was about 42.75 months.
++ The *critical value* is about 1.97.
++ The *standard error* is about 3.22 months.
+
+```{r}
+#| echo: true
+#| eval: false
+
+___ - (___ * ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-8"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+You calculated all of these values in earlier code cells.
+
++ The *point estimate* (the sample average sentence length) was about 42.75 months.
++ The *critical value* is about 1.97.
++ The *standard error* is about 3.22 months.
+
+Fill the first blank with your *point estimate*. It is your best guess at the location of the population parameter.
+
+```{r}
+#| echo: true
+#| eval: false
+
+42.75 - (___ * ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-8"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+You calculated all of these values in earlier code cells.
+
++ The *point estimate* (the sample average sentence length) was about 42.75 months.
++ The *critical value* is about 1.97.
++ The *standard error* is about 3.22 months.
+
+Fill the second blank with your *critical value*. This is the number of standard errors above or below the point estimate you'll need to extend in order to capture the parameter with your desired level of confidence.
+
+```{r}
+#| echo: true
+#| eval: false
+
+42.75 - (1.97 * ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-8"}
+:::{.callout-note collapse="false"}
+## Hint 6 (Solved)
+
+You calculated all of these values in earlier code cells.
+
++ The *point estimate* (the sample average sentence length) was about 42.75 months.
++ The *critical value* is about 1.97.
++ The *standard error* is about 3.22 months.
+
+Fill the final blank with your *standard error*. This measures the typical amount of sampling variability we should expect in our point estimates from one sample to the next.
+
+```{r}
+#| echo: true
+#| eval: false
+
+42.75 - (1.97 * 3.22)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ci-8
+#| solution: true
+
+mean(SDNYdrug$SentenceMonths) - 
+  qt(0.975, df = nrow(SDNYdrug) - 1) * 
+  (sd(SDNYdrug$SentenceMonths) / sqrt(nrow(SDNYdrug)))
+```
+
+```{webr}
+#| exercise: sentencing-ci-8
+#| check: true
+
+gradethis::grade_this({
+  lower <- mean(SDNYdrug$SentenceMonths) - 
+    qt(0.975, df = nrow(SDNYdrug) - 1) * 
+    (sd(SDNYdrug$SentenceMonths) / sqrt(nrow(SDNYdrug)))
+  if (abs(.result - lower) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the upper bound of the 95% confidence interval.
+
+```{webr}
+#| exercise: sentencing-ci-9
+______
+```
+
+:::{.hint exercise="sentencing-ci-9"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+This is done the same way as finding the lower bound — just swap subtraction for addition.
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ci-9"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+
+42.75 + (1.97 * 3.22)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ci-9
+#| solution: true
+
+mean(SDNYdrug$SentenceMonths) + 
+  qt(0.975, df = nrow(SDNYdrug) - 1) * 
+  (sd(SDNYdrug$SentenceMonths) / sqrt(nrow(SDNYdrug)))
+```
+
+```{webr}
+#| exercise: sentencing-ci-9
+#| check: true
+
+gradethis::grade_this({
+  upper <- mean(SDNYdrug$SentenceMonths) + 
+    qt(0.975, df = nrow(SDNYdrug) - 1) * 
+    (sd(SDNYdrug$SentenceMonths) / sqrt(nrow(SDNYdrug)))
+  if (abs(.result - upper) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing CI, Part V
+
+Which of the following is the correct interpretation of this confidence interval?
+
+```{ojs}
+//| echo: false
+
+viewof q5 = Inputs.radio(
+  new Map([
+    ["95% of sentence lengths for drug-related charges in the Southern District of New York State will fall between the lower and upper bounds.", 1],
+    ["We are 95% confident that the average sentence length for drug-related crimes in this sample falls between the lower and upper bounds.", 2],
+    ["There is a 95% chance a criminal charged with a drug-related offense will receive a sentence between the lower and upper bounds.", 3],
+    ["We are 95% confident that the true average sentence length for drug-related offenders in the Southern District of New York State is between the lower and upper bounds calculated.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+);
+
+localStorage.setItem("q5", JSON.stringify(q5));
+ok_response(q5, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing CI, Part VI
+
+Does this sample provide evidence to suggest that the average sentence length for drug-related charges in the Southern District of New York State exceeds three years (36 months)?
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["No. The confidence interval shows that an average sentence below 36 months is plausible.", 1],
+    ["Yes. The confidence interval for the average sentence length includes only values exceeding 36 months.", 2],
+    ["No. Some sentence lengths are below 36 months while others exceed 36 months.", 3],
+    ["It is impossible to say, since a different sample would result in a different confidence interval.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+);
+
+localStorage.setItem("q6", JSON.stringify(q6));
+ok_response(q6, "2");
+```
+
+:::
+
+---
+
+### Question 2: Hypothesis Test for Difference in Sentence Lengths
+
+Conduct a hypothesis test at the $\alpha = 0.10$ level of significance to determine whether the sample data provides significant evidence that the average sentence length for white offenders and the average sentence length for non-white offenders differs for drug-related cases in the Southern District of New York State.
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT, Part I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["Compute a probability.", 1],
+    ["Construct a confidence interval.", 2],
+    ["Conduct a hypothesis test.", 3],
+    ["Calculate a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+);
+
+localStorage.setItem("q7", JSON.stringify(q7));
+ok_response(q7, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT, Part II
+
+What is the level of significance associated with this test?
+
+```{ojs}
+//| echo: false
+
+viewof q8 = Inputs.radio(
+  new Map([
+    ["α = 0.01", 1],
+    ["α = 0.05", 2],
+    ["α = 0.10", 3],
+    ["The p-value.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+);
+
+localStorage.setItem("q8", JSON.stringify(q8));
+ok_response(q8, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT, Part III
+
+Does this hypothesis test involve testing a statement about a mean ($\mu$), a proportion ($p$), or something else?
+
+```{ojs}
+//| echo: false
+
+viewof q9 = Inputs.radio(
+  new Map([
+    ["One or more means.", 1],
+    ["One or more proportions.", 2],
+    ["Something else altogether.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9") ?? "null")}
+);
+
+localStorage.setItem("q9", JSON.stringify(q9));
+ok_response(q9, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT, Part IV
+
+How many groups are being compared in this test?
+
+```{ojs}
+//| echo: false
+
+viewof q10 = Inputs.radio(
+  new Map([
+    ["The test involves only a single group.", 1],
+    ["The test compares two groups.", 2],
+    ["The test compares more than two groups.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
+);
+
+localStorage.setItem("q10", JSON.stringify(q10));
+ok_response(q10, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT, Part V
+
+Which of the following are the hypotheses associated with this test?
+
+```{ojs}
+//| echo: false
+
+viewof q11 = Inputs.radio(
+  new Map([
+    ["H₀: μ_white − μ_nonwhite = 0; Hₐ: μ_white − μ_nonwhite ≠ 0", 1],
+    ["H₀: μ_white − μ_nonwhite = 0; Hₐ: μ_white − μ_nonwhite > 0", 2],
+    ["H₀: μ_white − μ_nonwhite = 0; Hₐ: μ_white − μ_nonwhite < 0", 3],
+    ["H₀: μ_white ≠ μ_nonwhite; Hₐ: μ_white = μ_nonwhite", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q11") ?? "null")}
+);
+
+localStorage.setItem("q11", JSON.stringify(q11));
+ok_response(q11, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT VI
+
+Do we know the population standard deviations ($\sigma$) for sentence lengths in each group?
+
+```{ojs}
+//| echo: false
+
+viewof q12 = Inputs.radio(
+  new Map([
+    ["Yes, we can compute the population standard deviation from the data using sd().", 1],
+    ["Yes, we are provided the population standard deviation.", 2],
+    ["No — sd() gives us sample standard deviations, not population standard deviations.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q12") ?? "null")}
+);
+
+localStorage.setItem("q12", JSON.stringify(q12));
+ok_response(q12, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT, Part VII
+
+Are the observations in the two groups (sentences handed to white offenders and sentences handed to non-white offenders) paired?
+
+```{ojs}
+//| echo: false
+
+viewof q13 = Inputs.radio(
+  new Map([
+    ["No. There is no reason to suggest that sentences are paired.", 1],
+    ["Yes. Every sentence handed to a white offender can be naturally paired with a sentence handed to a non-white offender.", 2]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q13") ?? "null")}
+);
+
+localStorage.setItem("q13", JSON.stringify(q13));
+ok_response(q13, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT, Part VIII
+
+Which standard error formula should be used?
+
+```{ojs}
+//| echo: false
+
+viewof q14 = Inputs.radio(
+  new Map([
+    ["SE = s/sqrt(n)", 1],
+    ["SE = sqrt(s1²/n1 + s2²/n2)", 2],
+    ["SE = sqrt(sigma1²/n1 + sigma2²/n2)", 3],
+    ["SE = sqrt(p(1-p)/n)", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q14") ?? "null")}
+);
+
+localStorage.setItem("q14", JSON.stringify(q14));
+ok_response(q14, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT IX
+
+Which distribution does the test statistic follow?
+
+```{ojs}
+//| echo: false
+
+viewof q15 = Inputs.radio(
+  new Map([
+    ["The normal distribution.", 1],
+    ["The t-distribution with df = n - 1.", 2],
+    ["The t-distribution with df = min(n1 - 1, n2 - 1).", 3],
+    ["The t-distribution with df = n_diff - 1.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q15") ?? "null")}
+);
+
+localStorage.setItem("q15", JSON.stringify(q15));
+ok_response(q15, "3");
+```
+
+:::
+
+The sentence lengths for white offenders are stored in the vector `whiteSentences` and for non-white offenders in the vector `nonWhiteSentences`. Since these objects are not data frames, you can use functionality like `mean()`, `sd()`, and `length()` directly on them.
+
+Use the code blocks below to compute the necessary quantities.
+
+**Number of white offenders:**
+
+```{webr}
+#| exercise: sentencing-ht-9
+______
+```
+
+:::{.hint exercise="sentencing-ht-9"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+`whiteSentences` is a vector, not a data frame. Which function counts elements in a vector?
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-9"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+Use `length()` rather than `nrow()` for vectors.
+
+```{r}
+#| echo: true
+#| eval: false
+
+length(whiteSentences)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ht-9
+#| solution: true
+
+length(whiteSentences)
+```
+
+```{webr}
+#| exercise: sentencing-ht-9
+#| check: true
+
+gradethis::grade_this({
+  if (.result == length(whiteSentences)) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Number of non-white offenders:**
+
+```{webr}
+#| exercise: sentencing-ht-10
+______
+```
+
+:::{.hint exercise="sentencing-ht-10"}
+:::{.callout-note collapse="false"}
+## Hint 1 (Solved)
+
+Use the same approach, but for `nonWhiteSentences`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+length(nonWhiteSentences)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ht-10
+#| solution: true
+
+length(nonWhiteSentences)
+```
+
+```{webr}
+#| exercise: sentencing-ht-10
+#| check: true
+
+gradethis::grade_this({
+  if (.result == length(nonWhiteSentences)) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Average sentence length — white offenders:**
+
+```{webr}
+#| exercise: sentencing-ht-11
+______
+```
+
+:::{.hint exercise="sentencing-ht-11"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Use the `mean()` function to calculate the average sentence length. What do you need to take the `mean()` of?
+
+```{r}
+#| echo: true
+#| eval: false
+
+mean(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-11"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+Use the `mean()` function applied to `whiteSentences` to calculate the average sentence length. 
+
+```{r}
+#| echo: true
+#| eval: false
+
+mean(whiteSentences)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ht-11
+#| solution: true
+
+mean(whiteSentences)
+```
+
+```{webr}
+#| exercise: sentencing-ht-11
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - mean(whiteSentences)) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Average sentence length — non-white offenders:**
+
+```{webr}
+#| exercise: sentencing-ht-12
+______
+```
+
+:::{.hint exercise="sentencing-ht-12"}
+:::{.callout-note collapse="false"}
+## Hint 1 (Solved)
+
+Just like with the previous scenario, use the `mean()` function to calculate the average sentence length. This time, apply it to `nonWhiteSentences` though.
+
+```{r}
+#| echo: true
+#| eval: false
+
+mean(nonWhiteSentences)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ht-12
+#| solution: true
+
+mean(nonWhiteSentences)
+```
+
+```{webr}
+#| exercise: sentencing-ht-12
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - mean(nonWhiteSentences)) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Standard deviation in sentence lengths — white offenders:**
+
+```{webr}
+#| exercise: sentencing-ht-13
+______
+```
+
+:::{.hint exercise="sentencing-ht-13"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Remember that you can calculate the standard deviation with the `sd()` function.
+
+```{r}
+#| echo: true
+#| eval: false
+
+sd(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-13"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+Apply the `sd()` function to your collection of `whiteSentences`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+sd(whiteSentences)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ht-13
+#| solution: true
+
+sd(whiteSentences)
+```
+
+```{webr}
+#| exercise: sentencing-ht-13
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - sd(whiteSentences)) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Standard deviation in sentence lengths — non-white offenders:**
+
+```{webr}
+#| exercise: sentencing-ht-14
+______
+```
+
+:::{.hint exercise="sentencing-ht-14"}
+:::{.callout-note collapse="false"}
+## Hint 1 (Solved)
+
+Use the same approach. Apply the `sd()` function to `nonWhiteSentences`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+sd(nonWhiteSentences)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ht-14
+#| solution: true
+
+sd(nonWhiteSentences)
+```
+
+```{webr}
+#| exercise: sentencing-ht-14
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - sd(nonWhiteSentences)) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Now let's put the pieces together.
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT, Part X
+
+The population parameter in question for this hypothesis test is:
+
+```{ojs}
+//| echo: false
+
+viewof q16 = Inputs.radio(
+  new Map([
+    ["μ_white", 1],
+    ["μ_nonwhite", 2],
+    ["μ_white − μ_nonwhite", 3],
+    ["x̄_white − x̄_nonwhite", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q16") ?? "null")}
+);
+
+localStorage.setItem("q16", JSON.stringify(q16));
+ok_response(q16, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT, Part XI
+
+The null value is:
+
+```{ojs}
+//| echo: false
+
+viewof q17 = Inputs.radio(
+  new Map([
+    ["0", 1],
+    ["0.5", 2],
+    ["14", 3],
+    ["44.79", 4],
+    ["39.25", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q17") ?? "null")}
+);
+
+localStorage.setItem("q17", JSON.stringify(q17));
+ok_response(q17, "1");
+```
+
+:::
+
+**Point estimate:**
+
+```{webr}
+#| exercise: sentencing-ht-16
+______
+```
+
+:::{.hint exercise="sentencing-ht-16"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+The population parameter is $\mu_{\text{white}} - \mu_{\text{non-white}}$. How does the form of the parameter tell you what the point estimate should be?
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-16"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+The point estimate is the sample version of the parameter — subtract the mean sentence for non-white offenders from the mean sentence for white offenders.
+
+```{r}
+#| echo: true
+#| eval: false
+
+mean(whiteSentences) - mean(nonWhiteSentences)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ht-16
+#| solution: true
+
+mean(whiteSentences) - mean(nonWhiteSentences)
+```
+
+```{webr}
+#| exercise: sentencing-ht-16
+#| check: true
+
+gradethis::grade_this({
+  if (abs(abs(.result) - abs(mean(whiteSentences) - mean(nonWhiteSentences))) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Standard error:**
+
+```{webr}
+#| exercise: sentencing-ht-17
+______
+```
+
+:::{.hint exercise="sentencing-ht-17"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+You identified the standard error formula earlier: $S_E = \sqrt{\left(s_1^2 / n_1\right) + \left(s_2^2 / n_2\right)}$. What are the four quantities you need?
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-17"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+You've already computed all four quantities. Fill in the blanks:
+
+```{r}
+#| echo: true
+#| eval: false
+
+sqrt((___^2 / ___) + (___^2 / ___))
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-17"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+The first grouping corresponds to the `whiteSentences`. We'll fill in the first blank with the standard deviation for that group and the second blank with the number of observations from that group.
+
+```{r}
+#| echo: true
+#| eval: false
+
+sqrt((36.53^2 / 37) + (___^2 / ___))
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-17"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+Similarly, we'll fill in the remaining blanks with the standard deviation and number of observations from the `nonWhiteSentences`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+sqrt((36.53^2 / 37) + (55.88^2 / 243))
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ht-17
+#| solution: true
+
+sqrt((sd(whiteSentences)^2 / length(whiteSentences)) + 
+     (sd(nonWhiteSentences)^2 / length(nonWhiteSentences)))
+```
+
+```{webr}
+#| exercise: sentencing-ht-17
+#| check: true
+
+gradethis::grade_this({
+  se <- sqrt((sd(whiteSentences)^2 / length(whiteSentences)) + 
+             (sd(nonWhiteSentences)^2 / length(nonWhiteSentences)))
+  if (abs(.result - se) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Test statistic:**
+
+```{webr}
+#| exercise: sentencing-ht-18
+______
+```
+
+:::{.hint exercise="sentencing-ht-18"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+The test statistic formula is $\displaystyle{\text{test statistic} = \frac{(\text{point estimate}) - (\text{null value})}{S_E}}$. You have all three components.
+
+```{r}
+#| echo: true
+#| eval: false
+(___ - ___) / ___
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-18"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+The test statistic formula is $\displaystyle{\text{test statistic} = \frac{(\text{point estimate}) - (\text{null value})}{S_E}}$. You have all three components.
+
+From the earlier exercises, we know that:
+
++ the *point estimate* is about -14.92 months, the difference in average sentences lengths.
++ The *null value* is 0, the expected difference in average sentence lengths if no difference in the population average sentences exists.
++ The *standard error* is about 6.99 months.
+
+```{r}
+#| echo: true
+#| eval: false
+
+(-14.92 - 0)/6.99
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ht-18
+#| solution: true
+
+se <- sqrt((sd(whiteSentences)^2 / length(whiteSentences)) + 
+           (sd(nonWhiteSentences)^2 / length(nonWhiteSentences)))
+
+(mean(whiteSentences) - mean(nonWhiteSentences)) / se
+```
+
+```{webr}
+#| exercise: sentencing-ht-18
+#| check: true
+
+gradethis::grade_this({
+  se <- sqrt((sd(whiteSentences)^2 / length(whiteSentences)) + 
+             (sd(nonWhiteSentences)^2 / length(nonWhiteSentences)))
+  ts <- (mean(whiteSentences) - mean(nonWhiteSentences)) / se
+  if (abs(.result - ts) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Degrees of freedom:**
+
+```{webr}
+#| exercise: sentencing-ht-18_5
+______
+```
+
+:::{.hint exercise="sentencing-ht-18_5"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+For a two-sample $t$-test, the degrees of freedom depends on the sizes of the two samples. Which formula applies?
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-18_5"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+We use $\text{df} = \min\left(n_1 - 1, n_2 - 1\right)$, one less than the smaller of the two sample sizes.
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-18_5"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+We use $\text{df} = \min\left(n_1 - 1, n_2 - 1\right)$, one less than the smaller of the two sample sizes.
+
+Which sample was smaller -- `whiteSentences` or `nonWhiteSentences`?
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-18_5"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+We use $\text{df} = \min\left(n_1 - 1, n_2 - 1\right)$, one less than the smaller of the two sample sizes.
+
+Which sample was smaller -- `whiteSentences` or `nonWhiteSentences`?
+
+There were only 37 observations in `whiteSentences` and there were 243 in `nonWhiteSentences`. Because of this, use 36 for the degrees of freedom.
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ht-18_5
+#| solution: true
+
+min(length(whiteSentences), length(nonWhiteSentences)) - 1
+```
+
+```{webr}
+#| exercise: sentencing-ht-18_5
+#| check: true
+
+gradethis::grade_this({
+  df <- min(length(whiteSentences), length(nonWhiteSentences)) - 1
+  if (.result == df) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**$p$-value:**
+
+```{webr}
+#| exercise: sentencing-ht-19
+______
+```
+
+:::{.hint exercise="sentencing-ht-19"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Draw a picture of the $t$-distribution with your test statistic marked. Since the alternative hypothesis is two-sided ($\neq$), which regions correspond to the $p$-value?
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-19"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Both tails are shaded for a two-sided test. Since both tails are equal in size, you can find one tail area and double it.
+
+```{r}
+#| echo: true
+#| eval: false
+
+2*p???(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-19"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Which of the `p*()` functions should we use here? We've encountered several...`pbinom()`, `pnorm()`, `pchisq()`, and `pt()`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+2*p???(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-19"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+Since we're working with a $t$-distribution, we'll use `pt()`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+2*pt(___, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-19"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+Because the test statistic is negative, `pt()` will calculate the area in the lower tail. Doubling this area will give us our $p$-value, as mentioned earlier.
+
+```{r}
+#| echo: true
+#| eval: false
+
+2*pt(___, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sentencing-ht-19"}
+:::{.callout-note collapse="false"}
+## Hint 6 (Solved)
+
+Our test statistic of about -2.13 will occupy the first blank, while our degrees of freedom (36) will occupy the second.
+
+```{r}
+#| echo: true
+#| eval: false
+
+2*pt(-2.13, df = 36)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: sentencing-ht-19
+#| solution: true
+
+se <- sqrt((sd(whiteSentences)^2 / length(whiteSentences)) + 
+           (sd(nonWhiteSentences)^2 / length(nonWhiteSentences)))
+ts <- (mean(whiteSentences) - mean(nonWhiteSentences)) / se
+df <- min(length(whiteSentences), length(nonWhiteSentences)) - 1
+
+2 * (1 - pt(abs(ts), df = df))
+```
+
+```{webr}
+#| exercise: sentencing-ht-19
+#| check: true
+
+gradethis::grade_this({
+  se <- sqrt((sd(whiteSentences)^2 / length(whiteSentences)) + 
+             (sd(nonWhiteSentences)^2 / length(nonWhiteSentences)))
+  ts <- (mean(whiteSentences) - mean(nonWhiteSentences)) / se
+  df <- min(length(whiteSentences), length(nonWhiteSentences)) - 1
+  pval <- 2 * (1 - pt(abs(ts), df = df))
+  if (abs(.result - pval) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT XII
+
+What is the result of the test?
+
+```{ojs}
+//| echo: false
+
+viewof q18 = Inputs.radio(
+  new Map([
+    ["Since p ≥ α, we do not have enough evidence to reject the null hypothesis.", 1],
+    ["Since p ≥ α, we accept the null hypothesis.", 2],
+    ["Since p < α, we reject the null hypothesis and accept the alternative hypothesis.", 3],
+    ["Since p < α, we fail to reject the null hypothesis.", 4],
+    ["It is impossible to determine.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q18") ?? "null")}
+);
+
+localStorage.setItem("q18", JSON.stringify(q18));
+ok_response(q18, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT XIII
+
+The result of the test means that:
+
+```{ojs}
+//| echo: false
+
+viewof q19 = Inputs.radio(
+  new Map([
+    ["The sample data did not provide significant evidence to suggest a difference in average sentence length for white versus non-white defendants.", 1],
+    ["The sample data proved there is no difference in average sentence length for white versus non-white defendants.", 2],
+    ["The sample data provided significant evidence to suggest a difference in average sentence length for white versus non-white defendants for drug-related cases in the Southern District of New York State.", 3],
+    ["Sample data cannot be used to test claims about a population.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q19") ?? "null")}
+);
+
+localStorage.setItem("q19", JSON.stringify(q19));
+ok_response(q19, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Sentencing HT XIV
+
+Which of the following is an appropriate implication of our result?
+
+```{ojs}
+//| echo: false
+
+viewof q20 = Inputs.radio(
+  new Map([
+    ["We have proved that racial bias exists in sentencing for drug-related cases in the Southern District of New York State.", 1],
+    ["We have found evidence to support the hypothesis that racial bias exists in sentencing for drug-related cases in the SDNY. Our result suggests that a more formal audit of sentencing recommendations should be undertaken.", 2],
+    ["We have found evidence to support the hypothesis that racial bias exists in the courts across all case types.", 3],
+    ["We have found evidence to suggest that racial minorities receive more lengthy sentences in drug-related cases in the Southern District of New York State.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q20") ?? "null")}
+);
+
+localStorage.setItem("q20", JSON.stringify(q20));
+ok_response(q20, "2");
+```
+
+:::
+
+## Submit
+
+:::{.callout-warning}
+
+Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+
+:::
+
+## Summary
+
+Great work through all of that — and I hope you found the application to sentencing data in the SDNY both interesting and thought-provoking. The problems were scaffolded step-by-step deliberately, to help you see how each individual piece connects to the larger process of conducting inference with numerical data.
+
+:::{.callout-tip}
+## Main Takeaways
+
++ **The $t$-distributions are a family of penalized normal distributions** parameterized by *degrees of freedom*. As degrees of freedom increase, the $t$-distribution becomes closer to the normal distribution.
+
++ **Use the $t$-distribution any time you use a sample standard deviation** ($s$) as a substitute for the population standard deviation ($\sigma$) in the standard error formula. The functions `pt()` and `qt()` work exactly like `pnorm()` and `qnorm()`, but for the $t$-distribution.
+
++ **For a single mean**, the standard error is $S_E = s/\sqrt{n}$ and the degrees of freedom is $n - 1$.
+
++ **For comparing two independent means**, the standard error is $S_E = \sqrt{s_1^2/n_1 + s_2^2/n_2}$ and the degrees of freedom is $\min\{n_1 - 1, n_2 - 1\}$.
+
++ **The confidence interval and hypothesis test formulas are the same** as before — what changes is the standard error formula and the distribution used for the critical value or $p$-value.
+
++ **Statistical significance does not imply proof.** Our finding of a significant difference in sentence lengths is evidence that warrants further investigation — it does not prove racial bias, nor does it tell us the direction of the difference without examining the point estimate.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+You've now completed the core statistical inference toolkit — confidence intervals and hypothesis tests for proportions, differences in proportions, means, and differences in means. In the coming activities, you'll have the opportunity to practice applying these tools across a variety of mixed scenarios, building fluency in selecting the right method for each situation. The decision tree and general strategy documents will continue to be your primary guides.
+:::

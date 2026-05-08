@@ -1,0 +1,1361 @@
+---
+title: "Topic 16: Inference Practice (Part C)"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        .exercise-editor-body { max-height: 300px; overflow-y: auto; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - ggplot2
+        - gradethis
+      cell-options:
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(dplyr)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+:::{.callout-note}
+## About
+
+This is the final continuation of the Topic 16 inference practice series. This third of three practice notebooks contains Problems 9 through 12. No new content is introduced.
+:::
+
+## Inference Practice
+
+This activity concludes the Topic 16 practice series. For convenience, the reference documents are again linked here:
+
++ [*Standard Error Decision Tree*](https://agmath.github.io/SiteFiles/StdErrorDecisionTree.pdf){target="_blank"}
++ [*General Strategy for Confidence Intervals*](https://agmath.github.io/SiteFiles/CIgeneral.pdf){target="_blank"}
++ [*General Strategy for Hypothesis Tests*](https://agmath.github.io/SiteFiles/HTgeneral.pdf){target="_blank"}
+
+For any problems involving hypothesis tests, assume $\alpha = 0.05$ unless otherwise stated.
+
+:::{.callout-important}
+## No Hints
+
+As with the previous two activities, there are no hints included here. Use the reference documents linked above and your previous notebooks to guide you.
+:::
+
+---
+
+## Problem 9
+
+A market researcher wants to evaluate car insurance savings at a competing company. Based on past studies, the standard deviation of savings is assumed to be \$100. The researcher wants to collect data such that the margin of error is no more than \$10 at a 95% confidence level. How large of a sample should be collected?
+
+:::{.callout-caution}
+## Problem 9, Part I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.radio(
+  new Map([
+    ["Compute a probability.", 1],
+    ["Construct a confidence interval.", 2],
+    ["Conduct a hypothesis test.", 3],
+    ["Find a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+);
+
+localStorage.setItem("q1", JSON.stringify(q1));
+ok_response(q1, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 9, Part II
+
+The parameter the market researcher is attempting to measure is a:
+
+```{ojs}
+//| echo: false
+
+viewof q2 = Inputs.radio(
+  new Map([
+    ["Population mean.", 1],
+    ["Population proportion.", 2],
+    ["Sample mean.", 3],
+    ["Sample proportion.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+);
+
+localStorage.setItem("q2", JSON.stringify(q2));
+ok_response(q2, "1");
+```
+
+:::
+
+Use the code block below to input the desired margin of error (omit the \$ sign).
+
+```{webr}
+#| exercise: prob9-3
+______
+```
+
+```{webr}
+#| exercise: prob9-3
+#| solution: true
+
+10
+```
+
+```{webr}
+#| exercise: prob9-3
+#| check: true
+
+gradethis::grade_this({
+  if (.result == 10) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the critical value ($z_{\alpha/2}$) for a 95% confidence level.
+
+```{webr}
+#| exercise: prob9-4
+______
+```
+
+```{webr}
+#| exercise: prob9-4
+#| solution: true
+
+qnorm(0.975)
+```
+
+```{webr}
+#| exercise: prob9-4
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - qnorm(0.975)) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to input the assumed value of $\sigma$ (omit the \$ sign).
+
+```{webr}
+#| exercise: prob9-5
+______
+```
+
+```{webr}
+#| exercise: prob9-5
+#| solution: true
+
+100
+```
+
+```{webr}
+#| exercise: prob9-5
+#| check: true
+
+gradethis::grade_this({
+  if (.result == 100) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the minimum required sample size.
+
+```{webr}
+#| exercise: prob9-6
+______
+```
+
+```{webr}
+#| exercise: prob9-6
+#| solution: true
+
+ceiling((qnorm(0.975) * 100 / 10)^2)
+```
+
+```{webr}
+#| exercise: prob9-6
+#| check: true
+
+gradethis::grade_this({
+  required <- ceiling((qnorm(0.975) * 100 / 10)^2)
+  if (abs(.result - required) < 10 && .result == ceiling(.result)) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-tip}
+## Reminder: Always Round Up
+
+Did you remember to round up to the nearest whole number? Rounding down violates either the confidence level or the margin of error requirement.
+:::
+
+---
+
+## Problem 10
+
+A Washington Post article from 2009 reported that "support for a government-run health-care plan to compete with private insurers has rebounded from its summertime lows and wins clear majority support from the public." More specifically, the article says "seven in 10 Democrats back the plan, while almost nine in 10 Republicans oppose it. Independents divide 52 percent against, 42 percent in favor of the legislation." (6% responded with "other".) There were 819 Democrats, 566 Republicans and 783 Independents surveyed. A political pundit on TV claims that a majority of Independents oppose the health care public option plan. Do these data provide significant evidence to support this statement?
+
+:::{.callout-caution}
+## Problem 10, Part I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+viewof q3 = Inputs.radio(
+  new Map([
+    ["Compute a probability.", 1],
+    ["Construct a confidence interval.", 2],
+    ["Conduct a hypothesis test.", 3],
+    ["Find a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+);
+
+localStorage.setItem("q3", JSON.stringify(q3));
+ok_response(q3, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 10, Part II
+
+What is the level of significance associated with this test?
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.radio(
+  new Map([
+    ["α = 0.01", 1],
+    ["α = 0.05", 2],
+    ["α = 0.10", 3],
+    ["The p-value.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+);
+
+localStorage.setItem("q4", JSON.stringify(q4));
+ok_response(q4, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 10, Part III
+
+Does this hypothesis test involve testing a statement about a mean ($\mu$), a proportion ($p$), or something else?
+
+```{ojs}
+//| echo: false
+
+viewof q5 = Inputs.radio(
+  new Map([
+    ["One or more means.", 1],
+    ["One or more proportions.", 2],
+    ["Something else altogether.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+);
+
+localStorage.setItem("q5", JSON.stringify(q5));
+ok_response(q5, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 10, Part IV
+
+How many groups are being compared in this test?
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["The test involves only a single group.", 1],
+    ["The test compares two groups.", 2],
+    ["The test compares more than two groups.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+);
+
+localStorage.setItem("q6", JSON.stringify(q6));
+ok_response(q6, "1");
+```
+
+:::
+
+:::{.callout-note}
+The article mentions Democrats, Republicans, and Independents — but the claim being tested concerns only Independents. That's a single group.
+:::
+
+:::{.callout-caution}
+## Problem 10, Part V
+
+Let $p$ denote the proportion of independents opposed to the public option. Which of the following are the hypotheses associated with this test?
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["H₀: p = 0.5; Hₐ: p > 0.5", 1],
+    ["H₀: p = 0.52; Hₐ: p > 0.52", 2],
+    ["H₀: p = 0.5; Hₐ: p ≠ 0.5", 3],
+    ["H₀: p = 0.52; Hₐ: p ≠ 0.52", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+);
+
+localStorage.setItem("q7", JSON.stringify(q7));
+ok_response(q7, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 10, Part VI
+
+Which standard error formula should be used?
+
+```{ojs}
+//| echo: false
+
+viewof q8 = Inputs.radio(
+  new Map([
+    ["SE = σ/sqrt(n)", 1],
+    ["SE = s/sqrt(n)", 2],
+    ["SE = sqrt(s1²/n1 + s2²/n2)", 3],
+    ["SE = sqrt(p(1-p)/n)", 4],
+    ["SE = sqrt(p1(1-p1)/n1 + p2(1-p2)/n2)", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+);
+
+localStorage.setItem("q8", JSON.stringify(q8));
+ok_response(q8, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 10, Part VII
+
+Which distribution does the test statistic follow?
+
+```{ojs}
+//| echo: false
+
+viewof q9 = Inputs.radio(
+  new Map([
+    ["The normal distribution.", 1],
+    ["The t-distribution with df = n - 1.", 2],
+    ["The t-distribution with df = min(n1-1, n2-1).", 3],
+    ["The t-distribution with df = n_diff - 1.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9") ?? "null")}
+);
+
+localStorage.setItem("q9", JSON.stringify(q9));
+ok_response(q9, "1");
+```
+
+:::
+
+Use the code block below to compute the point estimate.
+
+```{webr}
+#| exercise: prob10-7
+______
+```
+
+```{webr}
+#| exercise: prob10-7
+#| solution: true
+
+0.52
+```
+
+```{webr}
+#| exercise: prob10-7
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result) == 0.52) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the null value.
+
+```{webr}
+#| exercise: prob10-8
+______
+```
+
+```{webr}
+#| exercise: prob10-8
+#| solution: true
+
+0.5
+```
+
+```{webr}
+#| exercise: prob10-8
+#| check: true
+
+gradethis::grade_this({
+  if (.result == 0.5) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the standard error.
+
+```{webr}
+#| exercise: prob10-9
+______
+```
+
+```{webr}
+#| exercise: prob10-9
+#| solution: true
+
+sqrt(0.5 * (1 - 0.5) / 783)
+```
+
+```{webr}
+#| exercise: prob10-9
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - sqrt(0.5 * 0.5 / 783)) < 0.0005) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the test statistic.
+
+```{webr}
+#| exercise: prob10-10
+______
+```
+
+```{webr}
+#| exercise: prob10-10
+#| solution: true
+
+(0.52 - 0.5) / sqrt(0.5 * 0.5 / 783)
+```
+
+```{webr}
+#| exercise: prob10-10
+#| check: true
+
+gradethis::grade_this({
+  ts <- (0.52 - 0.5) / sqrt(0.5 * 0.5 / 783)
+  if (abs(.result - ts) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the $p$-value.
+
+```{webr}
+#| exercise: prob10-11
+______
+```
+
+```{webr}
+#| exercise: prob10-11
+#| solution: true
+
+ts <- (0.52 - 0.5) / sqrt(0.5 * 0.5 / 783)
+1 - pnorm(ts)
+```
+
+```{webr}
+#| exercise: prob10-11
+#| check: true
+
+gradethis::grade_this({
+  ts <- (0.52 - 0.5) / sqrt(0.5 * 0.5 / 783)
+  pval <- 1 - pnorm(ts)
+  if (abs(.result - pval) < 0.0005) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Problem 10, Part VIII
+
+What is the result of the test?
+
+```{ojs}
+//| echo: false
+
+viewof q10 = Inputs.radio(
+  new Map([
+    ["Since p ≥ α, we do not have enough evidence to reject the null hypothesis.", 1],
+    ["Since p ≥ α, we accept the null hypothesis.", 2],
+    ["Since p < α, we reject the null hypothesis and accept the alternative hypothesis.", 3],
+    ["Since p < α, we fail to reject the null hypothesis.", 4],
+    ["It is impossible to determine.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
+);
+
+localStorage.setItem("q10", JSON.stringify(q10));
+ok_response(q10, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 10, Part IX
+
+The result of the test means that:
+
+```{ojs}
+//| echo: false
+
+viewof q11 = Inputs.radio(
+  new Map([
+    ["The sample data proved that a majority of independents oppose the health care public option.", 1],
+    ["The sample data provided significant evidence to suggest that a majority of independents oppose the health care public option.", 2],
+    ["The sample data did not provide significant evidence to suggest that a majority of independents oppose the health care public option.", 3],
+    ["The sample data proved that a majority of independents do not oppose the health care public option.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q11") ?? "null")}
+);
+
+localStorage.setItem("q11", JSON.stringify(q11));
+ok_response(q11, "3");
+```
+
+:::
+
+---
+
+## Problem 11
+
+Is there strong evidence of global warming? Let's consider a small-scale example comparing temperatures in the US from 1968 to 2008. The daily high temperature on January 1 was collected in 1968 and 2008 for 51 randomly selected locations in the continental US. The difference between readings (2008 temperature minus 1968 temperature) was calculated for each location. The average of these 51 differences was 1.1 degrees with a standard deviation of 4.9 degrees. Conduct a hypothesis test to determine whether there is significant evidence of temperature warming.
+
+:::{.callout-caution}
+## Problem 11, Part I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+viewof q12 = Inputs.radio(
+  new Map([
+    ["Compute a probability.", 1],
+    ["Construct a confidence interval.", 2],
+    ["Conduct a hypothesis test.", 3],
+    ["Find a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q12") ?? "null")}
+);
+
+localStorage.setItem("q12", JSON.stringify(q12));
+ok_response(q12, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 11, Part II
+
+What is the level of significance associated with this test?
+
+```{ojs}
+//| echo: false
+
+viewof q13 = Inputs.radio(
+  new Map([
+    ["α = 0.01", 1],
+    ["α = 0.05", 2],
+    ["α = 0.10", 3],
+    ["The p-value.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q13") ?? "null")}
+);
+
+localStorage.setItem("q13", JSON.stringify(q13));
+ok_response(q13, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 11, Part III
+
+Does this hypothesis test involve testing a statement about a mean ($\mu$), a proportion ($p$), or something else?
+
+```{ojs}
+//| echo: false
+
+viewof q14 = Inputs.radio(
+  new Map([
+    ["One or more means.", 1],
+    ["One or more proportions.", 2],
+    ["Something else altogether.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q14") ?? "null")}
+);
+
+localStorage.setItem("q14", JSON.stringify(q14));
+ok_response(q14, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 11, Part IV
+
+How many groups are being compared in this test?
+
+```{ojs}
+//| echo: false
+
+viewof q15 = Inputs.radio(
+  new Map([
+    ["A single group.", 1],
+    ["Two groups.", 2],
+    ["More than two groups.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q15") ?? "null")}
+);
+
+localStorage.setItem("q15", JSON.stringify(q15));
+ok_response(q15, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 11, Part V
+
+Are the 1968 and 2008 temperature readings paired?
+
+```{ojs}
+//| echo: false
+
+viewof q16 = Inputs.radio(
+  new Map([
+    ["No. There is no reason to suggest that individual 1968 and 2008 readings correspond to one another.", 1],
+    ["Yes. Every 1968 reading can be naturally paired with the 2008 reading from the same location.", 2]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q16") ?? "null")}
+);
+
+localStorage.setItem("q16", JSON.stringify(q16));
+ok_response(q16, "2");
+```
+
+:::
+
+:::{.callout-note}
+The groups here are the temperatures in 1968 and the temperatures in 2008. Once we compute the temperature difference at each location (ie. $\text{Boston}_{2008} - \text{Boston}_{1968}$), we'll have a single value per location. The analysis then treats these 51 differences as one sample — this is the **paired data** approach.
+:::
+
+:::{.callout-caution}
+## Problem 11, Part VI
+
+Which of the following are the hypotheses associated with this test?
+
+```{ojs}
+//| echo: false
+
+viewof q17 = Inputs.radio(
+  new Map([
+    ["H₀: μ_diff = 0; Hₐ: μ_diff ≠ 0", 1],
+    ["H₀: μ_diff = 0; Hₐ: μ_diff > 0", 2],
+    ["H₀: μ_diff = 0; Hₐ: μ_diff < 0", 3],
+    ["H₀: μ_2008 ≠ μ_1968; Hₐ: μ_2008 = μ_1968", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q17") ?? "null")}
+);
+
+localStorage.setItem("q17", JSON.stringify(q17));
+ok_response(q17, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 11, Part VII
+
+Do we know the population standard deviation ($\sigma$) for the temperature differences?
+
+```{ojs}
+//| echo: false
+
+viewof q18 = Inputs.radio(
+  new Map([
+    ["Yes, the population standard deviation is known.", 1],
+    ["No, the population standard deviation is not known.", 2]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q18") ?? "null")}
+);
+
+localStorage.setItem("q18", JSON.stringify(q18));
+ok_response(q18, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 11, Part VIII
+
+Which standard error formula should be used?
+
+```{ojs}
+//| echo: false
+
+viewof q19 = Inputs.radio(
+  new Map([
+    ["SE = σ/sqrt(n)", 1],
+    ["SE = s/sqrt(n)", 2],
+    ["SE = s_diff/sqrt(n_diff)", 3],
+    ["SE = sqrt(s1²/n1 + s2²/n2)", 4],
+    ["SE = sqrt(p(1-p)/n)", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q19") ?? "null")}
+);
+
+localStorage.setItem("q19", JSON.stringify(q19));
+ok_response(q19, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 11, Part IX
+
+Which distribution does the test statistic follow?
+
+```{ojs}
+//| echo: false
+
+viewof q20 = Inputs.radio(
+  new Map([
+    ["The normal distribution.", 1],
+    ["The t-distribution with df = n - 1.", 2],
+    ["The t-distribution with df = min(n1-1, n2-1).", 3],
+    ["The t-distribution with df = n_diff - 1.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q20") ?? "null")}
+);
+
+localStorage.setItem("q20", JSON.stringify(q20));
+ok_response(q20, "4");
+```
+
+:::
+
+Use the code block below to compute the point estimate.
+
+```{webr}
+#| exercise: prob11-9
+______
+```
+
+```{webr}
+#| exercise: prob11-9
+#| solution: true
+
+1.1
+```
+
+```{webr}
+#| exercise: prob11-9
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result) == 1.1) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the null value.
+
+```{webr}
+#| exercise: prob11-10
+______
+```
+
+```{webr}
+#| exercise: prob11-10
+#| solution: true
+
+0
+```
+
+```{webr}
+#| exercise: prob11-10
+#| check: true
+
+gradethis::grade_this({
+  if (.result == 0) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the standard error.
+
+```{webr}
+#| exercise: prob11-11
+______
+```
+
+```{webr}
+#| exercise: prob11-11
+#| solution: true
+
+4.9 / sqrt(51)
+```
+
+```{webr}
+#| exercise: prob11-11
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - 4.9/sqrt(51)) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the test statistic.
+
+```{webr}
+#| exercise: prob11-12
+______
+```
+
+```{webr}
+#| exercise: prob11-12
+#| solution: true
+
+(1.1 - 0) / (4.9 / sqrt(51))
+```
+
+```{webr}
+#| exercise: prob11-12
+#| check: true
+
+gradethis::grade_this({
+  ts <- (1.1 - 0) / (4.9 / sqrt(51))
+  if (abs(.result - ts) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the $p$-value.
+
+```{webr}
+#| exercise: prob11-13
+______
+```
+
+```{webr}
+#| exercise: prob11-13
+#| solution: true
+
+ts <- (1.1 - 0) / (4.9 / sqrt(51))
+1 - pt(ts, df = 50)
+```
+
+```{webr}
+#| exercise: prob11-13
+#| check: true
+
+gradethis::grade_this({
+  ts <- (1.1 - 0) / (4.9 / sqrt(51))
+  pval <- 1 - pt(ts, df = 50)
+  if (abs(.result - pval) < 0.0005) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Problem 11, Part X
+
+What is the result of the test?
+
+```{ojs}
+//| echo: false
+
+viewof q21 = Inputs.radio(
+  new Map([
+    ["Since p ≥ α, we do not have enough evidence to reject the null hypothesis.", 1],
+    ["Since p ≥ α, we accept the null hypothesis.", 2],
+    ["Since p < α, we reject the null hypothesis and accept the alternative hypothesis.", 3],
+    ["Since p < α, we fail to reject the null hypothesis.", 4],
+    ["It is impossible to determine.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q21") ?? "null")}
+);
+
+localStorage.setItem("q21", JSON.stringify(q21));
+ok_response(q21, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 11, Part XI
+
+The result of the test means that:
+
+```{ojs}
+//| echo: false
+
+viewof q22 = Inputs.radio(
+  new Map([
+    ["The sample data did not provide significant evidence to suggest that temperatures in the US increased from January 1, 1968 to January 1, 2008.", 1],
+    ["The sample data proved that temperatures in the US increased from January 1, 1968 to January 1, 2008.", 2],
+    ["The sample data provided significant evidence to suggest that temperatures in the US increased from January 1, 1968 to January 1, 2008.", 3],
+    ["The sample data provided significant evidence of temperature increase within our sample locations only.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q22") ?? "null")}
+);
+
+localStorage.setItem("q22", JSON.stringify(q22));
+ok_response(q22, "1");
+```
+
+:::
+
+---
+
+## Problem 12
+
+A recent claim from Irving states that their average gasoline prices across the nation are \$3.26 per gallon. A random sample of 15 Irving stations throughout Manchester, NH reveals an average price per gallon of \$3.19 with a standard deviation of \$0.035. Construct a 90% confidence interval for the average price per gallon at Irving stations in Manchester, NH and comment on your result.
+
+:::{.callout-caution}
+## Problem 12, Part I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+viewof q23 = Inputs.radio(
+  new Map([
+    ["Compute a probability.", 1],
+    ["Construct a confidence interval.", 2],
+    ["Conduct a hypothesis test.", 3],
+    ["Find a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q23") ?? "null")}
+);
+
+localStorage.setItem("q23", JSON.stringify(q23));
+ok_response(q23, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 12, Part II
+
+What is the desired level of confidence?
+
+```{ojs}
+//| echo: false
+
+viewof q24 = Inputs.radio(
+  new Map([
+    ["90%", 1],
+    ["95%", 2],
+    ["98%", 3],
+    ["99%", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q24") ?? "null")}
+);
+
+localStorage.setItem("q24", JSON.stringify(q24));
+ok_response(q24, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 12, Part III
+
+Is your confidence interval being built to capture a mean ($\mu$), a proportion ($p$), or something else?
+
+```{ojs}
+//| echo: false
+
+viewof q25 = Inputs.radio(
+  new Map([
+    ["A mean or difference in means.", 1],
+    ["A proportion or difference in proportions.", 2],
+    ["Something else altogether.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q25") ?? "null")}
+);
+
+localStorage.setItem("q25", JSON.stringify(q25));
+ok_response(q25, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 12, Part IV
+
+Does the population parameter belong to a single group or is it a comparison of multiple groups?
+
+```{ojs}
+//| echo: false
+
+viewof q26 = Inputs.radio(
+  new Map([
+    ["The population parameter belongs to a single group.", 1],
+    ["The population parameter involves a comparison of two groups.", 2],
+    ["The population parameter involves a comparison of more than two groups.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q26") ?? "null")}
+);
+
+localStorage.setItem("q26", JSON.stringify(q26));
+ok_response(q26, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 12, Part V
+
+Is the population standard deviation ($\sigma$) for gas prices known?
+
+```{ojs}
+//| echo: false
+
+viewof q27 = Inputs.radio(
+  new Map([
+    ["Yes, the population standard deviation is known.", 1],
+    ["No, the population standard deviation is not known.", 2]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q27") ?? "null")}
+);
+
+localStorage.setItem("q27", JSON.stringify(q27));
+ok_response(q27, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 12, Part VI
+
+Which standard error formula should be used?
+
+```{ojs}
+//| echo: false
+
+viewof q28 = Inputs.radio(
+  new Map([
+    ["SE = σ/sqrt(n)", 1],
+    ["SE = s/sqrt(n)", 2],
+    ["SE = sqrt(s1²/n1 + s2²/n2)", 3],
+    ["SE = sqrt(p(1-p)/n)", 4],
+    ["SE = sqrt(p1(1-p1)/n1 + p2(1-p2)/n2)", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q28") ?? "null")}
+);
+
+localStorage.setItem("q28", JSON.stringify(q28));
+ok_response(q28, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 12, Part VII
+
+Which distribution should be used to identify the critical value?
+
+```{ojs}
+//| echo: false
+
+viewof q29 = Inputs.radio(
+  new Map([
+    ["The normal distribution.", 1],
+    ["The t-distribution with df = n - 1.", 2],
+    ["The t-distribution with df = min(n1-1, n2-1).", 3],
+    ["The t-distribution with df = n_diff - 1.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q29") ?? "null")}
+);
+
+localStorage.setItem("q29", JSON.stringify(q29));
+ok_response(q29, "2");
+```
+
+:::
+
+Use the code block below to compute the critical value.
+
+```{webr}
+#| exercise: prob12-7
+______
+```
+
+```{webr}
+#| exercise: prob12-7
+#| solution: true
+
+qt(0.95, df = 14)
+```
+
+```{webr}
+#| exercise: prob12-7
+#| check: true
+
+gradethis::grade_this({
+  if (abs(abs(.result) - qt(0.95, df = 14)) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the point estimate.
+
+```{webr}
+#| exercise: prob12-8
+______
+```
+
+```{webr}
+#| exercise: prob12-8
+#| solution: true
+
+3.19
+```
+
+```{webr}
+#| exercise: prob12-8
+#| check: true
+
+gradethis::grade_this({
+  if (.result == 3.19) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the standard error.
+
+```{webr}
+#| exercise: prob12-9
+______
+```
+
+```{webr}
+#| exercise: prob12-9
+#| solution: true
+
+0.035 / sqrt(15)
+```
+
+```{webr}
+#| exercise: prob12-9
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - 0.035/sqrt(15)) < 0.005) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the lower bound of the confidence interval.
+
+```{webr}
+#| exercise: prob12-10
+______
+```
+
+```{webr}
+#| exercise: prob12-10
+#| solution: true
+
+3.19 - qt(0.95, df = 14) * (0.035 / sqrt(15))
+```
+
+```{webr}
+#| exercise: prob12-10
+#| check: true
+
+gradethis::grade_this({
+  lower <- 3.19 - qt(0.95, df = 14) * (0.035 / sqrt(15))
+  if (abs(.result - lower) < 0.005) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the upper bound of the confidence interval.
+
+```{webr}
+#| exercise: prob12-11
+______
+```
+
+```{webr}
+#| exercise: prob12-11
+#| solution: true
+
+3.19 + qt(0.95, df = 14) * (0.035 / sqrt(15))
+```
+
+```{webr}
+#| exercise: prob12-11
+#| check: true
+
+gradethis::grade_this({
+  upper <- 3.19 + qt(0.95, df = 14) * (0.035 / sqrt(15))
+  if (abs(.result - upper) < 0.005) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Problem 12, Part VIII
+
+The correct interpretation of this confidence interval is:
+
+```{ojs}
+//| echo: false
+
+viewof q30 = Inputs.radio(
+  new Map([
+    ["90% of gas stations in Manchester, NH have gas prices between the lower and upper bounds computed.", 1],
+    ["We are 90% confident that the average gas price at Irving stations across NH falls between the lower and upper bounds calculated.", 2],
+    ["There is a 90% chance that the true average gas price at Irving stations in Manchester, NH falls between the lower and upper bounds calculated.", 3],
+    ["We are 90% confident that the true average gas price at Irving stations in Manchester, NH is between the lower and upper bounds calculated.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q30") ?? "null")}
+);
+
+localStorage.setItem("q30", JSON.stringify(q30));
+ok_response(q30, "4");
+```
+
+:::
+
+## Submit
+
+:::{.callout-warning}
+
+Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+
+:::
+
+## Summary
+
+:::{.callout-tip}
+## Main Takeaways
+
+A few key ideas from Problems 9–12 worth carrying forward:
+
++ **Sample size for a mean** uses the formula $n \geq (z_{\alpha/2} \cdot \sigma / ME)^2$, which requires a known or assumed population standard deviation $\sigma$. This is in contrast to the sample size formula for a proportion, which uses $p(1-p)$ in place of $\sigma^2$.
++ **Hypothesis tests about a single proportion** use the null value $p_0$ in the standard error formula: $S_E = \sqrt{p_0(1-p_0)/n}$. The null value, not the sample proportion, goes into the SE for a hypothesis test.
++ **Paired data** reduces a two-sample problem to a one-sample problem — once you compute the differences, you analyze a single set of values with $S_E = s_{\text{diff}}/\sqrt{n_{\text{diff}}}$ and df $= n_{\text{diff}} - 1$.
++ **Scope of inference matters.** Confidence intervals based on a sample from Manchester, NH can only be generalized to Irving stations in Manchester, NH — not all Irving stations nationally.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+You've now completed all twelve inference practice problems across Parts A, B, and C. The next activity is a lab on inference with raw data. We'll revisit the `inference()` function from the `{statsr}` package and focus on using it for inference on numerical variables.
+:::

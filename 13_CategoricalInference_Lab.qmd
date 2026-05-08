@@ -1,0 +1,697 @@
+---
+title: "Topic 13: Inference for Categorical Data (Lab)"
+engine: knitr
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        .exercise-editor-body { max-height: 300px; overflow-y: auto; }
+        </style>
+    webr:
+      packages:
+        - ggplot2
+        - dplyr
+        - gradethis
+        - statsr
+        - openintro
+      cell-options: 
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(ggplot2)
+library(dplyr)
+library(statsr)
+library(openintro)
+
+data(atheism)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+```{r setup, include=FALSE}
+library(ggplot2)
+library(dplyr)
+library(statsr)
+library(openintro)
+
+data(atheism)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+:::{.callout-note}
+## About
+
+In this lab, we explore what's at play when making inference about population proportions using categorical data. We work with real survey data on global atheism, practice using the `inference()` function from the `{statsr}` package, and investigate how sample size and population proportion affect the margin of error.
+:::
+
+:::{.callout-note}
+## License
+
+This is a derivative of a product of OpenIntro that is released under a [Creative Commons Attribution-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-sa/3.0){target="_blank"} license. The original lab was written for OpenIntro by Andrew Bray and Mine Çetinkaya-Rundel.
+:::
+
+In August of 2012, news outlets ranging from the [Washington Post](http://www.washingtonpost.com/national/on-faith/poll-shows-atheism-on-the-rise-in-the-us/2012/08/13/90020fd6-e57d-11e1-9739-eef99c5fb285_story.html){target="_blank"} to the [Huffington Post](http://www.huffingtonpost.com/2012/08/14/atheism-rise-religiosity-decline-in-america_n_1777031.html){target="_blank"} ran a story about the rise of atheism in America. The source for the story was a poll that asked people: *"Irrespective of whether you attend a place of worship or not, would you say you are a religious person, not a religious person, or a convinced atheist?"* This type of question, which asks people to classify themselves in one way or another, is common in polling and generates categorical data. In this activity we take a look at the atheism survey and explore what's at play when making inference about population proportions using categorical data.
+
+## The Survey
+
+You can find the press release for the WIN-Gallup International poll on the Global Index of Religion and Atheism [here](www/Religiosity_and_Atheism.pdf){target="_blank"}. Please take a moment to review the report and then address the following questions.
+
+:::{.callout-caution}
+## Check Your Understanding: Question 1
+
+In the first paragraph of the report, several key findings are reported. Do these percentages appear to be *sample statistics* (derived from the data sample) or *population parameters*?
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.radio(
+  new Map([
+    ["Sample Statistics", 1],
+    ["Population Parameters", 2],
+    ["A mix of both", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+);
+
+localStorage.setItem("q1", JSON.stringify(q1));
+ok_response(q1, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Question 2
+
+The title of the report is *Global Index of Religiosity and Atheism*. To generalize the report's findings to the global human population, what must we assume about the sampling method?
+
+```{ojs}
+//| echo: false
+
+viewof q2 = Inputs.radio(
+  new Map([
+    ["The sample should include people of all religions, so samples should be taken near a diverse set of places of worship.", 1],
+    ["The sample must contain at least 10% of the global population.", 2],
+    ["The survey should be conducted by phone to ensure respondents understand the questions being asked.", 3],
+    ["The sample must be random and representative of the global community.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+);
+
+localStorage.setItem("q2", JSON.stringify(q2));
+ok_response(q2, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Question 3
+
+Do you expect that the required assumption was satisfied? What are the implications of this?
+
+```{ojs}
+//| echo: false
+
+viewof q3 = Inputs.radio(
+  new Map([
+    ["No. In order to apply results to the global community the pollsters would need to conduct a census.", 1],
+    ["Yes. WIN-Gallup is a reputable polling organization.", 2],
+    ["Yes. The study included a very large number of respondents.", 3],
+    ["No. The study results can only be extended to countries and regions for which the sample data is representative.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+);
+
+localStorage.setItem("q3", JSON.stringify(q3));
+ok_response(q3, "4");
+```
+
+:::
+
+Turn your attention to Table 6 (pages 14 and 15) of the report, which summarizes the sample size and response percentages for all 57 countries. While this is a useful format for summarizing the data, we will base our analysis on the original data set of individual responses to the survey. These original responses are available in a data frame named `atheism` from the `{openintro}` package, which has been loaded for you.
+
+```{webr}
+#| exercise: calculator-cell-1
+# Use this block to explore the atheism data frame
+
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Question 4
+
+What does each row of Table 6 correspond to? What does each row of the `atheism` data frame correspond to?
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.radio(
+  new Map([
+    ["Each row of Table 6 contains the summarized responses by country while each row of atheism contains the response of an individual respondent.", 1],
+    ["Each row of Table 6 contains the response of an individual respondent while each row of atheism contains the summarized responses by country.", 2],
+    ["Each row of both Table 6 and the atheism data frame contain the response of an individual respondent.", 3],
+    ["Each row of both Table 6 and the atheism data frame contain the summarized responses by country.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+);
+
+localStorage.setItem("q4", JSON.stringify(q4));
+ok_response(q4, "1");
+```
+
+:::
+
+To investigate the link between these two ways of organizing this data, take a look at the estimated proportion of atheists in the United States. Towards the bottom of Table 6, we see that this is 5%. We should be able to arrive at the same number using the `atheism` data.
+
+Run the command in the code block below and be sure to understand what the code is doing — you'll be asked to do something similar shortly. Here we create a new data frame called `us12` containing only the rows in `atheism` associated with respondents from the United States in 2012. We then calculate the proportion of atheist responses. Does the result agree with the percentage in Table 6? If not, why might it differ?
+
+```{webr}
+#| exercise: us-atheism
+
+us12 <- atheism |>
+  filter(nationality == "United States", 
+         year == 2012)
+
+us12 |>
+  count(response) |>
+  mutate(relative_frequency = n / sum(n))
+```
+
+## Inference on Proportions
+
+As you noted previously, Table 6 provides *statistics* — calculations made from the sample of 51,927 people. We'd like insight into the population *parameters* instead. You answer the question "What proportion of people *in your sample* reported being atheists?" with a sample statistic, while the question "What proportion of people *on Earth* would report being atheists?" is answered with an estimate of the parameter.
+
+You'll use what you've learned about inferential tools for estimating population proportions to answer questions related to the WIN-Gallup poll. Additionally, you'll explore how the value of the population proportion can impact the margin of error for a confidence interval.
+
+As long as the conditions for inference are reasonably well satisfied, we can either calculate the standard error and construct the confidence interval by hand, or allow the `inference()` function from the `{statsr}` package to do it for us.
+
+Run the following code block to construct a confidence interval for the proportion of atheists in the US in 2012.
+
+```{webr}
+#| exercise: us-atheism-ci
+#| setup: true
+#| echo: false
+
+us12 <- atheism |>
+  filter(nationality == "United States", 
+         year == 2012)
+```
+
+```{webr}
+#| exercise: us-atheism-ci
+
+inference(y = response,
+          data = us12,
+          statistic = "proportion", 
+          type = "ci", 
+          method = "theoretical", 
+          success = "atheist")
+```
+
+Let's pause for a moment to go through the arguments of this function:
+
++ `y` — the response variable of interest: `response`
++ `data` — the data frame containing the `response` column
++ `statistic` — the parameter we're estimating: `"proportion"` (other options include `"mean"` and `"median"`)
++ `type` — the type of inference: `"ci"` for a confidence interval or `"ht"` for a hypothesis test
++ `method` — `"theoretical"` or `"simulation"` based; we use the theoretical framework throughout this course
++ `success` — since we are estimating a proportion, we specify which level counts as a "success": `"atheist"`
+
+The default confidence level is 95% (`conf_level = 0.95`), though this can be adjusted.
+
+Although formal confidence intervals and hypothesis tests don't appear explicitly in the WIN-Gallup report, suggestions of inference appear at the bottom of page 6: *"In general, the error margin for surveys of this kind is ±3–5% at 95% confidence."* We will check the validity of this claim shortly.
+
+Use the code block below to help you answer the question that follows.
+
+```{webr}
+#| exercise: calculator-cell-2
+# Use this block for any calculations
+
+```
+
+:::{.hint exercise="calculator-cell-2"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+What is the relationship between the margin of error and the width of a confidence interval?
+
+:::
+:::
+
+:::{.hint exercise="calculator-cell-2"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The margin of error is half the width of the confidence interval — think of it as the "radius" around the point estimate.
+
+```{r}
+#| echo: true
+#| eval: false
+
+(___ - ___) / 2
+```
+
+:::
+:::
+
+:::{.hint exercise="calculator-cell-2"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+The margin of error is half the width of the confidence interval — think of it as the "radius" around the point estimate.
+
+We can take the upper bound for the confidence interval minus the lower bound to find the entire width of the interval. Dividing that by two will give us the margin of error.
+
+```{r}
+#| echo: true
+#| eval: false
+
+(0.0634 - 0.0364) / 2
+```
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Question 5
+
+Based on the R output, what is the margin of error for the estimate of the proportion of atheists in the US in 2012?
+
+```{ojs}
+//| echo: false
+
+viewof q5 = Inputs.radio(
+  new Map([
+    ["0.0069", 1],
+    ["0.0135", 2],
+    ["0.0364", 3],
+    ["0.0499", 4],
+    ["0.0634", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+);
+
+localStorage.setItem("q5", JSON.stringify(q5));
+ok_response(q5, "2");
+```
+
+:::
+
+Using the code block below and the `inference()` function, calculate confidence intervals for the proportion of atheists in 2012 in two other countries of your choice, and report the associated margins of error. Be sure to note whether the conditions for inference are met. It will be helpful to create new data sets for each of the two countries first, and then use these data sets in the `inference()` function.
+
+```{webr}
+#| exercise: use-inference
+# Explore atheism proportions in two countries of your choice
+
+```
+
+:::{.hint exercise="use-inference"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Revisit the code block where we created the `us12` data frame. What would you need to change to get data from a different country?
+
+:::
+:::
+
+:::{.hint exercise="use-inference"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Change the `nationality` value in `filter()` to match a country of your choice. You can check the available country names by running `unique(atheism$nationality)`.
+
+:::
+:::
+
+:::{.hint exercise="use-inference"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+Create a data frame for each country, then pass it to `inference()` the same way we did for `us12`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+country1 <- atheism |>
+  filter(nationality == "___", year == 2012)
+
+inference(y = response, data = country1,
+          statistic = "proportion", type = "ci",
+          method = "theoretical", success = "atheist")
+```
+
+:::
+:::
+
+## How Does the Proportion Affect the Margin of Error?
+
+Imagine you've set out to survey 1,000 people on two questions: are you female? and are you left-handed? Since both sample proportions were calculated from the same sample size, they should have the same margin of error, right? Not so fast! While the margin of error does change with sample size, it is also affected by the proportion itself.
+
+Think back to the formula for the standard error: $SE = \sqrt{p(1-p)/n}$. This feeds into the margin of error for a 95% confidence interval: $ME = 1.96 \times SE = 1.96 \times \sqrt{p(1-p)/n}$. Since the population proportion $p$ appears in this formula, it makes sense that the margin of error depends on the population proportion. We can visualize this relationship by plotting $ME$ vs. $p$.
+
+The code block below creates a vector `p` from 0 to 1 in steps of 0.01, calculates the corresponding margin of error for each value of $p$ (using $ME \approx 2 \times SE$), and plots the relationship.
+
+```{webr}
+#| exercise: me-plot
+
+n <- 1000
+p <- seq(0, 1, 0.01)
+me <- 2 * sqrt(p * (1 - p) / n)
+
+ggplot() + 
+  geom_point(aes(x = p, y = me)) + 
+  labs(title = "Margin of Error and Population Proportion", 
+       y = "Margin of Error", 
+       x = "Population Proportion")
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Question 6
+
+Describe the relationship between the population proportion $p$ and the margin of error.
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["The margin of error is smaller for larger values of the population proportion.", 1],
+    ["The margin of error is larger for larger values of the population proportion.", 2],
+    ["There is no meaningful relationship between the population proportion and margin of error.", 3],
+    ["The margin of error is small if the population proportion is near 0 or 1 but is largest for values near 0.5.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+);
+
+localStorage.setItem("q6", JSON.stringify(q6));
+ok_response(q6, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Question 7
+
+Which of the following are implications of your answer above?
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["In order to estimate a population proportion to within a desired margin of error, larger sample sizes will be needed if the true population proportion is near 0.5.", 1],
+    ["Margins of error, and therefore confidence intervals, will be widest when the population proportion to be captured is close to 0.5.", 2],
+    ["Both of the above are true.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+);
+
+localStorage.setItem("q7", JSON.stringify(q7));
+ok_response(q7, "3");
+```
+
+:::
+
+We now know that both sample size and the population proportion impact the margin of error. Often, pollsters have requirements for the margin of error — for example, estimating a president's net favorability rating to within ±3 percentage points. They can use these requirements, along with any prior knowledge or intuition about the population proportion, to estimate how much data they need to collect. The required sample size can be estimated using the formula below (a rearrangement of the margin of error formula):
+
+$$n \geq \left(\frac{Z_{\alpha/2}}{M_E}\right)^2 \cdot p\left(1 - p\right)$$
+
+where $Z_{\alpha/2}$ is the critical value for the desired confidence level, $M_E$ is the desired margin of error, and $p$ is an estimate for the population proportion. If no estimate is available, use $p = 0.5$ as a conservative worst-case choice.
+
+## Success-Failure Condition
+
+You must always check conditions before making inference. For inference on proportions, the sample proportion can be assumed to be nearly normal if the sample is random and both $np \geq 10$ and $n(1-p) \geq 10$. This rule of thumb is easy to follow, but it raises an interesting question: what's so special about the number 10?
+
+The short answer is: nothing. The "best" value for such a rule of thumb is, to some degree, arbitrary. However, when $np$ and $n(1-p)$ both reach 10, the sampling distribution is sufficiently normal to use confidence intervals and hypothesis tests based on that approximation.
+
+We can investigate the interplay between $n$ and $p$ and the shape of the sampling distribution using simulations. The code block below simulates 5,000 samples of size 1,040 from a population with a true atheist proportion of 0.1, computes $\hat{p}$ for each sample, and plots a histogram of the results.
+
+```{webr}
+#| exercise: sim-np
+
+p <- 0.1
+n <- 1040
+p_hats <- rep(0, 5000)
+
+for(i in 1:5000){
+  samp <- sample(c("atheist", "non_atheist"), 
+                 n, 
+                 replace = TRUE, 
+                 prob = c(p, 1 - p))
+  p_hats[i] <- sum(samp == "atheist") / n
+}
+
+ggplot() + 
+  geom_histogram(aes(x = p_hats), binwidth = 0.005) + 
+  labs(title = "p = 0.1, n = 1040", 
+       x = "Estimates for p") + 
+  coord_cartesian(xlim = c(0, 0.18))
+```
+
+Use the code block below to repeat this simulation with `n = 400` and `p = 0.1`. Plot your result and compare it to the original. What impact does lowering the number of observations have?
+
+```{webr}
+#| exercise: p-dist-400-10
+# Simulate with n = 400 and p = 0.1
+
+```
+
+:::{.hint exercise="p-dist-400-10"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Start by copying the simulation code from the previous block. Which two values at the top of the code need to change?
+
+:::
+:::
+
+:::{.hint exercise="p-dist-400-10"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+Change `n` to 400 and keep `p` at 0.1. Everything else can stay the same — just update the plot title to reflect the new parameters.
+
+:::
+:::
+
+Now re-run the experiment with `n = 1040` and `p = 0.02`. Think about the impact that a smaller population proportion has on the distribution of $\hat{p}$.
+
+```{webr}
+#| exercise: p-dist-1040-02
+# Simulate with n = 1040 and p = 0.02
+
+```
+
+:::{.hint exercise="p-dist-1040-02"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Same approach as before — copy the original simulation code and update `n` and `p`. Don't forget to update the plot title.
+
+:::
+:::
+
+Finally, re-run the experiment with `n = 400` and `p = 0.02`. Compare all four distributions. How does this connect back to the success-failure condition for inference?
+
+```{webr}
+#| exercise: p-dist-400-02
+# Simulate with n = 400 and p = 0.02
+
+```
+
+:::{.hint exercise="p-dist-400-02"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Same approach again — update `n` to 400 and `p` to 0.02. After running all four simulations, think about which combinations satisfy $np \geq 10$ and $n(1-p) \geq 10$.
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Question 8
+
+Referring to Table 6 in [the WIN-Gallup report](www/Religiosity_and_Atheism.pdf){target="_blank"}, Australia has a sample proportion of 0.1 on a sample size of 1,040, and Ecuador has a sample proportion of 0.02 on 400 subjects. Suppose these point estimates are the true population proportions. Given the shapes of their respective sampling distributions, is it sensible to proceed with inference and report margins of error as the report does?
+
+```{ojs}
+//| echo: false
+
+viewof q8 = Inputs.radio(
+  new Map([
+    ["The report should not proceed with inference on Ecuador since the success-failure condition is not satisfied. The report can safely proceed with inference on Australia.", 1],
+    ["The report can proceed with inference on all countries. Since there were over 50,000 total responses, the success-failure condition is satisfied.", 2],
+    ["The report should not proceed with inference on either Ecuador or Australia, since the success-failure condition may not be satisfied for either country.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+);
+
+localStorage.setItem("q8", JSON.stringify(q8));
+ok_response(q8, "1");
+```
+
+:::
+
+## On Your Own
+
+The question of atheism was asked by WIN-Gallup International in a similar survey conducted in 2005. Table 4 on page 12 of the report summarizes survey results from 2005 and 2012 for 39 countries. Try answering the following questions on your own. The code blocks below are available for any calculations you need.
+
+**1.** Answer the following two questions using the `inference()` function. As always, write out the hypotheses for any tests you conduct and outline the status of the conditions for inference.
+
++ Is there convincing evidence that Spain has seen a change in its atheism index between 2005 and 2012? Create new data sets for respondents from Spain in both years, form confidence intervals for the true proportion of atheists in both years, and determine whether they overlap.
++ Is there convincing evidence that the United States has seen a change in its atheism index between 2005 and 2012?
+
+```{webr}
+#| exercise: on-your-own-1
+# Investigate Spain and the United States
+
+```
+
+:::{.hint exercise="on-your-own-1"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Start by creating a data frame containing only responses from Spain. How did we create `us12` earlier?
+
+:::
+:::
+
+:::{.hint exercise="on-your-own-1"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+You don't need to filter on `year` — both 2005 and 2012 data are present for Spain. Pass the `year` variable to the optional `x` argument in `inference()` to automatically create groups for each year.
+
+:::
+:::
+
+:::{.hint exercise="on-your-own-1"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+
+spain <- atheism |>
+  filter(nationality == "Spain")
+
+inference(y = response, x = year, data = spain,
+          statistic = "proportion", type = "ci",
+          method = "theoretical", success = "atheist")
+```
+
+You can ignore the warning about converting `year` to a factor — R is doing exactly what you asked it to do.
+
+:::
+:::
+
+**2.** If in fact there has been no change in the atheism index in any of the countries listed in Table 4, in how many of those countries would you expect to detect a change (at a significance level of 0.05) simply by chance? *Hint: Look up Type 1 error in your textbook.*
+
+```{webr}
+#| exercise: on-your-own-2
+# Use this block for any calculations
+
+```
+
+**3.** Suppose you're hired by the local government to estimate the proportion of residents that attend a religious service on a weekly basis. According to the guidelines, the estimate must have a margin of error no greater than 1% with 95% confidence. You have no idea what to expect for $p$. How many people would you have to sample to ensure that you are within the guidelines?
+
+```{webr}
+#| exercise: on-your-own-3
+# Use the sample size formula for inference on proportions
+
+```
+
+:::{.hint exercise="on-your-own-3"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Recall the sample size formula introduced earlier in this activity. Which document contains this formula?
+
+:::
+:::
+
+:::{.hint exercise="on-your-own-3"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The formula is on the [Standard Error Decision Tree](https://agmath.github.io/SiteFiles/StdErrorDecisionTree.pdf){target="_blank"} and was also written out earlier in this activity. What value should you use for $p$ when you have no prior estimate?
+
+:::
+:::
+
+:::{.hint exercise="on-your-own-3"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+Since you have no prior estimate for $p$, use $p = 0.5$ as a conservative worst-case choice. This value maximizes the required sample size.
+
+```{r}
+#| echo: true
+#| eval: false
+
+# Critical value for 95% CI
+z_star <- 1.96
+
+# Desired margin of error
+ME <- 0.01
+
+# Sample size formula with p = 0.5
+n <- ((z_star / ME)^2) * 0.5 * (1 - 0.5)
+ceiling(n)
+```
+
+:::
+:::
+
+## Submit
+
+:::{.callout-warning}
+
+Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+
+:::
+
+## Summary
+
+:::{.callout-tip}
+## Main Takeaways
+
++ **Sample statistics estimate population parameters.** The proportions reported in the WIN-Gallup poll are sample statistics — they estimate the true population proportions for each country, but they are not the population parameters themselves.
++ **Conditions for inference must be checked.** For inference on a proportion to be valid, the sample must be random and the success-failure condition ($np \geq 10$ and $n(1-p) \geq 10$) must be satisfied. When the condition isn't met — as with Ecuador's sample — the sampling distribution of $\hat{p}$ is not approximately normal, and inference isn't reliable.
++ **The margin of error depends on both $n$ and $p$.** The margin of error is not determined by sample size alone — the population proportion also plays a role. Margins of error are largest when $p$ is near 0.5 and smallest when $p$ is near 0 or 1.
++ **The `inference()` function automates the calculation.** For a single proportion, `inference()` computes the confidence interval using the theoretical framework. Passing a grouping variable to the `x` argument allows comparison between groups.
++ **Sample size planning works backwards from the margin of error.** Given a desired margin of error and confidence level, we can solve for the minimum sample size needed. When no prior estimate of $p$ is available, using $p = 0.5$ gives a conservative upper bound on the required sample size.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+In this lab you applied inferential tools for a single proportion and began to compare proportions across groups. In the coming activities, we'll extend inference to numerical data — introducing the $t$-distribution and exploring one- and two-sample tests and confidence intervals for means. The framework remains the same: a point estimate, a standard error, a critical value or test statistic, and a conclusion stated in context.
+:::

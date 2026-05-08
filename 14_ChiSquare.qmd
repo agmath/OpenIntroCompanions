@@ -1,0 +1,1530 @@
+---
+title: "Topic 14: Inference for One or More Categorical Variables With Many Levels"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        .exercise-editor-body { max-height: 300px; overflow-y: auto; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - ggplot2
+        - gradethis
+      cell-options:
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_checkbox
+
+ok_checkbox <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Not Yet! ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(dplyr)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 12))
+
+set.seed(241)
+
+incomeLevel <- sample(
+  c("Poverty", "LowIncome", "MiddleIncome", "HighIncome"),
+  size = 2500, replace = TRUE,
+  prob = c(0.16, 0.38, 0.35, 0.11)
+)
+
+BRFSSsim <- data.frame(
+  IncomeLevel = incomeLevel,
+  DrugUse = rep(NA, length(incomeLevel))
+)
+
+BRFSSsim$DrugUse[BRFSSsim$IncomeLevel == "Poverty"] <- sample(
+  c("no", "yes"),
+  size = sum(incomeLevel == "Poverty"),
+  replace = TRUE, prob = c(0.8, 0.2)
+)
+BRFSSsim$DrugUse[BRFSSsim$IncomeLevel == "LowIncome"] <- sample(
+  c("no", "yes"),
+  size = sum(incomeLevel == "LowIncome"),
+  replace = TRUE, prob = c(0.84, 0.16)
+)
+BRFSSsim$DrugUse[BRFSSsim$IncomeLevel == "MiddleIncome"] <- sample(
+  c("no", "yes"),
+  size = sum(incomeLevel == "MiddleIncome"),
+  replace = TRUE, prob = c(0.88, 0.12)
+)
+BRFSSsim$DrugUse[BRFSSsim$IncomeLevel == "HighIncome"] <- sample(
+  c("no", "yes"),
+  size = sum(incomeLevel == "HighIncome"),
+  replace = TRUE, prob = c(0.82, 0.18)
+)
+
+tableSim <- table(BRFSSsim$DrugUse, BRFSSsim$IncomeLevel)
+observedInd <- c(341, 752, 796, 221, 78, 153, 116, 43)
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 12))
+
+set.seed(241)
+
+incomeLevel <- sample(
+  c("Poverty", "LowIncome", "MiddleIncome", "HighIncome"),
+  size = 2500, replace = TRUE,
+  prob = c(0.16, 0.38, 0.35, 0.11)
+)
+
+BRFSSsim <- data.frame(
+  IncomeLevel = incomeLevel,
+  DrugUse = rep(NA, length(incomeLevel))
+)
+
+BRFSSsim$DrugUse[BRFSSsim$IncomeLevel == "Poverty"] <- sample(
+  c("no", "yes"),
+  size = sum(incomeLevel == "Poverty"),
+  replace = TRUE, prob = c(0.8, 0.2)
+)
+BRFSSsim$DrugUse[BRFSSsim$IncomeLevel == "LowIncome"] <- sample(
+  c("no", "yes"),
+  size = sum(incomeLevel == "LowIncome"),
+  replace = TRUE, prob = c(0.84, 0.16)
+)
+BRFSSsim$DrugUse[BRFSSsim$IncomeLevel == "MiddleIncome"] <- sample(
+  c("no", "yes"),
+  size = sum(incomeLevel == "MiddleIncome"),
+  replace = TRUE, prob = c(0.88, 0.12)
+)
+BRFSSsim$DrugUse[BRFSSsim$IncomeLevel == "HighIncome"] <- sample(
+  c("no", "yes"),
+  size = sum(incomeLevel == "HighIncome"),
+  replace = TRUE, prob = c(0.82, 0.18)
+)
+
+tableSim <- table(BRFSSsim$DrugUse, BRFSSsim$IncomeLevel)
+observedInd <- c(341, 752, 796, 221, 78, 153, 116, 43)
+```
+
+:::{.callout-note}
+## About
+
+This activity introduces $\chi^2$ (Chi-Squared) tests for Goodness of Fit and Independence — two methods for testing claims involving categorical data with more than two levels. Data used in this activity is simulated, based on the US Census Bureau, The Sentencing Project, and the 2019 Behavioral Risk Factor Surveillance System.
+:::
+
+## Chi-Squared Tests for Goodness of Fit and Independence
+
+In this activity, we consider two methods for testing claims corresponding to categorical data with possibly more than two levels. The first is called the $\chi^2$ **Goodness of Fit Test**, used to test whether a sample provides evidence that an assumed discrete distribution is not an appropriate model for a categorical variable. The second is called the $\chi^2$ **Test of Independence**, used to test whether two categorical variables are associated with one another. You'll be exposed to video explanations and worked examples before trying problems on your own.
+
+## Chi-Squared Goodness of Fit
+
+Consider a sociologist interested in better understanding incarceration rates in the state of New Hampshire. The researcher wants to determine whether minority populations are disproportionately represented in State Penitentiaries. Using estimates from the [United States Census Bureau](https://www.census.gov/quickfacts/NH){target="_blank"}, the population of New Hampshire had the following racial breakdown as of 2019: white (89.8%), Black (1.8%), Hispanic (4.0%), other (4.4%). A reasonable expectation is that the incarcerated population should roughly reflect this same distribution.
+
+The researcher took a random sample of 300 inmates in State Penitentiaries across New Hampshire and observed the following results: 243 inmates were white, 24 were Black, 15 were Hispanic, and 18 were of another race. The researcher wants to determine whether this sample provides evidence that the state prison population does *not* reflect the racial demographics of the State.
+
+We'll come back to this example shortly, but first let's watch Dr. Çetinkaya-Rundel introduce the $\chi^2$ Goodness of Fit Test.
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/Uk36WGxujkc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+Dr. Çetinkaya-Rundel discussed an example of racial bias in jury selection. Before applying these techniques to our New Hampshire example, let's recap a few key ideas.
+
+The $\chi^2$ test statistic does not follow a normal distribution — instead, it follows a $\chi^2$-distribution. Although this is a new distribution, the principles remain familiar. The test statistic measures how far our sample falls from what was expected under the null hypothesis, and the $p$-value is the corresponding tail probability. Since the $\chi^2$ test statistic is always non-negative, we are always interested in the *upper* tail.
+
+Running a $\chi^2$ Goodness of Fit test requires the following conditions:
+
++ The sample must be taken randomly. 
++ If sampling without replacement, the sample should include less than 10% of the entire population.
++ The sample must be large enough that each group has an expected count of at least 5 observations.
+
+Now, back to our application. As a reminder, New Hampshire is estimated to be 89.8% white, 1.8% Black, 4.0% Hispanic, and 4.4% of other races. We have a sample of 300 inmates: 243 white, 24 Black, 15 Hispanic, and 18 of another race. We want to know whether this sample provides evidence that the prison population does not reflect the State's racial demographics.
+
+:::{.callout-caution}
+## Check Your Understanding: GoF I
+
+What is the variable of interest in this study?
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.radio(
+  new Map([
+    ["The racial demographics of the state prison population in New Hampshire.", 1],
+    ["The racial demographics of the population of the state of New Hampshire.", 2],
+    ["The number of people belonging to each race within the state prison population in New Hampshire.", 3],
+    ["The average length of prison sentences in New Hampshire.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+);
+
+localStorage.setItem("q1", JSON.stringify(q1));
+ok_response(q1, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: GoF II
+
+The variable of interest in this study is:
+
+```{ojs}
+//| echo: false
+
+viewof q2 = Inputs.radio(
+  new Map([
+    ["numerical.", 1],
+    ["categorical.", 2],
+    ["both numerical and categorical.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+);
+
+localStorage.setItem("q2", JSON.stringify(q2));
+ok_response(q2, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: GoF III
+
+How many measured levels of the variable of interest are there?
+
+```{ojs}
+//| echo: false
+
+viewof q3 = Inputs.radio(
+  new Map([
+    ["1", 1],
+    ["2", 2],
+    ["3", 3],
+    ["4", 4],
+    ["5", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+);
+
+localStorage.setItem("q3", JSON.stringify(q3));
+ok_response(q3, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: GoF IV
+
+In order to answer the question as posed, we should:
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.radio(
+  new Map([
+    ["Construct a confidence interval.", 1],
+    ["Conduct a hypothesis test.", 2],
+    ["Compute a required sample size.", 3],
+    ["Find a probability.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+);
+
+localStorage.setItem("q4", JSON.stringify(q4));
+ok_response(q4, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: GoF V
+
+Which of the following are the correct hypotheses associated with this test? Select all that apply.
+
+```{ojs}
+//| echo: false
+
+mutable ok_checkbox = (response, n) => { return html`Loading...` };
+viewof q5 = Inputs.checkbox(
+  new Map([
+    ["H₀: p_white = p_Black; Hₐ: The distribution is different.", 1],
+    ["H₀: p_white = 0.898, p_Black = 0.018, p_Hispanic = 0.040, p_other = 0.044; Hₐ: The distribution is different.", 2],
+    ["H₀: p_white = p_Black = p_Hispanic = p_other = 0.25; Hₐ: The distribution is different.", 3],
+    ["H₀: The distribution is uniform; Hₐ: The distribution is different.", 4],
+    ["H₀: The racial demographics of the NH state prison population match those of the State; Hₐ: The distribution is different.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "[]")}
+);
+
+localStorage.setItem("q5", JSON.stringify(q5));
+ok_checkbox(q5.toString(), "2,5");
+```
+
+:::
+
+Now compute the expected counts for each racial group in the sample of 300 inmates.
+
+**Expected count — white inmates:**
+
+```{webr}
+#| exercise: exp-white
+______
+```
+
+:::{.hint exercise="exp-white"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+What proportion of New Hampshire's population is white?
+
+:::
+:::
+
+:::{.hint exercise="exp-white"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The expected count is the total number of prisoners multiplied by the proportion of the State's population in that racial group.
+
+```{r}
+#| echo: true
+#| eval: false
+___ * ___
+```
+
+:::
+:::
+
+:::{.hint exercise="exp-white"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+The expected count is the total number of prisoners multiplied by the proportion of the State's population in that racial group.
+
++ There are 300 inmates in the sample.
+
+```{r}
+#| echo: true
+#| eval: false
+300 * ___
+```
+
+:::
+:::
+
+:::{.hint exercise="exp-white"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+The expected count is the total number of prisoners multiplied by the proportion of the State's population in that racial group.
+
++ There are 300 inmates in the sample.
++ According to the US Census Bureau, the proportion of white residents in NH was about 0.898.
+
+```{r}
+#| echo: true
+#| eval: false
+
+300 * 0.898
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: exp-white
+#| solution: true
+
+300 * 0.898
+```
+
+```{webr}
+#| exercise: exp-white
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - 300 * 0.898) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Expected count — Black inmates:**
+
+```{webr}
+#| exercise: exp-black
+______
+```
+
+:::{.hint exercise="exp-black"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Use the same approach as the previous question. What proportion of New Hampshire residents are Black?
+
+:::
+:::
+
+:::{.hint exercise="exp-black"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+Use the same approach as the previous question. What proportion of New Hampshire residents are Black?
+
+There are still 300 inmates in the sample and the proportion of black residents in NH, according to the US Census Bureau in 2019, was about 0.018.
+
+```{r}
+#| echo: true
+#| eval: false
+
+300 * 0.018
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: exp-black
+#| solution: true
+
+300 * 0.018
+```
+
+```{webr}
+#| exercise: exp-black
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - 300 * 0.018) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Expected count — Hispanic inmates:**
+
+```{webr}
+#| exercise: exp-hispanic
+______
+```
+
+:::{.hint exercise="exp-hispanic"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Same approach again. What proportion of New Hampshire residents are Hispanic?
+
+:::
+:::
+
+```{webr}
+#| exercise: exp-hispanic
+#| solution: true
+
+300 * 0.040
+```
+
+```{webr}
+#| exercise: exp-hispanic
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - 300 * 0.040) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Expected count — inmates of other races:**
+
+```{webr}
+#| exercise: exp-other
+______
+```
+
+:::{.hint exercise="exp-other"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Same approach. What proportion of New Hampshire residents identify as another race?
+
+:::
+:::
+
+```{webr}
+#| exercise: exp-other
+#| solution: true
+
+300 * 0.044
+```
+
+```{webr}
+#| exercise: exp-other
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - 300 * 0.044) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Now we're ready to compute the test statistic. Recall from Dr. Çetinkaya-Rundel's video that the $\chi^2$ statistic is:
+
+$$\chi^2 = \sum_{i = 1}^{k}{\frac{\left(\text{observed} - \text{expected}\right)^2}{\text{expected}}}$$
+
+where $k$ is the number of groups. As a reminder, the $\sigma$ symbol is used to indicate that we should add terms together. You'll calculate  $\displaystyle{\frac{\left(\text{observed} - \text{ expected}\right)^2}{\text{expected}}}$ for each group (white, black, hispanic, and other) and add those quantities together.
+
+Use the code block below to compute the $\chi^2$ test statistic. The block is pre-populated to get you started.
+
+```{webr}
+#| exercise: test-stat
+
+# Define the observed values
+observed <- c(243, 24, 15, 18)
+
+# Define the expected values (same order as observed)
+expected <- c(___)
+
+# Compute the chi-squared test statistic
+test_stat <- sum((observed - expected)^2 / expected)
+test_stat
+```
+
+:::{.hint exercise="test-stat"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Fill in the `expected` vector with the four expected counts you just computed — in the same order as the observed counts: white, Black, Hispanic, other.
+
+:::
+:::
+
+:::{.hint exercise="test-stat"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The expected counts are 269.4, 5.4, 12.0, and 13.2 for white, Black, Hispanic, and other respectively.
+
+```{r}
+#| echo: true
+#| eval: false
+
+observed <- c(243, 24, 15, 18)
+expected <- c(269.4, 5.4, 12.0, 13.2)
+
+test_stat <- sum((observed - expected)^2 / expected)
+test_stat
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: test-stat
+#| solution: true
+
+observed <- c(243, 24, 15, 18)
+expected <- c(269.4, 5.4, 12.0, 13.2)
+
+test_stat <- sum((observed - expected)^2 / expected)
+test_stat
+```
+
+```{webr}
+#| exercise: test-stat
+#| check: true
+
+gradethis::grade_this({
+  observed <- c(243, 24, 15, 18)
+  expected <- c(269.4, 5.4, 12.0, 13.2)
+  if (abs(.result - sum((observed - expected)^2 / expected)) < 0.01) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Now compute the degrees of freedom for the $\chi^2$-distribution associated with this test.
+
+```{webr}
+#| exercise: df
+______
+```
+
+:::{.hint exercise="df"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+For a Goodness of Fit test, how are the degrees of freedom related to the number of groups?
+
+:::
+:::
+
+:::{.hint exercise="df"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The degrees of freedom for a Goodness of Fit test is one less than the number of groups.
+
+:::
+:::
+
+:::{.hint exercise="df"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+There are 4 racial groups, so the degrees of freedom is $4 - 1 = 3$.
+
+```{r}
+#| echo: true
+#| eval: false
+
+4 - 1
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: df
+#| solution: true
+
+4 - 1
+```
+
+```{webr}
+#| exercise: df
+#| check: true
+
+gradethis::grade_this({
+  if (.result == 3) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the $p$-value. The function `pchisq(q, df)` returns the probability to the *left* of the boundary value `q` under a $\chi^2$ distribution with `df` degrees of freedom.
+
+```{webr}
+#| exercise: compute-p
+______
+```
+
+:::{.hint exercise="compute-p"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Use your test statistic and degrees of freedom with `pchisq()`. Which tail are you interested in?
+
+:::
+:::
+
+:::{.hint exercise="compute-p"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The $p$-value is the area to the *right* of the test statistic. Since `pchisq()` gives the left-tail area, how do you obtain the right-tail area?
+
+:::
+:::
+
+:::{.hint exercise="compute-p"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Just like with `pnorm()`, to obtain the area to the right of a boundary value in the $\chi^2$ distribution, we'll subtract from 1. 
+
+```{r}
+#| echo: true
+#| eval: false
+
+1 - pchisq(___, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="compute-p"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+The second argument to `pchisq()` is the degrees of freedom (`df`). The degrees of freedom for this test is 3.
+
+```{r}
+#| echo: true
+#| eval: false
+
+1 - pchisq(___, df = 3)
+```
+
+:::
+:::
+
+:::{.hint exercise="compute-p"}
+:::{.callout-note collapse="false"}
+## Hint 5 (Solved)
+
+The first argument to `pchisq()` is the boundary value -- that's our *test statistic*. We calculated that test statistic to be about 69.15.
+
+```{r}
+#| echo: true
+#| eval: false
+
+1 - pchisq(69.15, df = 3)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: compute-p
+#| solution: true
+
+1 - pchisq(69.15, df = 3)
+```
+
+```{webr}
+#| exercise: compute-p
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - (1 - pchisq(69.15, df = 3))) < 0.0001) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Assume the test was conducted at the $\alpha = 0.05$ level of significance.
+
+:::{.callout-caution}
+## Check Your Understanding: GoF VI
+
+What is the result of the test?
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["Since p ≥ α, we do not have enough evidence to reject the null hypothesis.", 1],
+    ["Since p ≥ α, we accept the null hypothesis.", 2],
+    ["Since p < α, we reject the null hypothesis and accept the alternative hypothesis.", 3],
+    ["Since p < α, we fail to reject the null hypothesis.", 4],
+    ["It is impossible to determine.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+);
+
+localStorage.setItem("q6", JSON.stringify(q6));
+ok_response(q6, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: GoF VII
+
+The result of the test means that:
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["The sample data did not provide significant evidence to suggest that the state prison population in New Hampshire does not reflect the demographics of the State.", 1],
+    ["The sample data proved that the state prison population in New Hampshire does not reflect the demographics of the State.", 2],
+    ["The sample data provided significant evidence to suggest that the state prison population in New Hampshire does not reflect the demographics of the State.", 3],
+    ["The sample data provided significant evidence to suggest that the sample of prisoners did not match the racial demographics of the State.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+);
+
+localStorage.setItem("q7", JSON.stringify(q7));
+ok_response(q7, "3");
+```
+
+:::
+
+:::{.callout-note}
+## Data Sources
+
+This application is based on 2019 data from the [US Census Bureau](http://www.census.gov){target="_blank"} and [The Sentencing Project](https://www.sentencingproject.org/){target="_blank"}.
+:::
+
+## Chi-Squared Test of Independence
+
+Now that you've completed a Goodness of Fit test, let's consider another application of the $\chi^2$-distribution. We'll work through an application in which we are interested in determining whether household income (`IncomeLevel`) and adolescent drug use (`DrugUse`) are independent. We'll use a simulated dataset based on metrics from the [2019 Behavioral Risk Factor Surveillance System](https://www.cdc.gov/brfss/questionnaires/index.htm){target="_blank"}. The simulated data is stored in a data frame called `BRFSSsim`.
+
+First, let's watch Dr. Çetinkaya-Rundel introduce the $\chi^2$ Test of Independence.
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/yjrsfNdja0U" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+We return to our simulated BRFSS data. Each row of the dataset represents a response from a single adolescent in the USA. We are interested in determining, at the 5% level of significance, whether there is evidence to suggest an association between `IncomeLevel` which has levels *Poverty*, *LowIncome*, *MiddleIncome*, and *HighIncome* and the variable `DrugUse` with *yes* or *no* response indicating whether the individual reported using any illicit drug in the past year.
+
+We assume the following marginal distributions: approximately 16% of households fall below the poverty line, 38% are low income, 35% are middle income, and 11% are high income. Additionally, approximately 14% of adolescents are estimated to have used illicit drugs in any given year. We'll use these assumed percentages when computing our expected counts.
+
+:::{.callout-caution}
+## Check Your Understanding: Independence I
+
+How many variables of interest are there in this researcher's study?
+
+```{ojs}
+//| echo: false
+
+viewof q8 = Inputs.radio(
+  new Map([
+    ["1", 1],
+    ["2", 2],
+    ["3", 3],
+    ["8", 4],
+    ["10", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+);
+
+localStorage.setItem("q8", JSON.stringify(q8));
+ok_response(q8, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Independence II
+
+In order to answer their question, the researcher should:
+
+```{ojs}
+//| echo: false
+
+viewof q9 = Inputs.radio(
+  new Map([
+    ["Construct a confidence interval.", 1],
+    ["Conduct a hypothesis test.", 2],
+    ["Find a probability.", 3],
+    ["Compute a desired sample size.", 4],
+    ["Conduct a census.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9") ?? "null")}
+);
+
+localStorage.setItem("q9", JSON.stringify(q9));
+ok_response(q9, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Independence III
+
+The variables of interest to the researcher are:
+
+```{ojs}
+//| echo: false
+
+viewof q10 = Inputs.radio(
+  new Map([
+    ["All numerical.", 1],
+    ["All categorical.", 2],
+    ["Some numerical and some categorical.", 3],
+    ["Geo-spatial data.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
+);
+
+localStorage.setItem("q10", JSON.stringify(q10));
+ok_response(q10, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Independence IV
+
+The hypotheses associated with the researcher's test are:
+
+```{ojs}
+//| echo: false
+
+viewof q11 = Inputs.radio(
+  new Map([
+    ["H₀: Household income and drug use are independent; Hₐ: Household income and drug use are dependent.", 1],
+    ["H₀: Household income and drug use are dependent; Hₐ: Household income and drug use are independent.", 2],
+    ["H₀: p_income = p_druguse; Hₐ: p_income ≠ p_druguse", 3],
+    ["H₀: μ_income = μ_druguse; Hₐ: μ_income ≠ μ_druguse", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q11") ?? "null")}
+);
+
+localStorage.setItem("q11", JSON.stringify(q11));
+ok_response(q11, "1");
+```
+
+:::
+
+Under the assumption of the null hypothesis (independence), compute the expected number of the 2,500 adolescents in each of the following drug-use groups.
+
+**Expected count — Poverty and drug use:**
+
+```{webr}
+#| exercise: poverty-drug-use
+______
+```
+
+:::{.hint exercise="poverty-drug-use"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+If two events A and B are independent, what is $\mathbb{P}\left[A \text{ and } B\right]$?
+
+:::
+:::
+
+:::{.hint exercise="poverty-drug-use"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+If events are independent, $\mathbb{P}\left[A \text{ and } B\right] = \mathbb{P}\left[A\right] \times \mathbb{P}\left[B\right]$. What are the probabilities of coming from a poverty household and of having used drugs?
+
+:::
+:::
+
+:::{.hint exercise="poverty-drug-use"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+$\mathbb{P}\left[\text{Poverty}\right] = 0.16$ and $\mathbb{P}\left[\text{DrugUse}\right] = 0.14$. How do you go from a probability to an expected count?
+
+:::
+:::
+
+:::{.hint exercise="poverty-drug-use"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+Multiply the total number of adolescents (2,500) by the joint probability.
+
+```{r}
+#| echo: true
+#| eval: false
+
+2500 * 0.16 * 0.14
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: poverty-drug-use
+#| solution: true
+
+2500 * 0.16 * 0.14
+```
+
+```{webr}
+#| exercise: poverty-drug-use
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - 2500 * 0.16 * 0.14) < 0.5) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Expected count — Low Income and drug use:**
+
+```{webr}
+#| exercise: lowInc-drug-use
+______
+```
+
+:::{.hint exercise="lowInc-drug-use"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Use the same approach as the previous question, but update the probability of being in the Low Income group.
+
+:::
+:::
+
+:::{.hint exercise="lowInc-drug-use"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Use the same approach as the previous question, but update the probability of being in the Low Income group.
+
+$$\text{Expected Count} = \mathbb{P}\left[\text{low income}\right]\cdot \mathbb{P}\left[\text{drug use}\right]\cdot n$$
+
+:::
+:::
+
+:::{.hint exercise="lowInc-drug-use"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+Use the same approach as the previous question, but update the probability of being in the Low Income group.
+
+$$\text{Expected Count} = \mathbb{P}\left[\text{low income}\right]\cdot \mathbb{P}\left[\text{drug use}\right]\cdot n$$
+
+```{r}
+#| echo: true
+#| eval: false
+
+0.38*0.14*2500
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: lowInc-drug-use
+#| solution: true
+
+2500 * 0.38 * 0.14
+```
+
+```{webr}
+#| exercise: lowInc-drug-use
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - 2500 * 0.38 * 0.14) < 0.5) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Expected count — Middle Income and drug use:**
+
+```{webr}
+#| exercise: middleInc-drug-use
+______
+```
+
+:::{.hint exercise="middleInc-drug-use"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Use the same approach as for calculating the previous two expected counts.
+
+:::
+:::
+
+:::{.hint exercise="middleInc-drug-use"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+Use the same approach as for calculating the previous two expected counts. The marginal probability of a randomly selected household being middle income is 0.35.
+
+```{r}
+#| echo: true
+#| eval: false
+0.35*0.14*2500
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: middleInc-drug-use
+#| solution: true
+
+2500 * 0.35 * 0.14
+```
+
+```{webr}
+#| exercise: middleInc-drug-use
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - 2500 * 0.35 * 0.14) < 0.5) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+**Expected count — High Income and drug use:**
+
+```{webr}
+#| exercise: highInc-drug-use
+______
+```
+
+:::{.hint exercise="highInc-drug-use"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Once more, use the same approach.
+
+:::
+:::
+
+:::{.hint exercise="highInc-drug-use"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+Once more, use the same approach. This time, the marginal probability of a randomly chosen household being high income is 0.11.
+
+```{r}
+#| echo: true
+#| eval: false
+0.11*0.14*2500
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: highInc-drug-use
+#| solution: true
+
+2500 * 0.11 * 0.14
+```
+
+```{webr}
+#| exercise: highInc-drug-use
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - 2500 * 0.11 * 0.14) < 0.5) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+You've now computed the expected counts for the drug-use row. I'll do it for the row corresponding to no drug-use. To build that row, we do exactly what we did above, but replace 0.14 (the probability of a randomly chosen individual having used illicit drugs in the last 12 months) with 0.86 (the probability that they have not). 
+
+The full expected and observed tables are shown below for reference.
+
+**Expected Results:**
+
+| | Poverty | Low Income | Middle Income | High Income |
+|:---|:---:|:---:|:---:|:---:|
+| **No Drug Use** | 344 | 817 | 752.5 | 236.5 |
+| **Drug Use** | 56 | 133 | 122.5 | 38.5 |
+
+**Observed Results:**
+
+| | Poverty | Low Income | Middle Income | High Income |
+|:---|:---:|:---:|:---:|:---:|
+| **No Drug Use** | `r table(BRFSSsim$DrugUse, BRFSSsim$IncomeLevel)[1, 4]` | `r table(BRFSSsim$DrugUse, BRFSSsim$IncomeLevel)[1, 2]` | `r table(BRFSSsim$DrugUse, BRFSSsim$IncomeLevel)[1, 3]` | `r table(BRFSSsim$DrugUse, BRFSSsim$IncomeLevel)[1, 1]` |
+| **Drug Use** | `r table(BRFSSsim$DrugUse, BRFSSsim$IncomeLevel)[2, 4]` | `r table(BRFSSsim$DrugUse, BRFSSsim$IncomeLevel)[2, 2]` | `r table(BRFSSsim$DrugUse, BRFSSsim$IncomeLevel)[2, 3]` | `r table(BRFSSsim$DrugUse, BRFSSsim$IncomeLevel)[2, 1]` |
+
+The $\chi^2$ test statistic formula is the same as for Goodness of Fit:
+
+$$\chi^2 = \sum_{i = 1}^{k}{\frac{\left(\text{observed} - \text{expected}\right)^2}{\text{expected}}}$$
+
+where $k$ is again the total number of groups. There were four income levels and two drug-use categories, so $4\times 2 = 8$ total groups. Use the code block below to compute the $\chi^2$ test statistic.
+
+```{webr}
+#| exercise: chi-sq-ind
+______
+```
+
+:::{.hint exercise="chi-sq-ind"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Start by copying and pasting the code we used to compute the test statistic in the previous example.
+
+```{r}
+#| echo: true
+#| eval: false
+observed <- c(243, 24, 15, 18)
+expected <- c(269.4, 5.4, 12.0, 13.2)
+
+test_stat <- sum((observed - expected)^2 / expected)
+test_stat
+```
+
+:::
+:::
+
+:::{.hint exercise="chi-sq-ind"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The `observed` and `expected` count vectors must be replaced.
+
+```{r}
+#| echo: true
+#| eval: false
+observed <- c(___)
+expected <- c(___)
+
+test_stat <- sum((observed - expected)^2 / expected)
+test_stat
+```
+
+:::
+:::
+
+:::{.hint exercise="chi-sq-ind"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Type in the `observed` counts from our scenario. Pay special attention to the order you use.
+
+```{r}
+#| echo: true
+#| eval: false
+observed <- c(341, 752, 796, 221, 78, 153, 116, 43)
+expected <- c(___)
+
+test_stat <- sum((observed - expected)^2 / expected)
+test_stat
+```
+
+:::
+:::
+
+:::{.hint exercise="chi-sq-ind"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+Type in the `observed` counts from our scenario. Pay special attention to the order you use.
+
+Type in the `expected` counts you calculated earlier. Note that you ***must*** use the same ordering here as you did for the `observed` counts.
+
+```{r}
+#| echo: true
+#| eval: false
+observed <- c(341, 752, 796, 221, 78, 153, 116, 43)
+expected <- c(344, 817, 752.5, 236.5, 56, 133, 122.5, 38.5)
+
+test_stat <- sum((observed - expected)^2 / expected)
+test_stat
+```
+
+:::
+:::
+
+:::{.hint exercise="chi-sq-ind"}
+:::{.callout-note collapse="false"}
+## Hint 5 (Solved)
+
+Run the code -- no additional changes are required.
+
+```{r}
+#| echo: true
+#| eval: false
+observed <- c(341, 752, 796, 221, 78, 153, 116, 43)
+expected <- c(344, 817, 752.5, 236.5, 56, 133, 122.5, 38.5)
+
+test_stat <- sum((observed - expected)^2 / expected)
+test_stat
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: chi-sq-ind
+#| solution: true
+
+observed <- c(341, 752, 796, 221, 78, 153, 116, 43)
+expected <- c(344, 817, 752.5, 236.5, 56, 133, 122.5, 38.5)
+
+test_stat <- sum((observed - expected)^2 / expected)
+test_stat
+```
+
+```{webr}
+#| exercise: chi-sq-ind
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - 21.24924) < 0.05) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Now compute the degrees of freedom associated with this test for independence.
+
+```{webr}
+#| exercise: df-ind
+______
+```
+
+:::{.hint exercise="df-ind"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+For a Test of Independence, the degrees of freedom depend on the number of groups in *each* of the two categorical variables. How many levels does `IncomeLevel` have? How many does `DrugUse` have?
+
+:::
+:::
+
+:::{.hint exercise="df-ind"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+There are $k = 4$ levels for the income variable and there are $\ell = 2$ levels for the drug use variable.
+
+:::
+:::
+
+:::{.hint exercise="df-ind"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+There are $k = 4$ levels for the income variable and there are $\ell = 2$ levels for the drug use variable.
+
+For the $\chi^2$ test for independence, the degrees of freedom is the product $\left(k - 1\right)\left(\ell - 1\right)$.
+
+:::
+:::
+
+:::{.hint exercise="df-ind"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+There are $k = 4$ levels for the income variable and there are $\ell = 2$ levels for the drug use variable.
+
+For the $\chi^2$ test for independence, the degrees of freedom is the product $\left(k - 1\right)\left(\ell - 1\right)$.
+
+```{r}
+#| echo: true
+#| eval: false
+(4 - 1)*(2 - 1)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: df-ind
+#| solution: true
+
+(4 - 1) * (2 - 1)
+```
+
+```{webr}
+#| exercise: df-ind
+#| check: true
+
+gradethis::grade_this({
+  if (.result == 3) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Now compute the $p$-value associated with this test.
+
+```{webr}
+#| exercise: compute-p-indep
+______
+```
+
+:::{.hint exercise="compute-p-indep"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+We are using the $\chi^2$ distribution again. What function computes probabilities from this distribution?
+
+:::
+:::
+
+:::{.hint exercise="compute-p-indep"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+`pchisq(q, df)` gives the area to the left of `q`. We are always interested in the upper tail for $\chi^2$ tests. How do you find the right-tail area?
+
+:::
+:::
+
+:::{.hint exercise="compute-p-indep"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+We'll use `1 - pchisq()` to find the area to the right of our test statistic.
+
+```{r}
+#| echo: true
+#| eval: false
+
+1 - pchisq(___, df = ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="compute-p-indep"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+Your test statistic you calculated is approximately 21.25 and the degrees of freedom is 3.
+
+```{r}
+#| echo: true
+#| eval: false
+
+1 - pchisq(21.25, df = 3)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: compute-p-indep
+#| solution: true
+
+1 - pchisq(21.24924, df = 3)
+```
+
+```{webr}
+#| exercise: compute-p-indep
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - (1 - pchisq(21.24924, 3))) < 0.001) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Recall that the test was conducted at the $\alpha = 0.05$ level of significance.
+
+:::{.callout-caution}
+## Check Your Understanding: Independence V
+
+What is the result of the test?
+
+```{ojs}
+//| echo: false
+
+viewof q12 = Inputs.radio(
+  new Map([
+    ["Since p ≥ α, we do not have enough evidence to reject the null hypothesis.", 1],
+    ["Since p ≥ α, we accept the null hypothesis.", 2],
+    ["Since p < α, we reject the null hypothesis and accept the alternative hypothesis.", 3],
+    ["Since p < α, we fail to reject the null hypothesis.", 4],
+    ["It is impossible to determine.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q12") ?? "null")}
+);
+
+localStorage.setItem("q12", JSON.stringify(q12));
+ok_response(q12, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Independence VI
+
+The result of the test means that:
+
+```{ojs}
+//| echo: false
+
+viewof q13 = Inputs.radio(
+  new Map([
+    ["The sample data provided significant evidence to suggest that household income and illicit drug use by adolescents are dependent.", 1],
+    ["The sample data proved that household income and illicit drug use by adolescents are dependent.", 2],
+    ["The sample data provided significant evidence to suggest that household income and illicit drug use by adolescents are independent.", 3],
+    ["The sample data provided significant evidence that household income and illicit drug use were dependent for the individuals in our sample.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q13") ?? "null")}
+);
+
+localStorage.setItem("q13", JSON.stringify(q13));
+ok_response(q13, "1");
+```
+
+:::
+
+## Submit
+
+:::{.callout-warning}
+
+Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+
+:::
+
+## Summary
+
+:::{.callout-tip}
+## Main Takeaways
+
++ **The $\chi^2$ Goodness of Fit test** is used when we have a single categorical variable with two or more levels and want to test whether a population follows an assumed distribution. The null hypothesis specifies the assumed proportions for each level; the alternative hypothesis simply states that the distribution is different.
+
++ **The $\chi^2$ Test of Independence** is used when we have two categorical variables and want to test whether they are associated. The null hypothesis states that the variables are independent; under independence, the expected count for each cell is the total sample size times the product of the marginal probabilities.
+
++ **Both tests use the same $\chi^2$ test statistic:**
+$$\chi^2 = \sum_{i=1}^{k} \frac{(\text{observed} - \text{expected})^2}{\text{expected}}$$
+where $k$ is the number of groups (GoF) or cells (independence).
+
++ **The degrees of freedom differ between the two tests:**
+  + Goodness of Fit: $df = (\text{number of groups}) - 1$
+  + Test of Independence: $df = (\text{levels in first variable} - 1) \times (\text{levels in second variable} - 1)$
+
++ **The $p$-value is always the upper tail** of the $\chi^2$ distribution. We compute this area with `1 - pchisq(test_stat, df)`.
+
++ **Conditions for inference** require a random sample and expected counts of at least 5 in each group or cell.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+With this activity, you've now developed tools for testing claims involving categorical data across a wide range of scenarios — single proportions, two-proportion comparisons, goodness of fit, and tests of independence. In the coming activities, we'll make a significant shift and begin working with *numerical* data. This will introduce the $t$-distribution, which becomes necessary when we don't know the population standard deviation — which is almost always. The core logic of hypothesis testing and confidence intervals remains unchanged; what changes is the distribution we use and the standard error formula we apply.
+:::

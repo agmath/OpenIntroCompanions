@@ -1,0 +1,1550 @@
+---
+title: "Topic 12: Inference Practice"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        .exercise-editor-body { max-height: 300px; overflow-y: auto; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - ggplot2
+        - gradethis
+      cell-options:
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(dplyr)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+:::{.callout-note}
+## About
+
+In this activity, we are introduced to a decision tree document for determining how to compute the standard error component of a confidence interval or test statistic. We are also provided with a general framework for approaching hypothesis testing and confidence interval applications, and we practice with three scaffolded examples.
+:::
+
+## Inference Practice
+
+In the Topic 11 activity you learned about statistical inference — hypothesis tests and confidence intervals — for categorical variables. In this activity we'll continue where we left off. You'll start with a video explaining the [*Standard Error Decision Tree*](www/StdErrorDecisionTree.pdf){target="_blank"}, and then move on to a few practice problems.
+
+## A Tour of the Decision Tree
+
+From this point on you'll make heavy use of the [*Standard Error Decision Tree*](www/StdErrorDecisionTree.pdf){target="_blank"}. The tree may look intimidating, but it contains almost everything we'll need to get through the majority of what remains in our course. Let's start with a tour.
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5bAylfMIArg?start=16" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+## Practice Problems
+
+This section contains three practice problems. Be sure to note any questions you have or trouble you run into. You might also check back with the Topic 11 activity to revisit the videos from Dr. Diez and Dr. McLintock, which discussed approaches similar to the ones required for these problems. The links below contain detailed versions of the general strategies for inference tasks — keep them handy!
+
++ [General Strategy for Conducting a Hypothesis Test](www/HTgeneral.pdf){target="_blank"}
++ [General Strategy for Computing a Confidence Interval](www/CIgeneral.pdf){target="_blank"}
+
+---
+
+**Try It 1a:** The result of a poll was that 48% of 331 randomly sampled Americans who decide not to go to college were forced into that decision because they cannot afford it. Construct a 90% confidence interval for the proportion of non college educated Americans who decided not to go to college because they cannot afford it, and interpret the result in context.
+
+Use the code block below for any necessary computations.
+
+```{webr}
+#| exercise: try-it-1a-code-block
+# Use this block for scratch calculations
+
+```
+
+:::{.hint exercise="try-it-1a-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+What type of inference task is being requested — a confidence interval, a hypothesis test, a probability, or a required sample size?
+
+:::
+:::
+
+:::{.hint exercise="try-it-1a-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+This is a confidence interval problem. Open the [General Strategy for Computing a Confidence Interval](www/CIgeneral.pdf){target="_blank"} document and identify the first piece of information you need.
+
+:::
+:::
+
+:::{.hint exercise="try-it-1a-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+The first piece you need is the point estimate. What value from the problem serves as your best single estimate for the population proportion?
+
+:::
+:::
+
+:::{.hint exercise="try-it-1a-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+The point estimate is 0.48. Now consult the Standard Error Decision Tree — what formula gives the standard error for a single proportion?
+
+:::
+:::
+
+:::{.hint exercise="try-it-1a-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+The standard error formula is $S_E = \sqrt{p(1-p)/n}$. What are the values of $p$ and $n$ here?
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt(___*(1 - ___)/___)
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-1a-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+With $p = 0.48$ and $n = 331$, compute the standard error. Then identify the critical value for a 90% confidence interval from the table at the top of the decision tree.
+
+```{r}
+#| echo: true
+#| eval: false
+se <- sqrt(0.48*(1 - 0.48)/331)
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-1a-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 7
+
+Now that you have the *point estimate*, the *critical value*, and the *standard error*, you can construct the upper and lower bounds for the confidence interval.
+
+```{r}
+#| echo: true
+#| eval: false
+se <- sqrt(0.48*(1 - 0.48)/331)
+
+#Lower bound
+___ - (___ * ___)
+
+#Upper bound
+___ + (___ * ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-1a-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 8
+
+The *point estimate* fills the first blank in both cases.
+
+```{r}
+#| echo: true
+#| eval: false
+se <- sqrt(0.48*(1 - 0.48)/331)
+
+#Lower bound
+0.48 - (___ * ___)
+
+#Upper bound
+0.48 + (___ * ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-1a-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 9 (Solved)
+
+The *critical value* and *standard error* are multiplied together to obtain the *margin of error*.
+
+```{r}
+#| echo: true
+#| eval: false
+se <- sqrt(0.48*(1 - 0.48)/331)
+
+#Lower bound
+0.48 - (1.65 * se)
+
+#Upper bound
+0.48 + (1.65 * se)
+```
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a — I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.radio(
+  new Map([
+    ["Compute a probability.", 1],
+    ["Find a required sample size.", 2],
+    ["Construct a confidence interval.", 3],
+    ["Conduct a hypothesis test.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+);
+
+localStorage.setItem("q1", JSON.stringify(q1));
+ok_response(q1, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a — II
+
+The point estimate is:
+
+```{ojs}
+//| echo: false
+
+viewof q2 = Inputs.radio(
+  new Map([
+    ["48", 1],
+    ["331", 2],
+    ["0.48", 3],
+    ["0.145", 4],
+    ["159", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+);
+
+localStorage.setItem("q2", JSON.stringify(q2));
+ok_response(q2, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a — III
+
+The standard error formula is:
+
+```{ojs}
+//| echo: false
+
+viewof q3 = Inputs.radio(
+  new Map([
+    ["SE = s/sqrt(n)", 1],
+    ["SE = sigma/sqrt(n)", 2],
+    ["SE = sqrt(p(1-p)/n)", 3],
+    ["SE = sqrt(p1(1-p1)/n1 + p2(1-p2)/n2)", 4],
+    ["SE = sqrt(s1²/n1 + s2²/n2)", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+);
+
+localStorage.setItem("q3", JSON.stringify(q3));
+ok_response(q3, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a — IV
+
+The standard error (rounded to four decimal places) is:
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.radio(
+  new Map([
+    ["0.0008", 1],
+    ["0.0052", 2],
+    ["0.0275", 3],
+    ["0.0721", 4],
+    ["undefined", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+);
+
+localStorage.setItem("q4", JSON.stringify(q4));
+ok_response(q4, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a — V
+
+The distribution to be used is:
+
+```{ojs}
+//| echo: false
+
+viewof q5 = Inputs.radio(
+  new Map([
+    ["Normal.", 1],
+    ["t-distribution with df = n - 1.", 2],
+    ["t-distribution with df = min(n1-1, n2-1).", 3],
+    ["t-distribution with df = n_diff - 1.", 4],
+    ["We should not use either distribution.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+);
+
+localStorage.setItem("q5", JSON.stringify(q5));
+ok_response(q5, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a — VI
+
+The desired level of confidence is:
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["0.90%", 1],
+    ["90%", 2],
+    ["95%", 3],
+    ["98%", 4],
+    ["99%", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+);
+
+localStorage.setItem("q6", JSON.stringify(q6));
+ok_response(q6, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a — VII
+
+The critical value is:
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["1.65", 1],
+    ["1.96", 2],
+    ["2.00", 3],
+    ["2.33", 4],
+    ["2.58", 5],
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+);
+
+localStorage.setItem("q7", JSON.stringify(q7));
+ok_response(q7, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a — VIII
+
+The correct expression for computing the confidence interval is:
+
+```{ojs}
+//| echo: false
+
+viewof q8 = Inputs.radio(
+  new Map([
+    ["0.0275 ± (1.65 · 0.48)", 1],
+    ["1.65 ± (0.48 · 0.0275)", 2],
+    ["48 ± (1.65 · 0.0275)", 3],
+    ["48 ± (1.65 · 0.48)", 4],
+    ["0.48 ± (1.65 · 0.0275)", 5],
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+);
+
+localStorage.setItem("q8", JSON.stringify(q8));
+ok_response(q8, "5");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a — IX
+
+The correct lower and upper bounds for the confidence interval are:
+
+```{ojs}
+//| echo: false
+
+viewof q9 = Inputs.radio(
+  new Map([
+    ["-0.0322 and 0.0586", 1],
+    ["0.0322 and 0.0586", 2],
+    ["0.38 and 0.58", 3],
+    ["0.4346 and 0.5254", 4],
+    ["1.17 and 2.13", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9") ?? "null")}
+);
+
+localStorage.setItem("q9", JSON.stringify(q9));
+ok_response(q9, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a — X
+
+The correct interpretation of this confidence interval is:
+
+```{ojs}
+//| echo: false
+
+viewof q10 = Inputs.radio(
+  new Map([
+    ["Of all Americans who choose not to attend college, we are 90% confident that the true proportion making that choice because they cannot afford it is between 43.46% and 52.54%.", 1],
+    ["We are 90% confident that between 43.46% and 52.54% of Americans choose not to go to college.", 2],
+    ["We are 90% confident that the sample proportion of Americans choosing not to go to college because they cannot afford it is between 43.46% and 52.54%.", 3],
+    ["There is a 90% chance that the proportion of Americans choosing not to go to college because they cannot afford it is between 43.46% and 52.54%.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
+);
+
+localStorage.setItem("q10", JSON.stringify(q10));
+ok_response(q10, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a — XI
+
+Does this your interval suggest that a *majority* of Americans choosing not to go to college have made that choice because they cannot afford it?
+
+```{ojs}
+//| echo: false
+
+viewof q11 = Inputs.radio(
+  new Map([
+    ["Yes. The confidence interval results in proportions above 50%.", 1],
+    ["No. The confidence interval contains proportions both above and below 50%.", 2],
+    ["No. It actually shows that a minority make this choice for this reason because the confidence interval contains proportions below 50%.", 3],
+    ["It is impossible to say, since a different sample would result in a different confidence interval.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q11") ?? "null")}
+);
+
+localStorage.setItem("q11", JSON.stringify(q11));
+ok_response(q11, "2");
+```
+
+:::
+
+---
+
+**Try It 1b:** Consider the same scenario. Suppose we wanted the margin of error for the 90% confidence interval to be about 1.5%. How large of a sample would you recommend?
+
+Use the code block below for any necessary computations.
+
+```{webr}
+#| exercise: try-it-1b-code-block
+# Use this block for scratch calculations
+
+```
+
+:::{.hint exercise="try-it-1b-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+What type of inference task is this — a constructing a confidence interval, conducting a hypothesis test, computing a probability, or calculating a required sample size?
+
+:::
+:::
+
+:::{.hint exercise="try-it-1b-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+This is a sample size problem. Open the [Standard Error Decision Tree](www/StdErrorDecisionTree.pdf){target="_blank"} and look near the top of the document. You should find two sample size formulas — one for means and one for proportions (each one starts with $n \geq \cdots$). Which formula applies here?
+
+:::
+:::
+
+:::{.hint exercise="try-it-1b-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Since we are working with a proportion, the relevant formula is:
+$$n \geq \left(\frac{z_{\alpha/2}}{M_E}\right)^2 p \cdot (1 - p)$$
+
+What is the value of $z_{\alpha/2}$ (the critical value) for a 90% level of confidence?
+
+```{r}
+#| echo: true
+#| eval: false
+
+((___ / ___)^2)*___*(1 - ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-1b-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+The critical value for 90% confidence is $z_{\alpha/2} = 1.65$. What is the desired margin of error $M_E$?
+
+```{r}
+#| echo: true
+#| eval: false
+
+((1.65 / ___)^2)*___*(1 - ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-1b-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+The critical value for 90% confidence is $z_{\alpha/2} = 1.65$. What is the desired margin of error $M_E$? Be careful about units — the problem states 1.5%, so we should use 0.015.
+
+```{r}
+#| echo: true
+#| eval: false
+
+((1.65 / 0.015)^2)*___*(1 - ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-1b-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+What value should you use for $p$?
+
+```{r}
+#| echo: true
+#| eval: false
+
+((1.65 / 0.015)^2)*___*(1 - ___)
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-1b-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 7
+
+We have a prior estimate of $p = 0.48$ from the sample, so we use that. If no prior estimate existed, we would use $p = 0.5$ as a conservative choice.
+
+```{r}
+#| echo: true
+#| eval: false
+
+((1.65 / 0.015)^2)*0.48*(1 - 0.48)
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-1b-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 8
+
+Can you sample a fraction of a person?
+
+```{r}
+#| echo: true
+#| eval: false
+
+((1.65 / 0.015)^2)*0.48*(1 - 0.48)
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-1b-code-block"}
+:::{.callout-note collapse="false"}
+## Hint 9
+
+Round up to the nearest whole number — you can never sample a fraction of a person, and rounding down would fail to achieve the desired margin of error.
+
+```{r}
+#| echo: true
+#| eval: false
+
+((1.65 / 0.015)^2)*0.48*(1 - 0.48)
+```
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1b — I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+viewof q12 = Inputs.radio(
+  new Map([
+    ["Compute a confidence interval.", 1],
+    ["Conduct a hypothesis test.", 2],
+    ["Compute a probability.", 3],
+    ["Find a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q12") ?? "null")}
+);
+
+localStorage.setItem("q12", JSON.stringify(q12));
+ok_response(q12, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1b — II
+
+The value of $z_{\alpha/2}$ is:
+
+```{ojs}
+//| echo: false
+
+viewof q13 = Inputs.radio(
+  new Map([
+    ["1.65", 1],
+    ["1.96", 2],
+    ["2.33", 3],
+    ["2.58", 4],
+    ["90", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q13") ?? "null")}
+);
+
+localStorage.setItem("q13", JSON.stringify(q13));
+ok_response(q13, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1b — III
+
+The value of the margin of error ($M_E$) is:
+
+```{ojs}
+//| echo: false
+
+viewof q14 = Inputs.radio(
+  new Map([
+    ["1.5", 1],
+    ["0.9", 2],
+    ["90", 3],
+    ["0.015", 4],
+    ["0.1", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q14") ?? "null")}
+);
+
+localStorage.setItem("q14", JSON.stringify(q14));
+ok_response(q14, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1b — IV
+
+The value of $p$ (the estimate for the proportion) should be:
+
+```{ojs}
+//| echo: false
+
+viewof q15 = Inputs.radio(
+  new Map([
+    ["0.48", 1],
+    ["0.50", 2],
+    ["331", 3],
+    ["50", 4],
+    ["48", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q15") ?? "null")}
+);
+
+localStorage.setItem("q15", JSON.stringify(q15));
+ok_response(q15, "1");
+```
+
+:::
+
+:::{.callout-note}
+## Why Not Use p = 0.50?
+
+Using $p = 0.50$ is a conservative choice that maximizes the required sample size — it's appropriate when we have no prior information about the proportion. Here, we have a sample estimate of 0.48, so we use that instead. Using 0.50 would have led us to recommend a slightly larger sample than necessary.
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1b — V
+
+The required sample size is:
+
+```{ojs}
+//| echo: false
+
+viewof q16 = Inputs.radio(
+  new Map([
+    ["28", 1],
+    ["331", 2],
+    ["3,020", 3],
+    ["3,021", 4],
+    ["3,020.16", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q16") ?? "null")}
+);
+
+localStorage.setItem("q16", JSON.stringify(q16));
+ok_response(q16, "4");
+```
+
+:::
+
+---
+
+**Try It 2:** A USA Today/Gallup poll conducted between 2010 and 2011 asked a group of unemployed and underemployed Americans if they had major problems in their relationships with a spouse or close family member as a result of their employment situation. There were 27% of the 1,145 unemployed respondents and 25% of the 675 underemployed respondents who said they had experienced major relationship problems. Conduct a test to determine whether an association exists between the presence of relationship problems and employment status (unemployed vs. underemployed). Use $\alpha = 0.05$.
+
+Use the code block below for any necessary computations.
+
+```{webr}
+#| exercise: try-it-2-questions-codeblock
+# Use this block for scratch calculations
+
+```
+
+:::{.hint exercise="try-it-2-questions-codeblock"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+What type of inference task is being requested?
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-questions-codeblock"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+This is a hypothesis test. Open the [General Strategy for Conducting a Hypothesis Test](www/HTgeneral.pdf){target="_blank"} and work through the steps. Start by identifying the parameter of interest.
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-questions-codeblock"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+We are comparing two proportions — the proportion experiencing relationship problems among the unemployed vs. the underemployed. The parameter of interest is the *difference* between these two proportions: $p_{\text{unemployed}} - p_{\text{underemployed}}$.
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-questions-codeblock"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+The question asks whether an *association exists* — it doesn't specify a direction. What does that suggest about whether the alternative hypothesis is one-sided or two-sided?
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-questions-codeblock"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+Since no direction is specified, the alternative hypothesis is two-sided: $H_a: p_{\text{unemployed}} - p_{\text{underemployed}} \neq 0$.
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-questions-codeblock"}
+:::{.callout-note collapse="false"}
+## Hint 6
+
+We're going to need to calculate a *test statistic*. Doing so requires a *point estimate*, a *null value*, and a *standard error*. Can you find them?
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-questions-codeblock"}
+:::{.callout-note collapse="false"}
+## Hint 7
+
+We're going to need to calculate a *test statistic*. Doing so requires a *point estimate*, a *null value*, and a *standard error*. Can you find them?
+
+The *null value* is the number to the right-hand side of the equal sign in the null hypothesis ($H_0$). This is the assumed value of the population parameter of interest.
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-questions-codeblock"}
+:::{.callout-note collapse="false"}
+## Hint 8
+
+We're going to need to calculate a *test statistic*. Doing so requires a *point estimate*, a *null value*, and a *standard error*. Can you find them?
+
+The *null value* is 0.
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-questions-codeblock"}
+:::{.callout-note collapse="false"}
+## Hint 9
+
+We're going to need to calculate a *test statistic*. Doing so requires a *point estimate*, a *null value*, and a *standard error*. Can you find them?
+
+The *null value* is 0.
+
+The *point estimate* is the *sample*-version of the expression on the left hand side of your null hypothesis. That is, the point estimate is $\hat{p}_{\text{unemployed}} - \hat{p}_{\text{underemployed}}$.
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-questions-codeblock"}
+:::{.callout-note collapse="false"}
+## Hint 10
+
+We're going to need to calculate a *test statistic*. Doing so requires a *point estimate*, a *null value*, and a *standard error*. Can you find them?
+
+The *null value* is 0.
+
+So the *point estimate* is 
+
+\begin{align} \hat{p}_{\text{unemployed}} - \hat{p}_{\text{underemployed}} &= 0.27 - 0.25\\  
+&= 0.02\end{align}
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-questions-codeblock"}
+:::{.callout-note collapse="false"}
+## Hint 11
+
+We're going to need to calculate a *test statistic*. Doing so requires a *point estimate*, a *null value*, and a *standard error*. Can you find them?
+
+The *null value* is 0.
+
+So the *point estimate* is 0.02
+
+Since we're working with proportions and comparing two groups, what is the formula for computing the *standard error*?
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-questions-codeblock"}
+:::{.callout-note collapse="false"}
+## Hint 12
+
+We're going to need to calculate a *test statistic*. Doing so requires a *point estimate*, a *null value*, and a *standard error*. Can you find them?
+
+The *null value* is 0.
+
+So the *point estimate* is 0.02
+
+Using the tree, the *standard error* is 
+
+$$S_E = \sqrt{\frac{p1\left(1 - p_1\right)}{n_1} + \frac{p_2\left(1 - p_2\right)}{n_2}}$$
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2 — I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+viewof q17 = Inputs.radio(
+  new Map([
+    ["Compute a confidence interval.", 1],
+    ["Conduct a hypothesis test.", 2],
+    ["Compute a probability.", 3],
+    ["Find a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q17") ?? "null")}
+);
+
+localStorage.setItem("q17", JSON.stringify(q17));
+ok_response(q17, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2 — II
+
+The hypotheses associated with this test are:
+
+```{ojs}
+//| echo: false
+
+viewof q18 = Inputs.radio(
+  new Map([
+    ["H₀: p_unemployed − p_underemployed = 0, Hₐ: p_unemployed − p_underemployed ≠ 0", 1],
+    ["H₀: p_unemployed − p_underemployed = 0, Hₐ: p_unemployed − p_underemployed > 0", 2],
+    ["H₀: p_unemployed − p_underemployed = 0, Hₐ: p_unemployed − p_underemployed < 0", 3],
+    ["H₀: p_unemployed = 0.27 and p_underemployed = 0.25, Hₐ: p_unemployed ≠ 0.27 or p_underemployed ≠ 0.25", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q18") ?? "null")}
+);
+
+localStorage.setItem("q18", JSON.stringify(q18));
+ok_response(q18, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2 — III
+
+The null value is:
+
+```{ojs}
+//| echo: false
+
+viewof q19 = Inputs.radio(
+  new Map([
+    ["0", 1],
+    ["0.02", 2],
+    ["0.25", 3],
+    ["0.27", 4],
+    ["0.50", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q19") ?? "null")}
+);
+
+localStorage.setItem("q19", JSON.stringify(q19));
+ok_response(q19, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2 — IV
+
+The point estimate is:
+
+```{ojs}
+//| echo: false
+
+viewof q20 = Inputs.radio(
+  new Map([
+    ["0", 1],
+    ["0.02", 2],
+    ["0.25", 3],
+    ["0.27", 4],
+    ["0.50", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q20") ?? "null")}
+);
+
+localStorage.setItem("q20", JSON.stringify(q20));
+ok_response(q20, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2 — V
+
+How many groups are being compared in this study?
+
+```{ojs}
+//| echo: false
+
+viewof q21 = Inputs.radio(
+  new Map([
+    ["Just one group.", 1],
+    ["Two groups.", 2],
+    ["Three or more groups.", 3],
+    ["1,820 groups.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q21") ?? "null")}
+);
+
+localStorage.setItem("q21", JSON.stringify(q21));
+ok_response(q21, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2 — VI
+
+The standard error formula is:
+
+```{ojs}
+//| echo: false
+
+viewof q22 = Inputs.radio(
+  new Map([
+    ["SE = sqrt(p(1-p)/n)", 1],
+    ["SE = s/sqrt(n)", 2],
+    ["SE = sigma/sqrt(n)", 3],
+    ["SE = sqrt(p1(1-p1)/n1 + p2(1-p2)/n2)", 4],
+    ["SE = sqrt(s1²/n1 + s2²/n2)", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q22") ?? "null")}
+);
+
+localStorage.setItem("q22", JSON.stringify(q22));
+ok_response(q22, "4");
+```
+
+:::
+
+Compute the standard error in the code block below. Be sure to carry at least five decimal places in any intermediate calculations.
+
+```{webr}
+#| exercise: try-it-2-se
+______
+```
+
+:::{.hint exercise="try-it-2-se"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+From the tree, the standard error formula for a comparison between two population proportions is:
+$$S_E = \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}$$
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt((___*(1 - ___) / ___) + (___*(1 - ___) / ___))
+se
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-se"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+From the tree, the standard error formula for a comparison between two population proportions is:
+$$S_E = \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}$$
+
+The values $p_1$ and $n_1$ are the proportion and sample size from the first group respectively.
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt((___*(1 - ___) / ___) + (___*(1 - ___) / ___))
+se
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-se"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+From the tree, the standard error formula for a comparison between two population proportions is:
+$$S_E = \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}$$
+
+The values $p_1$ and $n_1$ are the proportion and sample size from the first group respectively. This means that $p_1 = 0.27$ and $n_1 = 1145$.
+
+Can you identify $p_2$ and $n_2$ similarly?
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt((0.27*(1 - 0.27) / 1145) + (___*(1 - ___) / ___))
+se
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-se"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+From the tree, the standard error formula for a comparison between two population proportions is:
+$$S_E = \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}$$
+
+The values $p_1$ and $n_1$ are the proportion and sample size from the first group respectively. This means that $p_1 = 0.27$ and $n_1 = 1145$.
+
+Similarly, $p_2 = 0.25$ and $n_2 = 675$.
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt((0.27*(1 - 0.27) / 1145) + (0.25*(1 - 0.25) / 675))
+se
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: try-it-2-se
+#| solution: true
+
+sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
+```
+
+```{webr}
+#| exercise: try-it-2-se
+#| check: true
+
+gradethis::grade_this({
+  if (abs(.result - sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))) < 0.0005) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Now use the code block below to compute the test statistic.
+
+```{webr}
+#| exercise: try-it-2-ts
+______
+```
+
+:::{.hint exercise="try-it-2-ts"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+You've got the *point estimate*, the *null value*, and the *standard error* now. That's all the ingredients required to construct the test statistic.
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt((0.27*(1 - 0.27) / 1145) + (0.25*(1 - 0.25) / 675))
+se
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-ts"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+You've got the *point estimate*, the *null value*, and the *standard error* now. That's all the ingredients required to construct the test statistic.
+
+$$\text{test statistic} = \frac{\left(\text{point estimate}\right) - \left(\text{null value}\right)}{S_E}$$
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt((0.27*(1 - 0.27) / 1145) + (0.25*(1 - 0.25) / 675))
+se
+
+test_stat <- (___ - ___) / ___
+test_stat
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-ts"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+You've got the *point estimate*, the *null value*, and the *standard error* now. That's all the ingredients required to construct the test statistic.
+
+$$\text{test statistic} = \frac{\left(\text{point estimate}\right) - \left(\text{null value}\right)}{S_E}$$
+
+The *point estimate* is 0.02.
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt((0.27*(1 - 0.27) / 1145) + (0.25*(1 - 0.25) / 675))
+se
+
+test_stat <- (0.02 - ___) / se
+test_stat
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-ts"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+You've got the *point estimate*, the *null value*, and the *standard error* now. That's all the ingredients required to construct the test statistic.
+
+$$\text{test statistic} = \frac{\left(\text{point estimate}\right) - \left(\text{null value}\right)}{S_E}$$
+
+The *null value* is 0.
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt((0.27*(1 - 0.27) / 1145) + (0.25*(1 - 0.25) / 675))
+se
+
+test_stat <- (0.02 - 0) / se
+test_stat
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: try-it-2-ts
+#| solution: true
+
+se <- sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
+(0.27 - 0.25) / se
+```
+
+```{webr}
+#| exercise: try-it-2-ts
+#| check: true
+
+gradethis::grade_this({
+  se <- sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
+  if (abs(.result - (0.02 / se)) < 0.005) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2 — VII
+
+The distribution to be used is:
+
+```{ojs}
+//| echo: false
+
+viewof q23 = Inputs.radio(
+  new Map([
+    ["Normal.", 1],
+    ["t-distribution with df = n - 1.", 2],
+    ["t-distribution with df = min(n1-1, n2-1).", 3],
+    ["t-distribution with df = n_diff - 1.", 4],
+    ["We should not use either distribution.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q23") ?? "null")}
+);
+
+localStorage.setItem("q23", JSON.stringify(q23));
+ok_response(q23, "1");
+```
+
+:::
+
+Now compute the $p$-value in the code block below.
+
+```{webr}
+#| exercise: try-it-2-pvalue
+______
+```
+
+:::{.hint exercise="try-it-2-pvalue"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Now that we have the test statistic, we need to obtain the $p$-value. Remember, the $p$-value represents the probability of observing data at least as favorable to $H_a$ as our sample data, under the assumption that the null hypothesis ($H_0$) is true.
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt((0.27*(1 - 0.27) / 1145) + (0.25*(1 - 0.25) / 675))
+se
+
+test_stat <- (0.02 - 0) / se
+test_stat
+
+p_val <- ___
+p_val
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-pvalue"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Now that we have the test statistic, we need to obtain the $p$-value. Remember, the $p$-value represents the probability of observing data at least as favorable to $H_a$ as our sample data, under the assumption that the null hypothesis ($H_0$) is true.
+
+Our alternative hypothesis used a not equal to symbol ($\neq$), which indicates that the test is two-tailed. Because of this, we'll multiply our calculated tail area by 2.
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt((0.27*(1 - 0.27) / 1145) + (0.25*(1 - 0.25) / 675))
+se
+
+test_stat <- (0.02 - 0) / se
+test_stat
+
+p_val <- 2*(___)
+p_val
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-pvalue"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Now that we have the test statistic, we need to obtain the $p$-value. Remember, the $p$-value represents the probability of observing data at least as favorable to $H_a$ as our sample data, under the assumption that the null hypothesis ($H_0$) is true.
+
+Our alternative hypothesis used a not equal to symbol ($\neq$), which indicates that the test is two-tailed. Because of this, we'll multiply our calculated tail area by 2.
+
+Because the test statistic is positive, the tail area is in the upper tail. This means that we'll need to use `1 - pnorm()` to find that area.
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt((0.27*(1 - 0.27) / 1145) + (0.25*(1 - 0.25) / 675))
+se
+
+test_stat <- (0.02 - 0) / se
+test_stat
+
+p_val <- 2*(1 - pnorm(___, ___, ___))
+p_val
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-pvalue"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+Now that we have the test statistic, we need to obtain the $p$-value. Remember, the $p$-value represents the probability of observing data at least as favorable to $H_a$ as our sample data, under the assumption that the null hypothesis ($H_0$) is true.
+
+Evaluating the test statistic formula moves us to the standard normal distribution. That's the normal distribution with $\mu = 0$ and $\sigma = 1$.
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt((0.27*(1 - 0.27) / 1145) + (0.25*(1 - 0.25) / 675))
+se
+
+test_stat <- (0.02 - 0) / se
+test_stat
+
+p_val <- 2*(1 - pnorm(___, 0, 1))
+p_val
+```
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-pvalue"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+Now that we have the test statistic, we need to obtain the $p$-value. Remember, the $p$-value represents the probability of observing data at least as favorable to $H_a$ as our sample data, under the assumption that the null hypothesis ($H_0$) is true.
+
+Evaluating the test statistic formula moves us to the standard normal distribution. That's the normal distribution with $\mu = 0$ and $\sigma = 1$.
+
+The test statistic is the boundary value.
+
+```{r}
+#| echo: true
+#| eval: false
+
+se <- sqrt((0.27*(1 - 0.27) / 1145) + (0.25*(1 - 0.25) / 675))
+se
+
+test_stat <- (0.02 - 0) / se
+test_stat
+
+p_val <- 2*(1 - pnorm(test_stat, 0, 1))
+p_val
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: try-it-2-pvalue
+#| solution: true
+
+se <- sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
+z  <- (0.27 - 0.25) / se
+2 * (1 - pnorm(abs(z)))
+```
+
+```{webr}
+#| exercise: try-it-2-pvalue
+#| check: true
+
+gradethis::grade_this({
+  se <- sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
+  z  <- (0.27 - 0.25) / se
+  if (abs(.result - 2 * (1 - pnorm(abs(z)))) < 0.003) {
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2 — VIII
+
+The result of the test is:
+
+```{ojs}
+//| echo: false
+
+viewof q24 = Inputs.radio(
+  new Map([
+    ["Since p < α, we reject the null hypothesis and accept the alternative.", 1],
+    ["Since p < α, we fail to reject the null hypothesis.", 2],
+    ["Since p ≥ α, we do not have enough evidence to reject the null hypothesis.", 3],
+    ["Since p ≥ α, we accept the null hypothesis.", 4],
+    ["It is impossible to determine.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q24") ?? "null")}
+);
+
+localStorage.setItem("q24", JSON.stringify(q24));
+ok_response(q24, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2 — IX
+
+The result of the test stated in context means that:
+
+```{ojs}
+//| echo: false
+
+viewof q25 = Inputs.radio(
+  new Map([
+    ["The sample data proved there is no association between relationship problems and employment status.", 1],
+    ["The sample data did not provide significant evidence to suggest an association between relationship problems and employment status.", 2],
+    ["The sample data provided significant evidence of a greater frequency of relationship trouble among the unemployed.", 3],
+    ["Sample data cannot be used to test claims about a population.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q25") ?? "null")}
+);
+
+localStorage.setItem("q25", JSON.stringify(q25));
+ok_response(q25, "2");
+```
+
+:::
+
+Good work through these practice problems! Remember to download or print copies of the [*Standard Error Decision Tree*](www/StdErrorDecisionTree.pdf){target="_blank"}, the [*General Strategy for Conducting a Hypothesis Test*](www/HTgeneral.pdf){target="_blank"}, and the [*General Strategy for Constructing a Confidence Interval*](www/CIgeneral.pdf){target="_blank"}. You'll refer back to these documents often as you gain familiarity and confidence with statistical inference.
+
+## Submit
+
+:::{.callout-warning}
+
+Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+
+:::
+
+## Summary
+
+:::{.callout-tip}
+## Main Takeaways
+
++ The **Standard Error Decision Tree** is your primary reference for identifying which standard error formula applies to a given inference problem. The key questions are: Are you working with means or proportions? One group or two?
++ **Confidence intervals** and **hypothesis tests** follow a structured process. The general strategy documents walk you through each step — use them until the process becomes second nature.
++ **Sample size planning** allows you to determine how large a sample is needed to achieve a desired margin of error before data collection begins. Using a prior estimate of the proportion (when available) gives a more efficient answer than defaulting to $p = 0.50$.
++ **Two-proportion hypothesis tests** compare the difference in proportions across two groups. The null hypothesis is typically that the difference is zero, and the standard error formula accounts for both groups' sample sizes and proportions.
++ When a **$p$-value exceeds $\alpha$**, we do not have sufficient evidence to reject the null hypothesis — but this is not the same as proving the null is true. Absence of evidence is not evidence of absence.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+The inference framework you've been practicing here — identify the parameter, state hypotheses, compute a test statistic or confidence interval, draw a conclusion — will carry forward unchanged throughout the rest of the course. What will change is the specific standard error formula and distribution used, depending on whether you're working with proportions or means, one group or two. The decision tree will guide those choices. In the coming activities, we'll extend these ideas to numerical data and the $t$-distribution.
+:::

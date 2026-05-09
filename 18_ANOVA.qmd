@@ -133,16 +133,16 @@ Which of the following are the correct hypotheses for testing whether average pe
 mutable ok_response = (response, n) => { return html`Loading...` };
 viewof q1 = Inputs.radio(
   new Map([
-    ["H₀: μ_setosa = μ_versicolor = μ_virginica; Hₐ: At least one variety has a different average petal width.", 1],
-    ["H₀: μ_setosa = μ_versicolor = μ_virginica; Hₐ: All varieties have different average petal widths.", 2],
-    ["H₀: μ_setosa = μ_versicolor = μ_virginica; Hₐ: μ_setosa ≠ μ_versicolor ≠ μ_virginica", 3],
-    ["H₀: μ_setosa = μ_versicolor = μ_virginica = 0; Hₐ: μ_setosa ≠ μ_versicolor ≠ μ_virginica ≠ 0", 4]
+    ["H₀: μ_setosa = μ_versicolor = μ_virginica; Hₐ: μ_setosa ≠ μ_versicolor ≠ μ_virginica", 1],
+    ["H₀: μ_setosa = μ_versicolor = μ_virginica = 0; Hₐ: μ_setosa ≠ μ_versicolor ≠ μ_virginica ≠ 0", 2]
+    ["H₀: μ_setosa = μ_versicolor = μ_virginica; Hₐ: At least one variety has a different average petal width.", 3],
+    ["H₀: μ_setosa = μ_versicolor = μ_virginica; Hₐ: All varieties have different average petal widths.", 4],
   ]),
   {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
 );
 
 localStorage.setItem("q1", JSON.stringify(q1));
-ok_response(q1, "1");
+ok_response(q1, "3");
 ```
 
 :::

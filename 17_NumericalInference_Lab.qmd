@@ -1,0 +1,1201 @@
+---
+title: "Topic 17: Inference for Numerical Data (Lab)"
+engine: knitr
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        .exercise-editor-body { max-height: 300px; overflow-y: auto; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - ggplot2
+        - gradethis
+        - statsr
+        - openintro
+        - skimr
+        - tidyr
+      cell-options:
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_checkbox
+
+ok_checkbox <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Not Yet! ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(dplyr)
+library(ggplot2)
+library(statsr)
+library(openintro)
+library(skimr)
+library(tidyr)
+
+data(nc)
+rm(inference)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(statsr)
+library(openintro)
+library(skimr)
+library(tidyr)
+
+data(nc)
+rm(inference)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+:::{.callout-note}
+## About
+
+In this lab, we work with data on 1,000 pregnancies recorded in North Carolina in 2004. We revisit the `inference()` function from the `{statsr}` package — this time applying it to numerical data. We'll conduct hypothesis tests and construct confidence intervals for means.
+:::
+
+:::{.callout-note}
+## License
+
+This is a derivative of a product of OpenIntro released under a [Creative Commons Attribution-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-sa/3.0){target="_blank"} license. This lab was adapted for OpenIntro by Mine Çetinkaya-Rundel from a lab written by the faculty and TAs of UCLA Statistics.
+:::
+
+## Inference for Numerical Data
+
+During 2004, the state of North Carolina released a large data set containing information on births recorded in the state. This data set is useful to researchers studying the relationship between the habits, practices, and demographic characteristics of expectant mothers and the birth outcomes of their children. This includes important questions about equity in prenatal care access and outcomes. We will work with a random sample of 1,000 observations from this data set, loaded as `nc`.
+
+The `nc` dataset contains 13 variables:
+
+| Variable | Description |
+|:---|:---|
+| `fage` | father's age in years |
+| `mage` | mother's age in years |
+| `mature` | maturity status of mother |
+| `weeks` | length of pregnancy in weeks |
+| `premie` | whether the birth was classified as premature or full-term |
+| `visits` | number of hospital visits during pregnancy |
+| `marital` | whether mother is married or not married at birth |
+| `gained` | weight gained by mother during pregnancy in pounds |
+| `weight` | weight of the baby at birth in pounds |
+| `lowbirthweight` | whether baby was classified as low birthweight or not |
+| `gender` | gender of the baby |
+| `habit` | status of the mother as a nonsmoker or smoker |
+| `whitemom` | whether mom is white or not white |
+
+Use the code block below to explore the `nc` data frame and answer the questions that follow.
+
+```{webr}
+#| exercise: nc-cases-questions
+# Explore the nc data frame
+
+```
+
+:::{.hint exercise="nc-cases-questions"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Try running `nc` on its own.
+
+:::
+:::
+
+:::{.hint exercise="nc-cases-questions"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+
+nc
+```
+
+:::
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Cases I
+
+What are the cases in this data set?
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.radio(
+  new Map([
+    ["Each case corresponds to a pregnancy.", 1],
+    ["Each case corresponds to a woman.", 2],
+    ["Each case corresponds to a doctor visit.", 3],
+    ["Each case corresponds to a baby.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+);
+
+localStorage.setItem("q1", JSON.stringify(q1));
+ok_response(q1, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Cases II
+
+How many cases are there in our sample?
+
+```{ojs}
+//| echo: false
+
+viewof q2 = Inputs.radio(
+  new Map([
+    ["13", 1],
+    ["246", 2],
+    ["963", 3],
+    ["1,000", 4],
+    ["1,387", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+);
+
+localStorage.setItem("q2", JSON.stringify(q2));
+ok_response(q2, "4");
+```
+
+:::
+
+As a first step in any analysis, it's good practice to review summaries of the data. Use `summary()` or `skim()` from the `{skimr}` package to get an overview of the `nc` data frame, and use the output to help you answer the questions that follow.
+
+```{webr}
+#| exercise: nc-summary
+# Summarize the nc data frame
+
+```
+
+:::{.hint exercise="nc-summary"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Pipe the `nc` data frame into your favorite summary function.
+
+```{r}
+#| echo: true
+#| eval: false
+nc |>
+  ___
+```
+
+:::
+:::
+
+:::{.hint exercise="nc-summary"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Pipe the `nc` data frame into your favorite summary function. I like the `skim()` function from `{skimr}` because it provides lots of useful information about the data set.
+
+```{r}
+#| echo: true
+#| eval: false
+nc |>
+  skim()
+```
+
+:::
+:::
+
+As you review the variable summaries, consider which variables are categorical and which are numerical. 
+
+:::{.callout-caution}
+## Check Your Understanding: Variable Types
+
+Which of the variables in the `nc` dataset are numerical? Select all that apply.
+
+```{ojs}
+//| echo: false
+
+mutable ok_checkbox = (response, n) => { return html`Loading...` };
+viewof q3 = Inputs.checkbox(
+  new Map([
+    ["fage", 1],
+    ["mage", 2],
+    ["mature", 3],
+    ["weeks", 4],
+    ["premie", 5],
+    ["visits", 6],
+    ["marital", 7],
+    ["gained", 8],
+    ["weight", 9],
+    ["lowbirthweight", 10],
+    ["gender", 11],
+    ["habit", 12],
+    ["whitemom", 13]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "[]")}
+);
+
+localStorage.setItem("q3", JSON.stringify(q3));
+ok_checkbox(q3.toString(), "1,2,4,6,8,9");
+```
+
+:::
+
+For the numerical variables in the `nc` dataset, are there any obvious outliers? Feel free to use the code block below to explore further with plots.
+
+```{webr}
+#| exercise: nc-explore-num-cat-out
+#| message: false
+#| warning: false
+# Explore distributions and look for outliers
+
+```
+
+:::{.hint exercise="nc-explore-num-cat-out"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Boxplots do a nice job at visually identifying outliers. Do you remember how to construct a plot?
+
+:::
+:::
+
+:::{.hint exercise="nc-explore-num-cat-out"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Boxplots do a nice job at visually identifying outliers. Do you remember how to construct a plot?
+
+Start by piping your data frame into `ggplot()`.
+
+```{r}
+#| echo: true
+#| eval: false
+nc |>
+  ggplot() 
+```
+
+:::
+:::
+
+:::{.hint exercise="nc-explore-num-cat-out"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Boxplots do a nice job at visually identifying outliers. Do you remember how to construct a plot?
+
+Start by piping your data frame into `ggplot()`. Now, add a boxplot layer and map your numerical variables to the `x` aesthetic one at a time.
+
+```{r}
+#| echo: true
+#| eval: false
+nc |>
+  ggplot() +
+  geom_boxplot(aes(x = ___))
+```
+
+:::
+:::
+
+:::{.hint exercise="nc-explore-num-cat-out"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+Boxplots do a nice job at visually identifying outliers. Do you remember how to construct a plot?
+
+Start by piping your data frame into `ggplot()`. Now, add a boxplot layer and map your numerical variables to the `x` aesthetic one at a time. For example, we can plot the mother's age (`mage`).
+
+```{r}
+#| echo: true
+#| eval: false
+nc |>
+  ggplot() +
+  geom_boxplot(aes(x = mage))
+```
+
+:::
+:::
+
+:::{.hint exercise="nc-explore-num-cat-out"}
+:::{.callout-note collapse="false"}
+## Something Advanced
+
+If plotting one variable at a time feels inefficient, it is possible to plot them all at once!
+
+```{r}
+#| echo: true
+#| eval: false
+nc |>
+  select_if(~is.numeric(.)) |>
+  pivot_longer(everything(), 
+               names_to = "variable",
+               values_to = "value") |>
+  ggplot() + 
+  geom_boxplot(aes(x = value, 
+                   y = variable))
+```
+
+Click *Next Hint* to get back to the code for plotting an individual variable at a time.
+
+:::
+:::
+
+:::{.hint exercise="nc-explore-num-cat-out"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+Boxplots do a nice job at visually identifying outliers. Do you remember how to construct a plot?
+
+Start by piping your data frame into `ggplot()`. Now, add a boxplot layer and map your numerical variables to the `x` aesthetic one at a time. For example, we can plot the mother's age (`mage`).
+
+```{r}
+#| echo: true
+#| eval: false
+nc |>
+  ggplot() +
+  geom_boxplot(aes(x = mage))
+```
+
+:::
+:::
+
+## Exploratory Analysis
+
+Consider the possible relationship between a mother's smoking habit and the weight of her baby. Plotting the data is a useful first step — it helps us quickly visualize trends, identify associations, and develop research questions.
+
+Create a side-by-side boxplot of `habit` and `weight`. Add the following labels to your plot:
+
+```{r}
+#| echo: true
+#| eval: false
+labs(
+    title = "Birthweight by Smoking Status",
+    x = "",
+    y = "Birthweight (lbs)"
+  )
+```
+
+What does the plot suggest about the relationship between these two variables?
+
+```{webr}
+#| exercise: plot-habit-weight
+______
+```
+
+:::{.hint exercise="plot-habit-weight"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Start by piping `nc` into `ggplot()`.
+
+```{r}
+#| echo: true
+#| eval: false
+nc |>
+  ggplot()
+```
+
+:::
+:::
+
+:::{.hint exercise="plot-habit-weight"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Add a `geom_boxplot()` layer. You'll need `x` and `y` aesthetic mappings.
+
+```{r}
+#| echo: true
+#| eval: false
+
+nc |>
+  ggplot() +
+  geom_boxplot(aes(x = ___, y = ___))
+```
+
+:::
+:::
+
+:::{.hint exercise="plot-habit-weight"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Add a `geom_boxplot()` layer. You'll need `x` and `y` aesthetic mappings. The `habit` variable encodes whether the mother is a smoker or not, and the `weight` variable contains the birth-weight of the baby.
+
+```{r}
+#| echo: true
+#| eval: false
+
+nc |>
+  ggplot() +
+  geom_boxplot(aes(x = ___, y = ___))
+```
+
+:::
+:::
+
+:::{.hint exercise="plot-habit-weight"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+Add a `geom_boxplot()` layer. You'll need `x` and `y` aesthetic mappings. The `habit` variable encodes whether the mother is a smoker or not, and the `weight` variable contains the birth-weight of the baby.
+
+Now don't forget the labels.
+
+```{r}
+#| echo: true
+#| eval: false
+
+nc |>
+  ggplot() +
+  geom_boxplot(aes(x = habit, y = weight)) + 
+  labs(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="plot-habit-weight"}
+:::{.callout-note collapse="false"}
+## Hint 5 (Solved)
+
+Add a `geom_boxplot()` layer. You'll need `x` and `y` aesthetic mappings. The `habit` variable encodes whether the mother is a smoker or not, and the `weight` variable contains the birth-weight of the baby.
+
+```{r}
+#| echo: true
+#| eval: false
+
+nc |>
+  ggplot() +
+  geom_boxplot(aes(x = habit, y = weight)) +
+  labs(
+    title = "Birthweight by Smoking Status",
+    x = "",
+    y = "Birthweight (lbs)"
+  )
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: plot-habit-weight
+#| solution: true
+
+nc |>
+  ggplot() +
+  geom_boxplot(aes(x = habit, y = weight)) +
+  labs(
+    title = "Birthweight by Smoking Status",
+    x = "",
+    y = "Birthweight (lbs)"
+  )
+```
+
+```{webr}
+#| exercise: plot-habit-weight
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+The boxplots show how the medians of the two distributions compare, but we can also compare the means directly. The following code groups the data by `habit` and computes the mean `weight` for each group. Think about what the output will look like before running it, then run it and reflect on what it tells you.
+
+```{webr}
+#| exercise: by-means
+
+nc |>
+  group_by(habit) |>
+  summarize(avg_birth_weight = mean(weight))
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Grouped Summary Statistics
+
+What does the output from the code cell above tell you?
+
+```{ojs}
+//| echo: false
+
+viewof q_extra1 = Inputs.radio(
+  new Map([
+    ["There is no relationship between smoking habits of expectant mothers and the average birthweight of their babies.", 1],
+    ["Babies born to mothers who smoke during pregnancy are, on average, lower birthweight than babies born to mothers who don't smoke during pregnancy.", 2],
+    ["Babies born to mothers who smoke during pregnancy are, on average, lower birthweight than babies born to mothers who don't smoke during pregnancy in our sample.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q_extra1") ?? "null")}
+);
+
+localStorage.setItem("q_extra1", JSON.stringify(q_extra1));
+ok_response(q_extra1, "3");
+```
+
+:::
+
+:::{.callout-tip}
+## Strength of Claims
+Remember that we can't make population level claims from summary statistics alone. Because of sampling variation we know that we would obtain different results (different average birth weights) if we were to collect a new sample. Statistical inference helps us quantify how different those results may be. Inference is was allows us to make population-level claims.
+:::
+
+## Inference
+
+There is an observed difference in average birth weights between the two groups — but is this difference statistically significant? To answer this we'll conduct a hypothesis test. First, let's check whether the conditions necessary for inference are satisfied. Use the code block below to obtain sample sizes for each group.
+
+```{webr}
+#| exercise: check-inference-conditions-habit
+______
+```
+
+:::{.hint exercise="check-inference-conditions-habit"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Pipe `nc` into `count()` and pass the grouping variable as an argument.
+
+:::
+:::
+
+:::{.hint exercise="check-inference-conditions-habit"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+
+nc |>
+  count(habit)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: check-inference-conditions-habit
+#| solution: true
+
+nc |>
+  count(habit)
+```
+
+```{webr}
+#| exercise: check-inference-conditions-habit
+#| check: true
+
+gradethis::grade_this({
+  pass_if_equal()
+  fail()
+})
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Inference Conditions I
+
+How many groups are being considered?
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.radio(
+  new Map([
+    ["One.", 1],
+    ["Two.", 2],
+    ["More than two.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+);
+
+localStorage.setItem("q4", JSON.stringify(q4));
+ok_response(q4, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Inference Conditions II
+
+Which of the following are the groups? Select all that apply.
+
+```{ojs}
+//| echo: false
+
+viewof q5 = Inputs.checkbox(
+  new Map([
+    ["Pregnancies resulting in premature births.", 1],
+    ["Pregnancies with mothers who are smokers.", 2],
+    ["Pregnancies resulting in babies of low birthweight.", 3],
+    ["Pregnancies resulting in babies not of low birthweight.", 4],
+    ["Pregnancies with mothers who are non-smokers.", 5],
+    ["Pregnancies not resulting in premature births.", 6]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "[]")}
+);
+
+localStorage.setItem("q5", JSON.stringify(q5));
+ok_checkbox(q5.toString(), "2,5");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Inference Conditions III
+
+Are the conditions for inference satisfied?
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["Yes, the group sizes are large enough to overcome any skew in the population distributions.", 1],
+    ["No, the groups are too small.", 2],
+    ["No, the group sizes are too imbalanced.", 3],
+    ["No, there is too much skew in the data.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+);
+
+localStorage.setItem("q6", JSON.stringify(q6));
+ok_response(q6, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Hypotheses
+
+The hypotheses for testing whether average birth weights differ between smoking and non-smoking mothers are:
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["H₀: μ_smoker = μ_nonsmoker; Hₐ: μ_smoker ≠ μ_nonsmoker", 1],
+    ["H₀: μ_smoker = μ_nonsmoker; Hₐ: μ_smoker > μ_nonsmoker", 2],
+    ["H₀: μ_smoker = μ_nonsmoker; Hₐ: μ_smoker < μ_nonsmoker", 3],
+    ["H₀: p_smoker = p_nonsmoker; Hₐ: p_smoker ≠ p_nonsmoker", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+);
+
+localStorage.setItem("q7", JSON.stringify(q7));
+ok_response(q7, "1");
+```
+
+:::
+
+Now let's use the `inference()` function from `{statsr}` to conduct the hypothesis test. Here's a reminder of the key arguments:
+
++ `y` — the response variable (`weight`)
++ `x` — the explanatory variable that splits data into groups (`habit`)
++ `data` — the data frame (`nc`)
++ `statistic` — the parameter of interest (`"mean"`)
++ `type` — `"ht"` for hypothesis test or `"ci"` for confidence interval
++ `null` — the null value (for a hypothesis test about a difference in means, this is `0`)
++ `alternative` — `"less"`, `"greater"`, or `"twosided"`
++ `method` — `"theoretical"` or `"simulation"`
+
+The code block below runs the hypothesis test. Review the output, then modify the code to instead construct a confidence interval for the difference in average birth weights between the two groups. When switching to `type = "ci"`, remove the `null` and `alternative` arguments — they don't apply to confidence intervals.
+
+```{webr}
+#| exercise: first-inference-run
+
+inference(
+  y = weight,
+  x = habit,
+  data = nc,
+  statistic = "mean",
+  type = "ht",
+  null = 0,
+  alternative = "twosided",
+  method = "theoretical"
+)
+```
+
+:::{.hint exercise="first-inference-run"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+First run the code as-is to see the hypothesis test results. Then identify which arguments need to change for a confidence interval.
+
+:::
+:::
+
+:::{.hint exercise="first-inference-run"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Change `type = "ht"` to `type = "ci"`. Confidence intervals don't have null values or alternative hypotheses.
+
+:::
+:::
+
+:::{.hint exercise="first-inference-run"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+Remove the `null` and `alternative` arguments and change `type` to `"ci"`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+inference(
+  y = weight,
+  x = habit,
+  data = nc,
+  statistic = "mean",
+  type = "ci",
+  method = "theoretical"
+)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: first-inference-run
+#| solution: true
+
+inference(
+  y = weight,
+  x = habit,
+  data = nc,
+  statistic = "mean",
+  type = "ci",
+  method = "theoretical"
+)
+```
+
+```{webr}
+#| exercise: first-inference-run
+#| check: true
+
+gradethis::grade_this({
+  pass_if_equal()
+  fail()
+})
+```
+
+By default, `inference()` reports the interval for $\mu_{\text{nonsmoker}} - \mu_{\text{smoker}}$ because R orders factor levels alphabetically. You can reverse this using the `order` argument. Run the code below to see the result.
+
+```{webr}
+#| exercise: inference-ci-ordered
+
+inference(
+  y = weight,
+  x = habit,
+  data = nc,
+  statistic = "mean",
+  type = "ci",
+  method = "theoretical",
+  order = c("smoker", "nonsmoker")
+)
+```
+
+## On Your Own
+
+Use the code block below to work through the following tasks. Each task includes hints if you need them.
+
+```{webr}
+#| exercise: own-probs
+# Use this block for all five tasks below
+
+```
+
+**1.** Construct a 95% confidence interval for the average length of pregnancies (`weeks`) and interpret it in context.
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 1 (Task 1)
+
+Use `inference()` with `y = weeks` and `data = nc`. Since there's no grouping variable, leave out `x` entirely.
+
+:::
+:::
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Task 1)
+
+Use `inference()` with `y = weeks` and `data = nc`. Since there's no grouping variable, leave out `x` entirely. 
+
+Start by copying and pasting our most recent call to the `inference()` function. Editing it is much easier than starting from scratch!
+
+```{r}
+#| echo: true
+#| eval: false
+inference(
+  y = weight,
+  x = habit,
+  data = nc,
+  statistic = "mean",
+  type = "ci",
+  method = "theoretical",
+  order = c("smoker", "nonsmoker")
+)
+```
+
+:::
+:::
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Task 1)
+
+Use `inference()` with `y = weeks` and `data = nc`. Since there's no grouping variable, leave out `x` entirely. 
+
+Start by copying and pasting our most recent call to the `inference()` function. Editing it is much easier than starting from scratch! What needs to be changed?
+
+```{r}
+#| echo: true
+#| eval: false
+inference(
+  y = weight,
+  x = habit,
+  data = nc,
+  statistic = "mean",
+  type = "ci",
+  method = "theoretical",
+  order = c("smoker", "nonsmoker")
+)
+```
+
+:::
+:::
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Task 1, Solved)
+
+Use `inference()` with `y = weeks` and `data = nc`. Since there's no grouping variable, leave out `x` entirely. 
+
+Start by copying and pasting our most recent call to the `inference()` function. Editing it is much easier than starting from scratch! What needs to be changed?
+
++ The variable of interest (`y`) is `weeks` instead of `weight`.
++ We're not comparing groups, so get rid of the grouping variable `x` altogether.
++ We don't have groups, so setting an order here doesn't make sense -- remove it.
+
+```{r}
+#| echo: true
+#| eval: false
+inference(
+  y = weeks,
+  data = nc,
+  statistic = "mean",
+  type = "ci",
+  method = "theoretical"
+)
+```
+
+:::
+:::
+
+**2.** Calculate a new confidence interval for the same parameter at the 90% confidence level. You can change the confidence level by adding `conf_level = 0.90` as an argument to `inference()`.
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 1 (Task 2, Solved)
+
+To change the confidence level, add the `conf_level` argument to the call to `inference()`. It can go anywhere! (Just remember that arguments are separated by commas.)
+
+```{r}
+#| echo: true
+#| eval: false
+inference(
+  y = weeks,
+  data = nc,
+  statistic = "mean",
+  type = "ci",
+  method = "theoretical",
+  conf_level = 0.90
+)
+```
+
+:::
+:::
+
+**3.** Conduct a hypothesis test evaluating whether the average weight gained by younger mothers differs from the average weight gained by mature mothers.
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 1 (Task 3)
+
+Copy and paste an earlier call to the `inference()` function where we were conducting a hypothesis test.
+
+```{r}
+#| echo: true
+#| eval: false
+inference(
+  y = weight,
+  x = habit,
+  data = nc,
+  statistic = "mean",
+  type = "ht",
+  null = 0,
+  alternative = "twosided",
+  method = "theoretical"
+)
+```
+
+:::
+:::
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Task 3)
+
+Copy and paste an earlier call to the `inference()` function where we were conducting a hypothesis test. What needs to be changed?
+
+```{r}
+#| echo: true
+#| eval: false
+inference(
+  y = weight,
+  x = habit,
+  data = nc,
+  statistic = "mean",
+  type = "ht",
+  null = 0,
+  alternative = "twosided",
+  method = "theoretical"
+)
+```
+
+:::
+:::
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Task 3)
+
+Copy and paste an earlier call to the `inference()` function where we were conducting a hypothesis test. What needs to be changed?
+
++ We're interested in weight gained (`gained`) by the mother during the pregnancy. Change `y` to reflect this.
++ The grouping variable is whether the mother is *young* or *mature* (`mature`). Update `x` with this change.
+
+No other changes are necessary.
+
+```{r}
+#| echo: true
+#| eval: false
+inference(
+  y = ___,
+  x = ___,
+  data = nc,
+  statistic = "mean",
+  type = "ht",
+  null = 0,
+  alternative = "twosided",
+  method = "theoretical"
+)
+```
+
+:::
+:::
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Task 3, Solved)
+
++ We're interested in weight gained (`gained`) by the mother during the pregnancy. Change `y` to reflect this.
++ The grouping variable is whether the mother is *young* or *mature* (`mature`). Update `x` with this change.
+
+No other changes are necessary.
+
+```{r}
+#| echo: true
+#| eval: false
+inference(
+  y = gained,
+  x = mature,
+  data = nc,
+  statistic = "mean",
+  type = "ht",
+  null = 0,
+  alternative = "twosided",
+  method = "theoretical"
+)
+```
+
+:::
+:::
+
+**4.** Determine the age cutoff that separates younger and mature mothers. Use a method of your choice and explain how it works.
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 1 (Task 4)
+
+How might you find the oldest *young* mother? What about the youngest *old* mother?
+
+:::
+:::
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Task 4)
+
+This is a great opportunity for grouping. Start with the `nc` data frame *and then* `group_by()` the `mature` variable.
+
+```{r}
+#| echo: true
+#| eval: false
+nc |>
+  group_by(mature)
+```
+
+:::
+:::
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Task 4)
+
+This is a great opportunity for grouping. Start with the `nc` data frame *and then* `group_by()` the `mature` variable, *and then* let's summarize the data. How?
+
+```{r}
+#| echo: true
+#| eval: false
+nc |>
+  group_by(mature) |>
+  summarize(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Task 4)
+
+This is a great opportunity for grouping. Start with the `nc` data frame *and then* `group_by()` the `mature` variable, *and then* let's summarize the data to find the minimum mother's age (`mage`) in each group.
+
+```{r}
+#| echo: true
+#| eval: false
+nc |>
+  group_by(mature) |>
+  summarize(
+    min_age = min(mage)
+  )
+```
+
+:::
+:::
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 5 (Task 4)
+
+This is a great opportunity for grouping. Start with the `nc` data frame *and then* `group_by()` the `mature` variable, *and then* let's summarize the data to find the minimum mother's age (`mage`) in each group. This gives us part of the answer, but we still can't be completely certain about the age cutoff between younger and mature mothers. Add another summary statistic to help solidify your answer.
+
+```{r}
+#| echo: true
+#| eval: false
+nc |>
+  group_by(mature) |>
+  summarize(
+    min_age = min(mage),
+    ___ = ___
+  )
+```
+
+:::
+:::
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 6 (Task 4)
+
+This is a great opportunity for grouping. Start with the `nc` data frame *and then* `group_by()` the `mature` variable, *and then* let's summarize the data to find the minimum and maximum mother's age (`mage`) in each group.
+
+```{r}
+#| echo: true
+#| eval: false
+nc |>
+  group_by(mature) |>
+  summarize(
+    min_age = min(mage),
+    max_age = max(mage)
+  )
+```
+
+:::
+:::
+
+**5.** Choose a pair of numerical and categorical variables and formulate a research question that can be answered with a hypothesis test or confidence interval. Use `inference()` to answer it, report the statistical results, and provide a plain-language interpretation.
+
+:::{.hint exercise="own-probs"}
+:::{.callout-note collapse="false"}
+## Hint 1 (Task 5)
+
+Explore and experiment with questions that are of interest to you. Start with an existing call to the `inference()` function that does something close to what you want to do. Make the edits necessary in order to conduct your desired investigation.
+
+:::
+:::
+
+## Submit
+
+:::{.callout-warning}
+
+Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+
+:::
+
+## Summary
+
+:::{.callout-tip}
+## Main Takeaways
+
++ **The `inference()` function from `{statsr}`** handles both hypothesis tests (`type = "ht"`) and confidence intervals (`type = "ci"`) for means and proportions. The key arguments change depending on the task — for a hypothesis test you supply `null` and `alternative` hypotheses; for a confidence interval you can optionally set `conf_level`.
++ **Conditions for inference** on means require that observations are independent and that either the sample size is large enough to rely on the CLT or the population distribution is approximately normal. Group sizes well above 30 generally satisfy this even with moderate skew.
++ **The `order` argument** in `inference()` controls which group is subtracted from which in a two-sample comparison. The default is alphabetical — use `order = c("group1", "group2")` to set your preferred direction.
++ **Exploratory analysis comes first.** Side-by-side boxplots, grouped summaries, and counts help you understand the data before running any formal inference. Don't skip this step.
+
+  + **One very important caution:** exploratory analysis should inform how you conduct your inference, not what hypotheses you test. Generating a hypothesis after seeing a pattern in the data — then testing that same hypothesis on the same data — inflates the risk of a false positive. This is often referred to as *p-hacking* or *fishing*. Hypotheses should always either be established before looking at the data, or tested on a fresh, independent sample.
++ **Scope of inference matters.** Results from this sample can be generalized to North Carolina births in 2004, but not necessarily to other states, years, or populations.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+The next activity introduces **ANOVA** — a method for comparing means across more than two groups simultaneously. ANOVA extends the two-sample $t$-test framework and introduces a new test statistic (the $F$-statistic) along with a new distribution (the $F$-distribution). The core ideas of hypothesis testing remain unchanged though.
+:::

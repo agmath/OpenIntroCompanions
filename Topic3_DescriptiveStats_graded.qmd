@@ -501,12 +501,8 @@ median(c(0, 15, 25, 35, 50))
 #| check: true
 
 gradethis::grade_this({
-  gradethis::pass_if_equal(
-    .result,
-    .solution,
-    message = random_praise()
-  )
-  if (identical(.user_code, .solution_code)) {
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
     exercise_results$my_data <<- "pass"
     pass(random_praise())
   }

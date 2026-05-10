@@ -11,6 +11,7 @@ format:
       packages:
         - dplyr
         - gradethis
+        - webr
       cell-options: 
         persist: true
     live:
@@ -197,10 +198,10 @@ Manually add up the carat values in `Sample_One` and divide by the number of dia
 
 gradethis::grade_this({
   if (.result == .solution) {
-    eval.js("localStorage.setItem('ex_mean_sample_one', 'pass')")
+    webr::eval_js("localStorage.setItem('ex_mean_sample_one', 'pass')")
     pass(random_praise())
   }
-  eval.js("localStorage.setItem('ex_mean_sample_one', 'fail')")
+  webr::eval_js("localStorage.setItem('ex_mean_sample_one', 'fail')")
   fail(random_encouragement())
 })
 ```
@@ -257,10 +258,10 @@ samples |>
 
 gradethis::grade_this({
   if (.result == .solution) {
-    eval.js("localStorage.setItem('ex_mean_sample_three', 'pass')")
+    webr::eval_js("localStorage.setItem('ex_mean_sample_one', 'pass')")
     pass(random_praise())
   }
-  eval.js("localStorage.setItem('ex_mean_sample_three', 'fail')")
+  webr::eval_js("localStorage.setItem('ex_mean_sample_one', 'fail')")
   fail(random_encouragement())
 })
 ```
@@ -449,11 +450,11 @@ median(c(0, 15, 25, 35, 50))
 
 gradethis::grade_this_code(
   correct = {
-    eval.js("localStorage.setItem('ex_my_data', 'pass')")
+    webr::eval_js("localStorage.setItem('ex_my_data', 'pass')")
     pass(random_praise())
   },
   incorrect = {
-    eval.js("localStorage.setItem('ex_my_data', 'fail')")
+    webr::eval_js("localStorage.setItem('ex_my_data', 'fail')")
     fail(random_encouragement())
   }
 )

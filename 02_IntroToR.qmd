@@ -11,6 +11,9 @@ format:
       packages:
         - dplyr
         - gradethis
+        - jsonlite
+        - base64enc
+        - ggplot2
       cell-options: 
         persist: true
     live:
@@ -28,7 +31,7 @@ format:
 
 library(htmltools)
 ok_response <- function(response, n) {
-  if (is.na(response)) HTML("")
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
   else if (response == n) div(HTML("Correct ✓"), style = "color: green")
   else div(HTML("Incorrect ✗"), style = "color: red")
 }
@@ -36,6 +39,7 @@ ok_response <- function(response, n) {
 
 ```{ojs}
 //| echo: false
+
 function ok_checkbox(response, n) {
   if (!response || response.length === 0) 
     return html`<span style="color:purple">You haven't answered yet.</span>`;
@@ -56,8 +60,29 @@ normalize_checkbox_response <- function(x) {
 }
 ```
 
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(jsonlite)
+library(base64enc)
+library(ggplot2)
+
+exercise_results <- list(
+  notebook          = "Topic 2: An Introduction to R",
+  a_first_operation = "unattempted",
+  hello_world       = "unattempted",
+  arithmetic        = "unattempted",
+  test_stat_eval    = "unattempted",
+  parens_exercise   = "unattempted",
+  redefine          = "unattempted",
+  define_and_compute = "unattempted",
+  column_access     = "unattempted"
+)
+```
+
 ```{r setup, include=FALSE}
-#knitr::opts_chunk$set(eval = FALSE)
 library(dplyr)
 library(ggplot2)
 library(gradethis)
@@ -79,7 +104,7 @@ Through these workbooks you'll be interacting with data using the R programming 
 You might be asking why do I need to use R rather than a different software like Minitab, SPSS, SAS, or a number of others. Consider the following three points.
 
 + R is *open source* -- you are guaranteed that it will always be available (and free).
-+ Since R is a language rather than a fully developed piece of software with a point and click interface (a GUI), you aren't limited to what a team of developers though you might want to do at the time the software was developed. With R, you can do virtually anything you want (although I admit that is easier said than done).
++ Since R is a language rather than a fully developed piece of software with a point and click interface (a GUI), you aren't limited to what a team of developers thought you might want to do at the time the software was developed. With R, you can do virtually anything you want (although I admit that is easier said than done).
 + We live in a world where we are constantly interacting with software. It isn't a bad thing to learn what code looks like -- plus, you'll be learning a transferable skill in addition to learning statistics.
 
 This workbook will introduce you to interacting with R through executable code chunks. Whenever you see a code chunk, feel free to play around with any code that appears in the chunk and see how your changes impact the results of the code. You can execute code chunks by hitting the *Run* button, using `ctrl+Enter`, or `cmd+Enter`. If you see a *Submit Answer* button, then you are interacting with an exercise that can give you feedback. Click *Submit Answer* rather than the *Run* button to run your code and see if you got it right. Don't worry if you got it wrong, you can always try again! 
@@ -104,7 +129,15 @@ Try editing the following chunk to execute `2 + 3` rather than `2 + 2`, as is pr
 #| exercise: a-first-operation
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$a_first_operation <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$a_first_operation <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 ## A few warnings
@@ -122,7 +155,7 @@ Coding can be frustrating -- you are certain to run into errors. Here are a few 
 
 ## Hello World!
 
-If you've never coded before (or even if you have), type `print("Hello World!")` in the interactive R chunk below and run it by hitting `crtl+Enter` or `cmd+Enter` for MAC users.
+If you've never coded before (or even if you have), type `print("Hello World!")` in the interactive R chunk below and run it by hitting `ctrl+Enter` or `cmd+Enter` for MAC users.
 
 ```{webr}
 #| exercise: hello-world
@@ -140,14 +173,20 @@ print("Hello World!")
 #| exercise: hello-world
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$hello_world <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$hello_world <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 ## An R Primer
 
 The following subsections constitute a primer for working in R. You'll be exposed to R as a simple calculator and also as a tool for interfacing with data frames. Think of data frames (sometimes called data matrices or data arrays) as tables of data, just like Excel Spreadsheets. We'll start by working with R as a calculator though, which you've actually done already in this workbook -- when you changed the code cell to evaluate `2 + 3` instead of `2 + 2`.
-
-###
 
 ### R can be used as a Calculator
 
@@ -183,9 +222,10 @@ ______
 #| exercise: arithmetic-exercise
 #| check: true
 
+exercise_results$arithmetic <<- "fail"
 gradethis::grade_this({
-  # custom checking code appears here
   if (.result == .solution) {
+    exercise_results$arithmetic <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -201,48 +241,48 @@ We can also piece together more complicated expressions in R by making use of pa
 ______
 ```
 
-::: { .hint exercise="test-stat-eval"}
-::: { .callout-note collapse="false"}
+:::{.hint exercise="test-stat-eval"}
+:::{.callout-note collapse="false"}
 ## Hint 1
 
 ```{r}
 #| echo: true
 #| eval: false
 
-#replace each blank with an appropriate 
-#value or expression
+# Replace each blank with an appropriate 
+# value or expression
 (___)/(___)
 ```
 
 :::
 :::
 
-::: { .hint exercise="test-stat-eval"}
-::: { .callout-note collapse="false"}
+:::{.hint exercise="test-stat-eval"}
+:::{.callout-note collapse="false"}
 ## Hint 2
 
 ```{r}
 #| echo: true
 #| eval: false
 
-#replace each blank with an appropriate 
-#value or expression
+# Replace each blank with an appropriate 
+# value or expression
 (___ - ___)/(___/___)
 ```
 
 :::
 :::
 
-::: { .hint exercise="test-stat-eval"}
-::: { .callout-note collapse="false"}
+:::{.hint exercise="test-stat-eval"}
+:::{.callout-note collapse="false"}
 ## Hint 3
 
 ```{r}
 #| echo: true
 #| eval: false
 
-#replace each blank with an appropriate 
-#value or expression
+# Replace each blank with an appropriate 
+# value or expression
 (___ - ___)/(___/sqrt(___))
 ```
 
@@ -260,9 +300,10 @@ ______
 #| exercise: test-stat-eval
 #| check: true
 
+exercise_results$test_stat_eval <<- "fail"
 gradethis::grade_this({
-  # custom checking code appears here
   if (.result == .solution) {
+    exercise_results$test_stat_eval <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -276,36 +317,34 @@ Add parentheses to the expression below so that it evaluates to `1`.
 #| eval: true
 
 8 - 6 / 2 + 5*3*4 - 12
-
 ```
 
-::: { .hint exercise="parens-exercise"}
-::: { .callout-note collapse="false"}
+:::{.hint exercise="parens-exercise"}
+:::{.callout-note collapse="false"}
 ## Hint 1
 
 ```{r}
 #| echo: true
 #| eval: false
 
-#start by grouping the 8 - 6
+# Start by grouping the 8 - 6
 (8 - 6)/2 + 5*3*4 - 12
 ```
 
 :::
 :::
 
-::: { .hint exercise="parens-exercise}
-::: { .callout-note collapse="false"}
+:::{.hint exercise="parens-exercise"}
+:::{.callout-note collapse="false"}
 ## Hint 2
-
 
 ```{r}
 #| echo: true
 #| eval: false
 
-#notice (8 - 6)/2 is 1; can you add another set 
-#of parentheses to "zero-out" all but this first 
-#term?
+# Notice (8 - 6)/2 is 1; can you add another set 
+# of parentheses to "zero-out" all but this first 
+# term?
 (8 - 6)/2 + 5*3*4 - 12
 ```
 
@@ -323,9 +362,10 @@ Add parentheses to the expression below so that it evaluates to `1`.
 #| exercise: parens-exercise
 #| check: true
 
+exercise_results$parens_exercise <<- "fail"
 gradethis::grade_this({
-  # custom checking code appears here
   if (.result == .solution) {
+    exercise_results$parens_exercise <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -356,7 +396,15 @@ x <- -22
 #| exercise: redefine
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$redefine <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$redefine <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 Use the code block below to store the value `-3` in the container `y` and then compute the quantity `x*y - y`.
@@ -373,33 +421,30 @@ x <- -22
 
 ```
 
-::: { .hint exercise="define-and-compute"}
-::: { .callout-note collapse="false"}
+:::{.hint exercise="define-and-compute"}
+:::{.callout-note collapse="false"}
 ## Hint 1
 
 ```{r}
 #| echo: true
 #| eval: false
 
-#x is already defined, start by defining y as -3
-
+# x is already defined, start by defining y as -3
 ```
 
 :::
 :::
 
-::: { .hint exercise="define-and-compute"}
-::: { .callout-note collapse="false"}
+:::{.hint exercise="define-and-compute"}
+:::{.callout-note collapse="false"}
 ## Hint 2
-
 
 ```{r}
 #| echo: true
 #| eval: false
 
 y <- -3
-#now compute x*y - y below
-
+# Now compute x*y - y below
 ```
 
 :::
@@ -417,7 +462,15 @@ x*y - y
 #| exercise: define-and-compute
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$define_and_compute <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$define_and_compute <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 In R, it is helpful to think of objects as either vectors (lists of objects) or data frames (tables), because that's how R treats its objects. We can create an object called `numVec` which is a vector of six numerical values (1, 8, -2, 2, -99, 43) using `numVec <- c(1, 8, -2, 2, -99, 43)`. Any time we wish to reference or provide a list of items in R, we use the `c()` operator to *combine* those items. Once we have a vector, we can operate with it.
@@ -470,15 +523,15 @@ diamonds |>
   select(cut)
 ```
 
-::: { .hint exercise="column-access"}
-::: { .callout-note collapse="false"}
+:::{.hint exercise="column-access"}
+:::{.callout-note collapse="false"}
 ## Hint 1
 
 ```{r}
 #| echo: true
 #| eval: false
 
-#replace cut with carat inside of select()
+# Replace cut with carat inside of select()
 diamonds |>
   select(cut)
 ```
@@ -498,29 +551,64 @@ diamonds |>
 #| exercise: column-access
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$column_access <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$column_access <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 ## Submit
 
-:::{.callout-warning}
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested (there is only an *exercise hash* for this activity, no *question hash*).
 
-Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, then please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402) or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html).
+:::{.callout-warning}
+## Question Hash
+
+Since there were no multiple choice or checkbox exercises in this activity, there is no *question hash* to generate. You'll see both question and exercise hashes in all future activities.
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded code exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and hit the *Run Code* button on each graded exercise before generating the hash below, to ensure your most recent results are recorded.
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
 
 :::
 
 ## Summary
 
-Okay, that's enough of an introduction for now. Here's a quick recap.
+:::{.callout-tip}
+## Main Takeaways
 
-+ R can be used as a simple calculator -- in the same way as any hand-held calculator you've used in your previous coursework.
-+ When doing multiplication in R, we must include the asterisk (`*`), otherwise R will throw an error. For example, `5(4)` results in an error stating that you asked R to apply a non-function to the value 4, but `5*(4)` results in 20, as expected.
-+ The real advantage with R comes in interacting with large datasets (called data frames).
-  
-  + A *data frame* is just like a single tab of an Excel or Google Sheets file.
-  + A data frame has rows and columns, and we can access columns of a data frame in multiple ways. 
-  
-    + The use of the `$` operator (for example, `diamonds$price`) returns the column as a vector (an ordered list of values).
-    + Piping (`|>`) the dataset into the `select()` function, allows us to select one or more columns from the dataset, returning the result as a data frame. (**Note:** the pipe actually returns the result as a *tibble*, which is a special type of data frame, but it makes no difference in our course)
++ R can be used as a simple calculator — in the same way as any hand-held calculator you've used in your previous coursework.
++ When doing multiplication in R, we must include the asterisk (`*`), otherwise R will throw an error. For example, `5(4)` results in an error, but `5*(4)` results in 20, as expected.
++ The real advantage with R comes in interacting with large datasets called **data frames**.
+  + A data frame is just like a single tab of an Excel or Google Sheets file — rows are observations and columns are variables.
+  + We can access columns of a data frame using the `$` operator (returns a vector) or by piping into `select()` (returns a data frame).
++ We live in a world where we are constantly interacting with software — learning R is learning a transferable skill in addition to learning statistics.
++ Coding is hard work. Stumbling is expected. Be patient with yourself, ask for help when you need it, and take breaks when you're frustrated.
+:::
 
-We'll learn more about R as we progress through these workbooks. Remember, you are **not** expected to have a programming background as a prerequisite -- stumbling with the coding is to be expected. Be sure to ask for help when you need it.
+:::{.callout-tip}
+## Looking Ahead
+
+The next activity introduces descriptive statistics — computing and interpreting numerical summaries for both numerical and categorical data. You'll use the tools introduced here (vectors, data frames, the pipe) to calculate means, medians, standard deviations, and frequency tables in R.
+:::

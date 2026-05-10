@@ -54,7 +54,6 @@ function ok_checkbox(response, n) {
 //| results: false
 
 mutable ok_response = (response, n) => { return html`Loading...` };
-void 0;
 ```
 
 ```{webr}

@@ -48,6 +48,15 @@ function ok_checkbox(response, n) {
 }
 ```
 
+```{ojs}
+//| echo: false
+//| message: false
+//| results: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+void 0;
+```
+
 ```{webr}
 #| context: setup
 #| echo: false
@@ -118,35 +127,37 @@ cutSamples <- data.frame(
 :::{.callout-note}
 ## About
 
-This activity builds on what we learned in the Topic 1 and Topic 2 activities. We'll use R to analyze numerical and categorical data — computing and interpreting measures of central tendency and spread for numerical data, and frequency tables for categorical data.
+This activity builds off of what we learned in the Topic 1 and Topic 2 activities. We'll learn how to use R to analyse numeric and categorical data. We discuss and implement measures of central tendency and spread (including inquiry into robustness in the presence of outliers) for numerical data, and measures of frequency for categorical data.
 :::
 
 ## Descriptive Statistics
 
-**Workbook Objectives:**
+**Workbook Objectives:** This workbook covers the following objectives.
 
-+ Compute and discuss appropriate summaries for both numerical and categorical data.
-+ Discuss the difference between mean and median, and between standard deviation and interquartile range. Identify when each is appropriate.
-+ Compute summary statistics both by hand and with R.
+  * Compute and discuss appropriate summaries for both numerical and categorical data
+  * Regarding numerical variables, discuss the difference between mean and median as well as standard deviation and inter-quartile range. Identify when each measure is appropriate.
+  * Compute summary statistics both by hand and with the use of R
 
-**Important Reminders:**
+**Important Reminders:** The following previously mastered material is necessary for success through this workbook.
 
 + A variable is *numerical* if a summary statistic such as the mean has a meaningful interpretation.
-+ A variable is *categorical* if it serves to sort observations into different groups.
-+ The unique values a variable takes are called the *levels* of that variable.
++ A variable is *categorical* if it serves to sort observations into different groups (categories).
++ The unique values which a variable takes are called the *levels* of that variable.
 
-## Summarizing Numerical Data
+## Summarizing Numerical (Quantitative) Data
+
+**Recall**: Variables for which computation of measures like the mean (average) or standard deviation are meaningful are numerical variables.
 
 ### Measuring Central Tendency
 
-**Measures of Central Tendency:** The mean and median both attempt to measure the *center* of a dataset.
+**Measures of Central Tendency (Averages)**: The mean and median both attempt to measure the *center* of a dataset.
 
-+ The **mean** of a set of observations is the traditional average, denoted $\bar{x}$ (or $\mu$ for population data):
-$$\bar{x} = \frac{\displaystyle{\sum_{i=1}^{n}{x_i}}}{n} = \frac{x_1 + x_2 + \cdots + x_n}{n}$$
+  * The **mean** of a set of observations is the traditional *average*. We typically denote the mean by $\bar{x}$ (or $\mu$ in the case of population-level data) and it is computed as follows:
+  $$\bar{x} = \frac{\displaystyle{\sum_{i=1}^{n}{x_i}}}{n} = \frac{x_1+x_2+x_3+\cdots+x_n}{n}$$
 
-+ The **median** is the middle value when observations are listed in ascending order. If there are two middle values, the median is their mean.
+  * The **median** is the *middle value* for a set of observations. To compute the median, list the numbers in ascending order and find the number or numbers in the middle of the list. In the case that there is a single middle number, that is the median. In the case where there are two middle numbers, we take the *mean* of those two.
 
-**Example:** The following are three random samples of carat values from the `diamonds` dataset.
+**Example**: The following are three random samples of carat values from the *diamonds* dataset.
 
 ```{r}
 #| echo: false
@@ -168,12 +179,27 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Manually add up the carat values in `Sample_One` and divide by the number of diamonds in the sample.
+```{r}
+#| echo: true
+#| eval: false
+# Manually add up the carat values in Sample One, 
+# and then divide by the total number of diamonds
+# in the sample.
+
+______
+```
+
+:::
+:::
+
+:::{.hint exercise="mean-sample-one"}
+:::{.callout-note collapse="false"}
+## Hint 2
 
 ```{r}
 #| echo: true
 #| eval: false
-
+# Fill in the blanks
 (___ + ___ + ___ + ___ + ___ + ___ + ___ + ___) / ___
 ```
 
@@ -182,12 +208,11 @@ Manually add up the carat values in `Sample_One` and divide by the number of dia
 
 :::{.hint exercise="mean-sample-one"}
 :::{.callout-note collapse="false"}
-## Hint 2 (Solved)
+## Hint 3 (Solved)
 
 ```{r}
 #| echo: true
 #| eval: false
-
 (0.41 + 1.01 + 1.22 + 1.02 + 0.30 + 0.30 + 1.00 + 1.17) / 8
 ```
 
@@ -215,7 +240,7 @@ gradethis::grade_this({
 })
 ```
 
-In R we can easily compute means and medians for our samples or for the entire dataset. Both methods below compute the mean of `Sample_Two`:
+In R we can easily compute the means and medians for our samples or for the entire data set! You might remember from our most recent notebook that the `$` operator can be used to access an entire column of a data frame. I've stored the samples in a data frame called `samples`. R includes a function `mean()` for computing the mean of a list of numbers and a function `median()` for computing the median. The following methods both compute the `mean()` of `Sample_Two`.
 
 ```{r}
 #| echo: true
@@ -227,7 +252,9 @@ samples |>
   summarize(avg_carat_wt = mean(Sample_Two))
 ```
 
-2. Use the code block below to compute the mean of `Sample_Three`.
+While the second method involves more typing, it is much more readable. Getting used to using the pipe operator (`|>`) will allow us to chain data manipulation operations together, resulting in very readable analyses.
+
+2. Use the code block below so that it computes the mean of `Sample_Three`. You may use whichever method you prefer here.
 
 ```{webr}
 #| exercise: mean-sample-three
@@ -238,12 +265,11 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Start with the code below and update it to compute the mean of `Sample_Three`.
-
 ```{r}
 #| echo: true
 #| eval: false
-
+# Start with the code below (copied from our earlier code chunk)
+# and update it to compute the mean of Sample_Three.
 samples |>
   summarize(avg_carat_wt = mean(Sample_Two))
 ```
@@ -273,7 +299,7 @@ gradethis::grade_this({
 })
 ```
 
-3. Use the `median()` function and the code block below to compute the median of each sample. *(Not graded.)*
+3. Use the `median()` function and the code block below to compute the median of each of the samples and then answer the question that follows. (*Note.* There are several ways to obtain the medians, so this code block won't evaluate you as correct/incorrect.)
 
 ```{webr}
 #| exercise: find-medians
@@ -284,12 +310,11 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Start with the copied code and update it to compute the median instead of the mean.
-
 ```{r}
 #| echo: true
 #| eval: false
-
+# Start with the copied code again, and update it
+# to compute the median instead of the mean.
 samples |>
   summarize(avg_carat_wt = mean(Sample_Two))
 ```
@@ -301,12 +326,12 @@ samples |>
 :::{.callout-note collapse="false"}
 ## Hint 2
 
-The `summarize()` function can compute multiple summary statistics at once.
-
 ```{r}
 #| echo: true
 #| eval: false
-
+# Power move! The summarize() function can compute 
+# multiple summary statistics at once. Update the 
+# code below to compute all three medians at once.
 samples |>
   summarize(
     avg_carat_wt_samp1 = mean(Sample_One),
@@ -325,32 +350,38 @@ What does your work above tell you about the mean and median as measures of cent
 
 ```{ojs}
 //| echo: false
+//| message: false
+//| results: false
 
-mutable ok_response = (response, n) => { return html`Loading...` };
 viewof q1 = Inputs.radio(
   new Map([
     ["The mean is generally larger than the median.", 1],
     ["The mean is generally smaller than the median.", 2],
     ["The mean is usually close to the median.", 3],
-    ["The mean is more strongly distorted by outliers than the median is.", 4]
+    ["The mean is more strongly distorted by outliers (unusually large or small observed values) than the median is.", 4]
   ]),
   {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
 );
 
-localStorage.setItem("q1_selected", JSON.stringify(q1));
-localStorage.setItem("q1_correct", "4");
-localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 4 ? "correct" : "incorrect"));
+{
+
+  localStorage.setItem("q1_selected", JSON.stringify(q1));
+  localStorage.setItem("q1_correct", "4");
+  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 4 ? "correct" : "incorrect"));
+
+}
+
 ok_response(q1, "4");
 ```
 
 :::
 
-4. Answer the following questions.
+4. In our first notebook we saw that we can use sample data to make generalizations about populations for which the sample is representative. Answer the following questions with this in mind.
 
 :::{.callout-caution}
 ## Check Your Understanding: Sampling and Validity I
 
-Assuming the samples of diamonds were taken randomly, which of the following claims is justified?
+Assuming that the samples of diamonds were taken randomly, which of the following claims is justified?
 
 ```{ojs}
 //| echo: false
@@ -365,9 +396,13 @@ viewof q2 = Inputs.radio(
   {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
 );
 
-localStorage.setItem("q2_selected", JSON.stringify(q2));
-localStorage.setItem("q2_correct", "3");
-localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 3 ? "correct" : "incorrect"));
+{
+  localStorage.setItem("q2_selected", JSON.stringify(q2));
+  localStorage.setItem("q2_correct", "3");
+  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 3 ? "correct" : "incorrect"));
+
+}
+
 ok_response(q2, "3");
 ```
 
@@ -376,7 +411,7 @@ ok_response(q2, "3");
 :::{.callout-caution}
 ## Check Your Understanding: Sampling and Validity II
 
-Which of the following would result in improved estimates for the true mean carat weight? Select all that apply.
+Which of the following would result in improved estimates for the true mean carat weight of diamonds in our population? Select all that apply.
 
 ```{ojs}
 //| echo: false
@@ -384,29 +419,32 @@ Which of the following would result in improved estimates for the true mean cara
 viewof q3 = Inputs.checkbox(
   new Map([
     ["Take the mean of the sample means.", 1],
-    ["Combine the three samples into a single sample of 24 diamonds and take its mean.", 2],
+    ["Combine the three samples into a single sample of 24 diamonds (rather than three separate samples of 8), and take its mean.", 2],
     ["Take samples using smaller sample sizes.", 3],
-    ["Stratify the diamonds according to price and take a random sample of each price category.", 4],
+    ["Stratify the diamonds according to price (low, medium, and high) and take a random sample of diamonds of each price category.", 4],
     ["Take samples including more diamonds.", 5]
   ]),
   {value: JSON.parse(localStorage.getItem("q3_selected") ?? "[]")}
 );
 
-localStorage.setItem("q3_selected", JSON.stringify(q3));
-localStorage.setItem("q3_correct", "1,2,5");
-localStorage.setItem("q3_result", (!q3 || q3.length === 0) ? "unattempted" : (q3.toString() === "1,2,5" ? "correct" : "incorrect"));
+{
+  
+  localStorage.setItem("q3_selected", JSON.stringify(q3));
+  localStorage.setItem("q3_correct", "1,2,5");
+  localStorage.setItem("q3_result", (!q3 || q3.length === 0) ? "unattempted" : (q3.toString() === "1,2,5" ? "correct" : "incorrect"));
+
+}
+
 ok_checkbox(q3, "1,2,5");
 ```
 
 :::
 
-### Aside: Defining Your Own Data
+### Aside: Defining My Own Data
 
-Consider the doors knocked on by two campaign workers last week:
+For data which is not already known to R (i.e. data which is not part of a data frame), we can still use R to quickly perform computations. Consider the distributions of doors knocked on by two political campaign workers last week (Monday–Friday): $\begin{array}{lcl} \text{Worker A} & : & 23,~24,~25,~26,~27\\ \text{Worker B} & : & 0,~15,~25,~35,~50\end{array}$. We do this below with the help of the `c()` function in R, which can be used to create lists of values.
 
-$$\text{Worker A}: 23,~24,~25,~26,~27 \qquad \text{Worker B}: 0,~15,~25,~35,~50$$
-
-The code block below computes the mean and median for Worker A. Add two lines to also compute the mean and median for Worker B.
+The following code block finds the mean and median for `Worker A` — execute the code block to find the mean and median. Once you've done this for `Worker A`, add two lines to the bottom of the code block so that it also finds the mean and median for `Worker B`.
 
 ```{webr}
 #| exercise: my-data
@@ -419,7 +457,15 @@ median(c(23, 24, 25, 26, 27))
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Copy and paste the two existing lines and replace the data inside `c()` with Worker B's values.
+```{r}
+#| echo: true
+#| eval: false
+# Copy and paste the two existing lines and 
+# replace the data inside of c() to reflect 
+# Worker B in the last two lines.
+mean(c(23, 24, 25, 26, 27))
+median(c(23, 24, 25, 26, 27))
+```
 
 :::
 :::
@@ -431,7 +477,7 @@ Copy and paste the two existing lines and replace the data inside `c()` with Wor
 ```{r}
 #| echo: true
 #| eval: false
-
+# Fill in the blanks with Worker B's data.
 mean(c(23, 24, 25, 26, 27))
 median(c(23, 24, 25, 26, 27))
 mean(c(0, 15, 25, 35, 50))
@@ -467,7 +513,7 @@ gradethis::grade_this_code(
 )
 ```
 
-5. Answer the following.
+5. Use your explorations of the means and medians for the campaign workers to answer the following question.
 
 :::{.callout-caution}
 ## Check Your Understanding: Measures of Center
@@ -486,9 +532,13 @@ viewof q4 = Inputs.checkbox(
   {value: JSON.parse(localStorage.getItem("q4_selected") ?? "[]")}
 );
 
-localStorage.setItem("q4_selected", JSON.stringify(q4));
-localStorage.setItem("q4_correct", "1,3");
-localStorage.setItem("q4_result", (!q4 || q4.length === 0) ? "unattempted" : (q4.toString() === "1,3" ? "correct" : "incorrect"));
+{
+  localStorage.setItem("q4_selected", JSON.stringify(q4));
+  localStorage.setItem("q4_correct", "1,3");
+  localStorage.setItem("q4_result", (!q4 || q4.length === 0) ? "unattempted" : (q4.toString() === "1,3" ? "correct" : "incorrect"));
+  
+}
+
 ok_checkbox(q4, "1,3");
 ```
 
@@ -496,20 +546,31 @@ ok_checkbox(q4, "1,3");
 
 ## Measuring Spread
 
-The *standard deviation* of a set of observations is denoted $s$ (or $\sigma$ for population data):
-$$s = \sqrt{\frac{\displaystyle{\sum_{i=1}^{n}{\left(x_i - \bar{x}\right)^2}}}{n-1}}$$
+**Measures of Variability**: Clearly, the center of a dataset doesn't tell the entire story. Our two political campaign workers obviously have very different door-knocking strategies but both have a mean (and median) of 25 doors per day. We should also measure the *spread* of data.
 
-The *interquartile range* (IQR) measures the spread of the middle 50% of observations:
+The *standard deviation* of a set of observations is denoted by $s$ (or $\sigma$ in the case of population-level data) and is computed as follows:
+$$s = \sqrt{\frac{\displaystyle{\sum_{i=1}^{n}{\left(x_i-\bar{x}\right)^2}}}{n-1}}$$
+
+We should also note that if you are certain that you are working with population-level data, then the denominator used to compute the standard deviation should be changed to $N$ (the population size). We can do this because there is no uncertainty in estimating the population standard deviation if we have records from every element of the population.
+
+**Explaining the Standard Deviation Formula**: The standard deviation seeks to measure an "average deviation" from the mean.
+
+* If we don't look too closely at the formula, we can see the summation symbol $\left(\sum\right)$ as well as division (by just about the number of values we've added up). That's almost like an average!
+* What are we averaging? The quantity $\left(x - \bar{x}\right)$ denotes an observed value's deviation from the mean. We shouldn't average these values though, since the mean sits in the *center* of the data and we would have deviations above the mean (positive) "cancelling out" deviations below the mean (negative).
+* We square the deviations which has two effects: (1) all of the squared deviations are now non-negative, so that no cancellation can occur, and (2) large deviations from the mean carry a larger weight in measuring the standard deviation.
+* Since we squared the deviations before computing the "average", the units of measure are no longer comparable to the original units that the variable was measured in — the units are square units now. This is why we see the large square root as the last piece of the formula — taking the square root brings us back to the original units.
+
+The *inter-quartile range* (IQR) of a set of observations measures the spread of the "middle 50 percent" of the observations. The IQR is the distance between $Q_1$ (the 25th percentile) and $Q_3$ (the 75th percentile).
+
+* Note that the median of a set of observations splits the set into two halves: an upper half and a lower half. The median of the lower half is called the *first quartile* ($Q_1$) while the median of the upper half is called the *third quartile* ($Q_3$). The interquartile range is the distance between $Q_1$ and $Q_3$. That is,
 $$IQR = Q_3 - Q_1$$
 
-where $Q_1$ is the 25th percentile and $Q_3$ is the 75th percentile.
-
-6. Check your intuition about these measures.
+6. Check your intuition about the standard deviation and interquartile range by answering the questions below.
 
 :::{.callout-caution}
 ## Check Your Understanding: Measures of Spread I
 
-Without carrying out the computations, which sample has the largest standard deviation?
+Without carrying out the computations, which of the samples of diamonds has the largest standard deviation?
 
 ```{ojs}
 //| echo: false
@@ -523,9 +584,14 @@ viewof q5 = Inputs.radio(
   {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
 );
 
-localStorage.setItem("q5_selected", JSON.stringify(q5));
-localStorage.setItem("q5_correct", "3");
-localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 3 ? "correct" : "incorrect"));
+{
+
+  localStorage.setItem("q5_selected", JSON.stringify(q5));
+  localStorage.setItem("q5_correct", "3");
+  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 3 ? "correct" : "incorrect"));
+
+}
+
 ok_response(q5, "3");
 ```
 
@@ -547,29 +613,34 @@ viewof q6 = Inputs.radio(
   {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
 );
 
-localStorage.setItem("q6_selected", JSON.stringify(q6));
-localStorage.setItem("q6_correct", "1");
-localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
+{
+  localStorage.setItem("q6_selected", JSON.stringify(q6));
+  localStorage.setItem("q6_correct", "1");
+  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
+
+}
+
 ok_response(q6, "1");
 ```
 
 :::
+
+The two plots below are a histogram (left) and a boxplot (right), each showing the distribution of `carat` weights for the diamonds in our population.
 
 ```{r}
 #| echo: false
 #| eval: true
 #| message: false
 #| warning: false
-
-library(patchwork)
+#| results: false
 
 p1 <- ggplot(data = diamonds) +
-  geom_histogram(aes(x = carat)) +
+  geom_histogram(mapping = aes(x = carat)) +
   geom_vline(xintercept = mean(diamonds$carat), color = "purple", lwd = 1.75) +
   theme_bw()
 
 p2 <- ggplot(data = diamonds) +
-  geom_boxplot(aes(y = carat)) +
+  geom_boxplot(mapping = aes(y = carat)) +
   geom_hline(yintercept = mean(diamonds$carat), color = "purple", lwd = 1.75, alpha = 0.5) +
   coord_flip() +
   theme_bw()
@@ -577,7 +648,16 @@ p2 <- ggplot(data = diamonds) +
 p1 + p2
 ```
 
-The code block below computes standard deviations and IQRs for each sample. *(Not graded.)*
+* The histogram does a nice job showing the true *shape* of the data, but does not always do a good job showing the presence of outliers. The purple line has been added to the histogram to show the true mean carat weight.
+* The boxplot doesn't show the detailed shape that the histogram does, but it does a great job showing the IQR, median, and any outliers present.
+  * The lone dots in the boxplot show any outliers (extending more than 1.5 times the IQR beyond $Q_1$ or $Q_3$).
+  * The box in the boxplot shows the IQR — the left edge of the box is at $Q_1$ and the right edge of the box is at $Q_3$.
+  * The line through the middle of the box denotes the location of the median.
+  * The faded purple line shows the location of the mean carat weight. We can really see the impact of those outliers on the mean here.
+
+**A Note on Skew:** It is common to refer to data as *skewed* if the presence of outliers causes the mean and median to disagree on the location of the "center" of the data. We say that the data is *skewed in the direction those outliers have pulled the mean*. For example, we would say that the `carat` weight data above is *skewed right*.
+
+In R we can easily compute the standard deviation with the function `sd()`, and the IQR with `IQR()`, for our samples or for the entire dataset. The code block below is preset to compute the standard deviation and quartiles for each sample. Run it and explore the output. *(Not graded.)*
 
 ```{webr}
 #| exercise: compute-sd-iqr
@@ -599,7 +679,11 @@ samples |>
   summarize_all(quantile, probs = 0.75)
 ```
 
-Use the code block below to find the standard deviation and IQR for each campaign worker. *(Not graded.)*
+**Remark**: Our third sample of diamond carat sizes contained an outlier. The presence of this outlier drastically impacted the computed mean and standard deviation, but didn't have much (if any) effect on the median or IQR. Because of this, we say that the median and IQR are *robust* statistics in the presence of outliers.
+
+In R we can also easily explore these measures of spread for our campaign workers from earlier. Recall their door-knocking data: $\begin{array}{lcl} \text{Worker A} & : & 23,~24,~25,~26,~27\\ \text{Worker B} & : & 0,~15,~25,~35,~50\end{array}$
+
+Use the code block below to find the standard deviation and IQR for the doors visited by the campaign workers. *(Not graded.)*
 
 ```{webr}
 #| exercise: sd-iqr-campaign
@@ -608,12 +692,88 @@ ______
 
 :::{.hint exercise="sd-iqr-campaign"}
 :::{.callout-note collapse="false"}
-## Hint 1 (Solved)
+## Hint 1
 
 ```{r}
 #| echo: true
 #| eval: false
+# Use the c() function when defining your 
+# door-knocking data.
+```
 
+:::
+:::
+
+:::{.hint exercise="sd-iqr-campaign"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+```{r}
+#| echo: true
+#| eval: false
+# Storing values in variables will save some typing.
+```
+
+:::
+:::
+
+:::{.hint exercise="sd-iqr-campaign"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+```{r}
+#| echo: true
+#| eval: false
+# Fill in the blanks
+worker_a <- c(___)
+worker_b <- c(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sd-iqr-campaign"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+```{r}
+#| echo: true
+#| eval: false
+worker_a <- c(23, 24, 25, 26, 27)
+worker_b <- c(0, 15, 25, 35, 50)
+# Now use R functionality to compute the summary statistics
+```
+
+:::
+:::
+
+:::{.hint exercise="sd-iqr-campaign"}
+:::{.callout-note collapse="false"}
+## Hint 5
+
+```{r}
+#| echo: true
+#| eval: false
+worker_a <- c(23, 24, 25, 26, 27)
+worker_b <- c(0, 15, 25, 35, 50)
+
+# Fill in the blanks
+sd(___)
+IQR(___)
+sd(___)
+IQR(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="sd-iqr-campaign"}
+:::{.callout-note collapse="false"}
+## Hint 6 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
 worker_a <- c(23, 24, 25, 26, 27)
 worker_b <- c(0, 15, 25, 35, 50)
 
@@ -626,9 +786,20 @@ IQR(worker_b)
 :::
 :::
 
-## Summarizing Categorical Data
+## Summarizing Categorical (Qualitative, Factor) Data
 
-Categorical data is best summarized using a frequency table. The code block below is preset for `Sample_One` — adapt it to summarize `Sample_Two` and `Sample_Three`. *(Not graded.)*
+Categorical data is best summarized using a frequency table — a table that lists how *frequently* each value occurred in the dataset. For example, consider the samples of diamond *cuts* below:
+
+```{r}
+#| echo: false
+#| eval: true
+
+cutSamples |>
+  kable() |>
+  kable_styling(bootstrap_options = c("hover", "striped"))
+```
+
+We can pipe our data frame into the `count()` function with the column we'd like to obtain counts for in order to construct a frequency table. To obtain a relative frequency table, we can use the `mutate()` function to create a new column — below, we've named it `relative_frequency` and computed its values by taking the counts (`n`) and dividing by the total count (`sum(n)`). The following code block is preset to compute a frequency and relative frequency table for `Sample_One`. Adapt the code to provide summaries for `Sample_Two` and `Sample_Three`. *(Not graded.)*
 
 ```{webr}
 #| exercise: summarize-cut
@@ -641,34 +812,62 @@ cutSamples |>
   mutate(relative_frequency = n / sum(n))
 ```
 
+Note that we could have achieved the same objectives using the following code as well.
+
+```{r}
+#| echo: true
+#| eval: true
+
+table(cutSamples$Sample_One)
+table(cutSamples$Sample_One) / nrow(cutSamples)
+```
+
+This code requires a bit less typing, but it is less flexible and also less readable.
+
+Below, we can see the distributions of diamond `cut` from `Sample_Three` (left) and from our entire population (right). Even with a sample of 8 diamonds, we gain some insight into the most and least common diamond cuts. You may also notice that the frequency and relative frequency plots look identical aside from the scale on the vertical axis — this will be the case in general.
+
 ```{r}
 #| echo: false
 #| eval: true
 #| message: false
 #| warning: false
-
-library(patchwork)
+#| results: false
 
 p1 <- ggplot(data = cutSamples) +
-  geom_bar(aes(x = Sample_Three)) +
-  labs(title = "Cut type in Diamonds (sample)", x = "Cut Type") +
+  geom_bar(mapping = aes(x = Sample_Three)) +
+  labs(title = "Distribution of cut type in Diamonds (samp)", x = "Cut Type") +
   theme_bw()
 
 p2 <- ggplot(data = diamonds) +
-  geom_bar(aes(x = cut)) +
-  labs(title = "Cut type in Diamonds (population)", x = "Cut Type") +
+  geom_bar(mapping = aes(x = cut)) +
+  labs(title = "Distribution of cut type in Diamonds (pop)", x = "Cut Type") +
   theme_bw()
 
-p1 + p2
+p3 <- ggplot(data = cutSamples) +
+  geom_bar(mapping = aes(x = Sample_Three, y = after_stat(count)/sum(after_stat(count)))) +
+  ylab("proportion") +
+  labs(title = "Distribution of cut type in Diamonds (samp)", x = "Cut Type") +
+  theme_bw()
+
+p4 <- ggplot(data = diamonds) +
+  geom_bar(mapping = aes(x = cut, y = after_stat(count)/sum(after_stat(count)))) +
+  ylab("proportion") +
+  labs(title = "Distribution of cut type in Diamonds (pop)", x = "Cut Type") +
+  theme_bw()
+
+(p1 + p2) / (p3 + p4)
 ```
+
+We'll see how to create plots like these in the next notebook.
 
 ## Submit
 
-There are two submission codes below — one for your multiple choice and checkbox responses, and one for your graded coding exercises. Copy both and paste them into the submission form provided by your instructor.
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested.
 
----
+:::{.callout-warning}
+## Question Hash
 
-### Code 1: Question Responses
+The hash below encodes your responses to the multiple choice and checkbox questions in this activity.
 
 ```{ojs}
 //| echo: false
@@ -739,11 +938,14 @@ html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5;
 </p>`
 ```
 
----
+:::
 
-### Code 2: Exercise Results
+:::{.callout-warning}
+## Exercise Hash
 
-Click the button below to generate your exercise submission code. **You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results.**
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded code exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and hit the *Run Code* button on each graded exercise before generating the hash below, to ensure your most recent results are recorded.
 
 ```{webr}
 #| exercise: generate-exercise-hash
@@ -756,14 +958,116 @@ hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
 cat(hash)
 ```
 
-Copy the code that appears above and paste it into the submission form along with your question code.
-
----
+:::
 
 ## Summary
 
-+ We can summarize numerical data using measures of central tendency and measures of spread.
-+ The **mean** ($\bar{x}$ for samples, $\mu$ for populations) and **median** measure the center of numerical data.
-+ The **standard deviation** ($s$ for samples, $\sigma$ for populations) and **IQR** measure the spread of numerical data.
-+ The median and IQR are **robust** measures in the presence of outliers.
+:::{.callout-tip}
+## Main Takeaways
+
++ We can summarize numerical data using measures of central tendency and measures of spread (or variability).
++ The **mean** ($\bar{x}$ for samples, $\mu$ for populations) and **median** measure the center of a set of numerical data.
++ The **standard deviation** ($s$ for samples, $\sigma$ for populations) and **interquartile range** ($IQR$) measure the spread of a set of numerical data.
++ The median and $IQR$ are **robust** measures in the presence of *outliers* (unusually large or small values) — the mean and standard deviation are not.
 + Categorical data is best summarized in a **frequency table** or **relative frequency table**.
+:::
+
+:::{.callout-tip}
+## R Commands Introduced
+
+* Compute the **mean**:
+```{r}
+#| echo: true
+#| eval: false
+
+data_frame_name |>
+  summarize(avg_column_name = mean(column_name))
+# or
+mean(data_frame_name$column_name)
+```
+
+* Compute the **median**:
+```{r}
+#| echo: true
+#| eval: false
+
+data_frame_name |>
+  summarize(median_column_name = median(column_name))
+# or
+median(data_frame_name$column_name)
+```
+
+* Compute the **standard deviation**:
+```{r}
+#| echo: true
+#| eval: false
+
+data_frame_name |>
+  summarize(sd_column_name = sd(column_name))
+# or
+sd(data_frame_name$column_name)
+```
+
+* Compute the **boundaries for the interquartile range**:
+```{r}
+#| echo: true
+#| eval: false
+
+data_frame_name |>
+  summarize(quantile_column_name = quantile(column_name, probs = c(0.25, 0.75)))
+# or
+quantile(data_frame_name$column_name, probs = c(0.25, 0.75))
+```
+
+* Compute the **interquartile range**:
+```{r}
+#| echo: true
+#| eval: false
+
+data_frame_name |>
+  summarize(IQR_column_name = IQR(column_name))
+# or
+IQR(data_frame_name$column_name)
+```
+
+* Compute general **percentiles**:
+```{r}
+#| echo: true
+#| eval: false
+
+data_frame_name |>
+  summarize(percentile_column_name = quantile(column_name, probs = c(p1, p2, ...)))
+# or
+quantile(data_frame_name$column_name, probs = c(p1, p2, ...))
+```
+
+* Build a **frequency table**:
+```{r}
+#| echo: true
+#| eval: false
+
+data_frame_name |>
+  count(column_name)
+# or
+table(data_frame_name$column_name)
+```
+
+* Build a **relative frequency table**:
+```{r}
+#| echo: true
+#| eval: false
+
+data_frame_name |>
+  count(column_name) |>
+  mutate(relative_frequency = n / sum(n))
+# or
+table(data_frame_name$column_name) / nrow(data_frame_name)
+```
+
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+In the next activity we'll shift from summarizing data numerically to visualizing it. We'll learn how to construct histograms, boxplots, and bar charts in R using `ggplot2` — the same plots you saw in this activity — and develop intuition for choosing the right visualization for a given variable type and question.
+:::

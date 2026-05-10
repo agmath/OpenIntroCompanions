@@ -13,6 +13,9 @@ format:
         - gradethis
         - skimr
         - ggplot2
+        - ggmosaic
+        - jsonlite
+        - base64enc
       cell-options: 
         persist: true
     live:
@@ -30,7 +33,7 @@ format:
 
 library(htmltools)
 ok_response <- function(response, n) {
-  if (is.na(response)) HTML("")
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
   else if (response == n) div(HTML("Correct ✓"), style = "color: green")
   else div(HTML("Incorrect ✗"), style = "color: red")
 }
@@ -38,6 +41,7 @@ ok_response <- function(response, n) {
 
 ```{ojs}
 //| echo: false
+
 function ok_checkbox(response, n) {
   if (!response || response.length === 0) 
     return html`<span style="color:purple">You haven't answered yet.</span>`;
@@ -61,24 +65,30 @@ normalize_checkbox_response <- function(x) {
 ```{webr}
 #| context: setup
 #| echo: false
-#| eval: true
-#| message: false
-#| warning: false
+#| output: false
 
 library(ggplot2)
 library(stringr)
 library(skimr)
+library(ggmosaic)
+library(jsonlite)
+library(base64enc)
+
+exercise_results <- list(
+  notebook             = "Topic 4: Data Visualization",
+  print_mpg            = "unattempted",
+  plot_displ_cty       = "unattempted",
+  plot_hwy_cyl         = "unattempted",
+  boxplot_hwy_cyl      = "unattempted",
+  hwy_displ_class      = "unattempted",
+  facet_wrapped        = "unattempted",
+  barplot_class_drv    = "unattempted",
+  trans2_fill_class    = "unattempted",
+  trans2_drv_plot      = "unattempted"
+)
 ```
 
-:::{.callout-note}
-## About
-
-This activity provides an introduction to the grammar of graphics, plotting strategies, and using ggplot. The discussion you'll work through loosely follows Chapter 3 of the first edition Wickham and Grolemund's R for Data Science text. Here's [a link to the updated second edition of the text](https://r4ds.hadley.nz/).
-:::
-
 ```{r setup, include=FALSE}
-#knitr::opts_chunk$set(eval = FALSE)
-#library(tidyverse)
 library(dplyr)
 library(ggplot2)
 library(stringr)
@@ -87,8 +97,17 @@ library(skimr)
 library(ggmosaic)
 library(kableExtra)
 
-data <- data.frame("FuelType" = c("F1", "F1", "F1", "F2", "F2", "F2"), "EngineBrand" = c("E1", "E2", "E3", "E1", "E2", "E3"))
+data <- data.frame(
+  "FuelType"    = c("F1", "F1", "F1", "F2", "F2", "F2"),
+  "EngineBrand" = c("E1", "E2", "E3", "E1", "E2", "E3")
+)
 ```
+
+:::{.callout-note}
+## About
+
+This activity provides an introduction to the grammar of graphics, plotting strategies, and using ggplot. The discussion you'll work through loosely follows Chapter 3 of Wickham and Grolemund's *R for Data Science*. Here's [a link to the updated second edition of the text](https://r4ds.hadley.nz/){target="_blank"}.
+:::
 
 ## Data Visualization
 
@@ -119,7 +138,6 @@ In this workbook we explore `ggplot2` and think about graphics in terms of their
 **A Note on Plots:** Choosing an appropriate plot is extremely important in data visualization. Some plots don't make sense for certain variable types. For example, a scatterplot in the case of two-categorical predictors is quite a silly choice -- the only thing this plot tells us is that every combination of fuel type and engine brand exists in our dataset. We have no idea which combinations are most or least popular. 
 
 ```{r}
-#| label: first-plot
 #| echo: false
 #| eval: true
 #| fig.height: 2.25
@@ -128,27 +146,26 @@ In this workbook we explore `ggplot2` and think about graphics in terms of their
 data |> 
   ggplot() + 
   geom_point(aes(x = FuelType, y = EngineBrand), size = 2) + 
-  labs(y = "Engine Brand", 
-       x = "Fuel Type")
+  labs(y = "Engine Brand", x = "Fuel Type")
 ```
 
-The following are some recommended [basic] plots types under certain scenarios:
+The following are some recommended basic plot types under certain scenarios:
 
-  + A single numerical variable: A histogram, boxplot, or density
-  + A single categorical variable: A bar plot
-  + Numerical versus Numerical: A scatterplot, heatmap
-  + Numerical versus categorical: side-by-side boxplots, stacked or overlayed densities, stacked or overlayed histograms
-  + Categorical versus categorical: barplot with fill color, mosaic plot, heatmap
++ A single numerical variable: a histogram, boxplot, or density plot
++ A single categorical variable: a bar plot
++ Numerical versus numerical: a scatterplot or heatmap
++ Numerical versus categorical: side-by-side boxplots, stacked or overlaid densities, stacked or overlaid histograms
++ Categorical versus categorical: bar plot with fill color, mosaic plot, heatmap
 
 :::{.callout-caution}
 ## Check Your Understanding: A Better Plot
 
-Which of the following plot types would have been a better choice to display the engine brand and fuel type data?
+Which of the following plot types would have been a better choice to display the engine brand and fuel type data? Select all that apply.
 
 ```{ojs}
 //| echo: false
 
-//mutable ok_checkbox = (response, n) => { return html`Loading...` };
+mutable ok_response = (response, n) => { return html`Loading...` };
 viewof q1 = Inputs.checkbox(
   new Map([
     ["A histogram", 1],
@@ -157,12 +174,15 @@ viewof q1 = Inputs.checkbox(
     ["A dotplot", 4],
     ["Side-by-side boxplots", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "[]")}
 );
 
-localStorage.setItem("q1", JSON.stringify(q1))
-
-ok_checkbox(q1.toString(), "2,3");
+{
+  localStorage.setItem("q1_selected", JSON.stringify(q1));
+  localStorage.setItem("q1_correct", "2,3");
+  localStorage.setItem("q1_result", (!q1 || q1.length === 0) ? "unattempted" : (q1.toString() === "2,3" ? "correct" : "incorrect"));
+}
+ok_checkbox(q1, "2,3");
 ```
 
 :::
@@ -181,6 +201,7 @@ ______
 ```{webr}
 #| exercise: print-mpg-dataframe
 #| solution: true
+
 mpg
 ```
 
@@ -188,7 +209,15 @@ mpg
 #| exercise: print-mpg-dataframe
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$print_mpg <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$print_mpg <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 Notice that when you execute a line of code which just calls the name of a data frame, a snippet of that data frame is printed out. This is true for other objects (variables, vectors, functions, etc) in R as well.
@@ -204,11 +233,7 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-```{r}
-#| echo: true
-#| eval: false
-#Try some of the functions listed above.
-```
+Try some of the functions listed above — `names()`, `head()`, `dim()`, `glimpse()`, and `skim()`.
 
 :::
 :::
@@ -217,26 +242,17 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+Fill in the blanks with the name of the data frame.
+
 ```{r}
 #| echo: true
 #| eval: false
-#Fill in the blanks with the name of 
-#the data frame.
 
-___ |>
-  names()
-
-___ |>
-  head()
-
-___ |>
-  dim()
-
-___ |>
-  glimpse()
-  
-___ |> 
-  skim()
+___ |> names()
+___ |> head()
+___ |> dim()
+___ |> glimpse()
+___ |> skim()
 ```
 
 :::
@@ -244,25 +260,17 @@ ___ |>
 
 :::{.hint exercise="explore-mpg-dataframe"}
 :::{.callout-note collapse="false"}
-## Hint 3
+## Hint 3 (Solved)
 
 ```{r}
 #| echo: true
 #| eval: false
-mpg |>
-  names()
 
-mpg |>
-  head()
-
-mpg |>
-  dim()
-
-mpg |>
-  glimpse()
-
-mpg |> 
-  skim()
+mpg |> names()
+mpg |> head()
+mpg |> dim()
+mpg |> glimpse()
+mpg |> skim()
 ```
 
 :::
@@ -271,12 +279,11 @@ mpg |>
 :::{.callout-caution}
 ## Check Your Understanding: Variables
 
-How many variables are contained in the mpg dataset?
+How many variables are contained in the `mpg` dataset?
 
 ```{ojs}
 //| echo: false
 
-mutable ok_response = (response, n) => { return html`Loading...` };
 viewof q2 = Inputs.radio(
   new Map([
     ["1", 1],
@@ -285,11 +292,14 @@ viewof q2 = Inputs.radio(
     ["245", 4],
     ["2574", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
 );
 
-localStorage.setItem("q2", JSON.stringify(q2))
-
+{
+  localStorage.setItem("q2_selected", JSON.stringify(q2));
+  localStorage.setItem("q2_correct", "2");
+  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q2, "2");
 ```
 
@@ -298,7 +308,7 @@ ok_response(q2, "2");
 :::{.callout-caution}
 ## Check Your Understanding: Observations
 
-How many observations (records) are contained in the mpg dataset?
+How many observations (records) are contained in the `mpg` dataset?
 
 ```{ojs}
 //| echo: false
@@ -311,11 +321,14 @@ viewof q3 = Inputs.radio(
     ["245", 4],
     ["2574", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
 );
 
-localStorage.setItem("q3", JSON.stringify(q3))
-
+{
+  localStorage.setItem("q3_selected", JSON.stringify(q3));
+  localStorage.setItem("q3_correct", "3");
+  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q3, "3");
 ```
 
@@ -324,7 +337,7 @@ ok_response(q3, "3");
 :::{.callout-caution}
 ## Check Your Understanding: Numerical Variables
 
-Which of the variables is R interpreting as numerical?
+Which of the variables is R interpreting as numerical? Select all that apply.
 
 ```{ojs}
 //| echo: false
@@ -343,12 +356,15 @@ viewof q4 = Inputs.checkbox(
     ["fl (fuel type)", 10],
     ["class (vehicle class)", 11]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "[]")}
 );
 
-localStorage.setItem("q4", JSON.stringify(q4))
-
-ok_checkbox(q4.toString(), "3,4,6,8,9");
+{
+  localStorage.setItem("q4_selected", JSON.stringify(q4));
+  localStorage.setItem("q4_correct", "3,4,6,8,9");
+  localStorage.setItem("q4_result", (!q4 || q4.length === 0) ? "unattempted" : (q4.toString() === "3,4,6,8,9" ? "correct" : "incorrect"));
+}
+ok_checkbox(q4, "3,4,6,8,9");
 ```
 
 :::
@@ -362,26 +378,20 @@ ______
 
 :::{.hint exercise="explore-diamonds"}
 :::{.callout-note collapse="false"}
+## Hint 1
 
-```{r}
-#| echo: true
-#| eval: false
-#Use some of the same functions you used 
-#to explore the mpg data frame in the 
-#previous code chunk.
-```
+Use some of the same functions you used to explore the `mpg` data frame in the previous code block — just swap out the data frame name.
 
 :::
 :::
 
 Were you able to obtain the information you were looking for? Be sure to ask a question if not!
 
-## Building and interpreting plots
+## Building and Interpreting Plots
 
 The code below creates a plot of highway miles per gallon (`hwy`) against engine displacement `displ` (a measure of the size of an engine).
 
-```{r echo=TRUE, eval=TRUE, message = FALSE, warning = FALSE, results = FALSE}
-#| label: displ-hwy-plot
+```{r}
 #| echo: false
 #| eval: true
 #| message: false
@@ -405,16 +415,19 @@ Which of the following is true?
 
 viewof q5 = Inputs.radio(
   new Map([
-    ["Highway miles per gallon and engine displacement are independent", 1],
-    ["Highway miles per gallon and engine displacement are associated", 2],
-    ["It is impossible to tell whenther the variables are associated or independent", 3],
-    ["Highway miles per gallon and engine displacement are both independent and associated", 4]
+    ["Highway miles per gallon and engine displacement are independent.", 1],
+    ["Highway miles per gallon and engine displacement are associated.", 2],
+    ["It is impossible to tell whether the variables are associated or independent.", 3],
+    ["Highway miles per gallon and engine displacement are both independent and associated.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
 );
 
-localStorage.setItem("q5", JSON.stringify(q5))
-
+{
+  localStorage.setItem("q5_selected", JSON.stringify(q5));
+  localStorage.setItem("q5_correct", "2");
+  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q5, "2");
 ```
 
@@ -430,16 +443,19 @@ Describe the relationship between highway miles per gallon and engine displaceme
 
 viewof q6 = Inputs.radio(
   new Map([
-    ["Engine displacement and highway miles per gallon share a negative, linear relationship", 1],
-    ["Engine displacement and highway miles per gallon share a positive, linear relationship", 2],
-    ["Engine displacement and highway miles per gallon share a negative, non-linear relationship", 3],
-    ["Engine displacement and highway miles per gallon share a positive, non-linear relationship", 4]
+    ["Engine displacement and highway miles per gallon share a negative, linear relationship.", 1],
+    ["Engine displacement and highway miles per gallon share a positive, linear relationship.", 2],
+    ["Engine displacement and highway miles per gallon share a negative, non-linear relationship.", 3],
+    ["Engine displacement and highway miles per gallon share a positive, non-linear relationship.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
 );
 
-localStorage.setItem("q6", JSON.stringify(q6))
-
+{
+  localStorage.setItem("q6_selected", JSON.stringify(q6));
+  localStorage.setItem("q6_correct", "3");
+  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q6, "3");
 ```
 
@@ -455,16 +471,19 @@ Which is the best practical interpretation of the plot?
 
 viewof q7 = Inputs.radio(
   new Map([
-    ["Generally, engines with higher displacement are associated with lower average highway miles per gallon ratings", 1],
-    ["Generally, engines with higher displacement are associated with higher average highway miles per gallon ratings", 2],
-    ["Higher engine displacement causes lower average highway miles per gallon ratings", 3],
-    ["Engine displacement causes higher average highway miles per gallon ratings", 4]
+    ["Generally, engines with higher displacement are associated with lower average highway miles per gallon ratings.", 1],
+    ["Generally, engines with higher displacement are associated with higher average highway miles per gallon ratings.", 2],
+    ["Higher engine displacement causes lower average highway miles per gallon ratings.", 3],
+    ["Engine displacement causes higher average highway miles per gallon ratings.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
 );
 
-localStorage.setItem("q7", JSON.stringify(q7))
-
+{
+  localStorage.setItem("q7_selected", JSON.stringify(q7));
+  localStorage.setItem("q7_correct", "1");
+  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q7, "1");
 ```
 
@@ -472,11 +491,10 @@ ok_response(q7, "1");
 
 **A Note on Plotting Structure:** Using `ggplot()` to create plots in R is daunting at first, but with practice you will notice the structure is very consistent and convenient!
 
-+ Our plot consists of at least two pieces (subject and verb), `mpg |> ggplot()` tells `ggplot` that the subject of our plot is the data contained in the `mpg` table, while the `geom_point()` verb tells `ggplot` that we want our data displayed as points (a scatterplot). The `aes()` inside of `geom_point()` tells `ggplot` some of the adjectives for each individual observation -- here, just the location!
++ Our plot consists of at least two pieces (subject and verb): `mpg |> ggplot()` tells `ggplot` that the subject of our plot is the data contained in the `mpg` table, while the `geom_point()` verb tells `ggplot` that we want our data displayed as points (a scatterplot). The `aes()` inside of `geom_point()` tells `ggplot` some of the adjectives for each individual observation -- here, just the location!
 + In general a simple plot takes the form below -- (where the items in "ALL CAPS" are replaced by your data frame, desired geometry type, and aesthetic mappings).
 
 ```{r}
-#| label: sample-plot
 #| echo: true
 #| eval: false
 
@@ -487,7 +505,7 @@ DATA |>
 
 Use the code block below to make a scatterplot of average city miles per gallon (`cty`) explained by engine displacement (`displ`).
 
-```{webr plot-displ-cty}
+```{webr}
 #| exercise: plot-displ-cty
 ______
 ```
@@ -496,13 +514,7 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-```{r}
-#| echo: true
-#| eval: false
-#Start by copying and pasting the code from 
-#the plot at the start of this subsection.
-
-```
+Start by copying and pasting the code from the plot at the start of this subsection.
 
 :::
 :::
@@ -518,25 +530,26 @@ ______
 mpg |> 
   ggplot() + 
   geom_point(aes(x = displ, y = hwy))
-
-#What needs to be changed here?
 ```
+
+What needs to be changed here?
 
 :::
 :::
 
 :::{.hint exercise="plot-displ-cty"}
 :::{.callout-note collapse="false"}
-## Hint 3
+## Hint 3 (Solved)
 
-```{webr}
+Swap out the `hwy` variable for the `cty` variable.
+
+```{r}
 #| echo: true
 #| eval: false
-#Swap out the hwy variable for the cty 
-#variable and generate the new plot.
+
 mpg |> 
   ggplot() + 
-  geom_point(aes(x = displ, y = hwy))
+  geom_point(aes(x = displ, y = cty))
 ```
 
 :::
@@ -545,6 +558,7 @@ mpg |>
 ```{webr}
 #| exercise: plot-displ-cty
 #| solution: true
+
 mpg |>
   ggplot() + 
   geom_point(aes(x = displ, y = cty))
@@ -554,28 +568,29 @@ mpg |>
 #| exercise: plot-displ-cty
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$plot_displ_cty <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$plot_displ_cty <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 Now make a scatterplot of average highway miles per gallon (`hwy`) explained by number of cylinders (`cyl`).
 
-```{webr plot-hwy-cyl, exercise = TRUE}
+```{webr}
 #| exercise: plot-hwy-cyl
 ______
 ```
-
 
 :::{.hint exercise="plot-hwy-cyl"}
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-```{r}
-#| echo: true
-#| eval: false
-#Again, start by copying and pasting an 
-#earlier plot.
-
-```
+Again, start by copying and pasting an earlier plot as a starting point.
 
 :::
 :::
@@ -587,28 +602,30 @@ ______
 ```{r}
 #| echo: true
 #| eval: false
+
 mpg |>
   ggplot() + 
   geom_point(aes(x = displ, y = cty))
-
-#What needs to be changed now?
 ```
+
+What needs to be changed now?
 
 :::
 :::
 
 :::{.hint exercise="plot-hwy-cyl"}
 :::{.callout-note collapse="false"}
-## Hint 3
+## Hint 3 (Solved)
 
-```{webr}
+Put cylinders (`cyl`) on the x-axis and highway gas mileage (`hwy`) on the y-axis.
+
+```{r}
 #| echo: true
 #| eval: false
-#Put cylinders (cyl) on the x-axis and 
-#highway gas mileage (hwy) on the y-axis.
+
 mpg |>
   ggplot() + 
-  geom_point(aes(x = displ, y = cty))
+  geom_point(aes(x = cyl, y = hwy))
 ```
 
 :::
@@ -617,6 +634,7 @@ mpg |>
 ```{webr}
 #| exercise: plot-hwy-cyl
 #| solution: true
+
 mpg |>
   ggplot() + 
   geom_point(aes(x = cyl, y = hwy))
@@ -625,10 +643,19 @@ mpg |>
 ```{webr}
 #| exercise: plot-hwy-cyl
 #| check: true
-gradethis::grade_this_code()
+
+exercise_results$plot_hwy_cyl <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$plot_hwy_cyl <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
-Notice that this plot isn't very useful because the cylinders variable takes on very few levels. We may be better off if we treat `cyl` as if it were a categorical variable here. Check out some of the other geometry layers available to you in ggplot [here](https://ggplot2.tidyverse.org/reference/). Try building a set of side-by-side boxplots. If you get an error, be sure to read it -- R suspects that the plot produced wasn't the one you wanted and provides a suggestion.
+Notice that this plot isn't very useful because the cylinders variable takes on very few levels. We may be better off if we treat `cyl` as if it were a categorical variable here. Check out some of the other geometry layers available to you in ggplot [here](https://ggplot2.tidyverse.org/reference/){target="_blank"}. Try building a set of side-by-side boxplots. If you get an error, be sure to read it -- R suspects that the plot produced wasn't the one you wanted and provides a suggestion.
 
 ```{webr}
 #| exercise: boxplot-hwy-cyl
@@ -639,15 +666,7 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-```{r}
-#| echo: true
-#| eval: false
-#Continue copying/pasting an earlier plot 
-#as a starting point for now. You'll be 
-#able to construct your own plots from 
-#scratch with practice.
-
-```
+Continue copying and pasting an earlier plot as a starting point.
 
 :::
 :::
@@ -659,12 +678,13 @@ ______
 ```{r}
 #| echo: true
 #| eval: false
+
 mpg |>
   ggplot() + 
   geom_point(aes(x = cyl, y = hwy))
-
-#What needs to be changed here?
 ```
+
+What needs to be changed here?
 
 :::
 :::
@@ -673,15 +693,7 @@ mpg |>
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-```{r}
-#| echo: true
-#| eval: false
-#Swap geom_point() out with geom_boxplot()
-#and generate the plot.
-mpg |>
-  ggplot() + 
-  geom_point(aes(x = cyl, y = hwy))
-```
+Swap `geom_point()` out with `geom_boxplot()` and generate the plot. Can you decode the warning message that appears?
 
 :::
 :::
@@ -690,8 +702,12 @@ mpg |>
 :::{.callout-note collapse="false"}
 ## Hint 4
 
-```{r boxplot-hwy-cyl-hint-4}
-#Can you decode the warning message?
+R is considering both the x- and y-variables to be numeric. The warning message suggests adding a `group` parameter inside of the `aes()` function. Which variable should be mapped to `group`?
+
+```{r}
+#| echo: true
+#| eval: false
+
 mpg |>
   ggplot() + 
   geom_boxplot(aes(x = cyl, y = hwy))
@@ -702,39 +718,20 @@ mpg |>
 
 :::{.hint exercise="boxplot-hwy-cyl"}
 :::{.callout-note collapse="false"}
-## Hint 5
+## Hint 5 (Solved)
+
+We want a boxplot for each cylinder "group." Map `cyl` to the `group` aesthetic.
 
 ```{r}
 #| echo: true
 #| eval: false
-#R is considering both the x- and y-variables
-#to be numeric. The message suggests adding a 
-#group parameter inside of the aes() function.
-#Which variable should be mapped to group?
-mpg |>
-  ggplot() + 
-  geom_boxplot(aes(x = cyl, y = hwy))
-```
 
-:::
-:::
-
-:::{.hint exercise="boxplot-hwy-cyl"}
-:::{.callout-note collapse="false"}
-## Hint 6
-
-```{r}
-#| echo: true
-#| eval: false
-#We want a boxplot for each cylinder "group". 
-#Fill in the blank below to map cyl to group
-#and then generate the plot.
 mpg |>
   ggplot() + 
   geom_boxplot(aes(
     x = cyl, 
     y = hwy,
-    group = ___))
+    group = cyl))
 ```
 
 :::
@@ -743,6 +740,7 @@ mpg |>
 ```{webr}
 #| exercise: boxplot-hwy-cyl
 #| solution: true
+
 mpg |>
   ggplot() + 
   geom_boxplot(aes(
@@ -755,10 +753,18 @@ mpg |>
 #| exercise: boxplot-hwy-cyl
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$boxplot_hwy_cyl <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$boxplot_hwy_cyl <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
-Consider the variables for vehicle class (`class`) and drive type (`drv`) as you answer the following questions. 
+Consider the variables for vehicle class (`class`) and drive type (`drv`) as you answer the following questions.
 
 :::{.callout-caution}
 ## Check Your Understanding: Appropriate Plot Types I
@@ -770,16 +776,19 @@ Why would a scatterplot not be an appropriate visual to use with these two varia
 
 viewof q8 = Inputs.radio(
   new Map([
-    ["Trick question -- a scatterplot is always appropriate", 1],
-    ["At least one of the two variables is not numerical", 2],
-    ["A scatterplot would be okay but there are better options", 3],
-    ["There isn't enough data for a scatterplot", 4]
+    ["Trick question -- a scatterplot is always appropriate.", 1],
+    ["At least one of the two variables is not numerical.", 2],
+    ["A scatterplot would be okay but there are better options.", 3],
+    ["There isn't enough data for a scatterplot.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
 );
 
-localStorage.setItem("q8", JSON.stringify(q8))
-
+{
+  localStorage.setItem("q8_selected", JSON.stringify(q8));
+  localStorage.setItem("q8_correct", "2");
+  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q8, "2");
 ```
 
@@ -788,7 +797,7 @@ ok_response(q8, "2");
 :::{.callout-caution}
 ## Check Your Understanding: Appropriate Plot Types II
 
-Which of the following plot types would be appropriate for building a visual with the class and drive type variables?
+Which of the following plot types would be appropriate for building a visual with the `class` and drive type variables? Select all that apply.
 
 ```{ojs}
 //| echo: false
@@ -801,12 +810,15 @@ viewof q9 = Inputs.checkbox(
     ["A heatmap", 4],
     ["A mosaicplot", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "[]")}
 );
 
-localStorage.setItem("q9", JSON.stringify(q9))
-
-ok_checkbox(q9.toString(), "3,4,5");
+{
+  localStorage.setItem("q9_selected", JSON.stringify(q9));
+  localStorage.setItem("q9_correct", "3,4,5");
+  localStorage.setItem("q9_result", (!q9 || q9.length === 0) ? "unattempted" : (q9.toString() === "3,4,5" ? "correct" : "incorrect"));
+}
+ok_checkbox(q9, "3,4,5");
 ```
 
 :::
@@ -822,13 +834,7 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-```{r}
-#| echo: true
-#| eval: false
-#Starting from an earlier plot can take you 
-#a long way!
-
-```
+Starting from an earlier plot can take you a long way — look for the simplest one that's closest to what you need.
 
 :::
 :::
@@ -840,9 +846,13 @@ ______
 ```{r}
 #| echo: true
 #| eval: false
-#A relatively simple plot is the best starting point...
 
+mpg |>
+  ggplot() + 
+  geom_point(aes(x = displ, y = hwy))
 ```
+
+Several things need to be changed. What are they?
 
 :::
 :::
@@ -851,46 +861,14 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-```{r}
-#| echo: true
-#| eval: false
-mpg |>
-  ggplot() + 
-  geom_point(aes(x = displ, y = hwy))
-
-#Several things need to be changed now.
-#What are they?
-```
+Four things to update: change the geometry layer to `geom_bar()`, map `class` to `x`, remove the `y` aesthetic (bar heights are determined by counts automatically), and map `drv` to `fill`.
 
 :::
 :::
 
 :::{.hint exercise="barplot-class-drv"}
 :::{.callout-note collapse="false"}
-## Hint 4
-
-```{r}
-#| echo: true
-#| eval: false
-#1) Change the geometry layer to geom_bar()
-#2) Map the class variable to x
-#3) The heights of the bars in a barplot are 
-#determined by the frequencies (counts) of 
-#observations in each category. We can't 
-#prescribe a y value -- remove it.
-#4) Map the drive variable (drv) to the fill 
-#parameter.
-mpg |>
-  ggplot() + 
-  geom_point(aes(x = displ, y = hwy))
-```
-
-:::
-:::
-
-:::{.hint exercise="barplot-class-drv"}
-:::{.callout-note collapse="false"}
-## Hint 5 (Solved)
+## Hint 4 (Solved)
 
 ```{r}
 #| echo: true
@@ -917,17 +895,26 @@ mpg |>
 #| exercise: barplot-class-drv
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$barplot_class_drv <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$barplot_class_drv <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
-**Note:** There are many different geom types, and different aesthetic properties which can be passed to geoms. We will see examples throughout the rest of this activity, but reading the entirety of Chapter 3 in Hadley Wickham's [R for Data Science](http://r4ds.had.co.nz/data-visualisation.html) would be a great start for those of you who are more interested in data visualization.
+**Note:** There are many different geom types, and different aesthetic properties which can be passed to geoms. We will see examples throughout the rest of this activity, but reading the entirety of Chapter 3 in Hadley Wickham's [R for Data Science](http://r4ds.had.co.nz/data-visualisation.html){target="_blank"} would be a great start for those of you who are more interested in data visualization.
 
-## Plotting more than two variables at once
+## Plotting More Than Two Variables at Once
 
-Let's go back to our original plot of `hwy` versus `displ`. Maybe we want to color the points in the scatterplot according to the class of the vehicle. Add a third asthetic, `color = class` to the code below and re-run the plot.
+Let's go back to our original plot of `hwy` versus `displ`. Maybe we want to color the points in the scatterplot according to the class of the vehicle. Add a third aesthetic, `color = class`, to the code below and re-run the plot.
 
 ```{webr}
 #| exercise: hwy-displ-class-plot
+
 mpg |>
   ggplot() + 
   geom_point(aes(x = displ, y = hwy))
@@ -937,12 +924,7 @@ mpg |>
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-```{r}
-#| echo: true
-#| eval: false
-#Add color as a new aesthetic and map the 
-#class variable to it.
-```
+Add `color` as a new aesthetic inside `aes()` and map the `class` variable to it.
 
 :::
 :::
@@ -951,11 +933,12 @@ mpg |>
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+Fill in the blank to map the `class` variable to the `color` aesthetic.
+
 ```{r}
 #| echo: true
 #| eval: false
-#Fill in the blank to map the class variable 
-#to the color aesthetic.
+
 mpg |> 
   ggplot() + 
   geom_point(aes(
@@ -974,6 +957,7 @@ mpg |>
 ```{r}
 #| echo: true
 #| eval: false
+
 mpg |> 
   ggplot() + 
   geom_point(aes(
@@ -988,6 +972,7 @@ mpg |>
 ```{webr}
 #| exercise: hwy-displ-class-plot
 #| solution: true
+
 mpg |> 
   ggplot() + 
   geom_point(aes(
@@ -1000,13 +985,22 @@ mpg |>
 #| exercise: hwy-displ-class-plot
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$hwy_displ_class <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$hwy_displ_class <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 There's a lot going on here, and it is hard to read. Try copying the above plotting command, but appending `facet_wrap(~ class, nrow = 2)` as a new layer to the plot -- notice that plot layers are added with the `+` symbol. Again, think about the resulting plot and how it compares to your previous colored plot.
 
 ```{webr}
 #| exercise: facet-wrapped-plot
+
 mpg |> 
   ggplot() + 
   geom_point(aes(
@@ -1019,12 +1013,7 @@ mpg |>
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-```{r}
-#| echo: true
-#| eval: false
-#You add new layers to ggplots with the 
-#plus (+) sign.
-```
+New layers are added to ggplots with the `+` sign.
 
 :::
 :::
@@ -1033,11 +1022,12 @@ mpg |>
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+Fill in the blank with the `facet_wrap()` layer.
+
 ```{r}
 #| echo: true
 #| eval: false
-#Fill in the blank with the facet_wrap() 
-#layer.
+
 mpg |> 
   ggplot() + 
   geom_point(aes(
@@ -1045,7 +1035,6 @@ mpg |>
     y = hwy, 
     color = class)) + 
   ___
-
 ```
 
 :::
@@ -1058,6 +1047,7 @@ mpg |>
 ```{r}
 #| echo: true
 #| eval: false
+
 mpg |> 
   ggplot() + 
   geom_point(aes(
@@ -1073,6 +1063,7 @@ mpg |>
 ```{webr}
 #| exercise: facet-wrapped-plot
 #| solution: true
+
 mpg |> 
   ggplot() + 
   geom_point(aes(
@@ -1086,30 +1077,41 @@ mpg |>
 #| exercise: facet-wrapped-plot
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$facet_wrapped <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$facet_wrapped <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 :::{.callout-caution}
 ## Check Your Understanding: Investigating Arguments
 
-What does setting the argument `nrow = 2` do? Don't guess -- think about how you can determine what the nrow argument here does.
+What does setting the argument `nrow = 2` do? Don't guess -- think about how you can determine what the `nrow` argument here does.
 
 ```{ojs}
 //| echo: false
 
 viewof q10 = Inputs.radio(
   new Map([
-    ["It is impossible to tell", 1],
-    ["It tells the ggplot to only use half the data so that plots are less cluttered", 2],
-    ["It tells R to try arranging the plots into two rows", 3],
-    ["It tells R to include two plots per row", 4],
-    ["Nothing -- it is irrelevant and ignored", 5]
+    ["It is impossible to tell.", 1],
+    ["It tells ggplot to only use half the data so that plots are less cluttered.", 2],
+    ["It tells R to try arranging the plots into two rows.", 3],
+    ["It tells R to include two plots per row.", 4],
+    ["Nothing -- it is irrelevant and ignored.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q10_selected") ?? "null")}
 );
 
-localStorage.setItem("q10", JSON.stringify(q10))
-
+{
+  localStorage.setItem("q10_selected", JSON.stringify(q10));
+  localStorage.setItem("q10_correct", "3");
+  localStorage.setItem("q10_result", q10 === null ? "unattempted" : (q10 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q10, "3");
 ```
 
@@ -1122,6 +1124,7 @@ We've seen plots for categorical variables earlier in this workbook. Let's revis
 ```{r}
 #| echo: true
 #| eval: false
+
 mpg |>
   count(trans)
 ```
@@ -1129,6 +1132,7 @@ mpg |>
 ```{r}
 #| echo: false
 #| eval: true
+
 mpg |>
   count(trans) |> 
   kable() |>
@@ -1143,6 +1147,7 @@ Run the code below to see the plot.
 
 ```{webr}
 #| exercise: engineer-trans2
+
 mpg |>
   mutate(trans2 = str_sub(trans, 1, -5)) |>
   ggplot() + 
@@ -1154,7 +1159,7 @@ mpg |>
 
 From the plot above we can tell that there are about twice as many vehicles in our dataset with automatic transmissions as there are with manual transmissions. Create a similar plot below, which fills the bars by the `drv` variable.
 
-```{webr trans2-fill-class, exercise = TRUE}
+```{webr}
 #| exercise: trans2-fill-class
 ______
 ```
@@ -1163,13 +1168,7 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-```{r}
-#| echo: true
-#| eval: false
-#Copy and paste the plotting code above and 
-#use it as a starting point.
-
-```
+Copy and paste the plotting code above and use it as a starting point.
 
 :::
 :::
@@ -1181,6 +1180,7 @@ ______
 ```{r}
 #| echo: true
 #| eval: false
+
 mpg |>
   mutate(trans2 = str_sub(trans, 1, -5)) |>
   ggplot() + 
@@ -1188,44 +1188,23 @@ mpg |>
   labs(x = "Transmission Type", 
        y = "Count",
        title = "Distribution of Transmission Types")
-
-#Do you remember how to add a fill aesthetic?
 ```
+
+Do you remember how to add a `fill` aesthetic?
 
 :::
 :::
 
 :::{.hint exercise="trans2-fill-class"}
 :::{.callout-note collapse="false"}
-## Hint 3
+## Hint 3 (Solved)
+
+Map the drive variable (`drv`) to the `fill` aesthetic inside `aes()`.
 
 ```{r}
 #| echo: true
 #| eval: false
-#Fill in the blank to map the drive variable 
-#(drv) to the fill aesthetic.
-mpg |>
-  mutate(trans2 = str_sub(trans, 1, -5)) |>
-  ggplot() + 
-  geom_bar(aes(
-    x = trans2,
-    fill = ___)) +
-  labs(x = "Transmission Type", 
-       y = "Count",
-       title = "Distribution of Transmission Types")
 
-```
-
-:::
-:::
-
-:::{.hint exercise="trans2-fill-class"}
-:::{.callout-note collapse="false"}
-## Hint 4 (Solved)
-
-```{r}
-#| echo: true
-#| eval: false
 mpg |>
   mutate(trans2 = str_sub(trans, 1, -5)) |>
   ggplot() + 
@@ -1241,6 +1220,7 @@ mpg |>
 ```{webr}
 #| exercise: trans2-fill-class
 #| solution: true
+
 mpg |>
   mutate(trans2 = str_sub(trans, 1, -5)) |>
   ggplot() + 
@@ -1254,13 +1234,22 @@ mpg |>
 #| exercise: trans2-fill-class
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$trans2_fill_class <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$trans2_fill_class <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
-The problem now is the difficulty in comparing the proportions of drive types within each of these classes. We can fix this by using the position argument. Outside of `aes()` but still within `mapping()` add an argument `position = "fill"` to the pre-built plot -- you'll need to include a comma after `aes()` since commas separate arguments. Think about what is gained and lost in this new plot.
+The problem now is the difficulty in comparing the proportions of drive types within each of these classes. We can fix this by using the `position` argument. Outside of `aes()` but still within `geom_bar()`, add an argument `position = "fill"` to the pre-built plot -- you'll need to include a comma after `aes()` since commas separate arguments. Think about what is gained and lost in this new plot.
 
 ```{webr}
 #| exercise: trans2-drv-plot
+
 mpg |>
   mutate(trans2 = str_sub(trans, 1, -5)) |>
   ggplot() + 
@@ -1276,14 +1265,7 @@ mpg |>
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-```{r}
-#| echo: true
-#| eval: false
-#Since we aren't mapping a column of our 
-#data set to the position parameter, we add 
-#it outside of the aesthetics -- the aes() function.
-
-```
+Since we aren't mapping a column of our data set to the `position` parameter, we add it outside of the `aes()` function.
 
 :::
 :::
@@ -1292,10 +1274,12 @@ mpg |>
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+Fill in the blank to set the position to `"fill"`.
+
 ```{r}
 #| echo: true
 #| eval: false
-#Fill in the blank to set the position to "fill"
+
 mpg |>
   mutate(trans2 = str_sub(trans, 1, -5)) |>
   ggplot() + 
@@ -1318,6 +1302,7 @@ mpg |>
 ```{r}
 #| echo: true
 #| eval: false
+
 mpg |>
   mutate(trans2 = str_sub(trans, 1, -5)) |>
   ggplot() + 
@@ -1336,6 +1321,7 @@ mpg |>
 ```{webr}
 #| exercise: trans2-drv-plot
 #| solution: true
+
 mpg |>
   mutate(trans2 = str_sub(trans, 1, -5)) |>
   ggplot() + 
@@ -1352,12 +1338,23 @@ mpg |>
 #| exercise: trans2-drv-plot
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$trans2_drv_plot <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$trans2_drv_plot <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 Great! But the problem now is that we've lost the idea that there are more automatic vehicles than there are manual vehicles in this dataset. As a third option, we can consider a mosaic plot.
 
-```{r echo = TRUE, eval = TRUE}
+```{r}
+#| echo: true
+#| eval: true
+
 mpg |>
   mutate(trans2 = str_sub(trans, 1, -5)) |>
   ggplot() + 
@@ -1373,32 +1370,149 @@ The advantage to the mosaic plot is that it contains all of the information from
 
 ## Submit
 
-:::{.callout-warning}
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested.
 
-Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, then please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402) or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html).
+:::{.callout-warning}
+## Question Hash
+
+The hash below encodes your responses to the multiple choice and checkbox questions in this activity.
+
+```{ojs}
+//| echo: false
+
+function buildQuestionResults() {
+  return {
+    notebook: "Topic 4: Data Visualization",
+    type: "questions",
+    timestamp: new Date().toISOString(),
+    questions: {
+      q1_better_plot: {
+        selected: q1,
+        correct_answer: "2,3",
+        result: (!q1 || q1.length === 0) ? "unattempted" : (q1.toString() === "2,3" ? "correct" : "incorrect")
+      },
+      q2_variables: {
+        selected: q2,
+        correct_answer: "2",
+        result: q2 === null ? "unattempted" : (q2 == 2 ? "correct" : "incorrect")
+      },
+      q3_observations: {
+        selected: q3,
+        correct_answer: "3",
+        result: q3 === null ? "unattempted" : (q3 == 3 ? "correct" : "incorrect")
+      },
+      q4_numerical_variables: {
+        selected: q4,
+        correct_answer: "3,4,6,8,9",
+        result: (!q4 || q4.length === 0) ? "unattempted" : (q4.toString() === "3,4,6,8,9" ? "correct" : "incorrect")
+      },
+      q5_reading_plot_1: {
+        selected: q5,
+        correct_answer: "2",
+        result: q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect")
+      },
+      q6_reading_plot_2: {
+        selected: q6,
+        correct_answer: "3",
+        result: q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect")
+      },
+      q7_reading_plot_3: {
+        selected: q7,
+        correct_answer: "1",
+        result: q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect")
+      },
+      q8_appropriate_plots_1: {
+        selected: q8,
+        correct_answer: "2",
+        result: q8 === null ? "unattempted" : (q8 == 2 ? "correct" : "incorrect")
+      },
+      q9_appropriate_plots_2: {
+        selected: q9,
+        correct_answer: "3,4,5",
+        result: (!q9 || q9.length === 0) ? "unattempted" : (q9.toString() === "3,4,5" ? "correct" : "incorrect")
+      },
+      q10_nrow_argument: {
+        selected: q10,
+        correct_answer: "3",
+        result: q10 === null ? "unattempted" : (q10 == 3 ? "correct" : "incorrect")
+      }
+    }
+  };
+}
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+question_hash = {
+  q1; q2; q3; q4; q5; q6; q7; q8; q9; q10;
+  return toBase64(JSON.stringify(buildQuestionResults()));
+}
+```
+
+```{ojs}
+//| echo: false
+
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded code exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and hit the *Run Code* button on each graded exercise before generating the hash below, to ensure your most recent results are recorded.
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
 
 :::
 
 ## Summary
 
-Congratulations! You made it through a first discussion on data visualization. You should know, however, that this is just the "tip of the iceberg" -- there's much more to learn. I've already suggested the Data Visualization chapter of Hadley Wickham's *R for Data Science*, but he also has an entire book devoted to the `ggplot2` package in R -- check it out if you are interested in learning more! Additionally, you might follow `#TidyTuesday` on Twitter to see (and maybe even participate in) a social community on data visualization. 
+:::{.callout-tip}
+## Main Takeaways
 
-In this workbook you learned the following:
++ **Variable types dictate plot types.** Always consider whether your variables are numerical or categorical before choosing a plot. A scatterplot requires two numerical variables; a bar plot is appropriate for a single categorical variable; side-by-side boxplots or bar plots with fill work for numerical vs. categorical comparisons.
++ **Plotting with `ggplot()` follows a grammar of graphics** and a layered structure, with `+` separating each layer. The basic structure is:
 
-+ Variable types dictate the kinds of plots which can be used to create effective visuals. Always consider your variable types!
-+ Plotting with `ggplot()` follows a *grammar of graphics* and layered plotting structure, with "`+`" separating each plot layer. The structure of a `ggplot` is as follows:
-```{r sample-ggplot-code, echo = TRUE, eval = FALSE}
-data_frame_name |> 
-  ggplot() + 
+```{r}
+#| echo: true
+#| eval: false
+
+data_frame_name |>
+  ggplot() +
   geom_TYPE(aes(MAPPINGS))
 ```
 
-  + Note that the `MAPPINGS` you need are determined by the geometry `TYPE` you are using.
++ **Aesthetics** (`aes()`) map variables from your data to visual properties of the plot (position, color, fill, size, shape). Properties that don't depend on the data go *outside* `aes()`.
++ **Additional dimensions** can be added via color, fill, size, shape, or faceting — but more information in a single plot can make it harder to read. Sometimes separate faceted plots communicate more clearly than a single dense plot.
++ **Mosaic plots** are a powerful choice for two categorical variables — they simultaneously convey both the marginal distributions and the conditional distributions within each group.
+:::
 
-+ There are entire courses devoted to data visualization. You've had a crash course here but there is much more to be learned. Check out the two Wickham books, use the `ggplot2` [documentation](https://ggplot2.tidyverse.org/reference/), or check out [this cheatsheet](https://posit.co/wp-content/uploads/2022/10/data-visualization-1.pdf) for more inspiration!
+:::{.callout-tip}
+## Looking Ahead
+
+The next activity introduces descriptive statistics — computing and interpreting numerical summaries for both numerical and categorical data. You'll use the R tools introduced here alongside `dplyr` functions like `summarize()` and `group_by()` to compute means, medians, standard deviations, and frequency tables.
+:::
 
 :::{.callout-note}
 ## Loaded Libraries
 
-These interactive workbooks allow me to hide some of the setup requirements from you so that we can focus on the task at hand -- in this workbook, plotting. When you make the switch to using a standalone R instance you'll need to install and load libraries to expand R's functionality. You can do this with the `install.packages()` and `library()` functions. You would need `{ggplot2}` as well as `{dplyr}`, `{skimr}`, and `{ggmosaic}` to run the code for this workbook in a local R session.
+These interactive workbooks allow setup requirements to be hidden so that we can focus on the task at hand — in this workbook, plotting. When you make the switch to using a standalone R instance you'll need to install and load libraries to expand R's functionality. You can do this with the `install.packages()` and `library()` functions. You would need `{ggplot2}`, `{dplyr}`, `{skimr}`, and `{ggmosaic}` to run the code for this workbook in a local R session.
 :::

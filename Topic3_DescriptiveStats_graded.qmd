@@ -500,16 +500,19 @@ median(c(0, 15, 25, 35, 50))
 #| exercise: my-data
 #| check: true
 
-gradethis::grade_this_code(
-  correct = {
+gradethis::grade_this({
+  gradethis::pass_if_equal(
+    .result,
+    .solution,
+    message = random_praise()
+  )
+  if (identical(.user_code, .solution_code)) {
     exercise_results$my_data <<- "pass"
     pass(random_praise())
-  },
-  incorrect = {
-    exercise_results$my_data <<- "fail"
-    fail(random_encouragement())
   }
-)
+  exercise_results$my_data <<- "fail"
+  fail(random_encouragement())
+})
 ```
 
 5. Use your explorations of the means and medians for the campaign workers to answer the following question.

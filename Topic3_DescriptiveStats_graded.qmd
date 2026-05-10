@@ -500,6 +500,8 @@ median(c(0, 15, 25, 35, 50))
 #| exercise: my-data
 #| check: true
 
+exercise_results$my_data <<- "fail"
+
 gradethis::grade_this({
   feedback <- gradethis::code_feedback()
   if (is.null(feedback)) {

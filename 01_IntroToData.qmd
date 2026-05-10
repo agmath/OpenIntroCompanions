@@ -28,16 +28,14 @@ ok_response <- function(response, n) {
 }
 ```
 
-```{webr}
-#| edit: false
-#| output: false
-#| define:
-#|   - ok_checkbox
-
-ok_checkbox <- function(response, n) {
-  if (is.na(response)) HTML("")
-  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
-  else div(HTML("Not Yet! ✗"), style = "color: red")
+```{ojs}
+//| echo: false
+function ok_checkbox(response, n) {
+  if (!response || response.length === 0) 
+    return html`<span style="color:purple">You haven't answered yet.</span>`;
+  if (response.toString() === n) 
+    return html`<span style="color:green">Correct ✓</span>`;
+  return html`<span style="color:red">Not Yet! ✗</span>`;
 }
 ```
 
@@ -133,7 +131,7 @@ Check off each of the variables from the `houses` data set which are numerical.
 ```{ojs}
 //| echo: false
 
-mutable ok_checkbox = (response, n) => { return html`Loading...` };
+//mutable ok_checkbox = (response, n) => { return html`Loading...` };
 viewof q1 = Inputs.checkbox(
   new Map([
     ["id", 1],

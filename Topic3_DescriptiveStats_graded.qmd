@@ -11,7 +11,8 @@ format:
       packages:
         - dplyr
         - gradethis
-        - webr
+        - jsonlite
+        - base64enc
       cell-options: 
         persist: true
     live:
@@ -47,12 +48,23 @@ function ok_checkbox(response, n) {
 }
 ```
 
-```{r setup, include=FALSE}
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
 library(dplyr)
 library(ggplot2)
-library(gradethis)
-library(kableExtra)
-library(patchwork)
+library(jsonlite)
+library(base64enc)
+
+# Initialise exercise results in the global environment
+exercise_results <- list(
+  notebook          = "Topic 3: Descriptive Statistics",
+  mean_sample_one   = "unattempted",
+  mean_sample_three = "unattempted",
+  my_data           = "unattempted"
+)
 
 set.seed(241)
 
@@ -75,15 +87,12 @@ cutSamples <- data.frame(
 )
 ```
 
-```{webr}
-#| context: setup
-#| echo: false
-#| eval: true
-#| message: false
-#| warning: false
-
+```{r setup, include=FALSE}
 library(dplyr)
 library(ggplot2)
+library(gradethis)
+library(kableExtra)
+library(patchwork)
 
 set.seed(241)
 
@@ -198,15 +207,15 @@ Manually add up the carat values in `Sample_One` and divide by the number of dia
 
 gradethis::grade_this({
   if (.result == .solution) {
-    webr::eval_js("localStorage.setItem('ex_mean_sample_one', 'pass')")
+    exercise_results$mean_sample_one <<- "pass"
     pass(random_praise())
   }
-  webr::eval_js("localStorage.setItem('ex_mean_sample_one', 'fail')")
+  exercise_results$mean_sample_one <<- "fail"
   fail(random_encouragement())
 })
 ```
 
-In R we can easily compute means and medians for our samples or for the entire dataset. The `$` operator accesses a column of a data frame, and R includes `mean()` and `median()` functions. Both methods below compute the mean of `Sample_Two`:
+In R we can easily compute means and medians for our samples or for the entire dataset. Both methods below compute the mean of `Sample_Two`:
 
 ```{r}
 #| echo: true
@@ -218,9 +227,7 @@ samples |>
   summarize(avg_carat_wt = mean(Sample_Two))
 ```
 
-While the second method involves more typing, it is much more readable. Getting comfortable with the pipe operator (`|>`) will allow you to chain data manipulation steps together.
-
-2. Use the code block below to compute the mean of `Sample_Three`. You may use either method.
+2. Use the code block below to compute the mean of `Sample_Three`.
 
 ```{webr}
 #| exercise: mean-sample-three
@@ -258,15 +265,15 @@ samples |>
 
 gradethis::grade_this({
   if (.result == .solution) {
-    webr::eval_js("localStorage.setItem('ex_mean_sample_one', 'pass')")
+    exercise_results$mean_sample_three <<- "pass"
     pass(random_praise())
   }
-  webr::eval_js("localStorage.setItem('ex_mean_sample_one', 'fail')")
+  exercise_results$mean_sample_three <<- "fail"
   fail(random_encouragement())
 })
 ```
 
-3. Use the `median()` function and the code block below to compute the median of each sample, then answer the question that follows. *(This block is for exploration — it is not graded.)*
+3. Use the `median()` function and the code block below to compute the median of each sample. *(Not graded.)*
 
 ```{webr}
 #| exercise: find-medians
@@ -338,7 +345,7 @@ ok_response(q1, "4");
 
 :::
 
-4. In our first activity we saw that sample data can be used to make generalizations about populations. Answer the following questions with this in mind.
+4. Answer the following questions.
 
 :::{.callout-caution}
 ## Check Your Understanding: Sampling and Validity I
@@ -395,11 +402,11 @@ ok_checkbox(q3, "1,2,5");
 
 ### Aside: Defining Your Own Data
 
-For data not already stored in a data frame, we can use the `c()` function to create a list of values. Consider the distributions of doors knocked on by two political campaign workers last week (Monday–Friday):
+Consider the doors knocked on by two campaign workers last week:
 
 $$\text{Worker A}: 23,~24,~25,~26,~27 \qquad \text{Worker B}: 0,~15,~25,~35,~50$$
 
-The following code block finds the mean and median for Worker A. Run it, then add two lines to also find the mean and median for Worker B.
+The code block below computes the mean and median for Worker A. Add two lines to also compute the mean and median for Worker B.
 
 ```{webr}
 #| exercise: my-data
@@ -412,7 +419,7 @@ median(c(23, 24, 25, 26, 27))
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Copy and paste the two existing lines and replace the data inside `c()` to reflect Worker B.
+Copy and paste the two existing lines and replace the data inside `c()` with Worker B's values.
 
 :::
 :::
@@ -450,17 +457,17 @@ median(c(0, 15, 25, 35, 50))
 
 gradethis::grade_this_code(
   correct = {
-    webr::eval_js("localStorage.setItem('ex_my_data', 'pass')")
+    exercise_results$my_data <<- "pass"
     pass(random_praise())
   },
   incorrect = {
-    webr::eval_js("localStorage.setItem('ex_my_data', 'fail')")
+    exercise_results$my_data <<- "fail"
     fail(random_encouragement())
   }
 )
 ```
 
-5. Use your explorations of means and medians for the campaign workers to answer the following.
+5. Answer the following.
 
 :::{.callout-caution}
 ## Check Your Understanding: Measures of Center
@@ -502,7 +509,7 @@ where $Q_1$ is the 25th percentile and $Q_3$ is the 75th percentile.
 :::{.callout-caution}
 ## Check Your Understanding: Measures of Spread I
 
-Without carrying out the computations, which sample of diamonds has the largest standard deviation?
+Without carrying out the computations, which sample has the largest standard deviation?
 
 ```{ojs}
 //| echo: false
@@ -548,8 +555,6 @@ ok_response(q6, "1");
 
 :::
 
-The two plots below show the distribution of `carat` weights for the diamonds in our population. The purple line marks the mean.
-
 ```{r}
 #| echo: false
 #| eval: true
@@ -572,7 +577,7 @@ p2 <- ggplot(data = diamonds) +
 p1 + p2
 ```
 
-The code block below computes standard deviations and IQRs for each sample. Run it and explore the output. *(Not graded.)*
+The code block below computes standard deviations and IQRs for each sample. *(Not graded.)*
 
 ```{webr}
 #| exercise: compute-sd-iqr
@@ -603,16 +608,7 @@ ______
 
 :::{.hint exercise="sd-iqr-campaign"}
 :::{.callout-note collapse="false"}
-## Hint 1
-
-Use the `c()` function to define your data, then apply `sd()` and `IQR()`.
-
-:::
-:::
-
-:::{.hint exercise="sd-iqr-campaign"}
-:::{.callout-note collapse="false"}
-## Hint 2 (Solved)
+## Hint 1 (Solved)
 
 ```{r}
 #| echo: true
@@ -632,18 +628,7 @@ IQR(worker_b)
 
 ## Summarizing Categorical Data
 
-Categorical data is best summarized using a frequency table. Consider the samples of diamond cuts below:
-
-```{r}
-#| echo: false
-#| eval: true
-
-cutSamples |>
-  kable() |>
-  kable_styling(bootstrap_options = c("hover", "striped"))
-```
-
-The code block below is preset for `Sample_One` — adapt it to summarize `Sample_Two` and `Sample_Three`. *(Not graded.)*
+Categorical data is best summarized using a frequency table. The code block below is preset for `Sample_One` — adapt it to summarize `Sample_Two` and `Sample_Three`. *(Not graded.)*
 
 ```{webr}
 #| exercise: summarize-cut
@@ -679,6 +664,12 @@ p1 + p2
 
 ## Submit
 
+There are two submission codes below — one for your multiple choice and checkbox responses, and one for your graded coding exercises. Copy both and paste them into the submission form provided by your instructor.
+
+---
+
+### Code 1: Question Responses
+
 ```{ojs}
 //| echo: false
 
@@ -687,9 +678,10 @@ function getItem(key, fallback) {
   return val !== null ? JSON.parse(val) : fallback;
 }
 
-function buildResults() {
+function buildQuestionResults() {
   return {
     notebook: "Topic 3: Descriptive Statistics",
+    type: "questions",
     timestamp: new Date().toISOString(),
     questions: {
       q1_measures_of_center: {
@@ -722,17 +714,6 @@ function buildResults() {
         correct_answer: "1",
         result: localStorage.getItem("q6_result") ?? "unattempted"
       }
-    },
-    exercises: {
-      mean_sample_one: {
-        result: localStorage.getItem("ex_mean_sample_one") ?? "unattempted"
-      },
-      mean_sample_three: {
-        result: localStorage.getItem("ex_mean_sample_three") ?? "unattempted"
-      },
-      my_data: {
-        result: localStorage.getItem("ex_my_data") ?? "unattempted"
-      }
     }
   };
 }
@@ -741,30 +722,43 @@ function toBase64(str) {
   return btoa(unescape(encodeURIComponent(str)));
 }
 
-// Recompute whenever any question changes
-submission_hash = {
+question_hash = {
   q1; q2; q3; q4; q5; q6;
-  return toBase64(JSON.stringify(buildResults()));
+  return toBase64(JSON.stringify(buildQuestionResults()));
 }
 ```
-
-:::{.callout-warning}
-## Submit Your Work
-
-When you have completed the activity, copy the submission code below and paste it into the course submission form provided by your instructor.
 
 ```{ojs}
 //| echo: false
 
-html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="this.focus(); document.execCommand('selectAll')">
-  ${submission_hash}
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
 </div>
 <p style="margin-top: 8px; font-size: 0.9em; color: #555;">
-  Click the box to select, then copy (Ctrl+C / Cmd+C).
+  Click the box to copy to clipboard.
 </p>`
 ```
 
-:::
+---
+
+### Code 2: Exercise Results
+
+Click the button below to generate your exercise submission code. **You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results.**
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
+
+Copy the code that appears above and paste it into the submission form along with your question code.
+
+---
 
 ## Summary
 

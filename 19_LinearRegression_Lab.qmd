@@ -1,0 +1,958 @@
+---
+title: "Topic 19: Linear Regression (Lab)"
+engine: knitr
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        .exercise-editor-body { max-height: 300px; overflow-y: auto; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - ggplot2
+        - gradethis
+        - openintro
+        - skimr
+      cell-options:
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_checkbox
+
+ok_checkbox <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Not Yet! ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(dplyr)
+library(ggplot2)
+library(openintro)
+library(skimr)
+
+data(evals)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(openintro)
+library(skimr)
+
+data(evals)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+:::{.callout-note}
+## About
+
+This lab introduces simple and multiple linear regression. We'll analyze data from a study on student course evaluations at the University of Texas at Austin, exploring how instructor and course characteristics relate to evaluation scores.
+:::
+
+:::{.callout-note}
+## License
+
+This is a derivative of a product of OpenIntro released under a [Creative Commons Attribution-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-sa/3.0){target="_blank"} license. This lab was adapted from a lab written by Mine Çetinkaya-Rundel and Andrew Bray.
+:::
+
+## An Introduction to Linear Regression
+
+Consider the inference tasks we've worked through so far. We've compared numerical or categorical variables across one or two populations, and extended that to three or more groups with ANOVA and $\chi^2$. In those cases, the grouping variable was always categorical. Now we ask: what if *both* variables are numerical? Can we ask whether there is an association between a numerical $X$ and a numerical $Y$? The answer is yes — and the technique is called **linear regression**.
+
+Let's check in with a few short videos from OpenIntro to develop the idea.
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/mPvtZhdPBhQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/z8DmwG2G4Qc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+Simple linear regression uses a single numerical predictor to predict a numerical response. The model takes the form of a straight line:
+
+$$\mathbb{E}[y] = \beta_0 + \beta_1 x$$
+
+where $\beta_0$ is the intercept and $\beta_1$ is the slope. The full model includes an error term $\varepsilon$ representing unexplained noise, but since we assume $\varepsilon \sim N(0, \sigma)$, we typically write the model in terms of the expected (average) response. Regression models are most reliable for **interpolation** — making predictions within the range of observed predictor values — and should be used with caution for **extrapolation** beyond that range.
+
+## The Data
+
+Many college courses conclude by giving students the opportunity to evaluate the course and instructor anonymously. However, the use of these evaluations as indicators of teaching effectiveness is often criticized because they may reflect non-teaching-related characteristics such as the physical appearance of the instructor. The article "*Beauty in the classroom: instructors' pulchritude and putative pedagogical productivity*" (Hamermesh and Parker, 2005) found that instructors perceived as more attractive receive higher instructional ratings.
+
+In this lab we analyze data from that study to understand what goes into a positive professor evaluation. The data were gathered from end-of-semester student evaluations for a large sample of professors at the University of Texas at Austin. Six students also rated each professor's physical appearance. Each row of the dataset represents a different course.
+
+The `evals` dataset contains the following variables:
+
+| Variable | Description |
+|:---|:---|
+| `score` | average professor evaluation score: (1) very unsatisfactory – (5) excellent |
+| `rank` | rank of professor: teaching, tenure track, tenured |
+| `ethnicity` | ethnicity of professor: not minority, minority |
+| `gender` | gender of professor: female, male |
+| `language` | language of school where professor received education: english or non-english |
+| `age` | age of professor |
+| `cls_perc_eval` | percent of students in class who completed evaluation |
+| `cls_did_eval` | number of students in class who completed evaluation |
+| `cls_students` | total number of students in class |
+| `cls_level` | class level: lower, upper |
+| `cls_profs` | number of professors teaching sections in course in sample: single, multiple |
+| `cls_credits` | number of credits of class: one credit (lab, PE, etc.), multi credit |
+| `bty_f1lower` | beauty rating from lower-level female student: (1) lowest – (10) highest |
+| `bty_f1upper` | beauty rating from upper-level female student |
+| `bty_f2upper` | beauty rating from second upper-level female student |
+| `bty_m1lower` | beauty rating from lower-level male student |
+| `bty_m1upper` | beauty rating from upper-level male student |
+| `bty_m2upper` | beauty rating from second upper-level male student |
+| `bty_avg` | average beauty rating of professor |
+| `pic_outfit` | outfit of professor in picture: not formal, formal |
+| `pic_color` | color of professor's picture: color, black & white |
+
+:::{.callout-caution}
+## Check Your Understanding: Study Design I
+
+What is the difference between an observational study and an experiment?
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.radio(
+  new Map([
+    ["An experiment must be conducted in a lab.", 1],
+    ["An experiment includes randomization and a manipulated condition to be tested while an observational study lacks manipulation.", 2],
+    ["Participants in an experiment must sign a waiver.", 3],
+    ["An experiment includes much more data.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+);
+
+localStorage.setItem("q1", JSON.stringify(q1));
+ok_response(q1, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Study Design II
+
+Is this an observational study or an experiment?
+
+```{ojs}
+//| echo: false
+
+viewof q2 = Inputs.radio(
+  new Map([
+    ["An observational study.", 1],
+    ["An experiment.", 2]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+);
+
+localStorage.setItem("q2", JSON.stringify(q2));
+ok_response(q2, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Study Design III
+
+The original research question asks whether beauty **leads directly to** differences in course evaluations. Given the study design, is it possible to answer this question as phrased?
+
+```{ojs}
+//| echo: false
+
+viewof q3 = Inputs.radio(
+  new Map([
+    ["Yes, it is possible to answer the question as phrased.", 1],
+    ["No. The question invokes a causal relationship — answering it as phrased requires data collected via an experiment.", 2],
+    ["No, the study did not include enough data to answer the question as phrased.", 3],
+    ["No. The question posed is not a data question.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+);
+
+localStorage.setItem("q3", JSON.stringify(q3));
+ok_response(q3, "2");
+```
+
+:::
+
+## Exploratory Analysis
+
+Use the code block below to draw a histogram of the `score` variable in the `evals` data frame. Include the following labels for the plot:
+
+```{r}
+#| echo: true
+#| eval: false
+labs(
+    title = "Distribution of Course Evaluation Scores",
+    x = "Score",
+    y = ""
+  )
+```
+
+```{webr}
+#| exercise: hist-scores
+______
+```
+
+:::{.hint exercise="hist-scores"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Pipe the `evals` data frame into `ggplot()`.
+
+:::
+:::
+
+:::{.hint exercise="hist-scores"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Add a `geom_histogram()` layer. For a histogram, only map `x` — the heights of the bars are computed automatically from the data.
+
+```{r}
+#| echo: true
+#| eval: false
+
+evals |>
+  ggplot() +
+  geom_histogram(aes(x = ___))
+```
+
+:::
+:::
+
+:::{.hint exercise="hist-scores"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+Don't forget to add the labels.
+
+```{r}
+#| echo: true
+#| eval: false
+
+evals |>
+  ggplot() +
+  geom_histogram(aes(x = score)) +
+  labs(
+    title = "Distribution of Course Evaluation Scores",
+    x = "Score",
+    y = ""
+  )
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: hist-scores
+#| solution: true
+
+evals |>
+  ggplot() +
+  geom_histogram(aes(x = score)) +
+  labs(
+    title = "Distribution of Course Evaluation Scores",
+    x = "Score",
+    y = ""
+  )
+```
+
+```{webr}
+#| exercise: hist-scores
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Score Distribution I
+
+Describe the distribution of `score`.
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.radio(
+  new Map([
+    ["The distribution is approximately normal.", 1],
+    ["The distribution is approximately uniform.", 2],
+    ["The distribution is bimodal.", 3],
+    ["The distribution is skewed left.", 4],
+    ["The distribution is skewed right.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+);
+
+localStorage.setItem("q4", JSON.stringify(q4));
+ok_response(q4, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Score Distribution II
+
+What does this tell you about how students typically rate courses?
+
+```{ojs}
+//| echo: false
+
+viewof q5 = Inputs.radio(
+  new Map([
+    ["Students give high scores more often than low scores.", 1],
+    ["Students give low scores more often than high scores.", 2],
+    ["Students typically give moderate scores with fewer giving very high or very low scores.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+);
+
+localStorage.setItem("q5", JSON.stringify(q5));
+ok_response(q5, "1");
+```
+
+:::
+
+Use the code block below to explore relationships between other variables in the `evals` data frame. Try grouped summaries and additional plots as you see fit.
+
+```{webr}
+#| exercise: data-viz
+# Explore the evals data
+
+```
+
+:::{.hint exercise="data-viz"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Try `group_by()` and `summarize()` to compare numerical summaries across groups, or use `ggplot()` to construct boxplots, scatterplots, or histograms for variables that interest you.
+
+:::
+:::
+
+## Simple Linear Regression
+
+The fundamental phenomenon suggested by Hamermesh and Parker is that better-looking instructors receive higher evaluation scores. Create a scatterplot with `bty_avg` on the horizontal axis and `score` on the vertical axis to see whether this appears to be the case. Include the following labels:
+
++ **Title:** *Association between Attractiveness and Evaluation Score*
++ **x-axis:** *Average Beauty Rating*
++ **y-axis:** *Course Evaluation Score*
+
+```{webr}
+#| exercise: bty-score
+______
+```
+
+:::{.hint exercise="bty-score"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Pipe `evals` into `ggplot()` and use `geom_point()` for a scatterplot. You'll need both `x` and `y` aesthetic mappings.
+
+:::
+:::
+
+:::{.hint exercise="bty-score"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Since the researchers suspect attractiveness impacts evaluation score, use `bty_avg` as `x` and `score` as `y`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+evals |>
+  ggplot() +
+  geom_point(aes(x = ___, y = ___))
+```
+
+:::
+:::
+
+:::{.hint exercise="bty-score"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+```{r}
+#| echo: true
+#| eval: false
+
+evals |>
+  ggplot() +
+  geom_point(aes(x = bty_avg, y = score)) +
+  labs(
+    title = "Association between Attractiveness and Evaluation Score",
+    x = "Average Beauty Rating",
+    y = "Course Evaluation Score"
+  )
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: bty-score
+#| solution: true
+
+evals |>
+  ggplot() +
+  geom_point(aes(x = bty_avg, y = score)) +
+  labs(
+    title = "Association between Attractiveness and Evaluation Score",
+    x = "Average Beauty Rating",
+    y = "Course Evaluation Score"
+  )
+```
+
+```{webr}
+#| exercise: bty-score
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+Before drawing conclusions, compare the number of observations in `evals` with the number of visible points in your scatterplot. Does something seem off? Use the code block below to replot using `geom_jitter()` instead of `geom_point()`. What was misleading about the original scatterplot?
+
+```{webr}
+#| exercise: bty-score-jitter
+# Recreate the scatterplot with geom_jitter()
+
+```
+
+:::{.hint exercise="bty-score-jitter"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Copy the code from the previous scatterplot and replace `geom_point()` with `geom_jitter()`. The `geom_jitter()` layer adds a small amount of random noise to each point's position to prevent overplotting.
+
+:::
+:::
+
+Now let's fit a linear model. The code block below builds a simple linear regression model predicting evaluation score from average beauty rating. Run it and use the summary output to answer the questions that follow.
+
+```{webr}
+#| exercise: simple-reg-model
+
+m_bty <- lm(score ~ bty_avg, data = evals)
+summary(m_bty)
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Simple Regression I
+
+Is average beauty rating a *statistically* significant predictor of overall evaluation score?
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["Yes, the coefficient estimate is not 0.", 1],
+    ["No, the p-value associated with the intercept is smaller than the p-value for bty_avg.", 2],
+    ["No, the R-squared values are quite small.", 3],
+    ["Yes, the p-value associated with bty_avg is below 0.05.", 4],
+    ["No, the p-value associated with bty_avg is above 0.05.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+);
+
+localStorage.setItem("q6", JSON.stringify(q6));
+ok_response(q6, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Simple Regression II
+
+What is the approximate value of the intercept?
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["0", 1],
+    ["0.067", 2],
+    ["0.076", 3],
+    ["3.88", 4],
+    ["2e-16", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+);
+
+localStorage.setItem("q7", JSON.stringify(q7));
+ok_response(q7, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Simple Regression III
+
+What is the slope of the regression model with respect to average beauty rating?
+
+```{ojs}
+//| echo: false
+
+viewof q8 = Inputs.radio(
+  new Map([
+    ["0.067", 1],
+    ["3.88", 2],
+    ["5.05e-05", 3],
+    ["2e-16", 4],
+    ["0.535", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+);
+
+localStorage.setItem("q8", JSON.stringify(q8));
+ok_response(q8, "1");
+```
+
+:::
+
+Use the code block below to add the regression line to your jittered scatterplot using `geom_abline()` with the slope and intercept from the model summary.
+
+```{webr}
+#| exercise: add-abline
+______
+```
+
+:::{.hint exercise="add-abline"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Start with the jittered scatterplot you produced earlier and add a `geom_abline()` layer.
+
+:::
+:::
+
+:::{.hint exercise="add-abline"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The `slope` and `intercept` arguments in `geom_abline()` are not mapped from data columns, so they go outside of any `aes()` call.
+
+```{r}
+#| echo: true
+#| eval: false
+
+evals |>
+  ggplot() +
+  geom_jitter(aes(x = bty_avg, y = score)) +
+  geom_abline(slope = ___, intercept = ___) +
+  labs(
+    title = "Association between Attractiveness and Evaluation Score",
+    x = "Average Beauty Rating",
+    y = "Course Evaluation Score"
+  )
+```
+
+:::
+:::
+
+:::{.hint exercise="add-abline"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+Use the slope and intercept values from the model summary.
+
+```{r}
+#| echo: true
+#| eval: false
+
+evals |>
+  ggplot() +
+  geom_jitter(aes(x = bty_avg, y = score)) +
+  geom_abline(slope = 0.06664, intercept = 3.88034) +
+  labs(
+    title = "Association between Attractiveness and Evaluation Score",
+    x = "Average Beauty Rating",
+    y = "Course Evaluation Score"
+  )
+```
+
+:::
+:::
+
+Write out the equation for the linear model and interpret the slope in context.
+
+:::{.callout-caution}
+## Check Your Understanding: Practical Significance I
+
+From the plot, does average beauty rating seem to be a *practically* significant predictor of evaluation score?
+
+```{ojs}
+//| echo: false
+
+viewof q9 = Inputs.radio(
+  new Map([
+    ["No. We should not expect a model using bty_avg to yield accurate predictions of evaluation scores.", 1],
+    ["Yes. There is no difference between statistical and practical significance.", 2],
+    ["Yes. Students give better scores to instructors who are better looking.", 3],
+    ["Yes. Students give worse scores to instructors who are better looking.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9") ?? "null")}
+);
+
+localStorage.setItem("q9", JSON.stringify(q9));
+ok_response(q9, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Practical Significance II
+
+What does it mean that average beauty rating is a *statistically* significant but not *practically* significant predictor of evaluation score?
+
+```{ojs}
+//| echo: false
+
+viewof q10 = Inputs.radio(
+  new Map([
+    ["The model resulted in a Type I error, claiming a significant relationship where there was none.", 1],
+    ["The significant relationship is a result of noise in the sample data.", 2],
+    ["The regression model suggests that there is implicit bias in course evaluation scores depending on the attractiveness of the instructor.", 3],
+    ["The attractiveness of an instructor is a primary driver of how students rate their courses.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
+);
+
+localStorage.setItem("q10", JSON.stringify(q10));
+ok_response(q10, "3");
+```
+
+:::
+
+## Multiple Linear Regression
+
+We now expand the model to include additional predictors so we can better understand which instructor and course characteristics, on average, lead to the highest evaluation scores. We'll start with a large model and then use **backward elimination** — removing the least significant predictor one at a time — until all remaining predictors are statistically significant.
+
+First, let's check in with Dr. Çetinkaya-Rundel again for a brief introduction to multiple regression.
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/sQpAuyfEYZg" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/VB1qSwoF-l0" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+Multiple regression generalizes simple regression by allowing more than one predictor:
+
+$$\mathbb{E}[y] = \beta_0 + \beta_1 x_1 + \beta_2 x_2 + \cdots + \beta_k x_k$$
+
+Predictors may be numerical (each coefficient is a slope, describing the expected change in the response per one-unit increase in that predictor while all others constant) or categorical (each coefficient is a shift in the intercept relative to a reference level).
+
+Model quality is often measured with **adjusted $R^2$**, which captures the proportion of variability in the response explained by the model, while penalizing unnecessary complexity. Values closer to 1 are better.
+
+:::{.callout-note}
+You'll notice that rather than including all six beauty rating variables, we include only `bty_avg`. This is because the individual beauty ratings are highly correlated with one another — they encode essentially the same information. Including highly correlated predictors can cause problems for regression. Look for a full course in regression analysis to learn more.
+:::
+
+Run the code block below to build and inspect the full model.
+
+```{webr}
+#| exercise: full-model
+
+m_full <- lm(score ~ ethnicity + gender + language + age + cls_perc_eval +
+               cls_students + cls_level + cls_profs + cls_credits +
+               bty_avg + pic_color + pic_outfit,
+             data = evals)
+summary(m_full)
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Full Model I
+
+Using $\alpha = 0.05$, which predictor variables in the full model are **not** statistically significant? Select all that apply.
+
+```{ojs}
+//| echo: false
+
+mutable ok_checkbox = (response, n) => { return html`Loading...` };
+viewof q11 = Inputs.checkbox(
+  new Map([
+    ["ethnicity", 1],
+    ["gender", 2],
+    ["language", 3],
+    ["age", 4],
+    ["cls_perc_eval", 5],
+    ["cls_students", 6],
+    ["cls_level", 7],
+    ["cls_profs", 8],
+    ["cls_credits", 9],
+    ["bty_avg", 10],
+    ["pic_color", 11],
+    ["pic_outfit", 12]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q11") ?? "[]")}
+);
+
+localStorage.setItem("q11", JSON.stringify(q11));
+ok_checkbox(q11.toString(), "1,6,7,8,12");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Full Model II
+
+How many predictor variables should be removed before re-running the model?
+
+```{ojs}
+//| echo: false
+
+viewof q12 = Inputs.radio(
+  new Map([
+    ["0 — all predictors are significant.", 1],
+    ["1 — remove only the least significant predictor, then reassess.", 2],
+    ["All insignificant predictors at once.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q12") ?? "null")}
+);
+
+localStorage.setItem("q12", JSON.stringify(q12));
+ok_response(q12, "2");
+```
+
+:::
+
+:::{.callout-tip}
+## Why Remove Only One at a Time?
+
+When a predictor is removed, all of the remaining coefficients, standard errors, and $p$-values change. A predictor that appeared insignificant in the full model may become significant once another predictor is removed. Backward elimination removes predictors one at a time — always dropping the one with the highest $p$-value — to account for this.
+:::
+
+Use the code block below to remove the predictor with the highest $p$-value from the full model, re-run it, and inspect the summary.
+
+```{webr}
+#| exercise: model-second-it
+
+m_reduce1 <- lm(score ~ ethnicity + gender + language + age + cls_perc_eval +
+                  cls_students + cls_level + cls_profs + cls_credits +
+                  bty_avg + pic_color + pic_outfit,
+                data = evals)
+summary(m_reduce1)
+```
+
+:::{.hint exercise="model-second-it"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Which predictor had the highest $p$-value in the full model? Delete it from the formula in the `lm()` call.
+
+:::
+:::
+
+:::{.hint exercise="model-second-it"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+`cls_profs` had the highest $p$-value in the full model. Remove it from the formula.
+
+```{r}
+#| echo: true
+#| eval: false
+
+m_reduce1 <- lm(score ~ ethnicity + gender + language + age + cls_perc_eval +
+                  cls_students + cls_level + cls_credits +
+                  bty_avg + pic_color + pic_outfit,
+                data = evals)
+summary(m_reduce1)
+```
+
+:::
+:::
+
+```{webr}
+#| exercise: model-second-it
+#| solution: true
+
+m_reduce1 <- lm(score ~ ethnicity + gender + language + age + cls_perc_eval +
+                  cls_students + cls_level + cls_credits +
+                  bty_avg + pic_color + pic_outfit,
+                data = evals)
+summary(m_reduce1)
+```
+
+```{webr}
+#| exercise: model-second-it
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+Continue the backward elimination process in the code block below, removing one predictor at a time until all remaining predictors are statistically significant.
+
+```{webr}
+#| exercise: model-reducing
+# Continue removing one predictor at a time
+
+```
+
+:::{.hint exercise="model-reducing"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Start with the model from the previous code block. Identify the predictor with the highest $p$-value, remove it, re-run, and inspect the output. Repeat until all predictors are significant.
+
+:::
+:::
+
+:::{.hint exercise="model-reducing"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+After removing `cls_profs`, the next candidates to check are `cls_students`, `cls_level`, `ethnicity`, and `pic_outfit`. Which has the highest $p$-value?
+
+:::
+:::
+
+Once you've identified the final model, use the code block below to build it as `m_final` and print the summary.
+
+```{webr}
+#| exercise: model-final
+______
+```
+
+:::{.hint exercise="model-final"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Copy and paste the final version of your model from the previous code block, rename it `m_final`, and run `summary(m_final)`.
+
+:::
+:::
+
+```{webr}
+#| exercise: model-final
+#| solution: true
+
+m_final <- lm(score ~ ethnicity + gender + language + age + cls_perc_eval +
+                cls_credits + bty_avg + pic_color,
+              data = evals)
+summary(m_final)
+```
+
+```{webr}
+#| exercise: model-final
+#| check: true
+
+gradethis::grade_this_code()
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Final Model
+
+Based on the final model, select the characteristics associated with a higher predicted evaluation score. Select all that apply.
+
+```{ojs}
+//| echo: false
+
+viewof q13 = Inputs.checkbox(
+  new Map([
+    ["A non-minority instructor.", 1],
+    ["A male instructor.", 2],
+    ["An instructor whose education was conducted in English.", 3],
+    ["An older instructor.", 4],
+    ["A class with a high percentage of students completing evaluations.", 5],
+    ["A single-credit course.", 6],
+    ["An instructor with a higher average beauty rating.", 7],
+    ["An instructor whose picture is printed in color.", 8]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q13") ?? "[]")}
+);
+
+localStorage.setItem("q13", JSON.stringify(q13));
+ok_checkbox(q13.toString(), "1,2,3,5,6,7");
+```
+
+:::
+
+As with the simple regression model, we've identified several *statistically* significant predictors of course evaluation score — but statistical significance does not imply practical significance.
+
+:::{.callout-important}
+## Replicated Findings and Course Evaluations
+
+What we have replicated is the core finding of Hamermesh and Parker: there are meaningful implicit biases embedded in the instrument used to measure teaching quality. The fact that instructor ethnicity, gender, language background, attractiveness, and picture format all have explanatory value in predicting evaluation scores raises serious questions about what these evaluations actually measure.
+:::
+
+If you found this lab interesting, linear regression is just the beginning of a powerful family of statistical modeling techniques. Look for full courses in regression analysis, predictive modeling, statistical learning, or machine learning to go deeper.
+
+## Submit
+
+:::{.callout-warning}
+
+Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+
+:::
+
+## Summary
+
+:::{.callout-tip}
+## Main Takeaways
+
++ **Simple linear regression** models the relationship between a single numerical predictor $x$ and a numerical response $y$ using a straight line: $\mathbb{E}[y] = \beta_0 + \beta_1 x$. The slope $\beta_1$ describes the expected change in $y$ per one-unit increase in $x$.
++ **Statistical significance** and **practical significance** are not the same thing. A predictor can be statistically significant — meaning the data provide evidence that the true coefficient is nonzero — while explaining very little of the variability in the response and yielding poor predictions.
++ **Multiple linear regression** extends the simple model to include multiple predictors, which may be numerical or categorical. Each numerical predictor's coefficient is a slope; categorical predictor coefficients shift the intercept.
++ **Backward elimination** is one strategy for building a parsimonious model: start with all predictors, remove the least significant one at a time, and reassess after each removal. Removing only one predictor at a time is important because all coefficients and $p$-values change when a predictor is dropped.
++ **Observational data cannot establish causation.** The finding that beauty rating predicts evaluation score does not mean that attractiveness *causes* higher ratings — it means there is an association. An experiment with random assignment would be needed to establish causality.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+This lab completes the first pass through the full introductory statistics curriculum. If you've completed all of these activities, then you've traveled from data types and sampling all the way through linear regression — building a coherent framework for asking questions with data, quantifying uncertainty, and drawing defensible conclusions. The tools you've learned here are the foundation for more advanced work in regression modeling, machine learning, causal inference, and beyond. Well done!
+
+I'm planning to develop similar series' of activities for other courses. I hope you'll [check back in](https://agmath.github.io/) to see if I've got anything else that can be useful to you.
+:::

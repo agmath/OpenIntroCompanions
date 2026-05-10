@@ -212,15 +212,9 @@ ok_response(q3, "2");
 
 :::
 
-Good work on that last set of questions. In those problems you could find the probability by counting the number of ways the desired outcome could occur and then dividing that number by the total number of outcomes possible. In the last question, there were simply more ways to roll a five (four ways to do it) than to roll a two (just one way). 
+Good work on that last set of questions. In those problems you could find the probability by counting the number of ways the desired outcome could occur and then dividing that number by the total number of outcomes possible. In the last question, there were simply more ways to roll a five (four ways to do it) than to roll a two (just one way). What if we try doing something a bit more complicated? Say we wanted to know the probability of rolling at least a two on a single roll of a die *and then* flipping a "tails" on a single flip of a coin?
 
-What if we try doing something a bit more complicated? Say we wanted to know the probability of rolling at least a two on a single roll of a die *and then* flipping a "tails" on a single flip of a coin?
-
-:::{.callout-tip}
-##Probability and Independent Events
-If $A$ and $B$ are independent events (that is, the probability that $B$ occurs does not depend on whether or not $A$ occurred and vice-versa), then the probability of $A$ and $B$ occurring is the product of the probability of $A$ occurring and the probability of $B$ occurring. Mathematically, we write: $\mathbb{P}\left[A~\text{and}~B\right] = \mathbb{P}\left[A\right]\cdot\mathbb{P}\left[B\right]$.
-
-:::
+**Probability and Independent Events:** If $A$ and $B$ are independent events (that is, the probability that $B$ occurs does not depend on whether or not $A$ occurred and vice-versa), then the probability of $A$ and $B$ occurring is the product of the probability of $A$ occurring and the probability of $B$ occurring. Mathematically, we write: $\mathbb{P}\left[A~\text{and}~B\right] = \mathbb{P}\left[A\right]\cdot\mathbb{P}\left[B\right]$.
 
 :::{.callout-caution}
 ## Check Your Understanding: Probability and Independent Events I

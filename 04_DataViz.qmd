@@ -392,7 +392,7 @@ Were you able to obtain the information you were looking for? Be sure to ask a q
 The code below creates a plot of highway miles per gallon (`hwy`) against engine displacement `displ` (a measure of the size of an engine).
 
 ```{r}
-#| echo: false
+#| echo: true
 #| eval: true
 #| message: false
 #| warning: false

@@ -1584,7 +1584,7 @@ cat(hash)
 + If $X$ counts successes in a binomial experiment with $n$ trials and success probability $p$:
   + $\mathbb{P}[X = k] \approx$ `dbinom(k, n, p)` — for **exactly** $k$ successes
   + $\mathbb{P}[X \leq k] \approx$ `pbinom(k, n, p)` — for **at most** $k$ successes
-  + Draw a picture to help you see how to use `pbinom()` and/or `dbinom()` to calculate probabilities. These two functions above are sufficient to handle obtain binomial probability — the challenge is identifying how to combine them.
+  + Draw a picture to help you see how to use `pbinom()` and/or `dbinom()` to calculate probabilities. These two functions above are sufficient to handle any binomial probability scenario — the challenge is identifying how to combine them.
 + The **expected number** of successes is $\mathbb{E}[X] = n \cdot p$.
 + The **standard deviation** of number of successes is $s_X = \sqrt{n \cdot p \cdot (1 - p)}$.
 :::

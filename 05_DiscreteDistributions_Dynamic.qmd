@@ -11,6 +11,8 @@ format:
       packages:
         - dplyr
         - gradethis
+        - jsonlite
+        - base64enc
       cell-options: 
         persist: true
     live:
@@ -28,9 +30,32 @@ format:
 
 library(htmltools)
 ok_response <- function(response, n) {
-  if (is.na(response)) HTML("")
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
   else if (response == n) div(HTML("Correct ✓"), style = "color: green")
   else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{ojs}
+//| echo: false
+
+function ok_checkbox(response, n) {
+  if (!response || response.length === 0)
+    return html`<span style="color:purple">You haven't answered yet.</span>`;
+  if (response.toString() === n)
+    return html`<span style="color:green">Correct ✓</span>`;
+  return html`<span style="color:red">Not Yet! ✗</span>`;
+}
+```
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - normalize_checkbox_response
+
+normalize_checkbox_response <- function(x) {
+  return(cat(sort(x), sep = ","))
 }
 ```
 
@@ -47,6 +72,9 @@ ok_response <- function(response, n) {
 #|   - thresh_between_lo
 #|   - thresh_between_hi
 
+library(jsonlite)
+library(base64enc)
+
 set.seed(NULL)
 
 # Sample size: integer between 15 and 25
@@ -57,16 +85,25 @@ p_assign <- sample(c(0.25, 0.28, 0.30, 0.32, 0.34, 0.36, 0.38, 0.40), 1)
 p_pct <- round(p_assign * 100)
 
 # Thresholds derived from n so they are always pedagogically sensible
-# "at most" threshold: somewhere around the median
 thresh_atmost <- round(n_students * p_assign) + sample(1:3, 1)
-
-# "at least" threshold: upper portion of the distribution
 thresh_atleast <- round(n_students * p_assign) + sample(4:7, 1)
-thresh_atleast <- min(thresh_atleast, n_students - 1)  # keep in range
-
-# "between" thresholds: lo below median, hi above median
+thresh_atleast <- min(thresh_atleast, n_students - 1)
 thresh_between_lo <- max(2, round(n_students * p_assign) - sample(2:4, 1))
 thresh_between_hi <- min(n_students - 1, round(n_students * p_assign) + sample(3:6, 1))
+
+# Initialise exercise results
+exercise_results <- list(
+  notebook              = "Topic 5: Discrete Probability Distributions",
+  prob_a_and_b          = "unattempted",
+  chem_quiz_binom       = "unattempted",
+  binom_assignments_ex1 = "unattempted",
+  binom_assignments_ex2 = "unattempted",
+  binom_assignments_ex3 = "unattempted",
+  binom_assignments_ex4 = "unattempted",
+  binom_assignments_ex5 = "unattempted",
+  binom_assignments_ex6 = "unattempted",
+  binom_assignments_ex7 = "unattempted"
+)
 ```
 
 ```{r setup, include=FALSE}
@@ -127,9 +164,15 @@ viewof q1 = Inputs.radio(
     ["4 / 6", 5],
     ["5 / 6", 6],
     ["6 / 6", 7]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
 );
 
+{
+  localStorage.setItem("q1_selected", JSON.stringify(q1));
+  localStorage.setItem("q1_correct", "2");
+  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q1, "2");
 ```
 
@@ -152,9 +195,15 @@ viewof q2 = Inputs.radio(
     ["4 / 6", 5],
     ["5 / 6", 6],
     ["6 / 6", 7]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
 );
 
+{
+  localStorage.setItem("q2_selected", JSON.stringify(q2));
+  localStorage.setItem("q2_correct", "4");
+  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q2, "4");
 ```
 
@@ -172,9 +221,15 @@ viewof q3 = Inputs.radio(
   new Map([
     ["The probability of rolling a total of two.", 1],
     ["The probability of rolling a total of five.", 2]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
 );
 
+{
+  localStorage.setItem("q3_selected", JSON.stringify(q3));
+  localStorage.setItem("q3_correct", "2");
+  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q3, "2");
 ```
 
@@ -201,9 +256,15 @@ viewof q4 = Inputs.radio(
     ["4 / 6", 5],
     ["5 / 6", 6],
     ["6 / 6", 7]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
 );
 
+{
+  localStorage.setItem("q4_selected", JSON.stringify(q4));
+  localStorage.setItem("q4_correct", "6");
+  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 6 ? "correct" : "incorrect"));
+}
 ok_response(q4, "6");
 ```
 
@@ -222,9 +283,15 @@ viewof q5 = Inputs.radio(
     ["0 / 2", 1],
     ["1 / 2", 2],
     ["2 / 2", 3]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
 );
 
+{
+  localStorage.setItem("q5_selected", JSON.stringify(q5));
+  localStorage.setItem("q5_correct", "2");
+  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q5, "2");
 ```
 
@@ -260,9 +327,16 @@ Use the probabilities you identified above. The flip of a coin and roll of a fai
 
 :::{.hint exercise="prob-a-and-b"}
 :::{.callout-note collapse="false"}
-## Hint 3
+## Hint 3 (Solved)
 
 Since the events are independent, we can multiply the probabilities of the individual outcomes together.
+
+```{r}
+#| echo: true
+#| eval: false
+
+(5/6) * (1/2)
+```
 
 :::
 :::
@@ -278,8 +352,10 @@ Since the events are independent, we can multiply the probabilities of the indiv
 #| exercise: prob-a-and-b
 #| check: true
 
+exercise_results$prob_a_and_b <<- "fail"
 gradethis::grade_this({
   if (abs(.result - .solution) < 0.001) {
+    exercise_results$prob_a_and_b <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -313,9 +389,15 @@ viewof q6 = Inputs.radio(
     ["0.50", 5],
     ["0.80", 6],
     ["1", 7]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
 );
 
+{
+  localStorage.setItem("q6_selected", JSON.stringify(q6));
+  localStorage.setItem("q6_correct", "3");
+  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q6, "3");
 ```
 
@@ -339,9 +421,15 @@ viewof q7 = Inputs.radio(
     ["0.5555", 6],
     ["0.998", 7],
     ["1", 8]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
 );
 
+{
+  localStorage.setItem("q7_selected", JSON.stringify(q7));
+  localStorage.setItem("q7_correct", "2");
+  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q7, "2");
 ```
 
@@ -365,9 +453,15 @@ viewof q8 = Inputs.radio(
     ["0.5555", 6],
     ["0.998", 7],
     ["1", 8]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
 );
 
+{
+  localStorage.setItem("q8_selected", JSON.stringify(q8));
+  localStorage.setItem("q8_correct", "5");
+  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 5 ? "correct" : "incorrect"));
+}
 ok_response(q8, "5");
 ```
 
@@ -389,9 +483,15 @@ viewof q9 = Inputs.radio(
     ["0.0064", 4],
     ["0.20", 5],
     ["1.2", 6]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "null")}
 );
 
+{
+  localStorage.setItem("q9_selected", JSON.stringify(q9));
+  localStorage.setItem("q9_correct", "3");
+  localStorage.setItem("q9_result", q9 === null ? "unattempted" : (q9 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q9, "3");
 ```
 
@@ -415,9 +515,15 @@ viewof q10 = Inputs.radio(
     ["0.40", 6],
     ["0.64", 7],
     ["None of These", 8]
-  ])
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10_selected") ?? "null")}
 );
 
+{
+  localStorage.setItem("q10_selected", JSON.stringify(q10));
+  localStorage.setItem("q10_correct", "8");
+  localStorage.setItem("q10_result", q10 === null ? "unattempted" : (q10 == 8 ? "correct" : "incorrect"));
+}
 ok_response(q10, "8");
 ```
 
@@ -440,7 +546,7 @@ So in the last question, none of the choices were correct -- but why? There are 
 + The probability of <u>at most</u> $k$ successes is given by
 <center> $\displaystyle{\mathbb{P}\left[X \leq k\right] = \sum_{i=0}^{k}{\binom{n}{i}\cdot p^i\left(1 - p\right)^{n-i}} \approx \tt{pbinom(k, n, p)}}$</center>
 
-In the equations above, $\binom{n}{k} = \frac{n!}{k!\left(n-k\right)!}$ counts the number of ways to arrange the $k$ successes amongst the $n$ trials. That being said, the `R` functionality, `dbinom()` and `pbinom()` allow us to bypass the messy formulas -- but you'll still need to know what these functions do in order to use them correctly!
+In the equations above, $\binom{n}{k} = \frac{n!}{k!\left(n-k\right)!}$ counts the number of ways to arrange the $k$ successes amongst the $n$ trials. That being said, the R functionality, `dbinom()` and `pbinom()` allow us to bypass the messy formulas -- but you'll still need to know what these functions do in order to use them correctly!
 
 :::{.callout-tip}
 ## Tip: Binomial Distribution
@@ -460,7 +566,7 @@ dbinom(2, 7, 0.5)
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-The arguments to `dbinom()` are, in order: 
+The arguments to `dbinom()` are, in order:
 
 + number of successful outcomes
 + total number of trials
@@ -483,6 +589,7 @@ You are interested in two successful outcomes, so the first argument doesn't nee
 ## Hint 3
 
 For the second argument, how many questions are on the quiz?
+
 ```{r}
 #| echo: true
 #| eval: false
@@ -529,9 +636,6 @@ dbinom(2, 4, 0.2)
 #| exercise: chem-quiz-binom
 #| solution: true
 
-#Since each question has five possible choices,
-#one of which is correct, the probability of 
-#a correct response on one question is 0.2
 dbinom(2, 4, 0.2)
 ```
 
@@ -539,8 +643,10 @@ dbinom(2, 4, 0.2)
 #| exercise: chem-quiz-binom
 #| check: true
 
+exercise_results$chem_quiz_binom <<- "fail"
 gradethis::grade_this({
   if (abs(.result - .solution) < 0.001) {
+    exercise_results$chem_quiz_binom <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -564,9 +670,7 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-If we had 100 randomly chosen students, how many might you expect failed to hand in at least one assignment? 
-
-How dd you know that? What, mathematically, did you do?
+If we had 100 randomly chosen students, how many might you expect failed to hand in at least one assignment? How did you know that? What, mathematically, did you do?
 
 :::
 :::
@@ -602,8 +706,10 @@ p_assign
 #| exercise: binom-assignments-ex1
 #| check: true
 
+exercise_results$binom_assignments_ex1 <<- "fail"
 gradethis::grade_this({
   if (.result == .solution) {
+    exercise_results$binom_assignments_ex1 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -667,7 +773,7 @@ dbinom(___, ___, ___)
 :::{.callout-note collapse="false"}
 ## Hint 5
 
-The first argument is the number of successes (students not handing in an assignment) we are interested in  — that's 7 here.
+The first argument is the number of successes (students not handing in an assignment) we are interested in — that's 7 here.
 
 ```{r}
 #| echo: true
@@ -683,7 +789,7 @@ dbinom(7, ___, ___)
 :::{.callout-note collapse="false"}
 ## Hint 6
 
-The second argument is the total number of trials. There are `{ojs} n_students` students in the sample, so fill in the second blank with `{ojs} n_students`.
+The second argument is the total number of trials. There are `{ojs} n_students` students in the sample, so fill in the second blank with `n_students`.
 
 ```{r}
 #| echo: true
@@ -725,8 +831,10 @@ dbinom(7, n_students, p_assign)
 #| exercise: binom-assignments-ex2
 #| check: true
 
+exercise_results$binom_assignments_ex2 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - .solution) < 0.0001) {
+    exercise_results$binom_assignments_ex2 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -791,7 +899,7 @@ pbinom(___, ___, ___)
 :::{.callout-note collapse="false"}
 ## Hint 5
 
-For `pbinom()`, the first argument is the maximum number of successes you are willing to consider — that's `{ojs} thresh_atmost` here. The second and third arguments are the number of trials and the probability of success.
+For `pbinom()`, the first argument is the maximum number of successes you are willing to consider — that's `thresh_atmost` here. The second and third arguments are the number of trials and the probability of success.
 
 ```{r}
 #| echo: true
@@ -834,8 +942,10 @@ pbinom(thresh_atmost, n_students, p_assign)
 #| exercise: binom-assignments-ex3
 #| check: true
 
+exercise_results$binom_assignments_ex3 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - .solution) < 0.0001) {
+    exercise_results$binom_assignments_ex3 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -902,7 +1012,7 @@ The challenge is that `pbinom()` will find the probability of *at most* some num
 :::{.callout-note collapse="false"}
 ## Hint 6
 
-The approach below, where the blanks are `{ojs} thresh_atleast`, `{ojs} n_students`, and `{ojs} p_assign`, results in the wrong probability — why?
+The approach below, filling the blanks with `{ojs} thresh_atleast`, `{ojs} n_students`, and `{ojs} p_assign`, results in the wrong probability — why?
 
 ```{r}
 #| echo: true
@@ -918,7 +1028,7 @@ pbinom(___, ___, ___)
 :::{.callout-note collapse="false"}
 ## Hint 7
 
-That call calculates the probability of 0 successes, 1 success, ..., up to `{ojs} thresh_atleast` successes. That's not what we want. We want `{ojs} thresh_atleast` *or more*.
+That call calculates the probability of 0 through `{ojs} thresh_atleast` successes. That's not what we want. We want `{ojs} thresh_atleast` *or more*.
 
 :::
 :::
@@ -977,7 +1087,7 @@ Something is still wrong if we fill in the blanks with `{ojs} thresh_atleast`, `
 :::{.callout-note collapse="false"}
 ## Hint 12
 
-That call removes the probability of at most `{ojs} thresh_atleast` successes, leaving only the probability of more than `{ojs} thresh_atleast` successes. We want *at least* `{ojs} thresh_atleast`, which includes `{ojs} thresh_atleast` itself. Replace the first argument with `{ojs} thresh_atleast - 1`.
+That call removes the probability of at most `{ojs} thresh_atleast` successes, leaving only the probability of *more than* `{ojs} thresh_atleast`. We want *at least* `{ojs} thresh_atleast`, which includes `{ojs} thresh_atleast` itself. Replace the first argument with `thresh_atleast - 1`.
 
 ```{r}
 #| echo: true
@@ -1020,8 +1130,10 @@ Use `{ojs} thresh_atleast - 1` as the first argument, `{ojs} n_students` as the 
 #| exercise: binom-assignments-ex4
 #| check: true
 
+exercise_results$binom_assignments_ex4 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - .solution) < 0.0001) {
+    exercise_results$binom_assignments_ex4 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1062,7 +1174,7 @@ The strategy we used in the previous question won't *exactly* work either. Maybe
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-Which of the following corresponds to a probability that is definitely too big — filling the first argument of `pbinom()` with `{ojs} thresh_between_lo` or filling it with `{ojs} thresh_between_hi`?
+Which of the following corresponds to a probability that is definitely too big — filling the first argument of `pbinom()` with `thresh_between_lo` or with `thresh_between_hi`?
 
 :::
 :::
@@ -1174,8 +1286,10 @@ pbinom(thresh_between_hi, n_students, p_assign) - pbinom(thresh_between_lo - 1, 
 #| exercise: binom-assignments-ex5
 #| check: true
 
+exercise_results$binom_assignments_ex5 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - .solution) < 0.0001) {
+    exercise_results$binom_assignments_ex5 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1257,8 +1371,10 @@ n_students * p_assign
 #| exercise: binom-assignments-ex6
 #| check: true
 
+exercise_results$binom_assignments_ex6 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - .solution) < 0.01) {
+    exercise_results$binom_assignments_ex6 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1332,8 +1448,10 @@ sqrt(n_students * p_assign * (1 - p_assign))
 #| exercise: binom-assignments-ex7
 #| check: true
 
+exercise_results$binom_assignments_ex7 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - .solution) < 0.001) {
+    exercise_results$binom_assignments_ex7 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1345,24 +1463,134 @@ Be sure to write down what questions you had as you worked through these problem
 ## Submit
 
 :::{.callout-warning}
+## Question Hash
 
-Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402) or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html).
+The hash below encodes your responses to the multiple choice questions in this activity.
+
+```{ojs}
+//| echo: false
+
+function buildQuestionResults() {
+  return {
+    notebook: "Topic 5: Discrete Probability Distributions",
+    type: "questions",
+    timestamp: new Date().toISOString(),
+    questions: {
+      q1_basic_prob_1: {
+        selected: q1,
+        correct_answer: "2",
+        result: q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect")
+      },
+      q2_basic_prob_2: {
+        selected: q2,
+        correct_answer: "4",
+        result: q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect")
+      },
+      q3_basic_prob_3: {
+        selected: q3,
+        correct_answer: "2",
+        result: q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect")
+      },
+      q4_independent_events_1: {
+        selected: q4,
+        correct_answer: "6",
+        result: q4 === null ? "unattempted" : (q4 == 6 ? "correct" : "incorrect")
+      },
+      q5_independent_events_2: {
+        selected: q5,
+        correct_answer: "2",
+        result: q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect")
+      },
+      q6_quiz_1: {
+        selected: q6,
+        correct_answer: "3",
+        result: q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect")
+      },
+      q7_quiz_2: {
+        selected: q7,
+        correct_answer: "2",
+        result: q7 === null ? "unattempted" : (q7 == 2 ? "correct" : "incorrect")
+      },
+      q8_quiz_3: {
+        selected: q8,
+        correct_answer: "5",
+        result: q8 === null ? "unattempted" : (q8 == 5 ? "correct" : "incorrect")
+      },
+      q9_quiz_4: {
+        selected: q9,
+        correct_answer: "3",
+        result: q9 === null ? "unattempted" : (q9 == 3 ? "correct" : "incorrect")
+      },
+      q10_quiz_5: {
+        selected: q10,
+        correct_answer: "8",
+        result: q10 === null ? "unattempted" : (q10 == 8 ? "correct" : "incorrect")
+      }
+    }
+  };
+}
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+question_hash = {
+  q1; q2; q3; q4; q5; q6; q7; q8; q9; q10;
+  return toBase64(JSON.stringify(buildQuestionResults()));
+}
+```
+
+```{ojs}
+//| echo: false
+
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded code exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and hit the *Run Code* button on each graded exercise before generating the hash below, to ensure your most recent results are recorded.
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
 
 :::
 
 ## Summary
 
-Up to this point you've been exposed to basic probability, binomial experiments, and using the binomial distribution. Here's a quick recap.
+:::{.callout-tip}
+## Main Takeaways
 
-+ The probability of an event $A$ is a measure of the likelihood of $A$ occurring, and is denoted by $\mathbb{P}\left[A\right]$.
-+ The probability of any event must be between $0$ and $1$.
-+ A binomial experiment satisfies each of the following:
-  + The experiment consists of $n$ repeated trials.
-  + Each trial has two possible outcomes.
-  + The trials are independent of one another.
-+ If $X$ denotes the number of successes resulting from a binomial experiment with $n$ trials and probability of success on a single trial equal to $p$, then
-  + $\mathbb{P}\left[X = k\right] \approx \tt{dbinom(k, n, p)}$
-  + $\mathbb{P}\left[X\leq k\right] \approx \tt{pbinom(k, n, p)}$
-  + Drawing a picture is a crucial step along the way to solving a probability problem. The two functions above are enough to compute the probability of any type of outcome associated with a binomial experiment -- the trick is in finding how to put these tools to use -- drawing a picture will guide you.
-  + The expected value of $X$ (expected number of successes) is given by $\mathbb{E}\left[X\right] = n\cdot p$.
-  + The standard deviation of $X$ (standard deviation of number of successes) is given by $s_X = \sqrt{n\cdot p\left(1 - p\right)}$.
++ The **probability** of an event $A$ is a measure of its likelihood and is denoted $\mathbb{P}[A]$. Every probability must be between 0 and 1.
++ If $A$ and $B$ are **independent events**, then $\mathbb{P}[A \text{ and } B] = \mathbb{P}[A] \cdot \mathbb{P}[B]$.
++ A **binomial experiment** satisfies: (1) $n$ repeated trials, (2) each trial has two possible outcomes, and (3) trials are independent with constant probability of success $p$.
++ If $X$ counts successes in a binomial experiment with $n$ trials and success probability $p$:
+  + $\mathbb{P}[X = k] \approx$ `dbinom(k, n, p)` — for **exactly** $k$ successes
+  + $\mathbb{P}[X \leq k] \approx$ `pbinom(k, n, p)` — for **at most** $k$ successes
+  + Draw a picture to help you see how to use `pbinom()` and/or `dbinom()` to calculate probabilities. These two functions above are sufficient to handle obtain binomial probability — the challenge is identifying how to combine them.
++ The **expected number** of successes is $\mathbb{E}[X] = n \cdot p$.
++ The **standard deviation** of number of successes is $s_X = \sqrt{n \cdot p \cdot (1 - p)}$.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+The next activity introduces the **normal distribution** — a continuous probability distribution that underpins much of classical statistical inference. Our focus will be on learning to compute probabilities and percentiles from this important distribution.
+:::

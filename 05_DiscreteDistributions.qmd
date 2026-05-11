@@ -1291,6 +1291,14 @@ gradethis::grade_this({
 })
 ```
 
+:::{.callout-important}
+## Don't Memorize Approaches
+
+In several of the previous scenarios, we needed to think about the correct "first argument" being passed to `pbinom()`. Don't try to memorize when to subtract one, when to add one, when to leave the number the same as it appeared in the problem, etc. The *language* is what matters, and there are lots of ways to express which outcomes we are most interested in. If you insist on memorizing, you'll become frustrated quickly.
+
+Instead of memorizing, take the time to *draw a picture* to help you. Examples of what these pictures might look like can be seen in [the example and solution document](www/BinomialExample.pdf){target="_blank"}, which I pointed you to earlier.
+:::
+
 6. The expected number of successes in a binomial experiment is sometimes denoted by $\mathbb{E}\left[X\right]$ and can be computed as $\mathbb{E}\left[X\right] = n\cdot p$, where $n$ denotes the number of trials run and $p$ denotes the probability of success on a single trial. Sometimes it is convenient to think of the expected number of successes as "the mean". Use the code block below to compute the expected number of students who have failed to hand in at least one assignment:
 
 ```{webr}

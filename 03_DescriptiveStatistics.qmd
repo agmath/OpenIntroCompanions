@@ -178,12 +178,12 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
+Manually add up the carat values in Sample One, and then divide by the total number of diamonds in the sample.
+
 ```{r}
 #| echo: true
 #| eval: false
-# Manually add up the carat values in Sample One, 
-# and then divide by the total number of diamonds
-# in the sample.
+
 
 ______
 ```
@@ -195,10 +195,12 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+Manually add up the carat values in Sample One, and then divide by the total number of diamonds in the sample. Fill in the blanks.
+
 ```{r}
 #| echo: true
 #| eval: false
-# Fill in the blanks
+
 (___ + ___ + ___ + ___ + ___ + ___ + ___ + ___) / ___
 ```
 
@@ -208,6 +210,8 @@ ______
 :::{.hint exercise="mean-sample-one"}
 :::{.callout-note collapse="false"}
 ## Hint 3 (Solved)
+
+Manually add up the carat values in Sample One, and then divide by the total number of diamonds in the sample.
 
 ```{r}
 #| echo: true
@@ -264,13 +268,48 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
+Start with the code below (copied from our earlier code chunk) and update it to compute the mean of `Sample_Three`.
+
 ```{r}
 #| echo: true
 #| eval: false
-# Start with the code below (copied from our earlier code chunk)
-# and update it to compute the mean of Sample_Three.
+
 samples |>
   summarize(avg_carat_wt = mean(Sample_Two))
+```
+
+:::
+:::
+
+:::{.hint exercise="mean-sample-three"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Start with the code below (copied from our earlier code chunk) and update it to compute the mean of `Sample_Three`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+samples |>
+  summarize(avg_carat_wt = mean(___))
+```
+
+:::
+:::
+
+:::{.hint exercise="mean-sample-three"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+Start with the code below (copied from our earlier code chunk) and update it to compute the mean of `Sample_Three`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+samples |>
+  summarize(avg_carat_wt = mean(Sample_Three))
 ```
 
 :::
@@ -309,11 +348,12 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
+Start with the copied code again, and update it to compute the median instead of the mean.
+
 ```{r}
 #| echo: true
 #| eval: false
-# Start with the copied code again, and update it
-# to compute the median instead of the mean.
+
 samples |>
   summarize(avg_carat_wt = mean(Sample_Two))
 ```
@@ -325,17 +365,76 @@ samples |>
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+Start with the copied code again, and update it to compute the median instead of the mean.
+
 ```{r}
 #| echo: true
 #| eval: false
-# Power move! The summarize() function can compute 
-# multiple summary statistics at once. Update the 
-# code below to compute all three medians at once.
+
+samples |>
+  summarize(avg_carat_wt = ___(Sample_Two))
+```
+
+:::
+:::
+
+:::{.hint exercise="find-medians"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Power move! The `summarize()` function can compute multiple summary statistics at once. Update the code below to compute all three medians at once.
+
+```{r}
+#| echo: true
+#| eval: false
+
 samples |>
   summarize(
     avg_carat_wt_samp1 = mean(Sample_One),
     avg_carat_wt_samp2 = mean(Sample_Two),
     avg_carat_wt_samp3 = mean(Sample_Three)
+  )
+```
+
+:::
+:::
+
+:::{.hint exercise="find-medians"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+Power move! The `summarize()` function can compute multiple summary statistics at once. Update the code below to compute all three medians at once.
+
+```{r}
+#| echo: true
+#| eval: false
+
+samples |>
+  summarize(
+    median_carat_wt_samp1 = ___(Sample_One),
+    median_carat_wt_samp2 = ___(Sample_Two),
+    median_carat_wt_samp3 = ___(Sample_Three)
+  )
+```
+
+:::
+:::
+
+:::{.hint exercise="find-medians"}
+:::{.callout-note collapse="false"}
+## Hint 5 (Solved)
+
+Power move! The `summarize()` function can compute multiple summary statistics at once. Update the code below to compute all three medians at once.
+
+```{r}
+#| echo: true
+#| eval: false
+
+samples |>
+  summarize(
+    median_carat_wt_samp1 = median(Sample_One),
+    median_carat_wt_samp2 = median(Sample_Two),
+    median_carat_wt_samp3 = median(Sample_Three)
   )
 ```
 
@@ -439,9 +538,9 @@ ok_checkbox(q3, "1,2,5");
 
 :::
 
-### Aside: Defining My Own Data
+### Aside: Defining Our Own Data
 
-For data which is not already known to R (i.e. data which is not part of a data frame), we can still use R to quickly perform computations. Consider the distributions of doors knocked on by two political campaign workers last week (Monday–Friday): $\begin{array}{lcl} \text{Worker A} & : & 23,~24,~25,~26,~27\\ \text{Worker B} & : & 0,~15,~25,~35,~50\end{array}$. We do this below with the help of the `c()` function in R, which can be used to create lists of values.
+For data which is not already known to R (i.e. data which is not part of a data frame), we can still use R to quickly perform computations. Consider the distributions of doors knocked on by two political campaign workers last week (Monday – Friday): $\begin{array}{lcl} \text{Worker A} & : & 23,~24,~25,~26,~27\\ \text{Worker B} & : & 0,~15,~25,~35,~50\end{array}$. We do this below with the help of the `c()` function in R, which can be used to create lists of values.
 
 The following code block finds the mean and median for `Worker A` — execute the code block to find the mean and median. Once you've done this for `Worker A`, add two lines to the bottom of the code block so that it also finds the mean and median for `Worker B`.
 
@@ -456,12 +555,12 @@ median(c(23, 24, 25, 26, 27))
 :::{.callout-note collapse="false"}
 ## Hint 1
 
+Copy and paste the two existing lines and replace the data inside of `c()` to reflect Worker B in the last two lines.
+
 ```{r}
 #| echo: true
 #| eval: false
-# Copy and paste the two existing lines and 
-# replace the data inside of c() to reflect 
-# Worker B in the last two lines.
+
 mean(c(23, 24, 25, 26, 27))
 median(c(23, 24, 25, 26, 27))
 ```
@@ -471,14 +570,41 @@ median(c(23, 24, 25, 26, 27))
 
 :::{.hint exercise="my-data"}
 :::{.callout-note collapse="false"}
-## Hint 2 (Solved)
+## Hint 1
+
+Copy and paste the two existing lines and replace the data inside of `c()` to reflect Worker B in the last two lines.
 
 ```{r}
 #| echo: true
 #| eval: false
-# Fill in the blanks with Worker B's data.
+
+# Worker A
 mean(c(23, 24, 25, 26, 27))
 median(c(23, 24, 25, 26, 27))
+
+# Worker B
+mean(c(___))
+median(c(___))
+```
+
+:::
+:::
+
+:::{.hint exercise="my-data"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+Copy and paste the two existing lines and replace the data inside of `c()` to reflect Worker B in the last two lines.
+
+```{r}
+#| echo: true
+#| eval: false
+
+# Worker A
+mean(c(23, 24, 25, 26, 27))
+median(c(23, 24, 25, 26, 27))
+
+# Worker B
 mean(c(0, 15, 25, 35, 50))
 median(c(0, 15, 25, 35, 50))
 ```
@@ -556,8 +682,8 @@ We should also note that if you are certain that you are working with population
 **Explaining the Standard Deviation Formula**: The standard deviation seeks to measure an "average deviation" from the mean.
 
 * If we don't look too closely at the formula, we can see the summation symbol $\left(\sum\right)$ as well as division (by just about the number of values we've added up). That's almost like an average!
-* What are we averaging? The quantity $\left(x - \bar{x}\right)$ denotes an observed value's deviation from the mean. We shouldn't average these values though, since the mean sits in the *center* of the data and we would have deviations above the mean (positive) "cancelling out" deviations below the mean (negative).
-* We square the deviations which has two effects: (1) all of the squared deviations are now non-negative, so that no cancellation can occur, and (2) large deviations from the mean carry a larger weight in measuring the standard deviation.
+* What are we averaging? The quantity $\left(x - \bar{x}\right)$ denotes an observed value's deviation from the mean. We shouldn't average these values though, because since the mean sits in the *center* of the data and we would have deviations above the mean (positive) "cancelling out" deviations below the mean (negative).
+* We square the deviations which has two effects: (i) all of the squared deviations are now non-negative, so that no cancellation can occur, and (ii) large deviations from the mean carry a larger weight in measuring the standard deviation.
 * Since we squared the deviations before computing the "average", the units of measure are no longer comparable to the original units that the variable was measured in — the units are square units now. This is why we see the large square root as the last piece of the formula — taking the square root brings us back to the original units.
 
 The *inter-quartile range* (IQR) of a set of observations measures the spread of the "middle 50 percent" of the observations. The IQR is the distance between $Q_1$ (the 25th percentile) and $Q_3$ (the 75th percentile).
@@ -653,14 +779,15 @@ p1 + p2
   * The lone dots in the boxplot show any outliers (extending more than 1.5 times the IQR beyond $Q_1$ or $Q_3$).
   * The box in the boxplot shows the IQR — the left edge of the box is at $Q_1$ and the right edge of the box is at $Q_3$.
   * The line through the middle of the box denotes the location of the median.
-  * The faded purple line shows the location of the mean carat weight. We can really see the impact of those outliers on the mean here.
+  * The faded purple line shows the location of the mean carat weight. We can see the impact of those outliers pulling on the mean here.
 
 **A Note on Skew:** It is common to refer to data as *skewed* if the presence of outliers causes the mean and median to disagree on the location of the "center" of the data. We say that the data is *skewed in the direction those outliers have pulled the mean*. For example, we would say that the `carat` weight data above is *skewed right*.
 
-In R we can easily compute the standard deviation with the function `sd()`, and the IQR with `IQR()`, for our samples or for the entire dataset. The code block below is preset to compute the standard deviation and quartiles for each sample. Run it and explore the output. *(Not graded.)*
+In R we can easily compute the standard deviation with the function `sd()`, and the IQR with `IQR()`, for our samples or for the entire dataset. The code block below is preset to compute the standard deviation and quartiles for each sample. Run it and explore the output.
 
 ```{webr}
 #| exercise: compute-sd-iqr
+#| caption: Ungraded, Exploration Only
 
 print("Standard Deviations:")
 samples |>
@@ -683,10 +810,11 @@ samples |>
 
 In R we can also easily explore these measures of spread for our campaign workers from earlier. Recall their door-knocking data: $\begin{array}{lcl} \text{Worker A} & : & 23,~24,~25,~26,~27\\ \text{Worker B} & : & 0,~15,~25,~35,~50\end{array}$
 
-Use the code block below to find the standard deviation and IQR for the doors visited by the campaign workers. *(Not graded.)*
+Use the code block below to find the standard deviation and IQR for the doors visited by the campaign workers.
 
 ```{webr}
 #| exercise: sd-iqr-campaign
+#| caption: Ungraded, Exploration Only
 ______
 ```
 
@@ -694,11 +822,12 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
+Use the `c()` function when defining your door-knocking data.
+
 ```{r}
 #| echo: true
 #| eval: false
-# Use the c() function when defining your 
-# door-knocking data.
+
 ```
 
 :::
@@ -708,10 +837,12 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+Storing values in variables will save some typing.
+
 ```{r}
 #| echo: true
 #| eval: false
-# Storing values in variables will save some typing.
+
 ```
 
 :::
@@ -721,10 +852,12 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 3
 
+Fill in the blanks.
+
 ```{r}
 #| echo: true
 #| eval: false
-# Fill in the blanks
+
 worker_a <- c(___)
 worker_b <- c(___)
 ```
@@ -736,12 +869,14 @@ worker_b <- c(___)
 :::{.callout-note collapse="false"}
 ## Hint 4
 
+Now use R functionality to compute the summary statistics.
+
 ```{r}
 #| echo: true
 #| eval: false
 worker_a <- c(23, 24, 25, 26, 27)
 worker_b <- c(0, 15, 25, 35, 50)
-# Now use R functionality to compute the summary statistics
+
 ```
 
 :::
@@ -751,13 +886,14 @@ worker_b <- c(0, 15, 25, 35, 50)
 :::{.callout-note collapse="false"}
 ## Hint 5
 
+Fill in the blanks.
+
 ```{r}
 #| echo: true
 #| eval: false
 worker_a <- c(23, 24, 25, 26, 27)
 worker_b <- c(0, 15, 25, 35, 50)
 
-# Fill in the blanks
 sd(___)
 IQR(___)
 sd(___)
@@ -799,10 +935,11 @@ cutSamples |>
   kable_styling(bootstrap_options = c("hover", "striped"))
 ```
 
-We can pipe our data frame into the `count()` function with the column we'd like to obtain counts for in order to construct a frequency table. To obtain a relative frequency table, we can use the `mutate()` function to create a new column — below, we've named it `relative_frequency` and computed its values by taking the counts (`n`) and dividing by the total count (`sum(n)`). The following code block is preset to compute a frequency and relative frequency table for `Sample_One`. Adapt the code to provide summaries for `Sample_Two` and `Sample_Three`. *(Not graded.)*
+We can pipe our data frame into the `count()` function with the column we'd like to obtain counts for in order to construct a frequency table. To obtain a relative frequency table, we can use the `mutate()` function to create a new column. Below, we've named that new column `relative_frequency` and computed its values by taking the counts (`n`) and dividing by the total count (`sum(n)`). The following code block shows how to compute a frequency and relative frequency table for `Sample_One`. Adapt the code to provide summaries for `Sample_Two` and `Sample_Three`.
 
 ```{webr}
 #| exercise: summarize-cut
+#| caption: Ungraded, Exploration Only
 
 cutSamples |>
   count(Sample_One)
@@ -822,7 +959,7 @@ table(cutSamples$Sample_One)
 table(cutSamples$Sample_One) / nrow(cutSamples)
 ```
 
-This code requires a bit less typing, but it is less flexible and also less readable.
+This second approach requires a bit less typing, but it is less flexible and also less readable.
 
 Below, we can see the distributions of diamond `cut` from `Sample_Three` (left) and from our entire population (right). Even with a sample of 8 diamonds, we gain some insight into the most and least common diamond cuts. You may also notice that the frequency and relative frequency plots look identical aside from the scale on the vertical axis — this will be the case in general.
 
@@ -1113,5 +1250,5 @@ table(data_frame_name$column_name) / nrow(data_frame_name)
 :::{.callout-tip}
 ## Looking Ahead
 
-In the next activity we'll shift from summarizing data numerically to visualizing it. We'll learn how to construct histograms, boxplots, and bar charts in R using `ggplot2` — the same plots you saw in this activity — and develop intuition for choosing the right visualization for a given variable type and question.
+In the next activity we'll shift from summarizing data numerically to visualizing it. We'll learn how to construct histograms, boxplots, and bar charts in R using `ggplot2`. In addition to syntax and structure, you'll develop intuition for choosing the right visualization for a given variable type(s) and question.
 :::

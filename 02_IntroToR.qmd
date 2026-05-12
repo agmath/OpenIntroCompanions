@@ -278,6 +278,7 @@ Use the code block below to experiment.
 ```{webr}
 #| exercise: simple-operations
 #| eval: true
+#| caption: Ungraded, Exploration Only
 
 #As you've seen, we can use R to add, subtract,
 #multiply, and divide

@@ -103,13 +103,14 @@ Through these workbooks you'll be interacting with data using the R programming 
 
 You might be asking why do I need to use R rather than a different software like Minitab, SPSS, SAS, or a number of others. Consider the following three points.
 
-+ R is *open source* -- you are guaranteed that it will always be available (and free).
-+ Since R is a language rather than a fully developed piece of software with a point and click interface (a GUI), you aren't limited to what a team of developers thought you might want to do at the time the software was developed. With R, you can do virtually anything you want (although I admit that is easier said than done).
-+ We live in a world where we are constantly interacting with software. It isn't a bad thing to learn what code looks like -- plus, you'll be learning a transferable skill in addition to learning statistics.
++ R is *open source*, meaning it is free to use and continually developed by a large community of users. You are not dependent on a paid license or a specific institution for access.
++ Because R is a programming language rather than a point-and-click interface, you are not limited to a fixed collection of menu options. While there is certainly a learning curve, R gives you tremendous flexibility in what you can analyze, visualize, and automate.
++ Analyses written in R are transparent and reproducible. Rather than trying to remember which buttons were clicked, you can save and rerun your exact analysis later, modify it easily, and share it with others.
++ We live in a world increasingly shaped by technology and data. Learning to read and write code is a valuable and transferable skill that extends far beyond statistics.
 
-This workbook will introduce you to interacting with R through executable code chunks. Whenever you see a code chunk, feel free to play around with any code that appears in the chunk and see how your changes impact the results of the code. You can execute code chunks by hitting the *Run* button, using `ctrl+Enter`, or `cmd+Enter`. If you see a *Submit Answer* button, then you are interacting with an exercise that can give you feedback. Click *Submit Answer* rather than the *Run* button to run your code and see if you got it right. Don't worry if you got it wrong, you can always try again! 
+This workbook will introduce you to interacting with R through executable code cells. Whenever you see a code cell, feel free to play around with any code that appears in the cell and see how your changes impact the results of the code. You can execute code cells by hitting the *Run* button, using `ctrl+Enter`, or `cmd+Enter`. The majority of the code cells that you encounter are *exercises* that can give you feedback. Running the code will result in the corresponding output, along with an indicator of whether you were right or not. Don't worry if you get anything wrong, you can always try again! 
 
-Try editing the following chunk to execute `2 + 3` rather than `2 + 2`, as is preset.
+Try editing the following cell to execute `2 + 3` rather than `2 + 2`, as is preset.
 
 ```{webr}
 #| exercise: a-first-operation
@@ -117,6 +118,38 @@ Try editing the following chunk to execute `2 + 3` rather than `2 + 2`, as is pr
 
 2 + 2
 ```
+
+:::{.hint exercise="a-first-operation"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Replace the second two with a three.
+
+```{r}
+#| echo: true
+#| eval: false
+
+2 + ___
+```
+
+:::
+:::
+
+:::{.hint exercise="a-first-operation"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+Replace the second two with a three.
+
+```{r}
+#| echo: true
+#| eval: false
+
+2 + 3
+```
+
+:::
+:::
 
 ```{webr}
 #| exercise: a-first-operation
@@ -142,7 +175,7 @@ gradethis::grade_this({
 
 ## A few warnings
 
-Coding can be frustrating -- you are certain to run into errors. Here are a few common things to watch out for.
+Coding can be frustrating -- you are certain to run into errors (even very experienced programmers do!). Here are a few common things to watch out for.
 
 + Spelling counts! If you are getting an error, check to see that you've spelled everything correctly, including both function and object names.
 + Capitalization counts! Again, check to see that everything is typed exactly as it should be.
@@ -155,12 +188,60 @@ Coding can be frustrating -- you are certain to run into errors. Here are a few 
 
 ## Hello World!
 
-If you've never coded before (or even if you have), type `print("Hello World!")` in the interactive R chunk below and run it by hitting `ctrl+Enter` or `cmd+Enter` for MAC users.
+If you've never coded before (or even if you have), type `print("Hello World!")` in the interactive R cell below and run it by hitting `ctrl+Enter` or `cmd+Enter` for MAC users.
 
 ```{webr}
 #| exercise: hello-world
 ______
 ```
+
+:::{.hint exercise="hello-world"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Use the `print()` function to print out text.
+
+```{r}
+#| echo: true
+#| eval: false
+
+print(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="hello-world"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Use the `print()` function to print out text. Your text must go inside of quotes (single-quotes or double-quotes work, as long as you are consistent).
+
+```{r}
+#| echo: true
+#| eval: false
+
+print("___")
+```
+
+:::
+:::
+
+:::{.hint exercise="hello-world"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+Print `"Hello World!"`
+
+```{r}
+#| echo: true
+#| eval: false
+
+print("Hello World!")
+```
+
+:::
+:::
 
 ```{webr}
 #| exercise: hello-world
@@ -211,6 +292,47 @@ Use the code block below to evaluate the expression `4^3 - 16`.
 ______
 ```
 
+:::{.hint exercise="arithmetic-exercise"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Type in the expression.
+
+:::
+:::
+
+:::{.hint exercise="arithmetic-exercise"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Type in the expression.
+
+```{r}
+#| echo: true
+#| eval: false
+
+___^___ - ___
+```
+
+:::
+:::
+
+:::{.hint exercise="arithmetic-exercise"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+Type in the expression.
+
+```{r}
+#| echo: true
+#| eval: false
+
+4^3 - 16
+```
+
+:::
+:::
+
 ```{webr}
 #| exercise: arithmetic-exercise
 #| solution: true
@@ -245,12 +367,12 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
+Replace each blank with an appropriate value or expression.
+
 ```{r}
 #| echo: true
 #| eval: false
 
-# Replace each blank with an appropriate 
-# value or expression
 (___)/(___)
 ```
 
@@ -261,12 +383,13 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+Replace each blank with an appropriate value or expression.
+
 ```{r}
 #| echo: true
 #| eval: false
 
-# Replace each blank with an appropriate 
-# value or expression
+
 (___ - ___)/(___/___)
 ```
 
@@ -277,13 +400,29 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 3
 
+Replace each blank with an appropriate value or expression.
+
 ```{r}
 #| echo: true
 #| eval: false
 
-# Replace each blank with an appropriate 
-# value or expression
 (___ - ___)/(___/sqrt(___))
+```
+
+:::
+:::
+
+:::{.hint exercise="test-stat-eval"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+Replace each blank with an appropriate value or expression.
+
+```{r}
+#| echo: true
+#| eval: false
+
+(54 - 50)/(8/sqrt(20))
 ```
 
 :::
@@ -323,11 +462,12 @@ Add parentheses to the expression below so that it evaluates to `1`.
 :::{.callout-note collapse="false"}
 ## Hint 1
 
+Start by grouping the 8 - 6
+
 ```{r}
 #| echo: true
 #| eval: false
 
-# Start by grouping the 8 - 6
 (8 - 6)/2 + 5*3*4 - 12
 ```
 
@@ -338,14 +478,31 @@ Add parentheses to the expression below so that it evaluates to `1`.
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+Notice (8 - 6)/2 is 1; can you add another set of parentheses to "zero-out" all but this first term?
+
+
 ```{r}
 #| echo: true
 #| eval: false
 
-# Notice (8 - 6)/2 is 1; can you add another set 
-# of parentheses to "zero-out" all but this first 
-# term?
 (8 - 6)/2 + 5*3*4 - 12
+```
+
+:::
+:::
+
+:::{.hint exercise="parens-exercise"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+Notice (8 - 6)/2 is 1; can you add another set of parentheses to "zero-out" all but this first term?
+
+
+```{r}
+#| echo: true
+#| eval: false
+
+(8 - 6)/2 + 5*(3*4 - 12)
 ```
 
 :::
@@ -385,6 +542,40 @@ In R we can define objects via the `<-` operator. For example, we can define the
 x <- 4
 ```
 
+:::{.hint exercise="redefine"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+Replace the 4 with the new value for `x`.
+
+
+```{r}
+#| echo: true
+#| eval: false
+
+x <- ___
+```
+
+:::
+:::
+
+:::{.hint exercise="redefine"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Solved)
+
+Replace the 4 with the new value for `x`.
+
+
+```{r}
+#| echo: true
+#| eval: false
+
+x <- -22
+```
+
+:::
+:::
+
 ```{webr}
 #| exercise: redefine
 #| solution: true
@@ -407,7 +598,7 @@ gradethis::grade_this({
 })
 ```
 
-Use the code block below to store the value `-3` in the container `y` and then compute the quantity `x*y - y`.
+Use the code block below to store the value `5` in the container `y` and then compute the quantity `x*y - y`.
 
 ```{webr}
 #| exercise: define-and-compute
@@ -425,11 +616,13 @@ x <- -22
 :::{.callout-note collapse="false"}
 ## Hint 1
 
+The variable `x` is already defined, start by defining `y` as 5.
+
 ```{r}
 #| echo: true
 #| eval: false
 
-# x is already defined, start by defining y as -3
+
 ```
 
 :::
@@ -439,12 +632,47 @@ x <- -22
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+The variable `x` is already defined, start by defining `y` as 5.
+
 ```{r}
 #| echo: true
 #| eval: false
 
-y <- -3
-# Now compute x*y - y below
+y <- ___
+```
+
+:::
+:::
+
+:::{.hint exercise="define-and-compute"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+The variable `x` is already defined, start by defining `y` as 5. Now compute `x*y - y`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+y <- 5
+___
+```
+
+:::
+:::
+
+:::{.hint exercise="define-and-compute"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+The variable `x` is already defined, start by defining `y` as 5. Now compute `x*y - y`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+y <- 5
+x*y - y
 ```
 
 :::
@@ -454,7 +682,7 @@ y <- -3
 #| exercise: define-and-compute
 #| solution: true
 
-y <- -3
+y <- 5
 x*y - y
 ```
 
@@ -473,7 +701,7 @@ gradethis::grade_this({
 })
 ```
 
-In R, it is helpful to think of objects as either vectors (lists of objects) or data frames (tables), because that's how R treats its objects. We can create an object called `numVec` which is a vector of six numerical values (1, 8, -2, 2, -99, 43) using `numVec <- c(1, 8, -2, 2, -99, 43)`. Any time we wish to reference or provide a list of items in R, we use the `c()` operator to *combine* those items. Once we have a vector, we can operate with it.
+In R, it is helpful to think of objects as either vectors (lists of entries) or data frames (tables), because that's how R treats its objects. We can create an object called `numVec` which is a vector of six numerical values (1, 8, -2, 2, -99, 43) using `numVec <- c(1, 8, -2, 2, -99, 43)`. Any time we wish to reference or provide a list of items in R, we use the `c()` operator to *combine* those items. Once we have a vector, we can operate with it.
 
 ```{r}
 #| label: vector operations
@@ -484,7 +712,14 @@ numVec + c(1, 1, 1, 0, -2, 4)
 2*numVec
 ```
 
-Notice that we can add two vectors of the same length to one another and the addition is completed coordinatewise. We can also add a single value to a vector and that single value is *recycled* and added to each component of the vector (each of the values). The same works for multiplication or division (and subtraction too). While this behavior may seem convenient (and it is), it does require that we be aware of a few possible pitfalls. If we try to add two vectors that do not have the same length, R will indeed perform the operation but will warn us if the shorter vector is not *recycled* a full number of times while the operation is completed. If the recycling works without issue, then R does not report a warning to us. This can be problematic, because typically we don't want to add vectors of different sizes -- we need to pay close attention.
+Notice that we can add two vectors of the same length to one another and the addition is completed coordinatewise. We can also add a single value to a vector and that single value is *recycled* and added to each component of the vector (each of the values). The same works for multiplication or division (and subtraction too). 
+
+:::{.callout-important}
+## Pitfalls Associated with *Recycling* 
+While this *recycling* behavior may seem convenient (and it is), it does require that we be aware of a few possible pitfalls. 
+
++ If we try to add two vectors that do not have the same length, R will indeed perform the operation but will warn us if the shorter vector is not *recycled* a full number of times while the operation is completed. 
++ If the recycling works without issue, then R does not report a warning to us. This can be problematic, because typically we don't want to add vectors of different sizes -- we need to pay close attention.
 
 ```{r}
 #| label: vector-recycling
@@ -498,6 +733,9 @@ numVec1 + numVec2
 
 numVec1 + numVec3
 ```
+
+While we are unlikely to encounter these issues in our course, it is worth calling out here.
+:::
 
 ## Data Frames
 
@@ -513,7 +751,7 @@ diamonds |>
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
-We can call a column of a dataframe in several different ways. For example, `diamonds$cut`, `diamonds[ , "cut"]`, `diamonds[ , 3]`, and `diamonds |> select(cut)` all access the `cut` column of the `diamonds` data frame but the first method returns a vector of values while the others return a data frame. The last option makes use of a special operator (`|>`), called the *pipe*. We'll see that pipes make data manipulation really convenient. Explore each method of selecting a column in the code cell below. After you are done exploring and comparing the results, alter the original code so that you access the `carat` column instead of the `cut` and return the result as a data frame. Be sure to use the pipe.
+We can call a column of a dataframe in several different ways. For example, `diamonds$cut`, `diamonds[ , "cut"]`, `diamonds[ , 3]`, and `diamonds |> select(cut)` all access the `cut` column of the `diamonds` data frame but the first method returns a vector of values while the others return a data frame. The last option makes use of a special operator (`|>`), called the *pipe*. We'll see that pipes make data manipulation really convenient and readable. Explore each method of selecting a column in the code cell below. After you are done exploring and comparing the results, alter the original code so that it uses the piping method to access the `carat` column instead of the `cut`, returning the result as a data frame.
 
 ```{webr}
 #| exercise: column-access
@@ -527,13 +765,51 @@ diamonds |>
 :::{.callout-note collapse="false"}
 ## Hint 1
 
+Replace `cut` with `carat` inside of `select()`.
+
+
 ```{r}
 #| echo: true
 #| eval: false
 
-# Replace cut with carat inside of select()
 diamonds |>
   select(cut)
+```
+
+:::
+:::
+
+:::{.hint exercise="column-access"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Replace `cut` with `carat` inside of `select()`.
+
+
+```{r}
+#| echo: true
+#| eval: false
+
+diamonds |>
+  select(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="column-access"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+Replace `cut` with `carat` inside of `select()`.
+
+
+```{r}
+#| echo: true
+#| eval: false
+
+diamonds |>
+  select(carat)
 ```
 
 :::
@@ -600,9 +876,10 @@ cat(hash)
 
 + R can be used as a simple calculator — in the same way as any hand-held calculator you've used in your previous coursework.
 + When doing multiplication in R, we must include the asterisk (`*`), otherwise R will throw an error. For example, `5(4)` results in an error, but `5*(4)` results in 20, as expected.
-+ The real advantage with R comes in interacting with large datasets called **data frames**.
++ The first real advantage with R comes in interacting with large datasets called **data frames**.
   + A data frame is just like a single tab of an Excel or Google Sheets file — rows are observations and columns are variables.
-  + We can access columns of a data frame using the `$` operator (returns a vector) or by piping into `select()` (returns a data frame).
+  + We can access columns of a data frame using the `$` operator (returns a vector) or by piping (`|>`) the data frame into `select()` (returns a data frame).
++ The second main advantage to working in a coding environment like R is that your entire analysis is fully documented and transparent in a way that analyses done using point-and-click software are not.
 + We live in a world where we are constantly interacting with software — learning R is learning a transferable skill in addition to learning statistics.
 + Coding is hard work. Stumbling is expected. Be patient with yourself, ask for help when you need it, and take breaks when you're frustrated.
 :::
@@ -610,5 +887,5 @@ cat(hash)
 :::{.callout-tip}
 ## Looking Ahead
 
-The next activity introduces descriptive statistics — computing and interpreting numerical summaries for both numerical and categorical data. You'll use the tools introduced here (vectors, data frames, the pipe) to calculate means, medians, standard deviations, and frequency tables in R.
+The next activity introduces descriptive statistics — computing and interpreting numerical summaries for both numerical and categorical data. You'll use the tools introduced here (basic calculation, vectors, data frames, and the pipe) to calculate means, medians, standard deviations, construct frequency tables, and more with R.
 :::

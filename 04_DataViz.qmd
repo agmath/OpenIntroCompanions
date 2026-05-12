@@ -226,6 +226,7 @@ Notice that when you execute a line of code which just calls the name of a data 
 
 ```{webr}
 #| exercise: explore-mpg-dataframe
+#| caption: Ungraded, Exploration Only
 ______
 ```
 
@@ -373,6 +374,7 @@ The `diamonds` data frame is also available to you. See if you can get your basi
 
 ```{webr}
 #| exercise: explore-diamonds
+#| caption: Ungraded, Exploration Only
 ______
 ```
 
@@ -380,7 +382,7 @@ ______
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Use some of the same functions you used to explore the `mpg` data frame in the previous code block — just swap out the data frame name.
+Use some of the same functions you used to explore the `mpg` data frame in the previous code block — just swap out the name of the data frame.
 
 :::
 :::
@@ -599,6 +601,8 @@ Again, start by copying and pasting an earlier plot as a starting point.
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+What needs to be changed now?
+
 ```{r}
 #| echo: true
 #| eval: false
@@ -608,14 +612,30 @@ mpg |>
   geom_point(aes(x = displ, y = cty))
 ```
 
-What needs to be changed now?
+:::
+:::
+
+:::{.hint exercise="plot-hwy-cyl"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Both of the aesthetic mappings need to be changed.
+
+```{r}
+#| echo: true
+#| eval: false
+
+mpg |>
+  ggplot() + 
+  geom_point(aes(x = ___, y = ___))
+```
 
 :::
 :::
 
 :::{.hint exercise="plot-hwy-cyl"}
 :::{.callout-note collapse="false"}
-## Hint 3 (Solved)
+## Hint 4 (Solved)
 
 Put cylinders (`cyl`) on the x-axis and highway gas mileage (`hwy`) on the y-axis.
 
@@ -675,6 +695,8 @@ Continue copying and pasting an earlier plot as a starting point.
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+What needs to be changed here?
+
 ```{r}
 #| echo: true
 #| eval: false
@@ -683,8 +705,6 @@ mpg |>
   ggplot() + 
   geom_point(aes(x = cyl, y = hwy))
 ```
-
-What needs to be changed here?
 
 :::
 :::
@@ -710,7 +730,7 @@ R is considering both the x- and y-variables to be numeric. The warning message 
 
 mpg |>
   ggplot() + 
-  geom_boxplot(aes(x = cyl, y = hwy))
+  geom_boxplot(aes(x = cyl, y = hwy, group = ___))
 ```
 
 :::
@@ -843,6 +863,8 @@ Starting from an earlier plot can take you a long way — look for the simplest 
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+Several things need to be changed. What are they?
+
 ```{r}
 #| echo: true
 #| eval: false
@@ -852,8 +874,6 @@ mpg |>
   geom_point(aes(x = displ, y = hwy))
 ```
 
-Several things need to be changed. What are they?
-
 :::
 :::
 
@@ -861,7 +881,16 @@ Several things need to be changed. What are they?
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-Four things to update: change the geometry layer to `geom_bar()`, map `class` to `x`, remove the `y` aesthetic (bar heights are determined by counts automatically), and map `drv` to `fill`.
+Four things to be updated: change the geometry layer to `geom_bar()`, map `class` to `x`, remove the `y` aesthetic (bar heights are determined by counts automatically), and map `drv` to `fill`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+mpg |>
+  ggplot() + 
+  geom_point(aes(x = displ, y = hwy))
+```
 
 :::
 :::
@@ -1042,7 +1071,53 @@ mpg |>
 
 :::{.hint exercise="facet-wrapped-plot"}
 :::{.callout-note collapse="false"}
-## Hint 3 (Solved)
+## Hint 3
+
+Fill in the blank with the `facet_wrap()` layer. Check the prompt for how to use `facet_wrap()`.
+
+```{r}
+#| echo: true
+#| eval: false
+
+mpg |> 
+  ggplot() + 
+  geom_point(aes(
+    x = displ, 
+    y = hwy, 
+    color = class)) + 
+  facet_wrap(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="facet-wrapped-plot"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+The blank after the tilde (`~`) inside of `facet_wrap()` identifies the column whose categories should each get their own plot panel.
+
+```{r}
+#| echo: true
+#| eval: false
+
+mpg |> 
+  ggplot() + 
+  geom_point(aes(
+    x = displ, 
+    y = hwy, 
+    color = class)) + 
+  facet_wrap(~___, nrow = 2)
+```
+
+:::
+:::
+
+:::{.hint exercise="facet-wrapped-plot"}
+:::{.callout-note collapse="false"}
+## Hint 5 (Solved)
+
+We want an individual plot for each of the vehicle classes.
 
 ```{r}
 #| echo: true
@@ -1141,7 +1216,7 @@ mpg |>
 
 Unfortunately the `trans` variable contains more detailed transmission information than what we are after. Omitting the last four characters from levels in the `trans` column would leave us with the information we want. While this sort of data wrangling is beyond the scope of these notebooks (and you won't be asked to do it on your own), I'll still show you how we can remove those last four characters below.
 
-We can achieve our objective using the `str_sub()` function -- this function *subsets a string*. You won't need this function for our course but, because we're using it here, I'll explain how it works. The first argument is the name of the column whose strings we want to subset, the second argument is the position of the first character we'd like to keep and the third argument is the position of the final character we'd like to keep. Using a negative number here is shorthand for "from the end". That is, we'd like to keep all of the characters starting with the first and stopping five characters from the end of the string.
+We can achieve our objective using the `str_sub()` function -- this function *subsets a string*. Again, you won't need this function for our course but, because we're using it here, I'll explain how it works. The first argument is the name of the column whose strings we want to subset, the second argument is the position of the first character we'd like to keep and the third argument is the position of the final character we'd like to keep. Using a negative number here is shorthand for "from the end". That is, we'd like to keep all of the characters starting with the first and stopping five characters from the end of the string.
 
 Run the code below to see the plot.
 
@@ -1177,6 +1252,8 @@ Copy and paste the plotting code above and use it as a starting point.
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+Do you remember how to add a `fill` aesthetic?
+
 ```{r}
 #| echo: true
 #| eval: false
@@ -1189,8 +1266,6 @@ mpg |>
        y = "Count",
        title = "Distribution of Transmission Types")
 ```
-
-Do you remember how to add a `fill` aesthetic?
 
 :::
 :::
@@ -1245,7 +1320,7 @@ gradethis::grade_this({
 })
 ```
 
-The problem now is the difficulty in comparing the proportions of drive types within each of these classes. We can fix this by using the `position` argument. Outside of `aes()` but still within `geom_bar()`, add an argument `position = "fill"` to the pre-built plot -- you'll need to include a comma after `aes()` since commas separate arguments. Think about what is gained and lost in this new plot.
+The problem now is the difficulty in comparing the proportions of drive types within each of these classes. We can fix this by using the `position` argument. Outside of `aes()` but still within `geom_bar()`, add an argument `position = "fill"` to the pre-built plot. You'll need to include a comma after `aes()` since commas separate arguments. Think about what is gained and lost in this new plot.
 
 ```{webr}
 #| exercise: trans2-drv-plot
@@ -1488,7 +1563,7 @@ cat(hash)
 :::{.callout-tip}
 ## Main Takeaways
 
-+ **Variable types dictate plot types.** Always consider whether your variables are numerical or categorical before choosing a plot. A scatterplot requires two numerical variables; a bar plot is appropriate for a single categorical variable; side-by-side boxplots or bar plots with fill work for numerical vs. categorical comparisons.
++ **Variable types dictate plot types.** Always consider whether your variables are numerical or categorical before choosing a plot. A scatterplot requires two numerical variables; a histogram, boxplot, or density plot give insight to the distribution of a single numerical variable; a bar plot is appropriate for a single categorical variable and adding a fill color accommodates a second categorical variable; side-by-side boxplots work for numerical vs. categorical comparisons.
 + **Plotting with `ggplot()` follows a grammar of graphics** and a layered structure, with `+` separating each layer. The basic structure is:
 
 ```{r}
@@ -1508,7 +1583,7 @@ data_frame_name |>
 :::{.callout-tip}
 ## Looking Ahead
 
-The next activity introduces descriptive statistics — computing and interpreting numerical summaries for both numerical and categorical data. You'll use the R tools introduced here alongside `dplyr` functions like `summarize()` and `group_by()` to compute means, medians, standard deviations, and frequency tables.
+This activity concludes our foundational and "R-onramping" work. Over the next several workbooks, we'll transition to probability and working with probability distributions. We'll start with basic, counting-based probability before moving to the binomial distribution and normal distribution.
 :::
 
 :::{.callout-note}

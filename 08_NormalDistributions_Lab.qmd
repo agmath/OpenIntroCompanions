@@ -12,6 +12,8 @@ format:
         - dplyr
         - ggplot2
         - gradethis
+        - jsonlite
+        - base64enc
         - openintro
       cell-options:
         persist: true
@@ -49,6 +51,8 @@ ok_response <- function(response, n) {
 library(dplyr)
 library(ggplot2)
 library(openintro)
+library(jsonlite)
+library(base64enc)
 
 data(bdims)
 
@@ -61,6 +65,15 @@ fwgtmean <- mean(fdims$wgt)
 fwgtsd   <- sd(fdims$wgt)
 
 theme_set(theme_bw(base_size = 12))
+
+exercise_results <- list(
+  notebook         = "Topic 8: Normal Distribution Lab",
+  head_data        = "unattempted",
+  subset_mf        = "unattempted",
+  sim_norm_qq_plot = "unattempted",
+  prob_height_norm = "unattempted",
+  wgt_norm_prob    = "unattempted"
+)
 ```
 
 ```{r setup, include=FALSE}
@@ -136,7 +149,15 @@ bdims |> head()
 #| exercise: head-data
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$head_data <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$head_data <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 You'll see that for every observation we have 25 measurements, many of which are either diameters or girths. A complete *data dictionary* (a general description along with definitions of each of the columns/variables) can be found [here at OpenIntro](https://www.openintro.org/book/statdata/?data=bdims){target="_blank"}, but we'll be focusing on just three columns to get started: weight in kg (`wgt`), height in cm (`hgt`), and `sex` (`1` indicates male, `0` indicates female).
@@ -214,7 +235,15 @@ fdims <- bdims |> filter(sex == 0)
 #| exercise: subset-mf
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$subset_mf <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$subset_mf <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 Use the code block below to make a histogram of men's heights and a histogram of women's heights. How would you compare the various aspects of the two distributions?
@@ -430,11 +459,14 @@ viewof q1 = Inputs.radio(
     ["Females", 2],
     ["It is impossible to tell", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
 );
 
-localStorage.setItem("q1", JSON.stringify(q1))
-
+{
+  localStorage.setItem("q1_selected", JSON.stringify(q1));
+  localStorage.setItem("q1_correct", "1");
+  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q1, "1");
 ```
 
@@ -455,11 +487,14 @@ viewof q2 = Inputs.radio(
     ["No. The distribution is skewed right.", 3],
     ["No. The distribution is symmetric but is multimodal.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
 );
 
-localStorage.setItem("q2", JSON.stringify(q2))
-
+{
+  localStorage.setItem("q2_selected", JSON.stringify(q2));
+  localStorage.setItem("q2_correct", "1");
+  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q2, "1");
 ```
 
@@ -480,11 +515,14 @@ viewof q3 = Inputs.radio(
     ["No. The distribution is skewed right.", 3],
     ["No. The distribution is symmetric but is multimodal.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
 );
 
-localStorage.setItem("q3", JSON.stringify(q3))
-
+{
+  localStorage.setItem("q3_selected", JSON.stringify(q3));
+  localStorage.setItem("q3_correct", "1");
+  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q3, "1");
 ```
 
@@ -777,7 +815,15 @@ qqline(sim_norm)
 #|   - fhgtmean
 #|   - fhgtsd
 
-gradethis::grade_this_code()
+exercise_results$sim_norm_qq_plot <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$sim_norm_qq_plot <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 Do all of the points fall exactly on the line? How does this plot compare to the probability plot for the real data?
@@ -828,11 +874,14 @@ viewof q4 = Inputs.radio(
     ["Yes, the Q-Q plot for the weight data looks similar to the Q-Q plots for the simulated data from the known normal distribution.", 1],
     ["No, the Q-Q plot for the weight data differs from the Q-Q plots for the simulated data from the known normal distribution.", 2]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
 );
 
-localStorage.setItem("q4", JSON.stringify(q4))
-
+{
+  localStorage.setItem("q4_selected", JSON.stringify(q4));
+  localStorage.setItem("q4_correct", "2");
+  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q4, "2");
 ```
 
@@ -936,8 +985,10 @@ Do you want the area to the left of your boundary value or the area to the right
 #|   - fhgtmean
 #|   - fhgtsd
 
+exercise_results$prob_height_norm <<- "fail"
 gradethis::grade_this({
   if (abs(.result - (1 - pnorm(182, fhgtmean, fhgtsd))) < 0.001) {
+    exercise_results$prob_height_norm <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1030,8 +1081,10 @@ Use the boundary value of 80, the mean weight of about 60.6 kg, and the standard
 #|   - fwgtmean
 #|   - fwgtsd
 
+exercise_results$wgt_norm_prob <<- "fail"
 gradethis::grade_this({
   if (abs(.result - (1 - pnorm(80, fwgtmean, fwgtsd))) < 0.001) {
+    exercise_results$wgt_norm_prob <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1125,9 +1178,86 @@ Notice that the probability estimated using the normal distribution is only abou
 
 ## Submit
 
-:::{.callout-warning}
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested.
 
-Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+:::{.callout-warning}
+## Question Hash
+
+The hash below encodes your responses to the multiple choice and checkbox questions in this activity.
+
+```{ojs}
+//| echo: false
+
+function buildQuestionResults() {
+  return {
+    notebook: "Topic 8: Normal Distribution Lab",
+    type: "questions",
+    timestamp: new Date().toISOString(),
+    questions: {
+      q1_taller_group: {
+        selected: q1,
+        correct_answer: "1",
+        result: q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect")
+      },
+      q2_male_heights_normal: {
+        selected: q2,
+        correct_answer: "1",
+        result: q2 === null ? "unattempted" : (q2 == 1 ? "correct" : "incorrect")
+      },
+      q3_female_heights_normal: {
+        selected: q3,
+        correct_answer: "1",
+        result: q3 === null ? "unattempted" : (q3 == 1 ? "correct" : "incorrect")
+      },
+      q4_female_weights_normal: {
+        selected: q4,
+        correct_answer: "2",
+        result: q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect")
+      }
+    }
+  };
+}
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+question_hash = {
+  q1; q2; q3; q4;
+  return toBase64(JSON.stringify(buildQuestionResults()));
+}
+```
+
+```{ojs}
+//| echo: false
+
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded code exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and hit the *Run Code* button on each graded exercise before generating the hash below, to ensure your most recent results are recorded.
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
 
 :::
 

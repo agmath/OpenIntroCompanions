@@ -132,7 +132,8 @@ You can pipe the name of the data frame into the `head()` function.
 #| echo: true
 #| eval: false
 
-bdims |> head()
+bdims |> 
+  head()
 ```
 
 :::
@@ -142,7 +143,8 @@ bdims |> head()
 #| exercise: head-data
 #| solution: true
 
-bdims |> head()
+bdims |> 
+  head()
 ```
 
 ```{webr}
@@ -168,8 +170,8 @@ The code block below is set up to create a dataset `mdims` consisting of only ma
 
 ```{webr}
 #| exercise: subset-mf
-
-mdims <- bdims |> filter(sex == 1)
+mdims <- bdims |> 
+  filter(sex == 1)
 ```
 
 :::{.hint exercise="subset-mf"}
@@ -182,7 +184,8 @@ Use the assignment operator for the new object.
 #| echo: true
 #| eval: false
 
-mdims <- bdims |> filter(sex == 1)
+mdims <- bdims |> 
+  filter(sex == 1)
 fdims <- ___
 ```
 
@@ -199,8 +202,10 @@ How should you change the `filter()` condition to select only females?
 #| echo: true
 #| eval: false
 
-mdims <- bdims |> filter(sex == 1)
-fdims <- bdims |> filter(sex == ___)
+mdims <- bdims |> 
+  filter(sex == 1)
+fdims <- bdims |> 
+  filter(sex == ___)
 ```
 
 :::
@@ -216,8 +221,10 @@ Females are encoded in this data set by the value 0 under the `sex` column. This
 #| echo: true
 #| eval: false
 
-mdims <- bdims |> filter(sex == 1)
-fdims <- bdims |> filter(sex == 0)
+mdims <- bdims |> 
+  filter(sex == 1)
+fdims <- bdims |> 
+  filter(sex == 0)
 ```
 
 :::
@@ -250,6 +257,7 @@ Use the code block below to make a histogram of men's heights and a histogram of
 
 ```{webr}
 #| exercise: plot-hgt-hists
+#| caption: Ungraded, Exploratory Only
 ______
 ```
 
@@ -553,7 +561,7 @@ Run the code below to see the normal curve laid on top of the male heights. Once
 
 ```{webr}
 #| exercise: hist-hgt-plus-normal
-
+#| caption: Ungraded, Exploratory Only
 mhgtmean <- mdims |>
   summarize(avg_height = mean(hgt)) |>
   pull(avg_height)
@@ -643,7 +651,7 @@ Eyeballing the shape of the histogram is one way to determine if the data appear
 
 ```{webr}
 #| exercise: qq
-
+#| caption: Ungraded, Exploratory Only
 qqnorm(fdims |> pull(hgt))
 qqline(fdims |> pull(hgt))
 ```
@@ -660,11 +668,13 @@ A useful way to address the questions of "*How close is close enough?*" is to co
 
 ```{webr}
 #| exercise: sim-norm
+#| caption: Ungraded, Exploratory Only
 #| input:
 #|   - fhgtmean
 #|   - fhgtsd
-
-sim_norm <- rnorm(n = fdims |> pull(hgt) |> length(),
+sim_norm <- rnorm(n = fdims |> 
+                    pull(hgt) |> 
+                    length(),
                   mean = fhgtmean, 
                   sd = fhgtsd)
 
@@ -701,7 +711,9 @@ Start by copying the line that defines `sim_norm` from the code block above.
 #| echo: true
 #| eval: false
 
-sim_norm <- rnorm(n = fdims |> pull(hgt) |> length(),
+sim_norm <- rnorm(n = fdims |> 
+                    pull(hgt) |> 
+                    length(),
                   mean = fhgtmean, 
                   sd = fhgtsd)
 ```
@@ -719,7 +731,9 @@ A Q-Q plot is constructed in two separate components -- the `qqnorm()` and the `
 #| echo: true
 #| eval: false
 
-sim_norm <- rnorm(n = fdims |> pull(hgt) |> length(),
+sim_norm <- rnorm(n = fdims |> 
+                    pull(hgt) |> 
+                    length(),
                   mean = fhgtmean, 
                   sd = fhgtsd)
 
@@ -740,7 +754,9 @@ When we drew the Q-Q plot for the observed female heights, we passed the observe
 #| echo: true
 #| eval: false
 
-sim_norm <- rnorm(n = fdims |> pull(hgt) |> length(),
+sim_norm <- rnorm(n = fdims |> 
+                    pull(hgt) |> 
+                    length(),
                   mean = fhgtmean, 
                   sd = fhgtsd)
 
@@ -761,7 +777,9 @@ Our job here is a bit easier because our simulated data (`sim_norm`) is just a v
 #| echo: true
 #| eval: false
 
-sim_norm <- rnorm(n = fdims |> pull(hgt) |> length(),
+sim_norm <- rnorm(n = fdims |> 
+                    pull(hgt) |> 
+                    length(),
                   mean = fhgtmean, 
                   sd = fhgtsd)
 
@@ -782,7 +800,9 @@ Pass `sim_norm` to both `qqnorm()` and `qqline()`.
 #| echo: true
 #| eval: false
 
-sim_norm <- rnorm(n = fdims |> pull(hgt) |> length(),
+sim_norm <- rnorm(n = fdims |> 
+                    pull(hgt) |> 
+                    length(),
                   mean = fhgtmean, 
                   sd = fhgtsd)
 
@@ -832,7 +852,7 @@ Even better than comparing the original plot to a single plot generated from a n
 
 ```{webr}
 #| exercise: qqnormsim
-
+#| caption: Ungraded, Exploratory Only
 qqnormsim(hgt, fdims)
 ```
 
@@ -999,7 +1019,7 @@ Assuming a normal distribution has allowed us to calculate a theoretical probabi
 
 ```{webr}
 #| exercise: hgt-emp-probability
-
+#| caption: Ungraded, Exploratory Only
 number_tall <- fdims |> 
   summarize(number_tall = sum(hgt > 182)) |> 
   pull(number_tall)
@@ -1169,6 +1189,41 @@ number_above_80kg / total_women
 
 :::
 :::
+
+```{webr}
+#| exercise: wgt-emp-prob
+#| solution: true
+#| input:
+#|   - fwgtmean
+#|   - fwgtsd
+
+number_above_80kg <- fdims |> 
+  summarize(number_above_80kg = sum(wgt > 80)) |> 
+  pull(number_above_80kg)
+
+total_women <- fdims |>
+  pull(wgt) |>
+  length()
+
+number_above_80kg / total_women
+```
+
+```{webr}
+#| exercise: wgt-emp-prob
+#| check: true
+#| input:
+#|   - fwgtmean
+#|   - fwgtsd
+
+exercise_results$wgt_norm_prob <<- "fail"
+gradethis::grade_this({
+  if (abs(.result - .solution) < 0.001) {
+    exercise_results$wgt_norm_prob <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
 
 :::{.callout-important}
 ## Importance of the *Approximate Normality* Assumption

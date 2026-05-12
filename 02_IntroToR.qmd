@@ -888,4 +888,6 @@ cat(hash)
 ## Looking Ahead
 
 The next activity introduces descriptive statistics — computing and interpreting numerical summaries for both numerical and categorical data. You'll use the tools introduced here (basic calculation, vectors, data frames, and the pipe) to calculate means, medians, standard deviations, construct frequency tables, and more with R.
+
+Remember that you are ***not*** expected to have any prior programming background to be successful here. We'll build everything we need from the ground up.
 :::

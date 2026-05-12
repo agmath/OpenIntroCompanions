@@ -107,6 +107,7 @@ Work with the following code block to explore the connection between the populat
 #| exercise: norm-pop-samp-dist
 #| message: false
 #| warning: false
+#| caption: Ungraded, Exploratory Only
 
 # Define the population mean (feel free to change)
 mean <- 80
@@ -314,6 +315,7 @@ Work with the following code block to explore the connection between the populat
 #| exercise: uniform-pop-samp-dist
 #| message: false
 #| warning: false
+#| caption: Ungraded, Exploratory Only
 
 # Define the minimum value (feel free to change)
 min <- 50
@@ -495,6 +497,7 @@ Work with the following code block to explore the connection between the populat
 #| exercise: skew-pop-samp-dist
 #| warning: false
 #| message: false
+#| caption: Ungraded, Exploratory Only
 
 # Define the first shape parameter (feel free to change)
 shape <- 0.5
@@ -797,6 +800,7 @@ $$\bar{X}_n \sim N\left(\mu,~S_E = \frac{\sigma}{\sqrt{n}}\right)$$
 
 ```{webr}
 #| exercise: spraypaint-sandbox
+#| caption: Ungraded, Exploratory Only
 # Use this code block for scratch calculations
 
 ```

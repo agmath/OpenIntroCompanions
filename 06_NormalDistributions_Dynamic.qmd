@@ -12,6 +12,8 @@ format:
         - dplyr
         - ggplot2
         - gradethis
+        - jsonlite
+        - base64enc
       cell-options:
         persist: true
     live:
@@ -29,7 +31,7 @@ format:
 
 library(htmltools)
 ok_response <- function(response, n) {
-  if (is.na(response)) HTML("")
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
   else if (response == n) div(HTML("Correct ✓"), style = "color: green")
   else div(HTML("Incorrect ✗"), style = "color: red")
 }
@@ -37,6 +39,7 @@ ok_response <- function(response, n) {
 
 ```{ojs}
 //| echo: false
+
 function ok_checkbox(response, n) {
   if (!response || response.length === 0) 
     return html`<span style="color:purple">You haven't answered yet.</span>`;
@@ -77,6 +80,8 @@ library(patchwork)
 #|   - chickPox_between_hi
 
 library(ggplot2)
+library(jsonlite)
+library(base64enc)
 
 boundary1 <- round(runif(1, 0.75, 2), 2)
 boundary2 <- round(runif(1, -2, -1.5), 2)
@@ -97,6 +102,29 @@ chickPox_atmost      <- floor(0.75 * chickPoxSampSize)
 chickPox_atleast     <- floor(0.95 * chickPoxSampSize)
 chickPox_between_lo  <- floor(0.8 * chickPoxSampSize)
 chickPox_between_hi  <- floor(0.9 * chickPoxSampSize)
+
+exercise_results <- list(
+  notebook           = "Topic 6: The Normal Distribution",
+  pnorm_ex1          = "unattempted",
+  pnorm_ex2          = "unattempted",
+  pnorm_ex3          = "unattempted",
+  pnorm_ex4          = "unattempted",
+  pnorm_ex5          = "unattempted",
+  pnorm_ex6          = "unattempted",
+  pnorm_ex7          = "unattempted",
+  find_percentile    = "unattempted",
+  chick_pox_exp      = "unattempted",
+  chick_pox_sd       = "unattempted",
+  chick_pox_exact1   = "unattempted",
+  chick_pox_exact2   = "unattempted",
+  chick_pox_atmost   = "unattempted",
+  chick_pox_atleast  = "unattempted",
+  chick_pox_between  = "unattempted",
+  z_score_QR         = "unattempted",
+  z_score_VR         = "unattempted",
+  GRE_QR_percentile  = "unattempted",
+  GRE_VR_above       = "unattempted"
+)
 ```
 
 :::{.callout-note}
@@ -312,11 +340,14 @@ viewof q1 = Inputs.radio(
     ["Nearly 100%", 4],
     ["It is impossible to tell", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
 );
 
-localStorage.setItem("q1", JSON.stringify(q1))
-
+{
+  localStorage.setItem("q1_selected", JSON.stringify(q1));
+  localStorage.setItem("q1_correct", "2");
+  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q1, "2");
 ```
 
@@ -330,7 +361,6 @@ According to the *Empirical Rule*, which of the following are boundary values fo
 ```{ojs}
 //| echo: false
 
-//mutable ok_checkbox = (response, n) => { return html`Loading...` };
 viewof q2 = Inputs.checkbox(
   new Map([
     ["0", 1],
@@ -341,11 +371,14 @@ viewof q2 = Inputs.checkbox(
     ["95", 6],
     ["100", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "[]")}
 );
 
-localStorage.setItem("q2", JSON.stringify(q2))
-
+{
+  localStorage.setItem("q2_selected", JSON.stringify(q2));
+  localStorage.setItem("q2_correct", "3,6");
+  localStorage.setItem("q2_result", (!q2 || q2.length === 0) ? "unattempted" : (q2.toString() === "3,6" ? "correct" : "incorrect"));
+}
 ok_checkbox(q2.toString(), "3,6");
 ```
 
@@ -542,11 +575,14 @@ viewof q3 = Inputs.radio(
     ["1.76", 4],
     ["-1.76", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
 );
 
-localStorage.setItem("q3", JSON.stringify(q3))
-
+{
+  localStorage.setItem("q3_selected", JSON.stringify(q3));
+  localStorage.setItem("q3_correct", "1");
+  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q3, "1");
 ```
 
@@ -568,11 +604,14 @@ viewof q4 = Inputs.radio(
     ["1.76", 4],
     ["-1.76", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
 );
 
-localStorage.setItem("q4", JSON.stringify(q4));
-
+{
+  localStorage.setItem("q4_selected", JSON.stringify(q4));
+  localStorage.setItem("q4_correct", "4");
+  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q4, "4");
 ```
 
@@ -593,11 +632,14 @@ viewof q5 = Inputs.radio(
     ["Bob, since his score was 1400 and Sally's score was only 31.", 3],
     ["Bob, since the SAT had a larger standard deviation it is a harder exam.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
 );
 
-localStorage.setItem("q5", JSON.stringify(q5));
-
+{
+  localStorage.setItem("q5_selected", JSON.stringify(q5));
+  localStorage.setItem("q5_correct", "1");
+  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q5, "1");
 ```
 
@@ -752,11 +794,14 @@ viewof q6 = Inputs.radio(
     ["0.9608", 4],
     ["0.0392", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
 );
 
-localStorage.setItem("q6", JSON.stringify(q6));
-
+{
+  localStorage.setItem("q6_selected", JSON.stringify(q6));
+  localStorage.setItem("q6_correct", "1");
+  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q6, "1");
 ```
 
@@ -778,11 +823,14 @@ viewof q7 = Inputs.radio(
     ["0.9607", 4],
     ["0.0392", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
 );
 
-localStorage.setItem("q7", JSON.stringify(q7));
-
+{
+  localStorage.setItem("q7_selected", JSON.stringify(q7));
+  localStorage.setItem("q7_correct", "4");
+  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q7, "4");
 ```
 
@@ -803,11 +851,14 @@ viewof q8 = Inputs.radio(
     ["Bob, since he scored closer to the mean.", 3],
     ["Bob, since his percentile score was so high even though the standard deviation on the SAT was so large.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
 );
 
-localStorage.setItem("q8", JSON.stringify(q8));
-
+{
+  localStorage.setItem("q8_selected", JSON.stringify(q8));
+  localStorage.setItem("q8_correct", "1");
+  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q8, "1");
 ```
 
@@ -826,7 +877,7 @@ For these first few questions I'll draw pictures for you, but you should be prep
 ::::{.columns}
 :::{.column width="55%"}
 
-**Question 1:** Use the code block below to find $\mathbb{P}\left[Z <\right.$ `{ojs} boundary1` $\left.\right]$ — remember that $Z\sim N\left(\mu = 0, \sigma = 1\right)$.
+**Question 1:** Use the code block below to find $\mathbb{P}\left[Z <\right.$  `{ojs} boundary1` $\left.\right]$ — remember that $Z\sim N\left(\mu = 0, \sigma = 1\right)$.
 
 ```{webr}
 #| exercise: pnorm-ex1
@@ -891,8 +942,10 @@ pnorm(boundary1, 0, 1)
 #| input:
 #|   - boundary1
 
+exercise_results$pnorm_ex1 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - pnorm(boundary1, 0, 1)) < 0.001) {
+    exercise_results$pnorm_ex1 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1000,8 +1053,10 @@ pnorm(boundary2, 0, 1)
 #| input:
 #|   - boundary2
 
+exercise_results$pnorm_ex2 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - pnorm(boundary2, 0, 1)) < 0.001) {
+    exercise_results$pnorm_ex2 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1159,8 +1214,10 @@ The boundary value is `{ojs} boundary3` and the distribution is $N(0, 1)$. Fill 
 #| input:
 #|   - boundary3
 
+exercise_results$pnorm_ex3 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - (1 - pnorm(boundary3, 0, 1))) < 0.001) {
+    exercise_results$pnorm_ex3 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1275,8 +1332,10 @@ The boundary value is `{ojs} boundary4` and the distribution is $N(0, 1)$. Fill 
 #| input:
 #|   - boundary4
 
+exercise_results$pnorm_ex4 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - (1 - pnorm(boundary4, 0, 1))) < 0.001) {
+    exercise_results$pnorm_ex4 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1419,8 +1478,10 @@ pnorm(boundary5b, 0, 1) - pnorm(boundary5a, 0, 1)
 #|   - boundary5a
 #|   - boundary5b
 
+exercise_results$pnorm_ex5 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - (pnorm(boundary5b, 0, 1) - pnorm(boundary5a, 0, 1))) < 0.001) {
+    exercise_results$pnorm_ex5 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1532,8 +1593,10 @@ pnorm(boundary6a, 0, 1) + (1 - pnorm(boundary6b, 0, 1))
 #|   - boundary6a
 #|   - boundary6b
 
+exercise_results$pnorm_ex6 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - (pnorm(boundary6a, 0, 1) + (1 - pnorm(boundary6b, 0, 1)))) < 0.001) {
+    exercise_results$pnorm_ex6 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1645,8 +1708,10 @@ Since the two tail areas are equal, just calculate one of them and double it. Th
 #| input:
 #|   - boundary7
 
+exercise_results$pnorm_ex7 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - (pnorm(-boundary7, 0, 1) + (1 - pnorm(boundary7, 0, 1)))) < 0.001) {
+    exercise_results$pnorm_ex7 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1685,7 +1750,11 @@ ggplot(NULL, aes(c(-3, 3))) +
 :::
 ::::
 
-Through the last seven problems you only worked with the standard normal distribution — that's the $Z$-distribution, which is $N\left(\mu = 0, \sigma = 1\right)$. We can find probabilities from arbitrary normal distributions using R's `pnorm()` functionality — just supply the appropriate `mean` and `sd` arguments instead of the 0 and 1 we passed earlier.
+:::{.callout-tip}
+## Probabilities from Other Normal Distributions
+
+Through the last seven problems you only worked with the *standard normal distribution* — that's the $Z$-distribution, which is $N\left(\mu = 0, \sigma = 1\right)$. We can find probabilities from arbitrary normal distributions using R's `pnorm()` functionality — just supply the appropriate `mean` and `sd` arguments instead of the 0 and 1 we passed earlier.
+:::
 
 ## Finding Percentile Cutoffs on a Normal Distribution
 
@@ -1804,8 +1873,10 @@ qnorm(0.9, 20.8, 5.8)
 #| exercise: find-percentile
 #| check: true
 
+exercise_results$find_percentile <<- "fail"
 gradethis::grade_this({
   if (abs(.result - qnorm(0.9, 20.8, 5.8)) < 0.1) {
+    exercise_results$find_percentile <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1895,8 +1966,10 @@ chickPoxSampSize * 0.90
 #| input:
 #|   - chickPoxSampSize
 
+exercise_results$chick_pox_exp <<- "fail"
 gradethis::grade_this({
   if (abs(.result - (chickPoxSampSize * 0.9)) < 0.1) {
+    exercise_results$chick_pox_exp <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1952,8 +2025,10 @@ sqrt(chickPoxSampSize * 0.9 * 0.1)
 #| input:
 #|   - chickPoxSampSize
 
+exercise_results$chick_pox_sd <<- "fail"
 gradethis::grade_this({
   if (abs(.result - sqrt(chickPoxSampSize * 0.9 * 0.1)) < 0.1) {
+    exercise_results$chick_pox_sd <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1976,11 +2051,14 @@ viewof q9 = Inputs.checkbox(
     ["No. A result like this one is certainly possible.", 4],
     ["No. This result does not fall more than two standard deviations from the expected value.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "[]")}
 );
 
-localStorage.setItem("q9", JSON.stringify(q9));
-
+{
+  localStorage.setItem("q9_selected", JSON.stringify(q9));
+  localStorage.setItem("q9_correct", "1,2");
+  localStorage.setItem("q9_result", (!q9 || q9.length === 0) ? "unattempted" : (q9.toString() === "1,2" ? "correct" : "incorrect"));
+}
 ok_checkbox(q9.toString(), "1,2");
 ```
 
@@ -2058,8 +2136,10 @@ dbinom(chickPox_exact1, chickPoxSampSize, 0.9)
 #|   - chickPoxSampSize
 #|   - chickPox_exact1
 
+exercise_results$chick_pox_exact1 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - dbinom(chickPox_exact1, chickPoxSampSize, 0.9)) < 0.001) {
+    exercise_results$chick_pox_exact1 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -2127,8 +2207,10 @@ dbinom(chickPox_exact2, chickPoxSampSize, 0.1)
 #|   - chickPoxSampSize
 #|   - chickPox_exact2
 
+exercise_results$chick_pox_exact2 <<- "fail"
 gradethis::grade_this({
   if (abs(.result - dbinom(chickPox_exact2, chickPoxSampSize, 0.1)) < 0.001) {
+    exercise_results$chick_pox_exact2 <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -2196,8 +2278,10 @@ pbinom(chickPox_atmost, chickPoxSampSize, 0.9)
 #|   - chickPoxSampSize
 #|   - chickPox_atmost
 
+exercise_results$chick_pox_atmost <<- "fail"
 gradethis::grade_this({
   if (abs(.result - pbinom(chickPox_atmost, chickPoxSampSize, 0.9)) < 0.00005) {
+    exercise_results$chick_pox_atmost <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -2265,8 +2349,10 @@ To get "at least `{ojs} chickPox_atleast`", subtract the probability of "at most
 #|   - chickPoxSampSize
 #|   - chickPox_atleast
 
+exercise_results$chick_pox_atleast <<- "fail"
 gradethis::grade_this({
   if (abs(.result - (1 - pbinom(chickPox_atleast - 1, chickPoxSampSize, 0.9))) < 0.0001) {
+    exercise_results$chick_pox_atleast <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -2337,8 +2423,10 @@ pbinom(chickPox_between_hi - 1, chickPoxSampSize, 0.9) - pbinom(chickPox_between
 #|   - chickPox_between_lo
 #|   - chickPox_between_hi
 
+exercise_results$chick_pox_between <<- "fail"
 gradethis::grade_this({
   if (abs(.result - (pbinom(chickPox_between_hi - 1, chickPoxSampSize, 0.9) - pbinom(chickPox_between_lo, chickPoxSampSize, 0.9))) < 0.0001) {
+    exercise_results$chick_pox_between <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -2392,8 +2480,10 @@ Sophia scored 157 on the Quantitative Reasoning exam, the mean is 153, and the s
 #| exercise: z-score-QR
 #| check: true
 
+exercise_results$z_score_QR <<- "fail"
 gradethis::grade_this({
   if (abs(.result - ((157 - 153) / 7.67)) < 0.01) {
+    exercise_results$z_score_QR <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -2434,8 +2524,10 @@ Use the same approach as above, but with the Verbal Reasoning values: Sophia sco
 #| exercise: z-score-VR
 #| check: true
 
+exercise_results$z_score_VR <<- "fail"
 gradethis::grade_this({
   if (abs(.result - ((160 - 151) / 7)) < 0.01) {
+    exercise_results$z_score_VR <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -2457,11 +2549,14 @@ viewof q10 = Inputs.radio(
     ["Sophia scored relatively higher on the Quantitative Reasoning exam since her Quantitative Reasoning z-score was closer to 0.", 3],
     ["It is impossible to tell which exam Sophia performed better on since the means and standard deviations are different.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q10_selected") ?? "null")}
 );
 
-localStorage.setItem("q10", JSON.stringify(q10));
-
+{
+  localStorage.setItem("q10_selected", JSON.stringify(q10));
+  localStorage.setItem("q10_correct", "1");
+  localStorage.setItem("q10_result", q10 === null ? "unattempted" : (q10 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q10, "1");
 ```
 
@@ -2519,8 +2614,10 @@ pnorm(157, 153, 7.67)
 #| exercise: GRE-QR-percentile
 #| check: true
 
+exercise_results$GRE_QR_percentile <<- "fail"
 gradethis::grade_this({
   if (abs(.result - pnorm(157, 153, 7.67)) < 0.001) {
+    exercise_results$GRE_QR_percentile <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -2570,8 +2667,10 @@ Sophia's Verbal Reasoning score is 160, the mean is 151, and the standard deviat
 #| exercise: GRE-VR-above
 #| check: true
 
+exercise_results$GRE_VR_above <<- "fail"
 gradethis::grade_this({
   if (abs(.result - (1 - pnorm(160, 151, 7))) < 0.001) {
+    exercise_results$GRE_VR_above <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -2580,26 +2679,137 @@ gradethis::grade_this({
 
 ## Submit
 
-:::{.callout-warning}
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested.
 
-Grading function is not currently available for these web-based activities. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+:::{.callout-warning}
+## Question Hash
+
+The hash below encodes your responses to the multiple choice and checkbox questions in this activity.
+
+```{ojs}
+//| echo: false
+
+function buildQuestionResults() {
+  return {
+    notebook: "Topic 6: The Normal Distribution",
+    type: "questions",
+    timestamp: new Date().toISOString(),
+    questions: {
+      q1_empirical_rule_1: {
+        selected: q1,
+        correct_answer: "2",
+        result: q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect")
+      },
+      q2_empirical_rule_2: {
+        selected: q2,
+        correct_answer: "3,6",
+        result: (!q2 || q2.length === 0) ? "unattempted" : (q2.toString() === "3,6" ? "correct" : "incorrect")
+      },
+      q3_z_score_bob: {
+        selected: q3,
+        correct_answer: "1",
+        result: q3 === null ? "unattempted" : (q3 == 1 ? "correct" : "incorrect")
+      },
+      q4_z_score_sally: {
+        selected: q4,
+        correct_answer: "4",
+        result: q4 === null ? "unattempted" : (q4 == 4 ? "correct" : "incorrect")
+      },
+      q5_z_score_comparison: {
+        selected: q5,
+        correct_answer: "1",
+        result: q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect")
+      },
+      q6_percentile_bob: {
+        selected: q6,
+        correct_answer: "1",
+        result: q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect")
+      },
+      q7_percentile_sally: {
+        selected: q7,
+        correct_answer: "4",
+        result: q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect")
+      },
+      q8_percentile_comparison: {
+        selected: q8,
+        correct_answer: "1",
+        result: q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect")
+      },
+      q9_surprising_results: {
+        selected: q9,
+        correct_answer: "1,2",
+        result: (!q9 || q9.length === 0) ? "unattempted" : (q9.toString() === "1,2" ? "correct" : "incorrect")
+      },
+      q10_z_score_gre: {
+        selected: q10,
+        correct_answer: "1",
+        result: q10 === null ? "unattempted" : (q10 == 1 ? "correct" : "incorrect")
+      }
+    }
+  };
+}
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+question_hash = {
+  q1; q2; q3; q4; q5; q6; q7; q8; q9; q10;
+  return toBase64(JSON.stringify(buildQuestionResults()));
+}
+```
+
+```{ojs}
+//| echo: false
+
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded code exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and hit the *Run Code* button on each graded exercise before generating the hash below, to ensure your most recent results are recorded.
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
 
 :::
 
 ## Summary
 
-Nice job getting through this workbook. Your hard work here will pay off as we move through much of the remainder of our course. Here are the major points we touched on.
+Nice job working through this activity. Your hard work here will pay off as we move through much of the remainder of our course. Below are the major points we touched on, along with a look ahead to what's next.
 
-+ A normal distribution is approximately bell-shaped and can be described by its mean $\mu$ and standard deviation $\sigma$. As shorthand, we write $N\left(\mu, \sigma\right)$.
-+ The *Empirical Rule* states that, if data is normally distributed, we expect:
-  + Approximately 67% of observations fall within one standard deviation of the mean.
-  + Approximately 95% of observations fall within two standard deviations of the mean.
-  + Approximately 99.7% of observations fall within three standard deviations of the mean.
-+ We can interpret areas underneath the normal distribution as probabilities.
-+ If $X\sim N\left(\mu, \sigma\right)$, then $\mathbb{P}\left[X\leq k\right] = \tt{pnorm(k, mean = \mu, sd = \sigma)}$
-  + Remember that `pnorm()` always returns the area to the **left** of the boundary value $k$.
-+ If $X\sim N\left(\mu, \sigma\right)$, then the $p^{th}$ percentile of $X$ is given by $\tt{qnorm(p, mean = \mu, sd = \sigma)}$
-  + Remember that $p$ must be the area to the **left** of the desired cutoff value.
-+ A $z$-score measures the number of standard deviations an observation falls above or below the mean: $\displaystyle{z = \frac{x - \mu}{\sigma}}$
-  + Positive $z$-scores correspond to observations above the mean; negative $z$-scores correspond to observations below the mean.
-  + $z$-scores allow us to compare observations from different normal distributions on a common scale.
+:::{.callout-tip}
+## Main Takeaways
+
++ A **normal distribution** is bell-shaped and fully described by its mean $\mu$ and standard deviation $\sigma$, written $N(\mu, \sigma)$. Larger $\sigma$ produces a shorter, wider curve; smaller $\sigma$ produces a taller, narrower curve.
++ The **Empirical Rule**: for data following $N(\mu, \sigma)$, approximately 67% of observations fall within one standard deviation of the mean, 95% within two, and 99.7% within three.
++ For a continuous distribution, $\mathbb{P}[X = k] = 0$, so there is no distinction between strict and non-strict inequalities. For example, $\mathbb{P}[X \leq k] = \mathbb{P}[X < k]$.
++ A **$z$-score** measures how many standard deviations an observation falls from the mean: $z = (x - \mu)/\sigma$. $z$-scores allow comparison across different normal distributions on a common scale.
++ **`pnorm(q, mean, sd)`** returns the area to the **left** of $q$ — that is, $\mathbb{P}[X \leq q]$. For right-tail and two-tail probabilities, use `1 - pnorm(...)` and combinations thereof.
++ **`qnorm(p, mean, sd)`** returns the value $x^*$ such that $\mathbb{P}[X \leq x^*] = p$ — the $p^{th}$ percentile. Remember that $p$ is the area to the **left** of the desired cutoff.
++ When a scenario involves repeated independent yes/no trials with constant probability, use the **binomial distribution** (`dbinom`, `pbinom`). When data are approximately normally distributed, use the **normal distribution** (`pnorm`, `qnorm`).
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+The next activity is a discrete probability and simulation lab exploring the *hot hand* phenomenon in basketball — a fun application of the ideas we've encountered in our short study of probability. You'll simulate data, compare distributions, and think carefully about what "random" actually looks like in practice.
+:::

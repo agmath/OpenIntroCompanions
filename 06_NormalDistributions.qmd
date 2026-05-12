@@ -2852,6 +2852,8 @@ gradethis::grade_this({
 
 ## Submit
 
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested.
+
 :::{.callout-warning}
 ## Question Hash
 

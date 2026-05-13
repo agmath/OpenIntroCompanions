@@ -151,7 +151,7 @@ viewof q1 = Inputs.checkbox(
     ["waterfront", 6],
     ["exterior", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "[]") ?? []}
 );
 
 {
@@ -182,7 +182,7 @@ viewof q2 = Inputs.checkbox(
     ["waterfront", 6],
     ["exterior", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "[]") ?? []}
 );
 
 {
@@ -213,7 +213,7 @@ viewof q3 = Inputs.checkbox(
     ["waterfront", 6],
     ["exterior", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "[]") ?? []}
 );
 
 {
@@ -294,7 +294,7 @@ viewof q4 = Inputs.checkbox(
     ["Depth versus Carat", 2],
     ["Length by Width", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "[]") ?? []}
 );
 
 {

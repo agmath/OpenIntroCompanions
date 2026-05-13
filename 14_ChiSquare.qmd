@@ -13,6 +13,8 @@ format:
         - dplyr
         - ggplot2
         - gradethis
+        - jsonlite
+        - base64enc
       cell-options:
         persist: true
     live:
@@ -54,6 +56,8 @@ function ok_checkbox(response, n) {
 
 library(dplyr)
 library(ggplot2)
+library(jsonlite)
+library(base64enc)
 
 theme_set(theme_bw(base_size = 12))
 
@@ -93,6 +97,24 @@ BRFSSsim$DrugUse[BRFSSsim$IncomeLevel == "HighIncome"] <- sample(
 
 tableSim <- table(BRFSSsim$DrugUse, BRFSSsim$IncomeLevel)
 observedInd <- c(341, 752, 796, 221, 78, 153, 116, 43)
+
+exercise_results <- list(
+  notebook          = "Topic 14: Inference for One or More Categorical Variables With Many Levels",
+  exp_white         = "unattempted",
+  exp_black         = "unattempted",
+  exp_hispanic      = "unattempted",
+  exp_other         = "unattempted",
+  test_stat         = "unattempted",
+  df                = "unattempted",
+  compute_p         = "unattempted",
+  poverty_drug_use  = "unattempted",
+  lowInc_drug_use   = "unattempted",
+  middleInc_drug_use = "unattempted",
+  highInc_drug_use  = "unattempted",
+  chi_sq_ind        = "unattempted",
+  df_ind            = "unattempted",
+  compute_p_indep   = "unattempted"
+)
 ```
 
 ```{r setup, include=FALSE}
@@ -191,10 +213,14 @@ viewof q1 = Inputs.radio(
     ["The number of people belonging to each race within the state prison population in New Hampshire.", 3],
     ["The average length of prison sentences in New Hampshire.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
 );
 
-localStorage.setItem("q1", JSON.stringify(q1));
+{
+  localStorage.setItem("q1_selected", JSON.stringify(q1));
+  localStorage.setItem("q1_correct", "1");
+  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q1, "1");
 ```
 
@@ -214,10 +240,14 @@ viewof q2 = Inputs.radio(
     ["categorical.", 2],
     ["both numerical and categorical.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
 );
 
-localStorage.setItem("q2", JSON.stringify(q2));
+{
+  localStorage.setItem("q2_selected", JSON.stringify(q2));
+  localStorage.setItem("q2_correct", "2");
+  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q2, "2");
 ```
 
@@ -239,10 +269,14 @@ viewof q3 = Inputs.radio(
     ["4", 4],
     ["5", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
 );
 
-localStorage.setItem("q3", JSON.stringify(q3));
+{
+  localStorage.setItem("q3_selected", JSON.stringify(q3));
+  localStorage.setItem("q3_correct", "4");
+  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q3, "4");
 ```
 
@@ -263,10 +297,14 @@ viewof q4 = Inputs.radio(
     ["Compute a required sample size.", 3],
     ["Find a probability.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
 );
 
-localStorage.setItem("q4", JSON.stringify(q4));
+{
+  localStorage.setItem("q4_selected", JSON.stringify(q4));
+  localStorage.setItem("q4_correct", "2");
+  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q4, "2");
 ```
 
@@ -280,7 +318,6 @@ Which of the following are the correct hypotheses associated with this test? Sel
 ```{ojs}
 //| echo: false
 
-//mutable ok_checkbox = (response, n) => { return html`Loading...` };
 viewof q5 = Inputs.checkbox(
   new Map([
     ["H₀: p_white = p_Black; Hₐ: The distribution is different.", 1],
@@ -289,10 +326,14 @@ viewof q5 = Inputs.checkbox(
     ["H₀: The distribution is uniform; Hₐ: The distribution is different.", 4],
     ["H₀: The racial demographics of the NH state prison population match those of the State; Hₐ: The distribution is different.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "[]")}
 );
 
-localStorage.setItem("q5", JSON.stringify(q5));
+{
+  localStorage.setItem("q5_selected", JSON.stringify(q5));
+  localStorage.setItem("q5_correct", "2,5");
+  localStorage.setItem("q5_result", (!q5 || q5.length === 0) ? "unattempted" : (q5.toString() === "2,5" ? "correct" : "incorrect"));
+}
 ok_checkbox(q5.toString(), "2,5");
 ```
 
@@ -378,8 +419,10 @@ The expected count is the total number of prisoners multiplied by the proportion
 #| exercise: exp-white
 #| check: true
 
+exercise_results$exp_white <<- "fail"
 gradethis::grade_this({
   if (abs(.result - 300 * 0.898) < 0.01) {
+    exercise_results$exp_white <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -431,8 +474,10 @@ There are still 300 inmates in the sample and the proportion of black residents 
 #| exercise: exp-black
 #| check: true
 
+exercise_results$exp_black <<- "fail"
 gradethis::grade_this({
   if (abs(.result - 300 * 0.018) < 0.01) {
+    exercise_results$exp_black <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -466,8 +511,10 @@ Same approach again. What proportion of New Hampshire residents are Hispanic?
 #| exercise: exp-hispanic
 #| check: true
 
+exercise_results$exp_hispanic <<- "fail"
 gradethis::grade_this({
   if (abs(.result - 300 * 0.040) < 0.01) {
+    exercise_results$exp_hispanic <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -501,8 +548,10 @@ Same approach. What proportion of New Hampshire residents identify as another ra
 #| exercise: exp-other
 #| check: true
 
+exercise_results$exp_other <<- "fail"
 gradethis::grade_this({
   if (abs(.result - 300 * 0.044) < 0.01) {
+    exercise_results$exp_other <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -575,10 +624,12 @@ test_stat
 #| exercise: test-stat
 #| check: true
 
+exercise_results$test_stat <<- "fail"
 gradethis::grade_this({
   observed <- c(243, 24, 15, 18)
   expected <- c(269.4, 5.4, 12.0, 13.2)
   if (abs(.result - sum((observed - expected)^2 / expected)) < 0.01) {
+    exercise_results$test_stat <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -637,8 +688,10 @@ There are 4 racial groups, so the degrees of freedom is $4 - 1 = 3$.
 #| exercise: df
 #| check: true
 
+exercise_results$df <<- "fail"
 gradethis::grade_this({
   if (.result == 3) {
+    exercise_results$df <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -729,8 +782,10 @@ The first argument to `pchisq()` is the boundary value -- that's our *test stati
 #| exercise: compute-p
 #| check: true
 
+exercise_results$compute_p <<- "fail"
 gradethis::grade_this({
   if (abs(.result - (1 - pchisq(69.15, df = 3))) < 0.0001) {
+    exercise_results$compute_p <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -755,10 +810,14 @@ viewof q6 = Inputs.radio(
     ["Since p < α, we fail to reject the null hypothesis.", 4],
     ["It is impossible to determine.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
 );
 
-localStorage.setItem("q6", JSON.stringify(q6));
+{
+  localStorage.setItem("q6_selected", JSON.stringify(q6));
+  localStorage.setItem("q6_correct", "3");
+  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q6, "3");
 ```
 
@@ -777,12 +836,16 @@ viewof q7 = Inputs.radio(
     ["The sample data did not provide significant evidence to suggest that the state prison population in New Hampshire does not reflect the demographics of the State.", 1],
     ["The sample data proved that the state prison population in New Hampshire does not reflect the demographics of the State.", 2],
     ["The sample data provided significant evidence to suggest that the state prison population in New Hampshire does not reflect the demographics of the State.", 3],
-    ["The sample data provided significant evidence to suggest that the sample of prisoners did not match the racial demographics of the State.", 4]
+    ["The sample data provided significant evidence that the sample of prisoners did not match the racial demographics of the State.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
 );
 
-localStorage.setItem("q7", JSON.stringify(q7));
+{
+  localStorage.setItem("q7_selected", JSON.stringify(q7));
+  localStorage.setItem("q7_correct", "3");
+  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q7, "3");
 ```
 
@@ -826,10 +889,14 @@ viewof q8 = Inputs.radio(
     ["8", 4],
     ["10", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
 );
 
-localStorage.setItem("q8", JSON.stringify(q8));
+{
+  localStorage.setItem("q8_selected", JSON.stringify(q8));
+  localStorage.setItem("q8_correct", "2");
+  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q8, "2");
 ```
 
@@ -851,10 +918,14 @@ viewof q9 = Inputs.radio(
     ["Compute a desired sample size.", 4],
     ["Conduct a census.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "null")}
 );
 
-localStorage.setItem("q9", JSON.stringify(q9));
+{
+  localStorage.setItem("q9_selected", JSON.stringify(q9));
+  localStorage.setItem("q9_correct", "2");
+  localStorage.setItem("q9_result", q9 === null ? "unattempted" : (q9 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q9, "2");
 ```
 
@@ -875,10 +946,14 @@ viewof q10 = Inputs.radio(
     ["Some numerical and some categorical.", 3],
     ["Geo-spatial data.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q10_selected") ?? "null")}
 );
 
-localStorage.setItem("q10", JSON.stringify(q10));
+{
+  localStorage.setItem("q10_selected", JSON.stringify(q10));
+  localStorage.setItem("q10_correct", "2");
+  localStorage.setItem("q10_result", q10 === null ? "unattempted" : (q10 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q10, "2");
 ```
 
@@ -899,10 +974,14 @@ viewof q11 = Inputs.radio(
     ["H₀: p_income = p_druguse; Hₐ: p_income ≠ p_druguse", 3],
     ["H₀: μ_income = μ_druguse; Hₐ: μ_income ≠ μ_druguse", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q11") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q11_selected") ?? "null")}
 );
 
-localStorage.setItem("q11", JSON.stringify(q11));
+{
+  localStorage.setItem("q11_selected", JSON.stringify(q11));
+  localStorage.setItem("q11_correct", "1");
+  localStorage.setItem("q11_result", q11 === null ? "unattempted" : (q11 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q11, "1");
 ```
 
@@ -971,8 +1050,10 @@ Multiply the total number of adolescents (2,500) by the joint probability.
 #| exercise: poverty-drug-use
 #| check: true
 
+exercise_results$poverty_drug_use <<- "fail"
 gradethis::grade_this({
   if (abs(.result - 2500 * 0.16 * 0.14) < 0.5) {
+    exercise_results$poverty_drug_use <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1035,8 +1116,10 @@ $$\text{Expected Count} = \mathbb{P}\left[\text{low income}\right]\cdot \mathbb{
 #| exercise: lowInc-drug-use
 #| check: true
 
+exercise_results$lowInc_drug_use <<- "fail"
 gradethis::grade_this({
   if (abs(.result - 2500 * 0.38 * 0.14) < 0.5) {
+    exercise_results$lowInc_drug_use <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1085,8 +1168,10 @@ Use the same approach as for calculating the previous two expected counts. The m
 #| exercise: middleInc-drug-use
 #| check: true
 
+exercise_results$middleInc_drug_use <<- "fail"
 gradethis::grade_this({
   if (abs(.result - 2500 * 0.35 * 0.14) < 0.5) {
+    exercise_results$middleInc_drug_use <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1135,8 +1220,10 @@ Once more, use the same approach. This time, the marginal probability of a rando
 #| exercise: highInc-drug-use
 #| check: true
 
+exercise_results$highInc_drug_use <<- "fail"
 gradethis::grade_this({
   if (abs(.result - 2500 * 0.11 * 0.14) < 0.5) {
+    exercise_results$highInc_drug_use <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1284,8 +1371,10 @@ test_stat
 #| exercise: chi-sq-ind
 #| check: true
 
+exercise_results$chi_sq_ind <<- "fail"
 gradethis::grade_this({
   if (abs(.result - 21.24924) < 0.05) {
+    exercise_results$chi_sq_ind <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1356,8 +1445,10 @@ For the $\chi^2$ test for independence, the degrees of freedom is the product $\
 #| exercise: df-ind
 #| check: true
 
+exercise_results$df_ind <<- "fail"
 gradethis::grade_this({
   if (.result == 3) {
+    exercise_results$df_ind <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1432,8 +1523,10 @@ Your test statistic you calculated is approximately 21.25 and the degrees of fre
 #| exercise: compute-p-indep
 #| check: true
 
+exercise_results$compute_p_indep <<- "fail"
 gradethis::grade_this({
   if (abs(.result - (1 - pchisq(21.24924, 3))) < 0.001) {
+    exercise_results$compute_p_indep <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1458,10 +1551,14 @@ viewof q12 = Inputs.radio(
     ["Since p < α, we fail to reject the null hypothesis.", 4],
     ["It is impossible to determine.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q12") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q12_selected") ?? "null")}
 );
 
-localStorage.setItem("q12", JSON.stringify(q12));
+{
+  localStorage.setItem("q12_selected", JSON.stringify(q12));
+  localStorage.setItem("q12_correct", "3");
+  localStorage.setItem("q12_result", q12 === null ? "unattempted" : (q12 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q12, "3");
 ```
 
@@ -1482,10 +1579,14 @@ viewof q13 = Inputs.radio(
     ["The sample data provided significant evidence to suggest that household income and illicit drug use by adolescents are independent.", 3],
     ["The sample data provided significant evidence that household income and illicit drug use were dependent for the individuals in our sample.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q13") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q13_selected") ?? "null")}
 );
 
-localStorage.setItem("q13", JSON.stringify(q13));
+{
+  localStorage.setItem("q13_selected", JSON.stringify(q13));
+  localStorage.setItem("q13_correct", "1");
+  localStorage.setItem("q13_result", q13 === null ? "unattempted" : (q13 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q13, "1");
 ```
 
@@ -1493,9 +1594,131 @@ ok_response(q13, "1");
 
 ## Submit
 
-:::{.callout-warning}
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested.
 
-Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+:::{.callout-warning}
+## Question Hash
+
+The hash below encodes your responses to the multiple choice and checkbox questions in this activity.
+
+```{ojs}
+//| echo: false
+
+function buildQuestionResults() {
+  return {
+    notebook: "Topic 14: Inference for One or More Categorical Variables With Many Levels",
+    type: "questions",
+    timestamp: new Date().toISOString(),
+    questions: {
+      q1_gof_variable_of_interest: {
+        selected: q1,
+        correct_answer: "1",
+        result: q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect")
+      },
+      q2_gof_variable_type: {
+        selected: q2,
+        correct_answer: "2",
+        result: q2 === null ? "unattempted" : (q2 == 2 ? "correct" : "incorrect")
+      },
+      q3_gof_num_levels: {
+        selected: q3,
+        correct_answer: "4",
+        result: q3 === null ? "unattempted" : (q3 == 4 ? "correct" : "incorrect")
+      },
+      q4_gof_inference_type: {
+        selected: q4,
+        correct_answer: "2",
+        result: q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect")
+      },
+      q5_gof_hypotheses: {
+        selected: q5,
+        correct_answer: "2,5",
+        result: (!q5 || q5.length === 0) ? "unattempted" : (q5.toString() === "2,5" ? "correct" : "incorrect")
+      },
+      q6_gof_test_result: {
+        selected: q6,
+        correct_answer: "3",
+        result: q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect")
+      },
+      q7_gof_conclusion_in_context: {
+        selected: q7,
+        correct_answer: "3",
+        result: q7 === null ? "unattempted" : (q7 == 3 ? "correct" : "incorrect")
+      },
+      q8_ind_num_variables: {
+        selected: q8,
+        correct_answer: "2",
+        result: q8 === null ? "unattempted" : (q8 == 2 ? "correct" : "incorrect")
+      },
+      q9_ind_inference_type: {
+        selected: q9,
+        correct_answer: "2",
+        result: q9 === null ? "unattempted" : (q9 == 2 ? "correct" : "incorrect")
+      },
+      q10_ind_variable_types: {
+        selected: q10,
+        correct_answer: "2",
+        result: q10 === null ? "unattempted" : (q10 == 2 ? "correct" : "incorrect")
+      },
+      q11_ind_hypotheses: {
+        selected: q11,
+        correct_answer: "1",
+        result: q11 === null ? "unattempted" : (q11 == 1 ? "correct" : "incorrect")
+      },
+      q12_ind_test_result: {
+        selected: q12,
+        correct_answer: "3",
+        result: q12 === null ? "unattempted" : (q12 == 3 ? "correct" : "incorrect")
+      },
+      q13_ind_conclusion_in_context: {
+        selected: q13,
+        correct_answer: "1",
+        result: q13 === null ? "unattempted" : (q13 == 1 ? "correct" : "incorrect")
+      }
+    }
+  };
+}
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+question_hash = {
+  q1; q2; q3; q4; q5; q6; q7; q8; q9; q10; q11; q12; q13;
+  return toBase64(JSON.stringify(buildQuestionResults()));
+}
+```
+
+```{ojs}
+//| echo: false
+
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded code exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and hit the *Run Code* button on each graded exercise before generating the hash below, to ensure your most recent results are recorded.
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
 
 :::
 

@@ -13,6 +13,8 @@ format:
         - dplyr
         - ggplot2
         - gradethis
+        - jsonlite
+        - base64enc
       cell-options:
         persist: true
     live:
@@ -43,8 +45,17 @@ ok_response <- function(response, n) {
 
 library(dplyr)
 library(ggplot2)
+library(jsonlite)
+library(base64enc)
 
 theme_set(theme_bw(base_size = 12))
+
+exercise_results <- list(
+  notebook        = "Topic 12: Inference Practice",
+  try_it_2_se     = "unattempted",
+  try_it_2_ts     = "unattempted",
+  try_it_2_pvalue = "unattempted"
+)
 ```
 
 ```{r setup, include=FALSE}
@@ -239,10 +250,14 @@ viewof q1 = Inputs.radio(
     ["Construct a confidence interval.", 3],
     ["Conduct a hypothesis test.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
 );
 
-localStorage.setItem("q1", JSON.stringify(q1));
+{
+  localStorage.setItem("q1_selected", JSON.stringify(q1));
+  localStorage.setItem("q1_correct", "3");
+  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q1, "3");
 ```
 
@@ -264,10 +279,14 @@ viewof q2 = Inputs.radio(
     ["0.145", 4],
     ["159", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
 );
 
-localStorage.setItem("q2", JSON.stringify(q2));
+{
+  localStorage.setItem("q2_selected", JSON.stringify(q2));
+  localStorage.setItem("q2_correct", "3");
+  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q2, "3");
 ```
 
@@ -289,10 +308,14 @@ viewof q3 = Inputs.radio(
     ["SE = sqrt(p1(1-p1)/n1 + p2(1-p2)/n2)", 4],
     ["SE = sqrt(s1²/n1 + s2²/n2)", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
 );
 
-localStorage.setItem("q3", JSON.stringify(q3));
+{
+  localStorage.setItem("q3_selected", JSON.stringify(q3));
+  localStorage.setItem("q3_correct", "3");
+  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q3, "3");
 ```
 
@@ -314,10 +337,14 @@ viewof q4 = Inputs.radio(
     ["0.0721", 4],
     ["undefined", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
 );
 
-localStorage.setItem("q4", JSON.stringify(q4));
+{
+  localStorage.setItem("q4_selected", JSON.stringify(q4));
+  localStorage.setItem("q4_correct", "3");
+  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q4, "3");
 ```
 
@@ -339,10 +366,14 @@ viewof q5 = Inputs.radio(
     ["t-distribution with df = n_diff - 1.", 4],
     ["We should not use either distribution.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
 );
 
-localStorage.setItem("q5", JSON.stringify(q5));
+{
+  localStorage.setItem("q5_selected", JSON.stringify(q5));
+  localStorage.setItem("q5_correct", "1");
+  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q5, "1");
 ```
 
@@ -364,10 +395,14 @@ viewof q6 = Inputs.radio(
     ["98%", 4],
     ["99%", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
 );
 
-localStorage.setItem("q6", JSON.stringify(q6));
+{
+  localStorage.setItem("q6_selected", JSON.stringify(q6));
+  localStorage.setItem("q6_correct", "2");
+  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q6, "2");
 ```
 
@@ -389,10 +424,14 @@ viewof q7 = Inputs.radio(
     ["2.33", 4],
     ["2.58", 5],
   ]),
-  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
 );
 
-localStorage.setItem("q7", JSON.stringify(q7));
+{
+  localStorage.setItem("q7_selected", JSON.stringify(q7));
+  localStorage.setItem("q7_correct", "1");
+  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q7, "1");
 ```
 
@@ -414,10 +453,14 @@ viewof q8 = Inputs.radio(
     ["48 ± (1.65 · 0.48)", 4],
     ["0.48 ± (1.65 · 0.0275)", 5],
   ]),
-  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
 );
 
-localStorage.setItem("q8", JSON.stringify(q8));
+{
+  localStorage.setItem("q8_selected", JSON.stringify(q8));
+  localStorage.setItem("q8_correct", "5");
+  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 5 ? "correct" : "incorrect"));
+}
 ok_response(q8, "5");
 ```
 
@@ -439,10 +482,14 @@ viewof q9 = Inputs.radio(
     ["0.4346 and 0.5254", 4],
     ["1.17 and 2.13", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "null")}
 );
 
-localStorage.setItem("q9", JSON.stringify(q9));
+{
+  localStorage.setItem("q9_selected", JSON.stringify(q9));
+  localStorage.setItem("q9_correct", "4");
+  localStorage.setItem("q9_result", q9 === null ? "unattempted" : (q9 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q9, "4");
 ```
 
@@ -463,10 +510,14 @@ viewof q10 = Inputs.radio(
     ["We are 90% confident that the sample proportion of Americans choosing not to go to college because they cannot afford it is between 43.46% and 52.54%.", 3],
     ["There is a 90% chance that the proportion of Americans choosing not to go to college because they cannot afford it is between 43.46% and 52.54%.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q10_selected") ?? "null")}
 );
 
-localStorage.setItem("q10", JSON.stringify(q10));
+{
+  localStorage.setItem("q10_selected", JSON.stringify(q10));
+  localStorage.setItem("q10_correct", "1");
+  localStorage.setItem("q10_result", q10 === null ? "unattempted" : (q10 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q10, "1");
 ```
 
@@ -487,10 +538,14 @@ viewof q11 = Inputs.radio(
     ["No. It actually shows that a minority make this choice for this reason because the confidence interval contains proportions below 50%.", 3],
     ["It is impossible to say, since a different sample would result in a different confidence interval.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q11") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q11_selected") ?? "null")}
 );
 
-localStorage.setItem("q11", JSON.stringify(q11));
+{
+  localStorage.setItem("q11_selected", JSON.stringify(q11));
+  localStorage.setItem("q11_correct", "2");
+  localStorage.setItem("q11_result", q11 === null ? "unattempted" : (q11 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q11, "2");
 ```
 
@@ -656,10 +711,14 @@ viewof q12 = Inputs.radio(
     ["Compute a probability.", 3],
     ["Find a required sample size.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q12") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q12_selected") ?? "null")}
 );
 
-localStorage.setItem("q12", JSON.stringify(q12));
+{
+  localStorage.setItem("q12_selected", JSON.stringify(q12));
+  localStorage.setItem("q12_correct", "4");
+  localStorage.setItem("q12_result", q12 === null ? "unattempted" : (q12 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q12, "4");
 ```
 
@@ -681,10 +740,14 @@ viewof q13 = Inputs.radio(
     ["2.58", 4],
     ["90", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q13") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q13_selected") ?? "null")}
 );
 
-localStorage.setItem("q13", JSON.stringify(q13));
+{
+  localStorage.setItem("q13_selected", JSON.stringify(q13));
+  localStorage.setItem("q13_correct", "1");
+  localStorage.setItem("q13_result", q13 === null ? "unattempted" : (q13 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q13, "1");
 ```
 
@@ -706,10 +769,14 @@ viewof q14 = Inputs.radio(
     ["0.015", 4],
     ["0.1", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q14") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q14_selected") ?? "null")}
 );
 
-localStorage.setItem("q14", JSON.stringify(q14));
+{
+  localStorage.setItem("q14_selected", JSON.stringify(q14));
+  localStorage.setItem("q14_correct", "4");
+  localStorage.setItem("q14_result", q14 === null ? "unattempted" : (q14 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q14, "4");
 ```
 
@@ -731,10 +798,14 @@ viewof q15 = Inputs.radio(
     ["50", 4],
     ["48", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q15") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q15_selected") ?? "null")}
 );
 
-localStorage.setItem("q15", JSON.stringify(q15));
+{
+  localStorage.setItem("q15_selected", JSON.stringify(q15));
+  localStorage.setItem("q15_correct", "1");
+  localStorage.setItem("q15_result", q15 === null ? "unattempted" : (q15 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q15, "1");
 ```
 
@@ -762,10 +833,14 @@ viewof q16 = Inputs.radio(
     ["3,021", 4],
     ["3,020.16", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q16") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q16_selected") ?? "null")}
 );
 
-localStorage.setItem("q16", JSON.stringify(q16));
+{
+  localStorage.setItem("q16_selected", JSON.stringify(q16));
+  localStorage.setItem("q16_correct", "4");
+  localStorage.setItem("q16_result", q16 === null ? "unattempted" : (q16 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q16, "4");
 ```
 
@@ -935,10 +1010,14 @@ viewof q17 = Inputs.radio(
     ["Compute a probability.", 3],
     ["Find a required sample size.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q17") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q17_selected") ?? "null")}
 );
 
-localStorage.setItem("q17", JSON.stringify(q17));
+{
+  localStorage.setItem("q17_selected", JSON.stringify(q17));
+  localStorage.setItem("q17_correct", "2");
+  localStorage.setItem("q17_result", q17 === null ? "unattempted" : (q17 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q17, "2");
 ```
 
@@ -959,10 +1038,14 @@ viewof q18 = Inputs.radio(
     ["H₀: p_unemployed − p_underemployed = 0, Hₐ: p_unemployed − p_underemployed < 0", 3],
     ["H₀: p_unemployed = 0.27 and p_underemployed = 0.25, Hₐ: p_unemployed ≠ 0.27 or p_underemployed ≠ 0.25", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q18") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q18_selected") ?? "null")}
 );
 
-localStorage.setItem("q18", JSON.stringify(q18));
+{
+  localStorage.setItem("q18_selected", JSON.stringify(q18));
+  localStorage.setItem("q18_correct", "1");
+  localStorage.setItem("q18_result", q18 === null ? "unattempted" : (q18 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q18, "1");
 ```
 
@@ -984,10 +1067,14 @@ viewof q19 = Inputs.radio(
     ["0.27", 4],
     ["0.50", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q19") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q19_selected") ?? "null")}
 );
 
-localStorage.setItem("q19", JSON.stringify(q19));
+{
+  localStorage.setItem("q19_selected", JSON.stringify(q19));
+  localStorage.setItem("q19_correct", "1");
+  localStorage.setItem("q19_result", q19 === null ? "unattempted" : (q19 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q19, "1");
 ```
 
@@ -1009,10 +1096,14 @@ viewof q20 = Inputs.radio(
     ["0.27", 4],
     ["0.50", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q20") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q20_selected") ?? "null")}
 );
 
-localStorage.setItem("q20", JSON.stringify(q20));
+{
+  localStorage.setItem("q20_selected", JSON.stringify(q20));
+  localStorage.setItem("q20_correct", "2");
+  localStorage.setItem("q20_result", q20 === null ? "unattempted" : (q20 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q20, "2");
 ```
 
@@ -1033,10 +1124,14 @@ viewof q21 = Inputs.radio(
     ["Three or more groups.", 3],
     ["1,820 groups.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q21") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q21_selected") ?? "null")}
 );
 
-localStorage.setItem("q21", JSON.stringify(q21));
+{
+  localStorage.setItem("q21_selected", JSON.stringify(q21));
+  localStorage.setItem("q21_correct", "2");
+  localStorage.setItem("q21_result", q21 === null ? "unattempted" : (q21 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q21, "2");
 ```
 
@@ -1058,10 +1153,14 @@ viewof q22 = Inputs.radio(
     ["SE = sqrt(p1(1-p1)/n1 + p2(1-p2)/n2)", 4],
     ["SE = sqrt(s1²/n1 + s2²/n2)", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q22") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q22_selected") ?? "null")}
 );
 
-localStorage.setItem("q22", JSON.stringify(q22));
+{
+  localStorage.setItem("q22_selected", JSON.stringify(q22));
+  localStorage.setItem("q22_correct", "4");
+  localStorage.setItem("q22_result", q22 === null ? "unattempted" : (q22 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q22, "4");
 ```
 
@@ -1167,8 +1266,10 @@ sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
 #| exercise: try-it-2-se
 #| check: true
 
+exercise_results$try_it_2_se <<- "fail"
 gradethis::grade_this({
   if (abs(.result - sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))) < 0.0005) {
+    exercise_results$try_it_2_se <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1281,9 +1382,11 @@ se <- sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
 #| exercise: try-it-2-ts
 #| check: true
 
+exercise_results$try_it_2_ts <<- "fail"
 gradethis::grade_this({
   se <- sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
   if (abs(.result - (0.02 / se)) < 0.005) {
+    exercise_results$try_it_2_ts <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1306,10 +1409,14 @@ viewof q23 = Inputs.radio(
     ["t-distribution with df = n_diff - 1.", 4],
     ["We should not use either distribution.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q23") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q23_selected") ?? "null")}
 );
 
-localStorage.setItem("q23", JSON.stringify(q23));
+{
+  localStorage.setItem("q23_selected", JSON.stringify(q23));
+  localStorage.setItem("q23_correct", "1");
+  localStorage.setItem("q23_result", q23 === null ? "unattempted" : (q23 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q23, "1");
 ```
 
@@ -1462,10 +1569,12 @@ z  <- (0.27 - 0.25) / se
 #| exercise: try-it-2-pvalue
 #| check: true
 
+exercise_results$try_it_2_pvalue <<- "fail"
 gradethis::grade_this({
   se <- sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
   z  <- (0.27 - 0.25) / se
   if (abs(.result - 2 * (1 - pnorm(abs(z)))) < 0.003) {
+    exercise_results$try_it_2_pvalue <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -1488,10 +1597,14 @@ viewof q24 = Inputs.radio(
     ["Since p ≥ α, we accept the null hypothesis.", 4],
     ["It is impossible to determine.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q24") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q24_selected") ?? "null")}
 );
 
-localStorage.setItem("q24", JSON.stringify(q24));
+{
+  localStorage.setItem("q24_selected", JSON.stringify(q24));
+  localStorage.setItem("q24_correct", "3");
+  localStorage.setItem("q24_result", q24 === null ? "unattempted" : (q24 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q24, "3");
 ```
 
@@ -1512,10 +1625,14 @@ viewof q25 = Inputs.radio(
     ["The sample data provided significant evidence of a greater frequency of relationship trouble among the unemployed.", 3],
     ["Sample data cannot be used to test claims about a population.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q25") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q25_selected") ?? "null")}
 );
 
-localStorage.setItem("q25", JSON.stringify(q25));
+{
+  localStorage.setItem("q25_selected", JSON.stringify(q25));
+  localStorage.setItem("q25_correct", "2");
+  localStorage.setItem("q25_result", q25 === null ? "unattempted" : (q25 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q25, "2");
 ```
 
@@ -1525,9 +1642,192 @@ Good work through these practice problems! Remember to download or print copies 
 
 ## Submit
 
-:::{.callout-warning}
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested.
 
-Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+:::{.callout-warning}
+## Question Hash
+
+The hash below encodes your responses to the multiple choice and checkbox questions in this activity.
+
+```{ojs}
+//| echo: false
+
+function buildQuestionResults() {
+  return {
+    notebook: "Topic 12: Inference Practice",
+    type: "questions",
+    timestamp: new Date().toISOString(),
+    questions: {
+      q1_try1a_inference_type: {
+        selected: q1,
+        correct_answer: "3",
+        result: q1 === null ? "unattempted" : (q1 == 3 ? "correct" : "incorrect")
+      },
+      q2_try1a_point_estimate: {
+        selected: q2,
+        correct_answer: "3",
+        result: q2 === null ? "unattempted" : (q2 == 3 ? "correct" : "incorrect")
+      },
+      q3_try1a_se_formula: {
+        selected: q3,
+        correct_answer: "3",
+        result: q3 === null ? "unattempted" : (q3 == 3 ? "correct" : "incorrect")
+      },
+      q4_try1a_se_value: {
+        selected: q4,
+        correct_answer: "3",
+        result: q4 === null ? "unattempted" : (q4 == 3 ? "correct" : "incorrect")
+      },
+      q5_try1a_distribution: {
+        selected: q5,
+        correct_answer: "1",
+        result: q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect")
+      },
+      q6_try1a_confidence_level: {
+        selected: q6,
+        correct_answer: "2",
+        result: q6 === null ? "unattempted" : (q6 == 2 ? "correct" : "incorrect")
+      },
+      q7_try1a_critical_value: {
+        selected: q7,
+        correct_answer: "1",
+        result: q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect")
+      },
+      q8_try1a_ci_expression: {
+        selected: q8,
+        correct_answer: "5",
+        result: q8 === null ? "unattempted" : (q8 == 5 ? "correct" : "incorrect")
+      },
+      q9_try1a_ci_bounds: {
+        selected: q9,
+        correct_answer: "4",
+        result: q9 === null ? "unattempted" : (q9 == 4 ? "correct" : "incorrect")
+      },
+      q10_try1a_ci_interpretation: {
+        selected: q10,
+        correct_answer: "1",
+        result: q10 === null ? "unattempted" : (q10 == 1 ? "correct" : "incorrect")
+      },
+      q11_try1a_majority: {
+        selected: q11,
+        correct_answer: "2",
+        result: q11 === null ? "unattempted" : (q11 == 2 ? "correct" : "incorrect")
+      },
+      q12_try1b_inference_type: {
+        selected: q12,
+        correct_answer: "4",
+        result: q12 === null ? "unattempted" : (q12 == 4 ? "correct" : "incorrect")
+      },
+      q13_try1b_critical_value: {
+        selected: q13,
+        correct_answer: "1",
+        result: q13 === null ? "unattempted" : (q13 == 1 ? "correct" : "incorrect")
+      },
+      q14_try1b_margin_of_error: {
+        selected: q14,
+        correct_answer: "4",
+        result: q14 === null ? "unattempted" : (q14 == 4 ? "correct" : "incorrect")
+      },
+      q15_try1b_p_value: {
+        selected: q15,
+        correct_answer: "1",
+        result: q15 === null ? "unattempted" : (q15 == 1 ? "correct" : "incorrect")
+      },
+      q16_try1b_sample_size: {
+        selected: q16,
+        correct_answer: "4",
+        result: q16 === null ? "unattempted" : (q16 == 4 ? "correct" : "incorrect")
+      },
+      q17_try2_inference_type: {
+        selected: q17,
+        correct_answer: "2",
+        result: q17 === null ? "unattempted" : (q17 == 2 ? "correct" : "incorrect")
+      },
+      q18_try2_hypotheses: {
+        selected: q18,
+        correct_answer: "1",
+        result: q18 === null ? "unattempted" : (q18 == 1 ? "correct" : "incorrect")
+      },
+      q19_try2_null_value: {
+        selected: q19,
+        correct_answer: "1",
+        result: q19 === null ? "unattempted" : (q19 == 1 ? "correct" : "incorrect")
+      },
+      q20_try2_point_estimate: {
+        selected: q20,
+        correct_answer: "2",
+        result: q20 === null ? "unattempted" : (q20 == 2 ? "correct" : "incorrect")
+      },
+      q21_try2_num_groups: {
+        selected: q21,
+        correct_answer: "2",
+        result: q21 === null ? "unattempted" : (q21 == 2 ? "correct" : "incorrect")
+      },
+      q22_try2_se_formula: {
+        selected: q22,
+        correct_answer: "4",
+        result: q22 === null ? "unattempted" : (q22 == 4 ? "correct" : "incorrect")
+      },
+      q23_try2_distribution: {
+        selected: q23,
+        correct_answer: "1",
+        result: q23 === null ? "unattempted" : (q23 == 1 ? "correct" : "incorrect")
+      },
+      q24_try2_test_result: {
+        selected: q24,
+        correct_answer: "3",
+        result: q24 === null ? "unattempted" : (q24 == 3 ? "correct" : "incorrect")
+      },
+      q25_try2_context_conclusion: {
+        selected: q25,
+        correct_answer: "2",
+        result: q25 === null ? "unattempted" : (q25 == 2 ? "correct" : "incorrect")
+      }
+    }
+  };
+}
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+question_hash = {
+  q1; q2; q3; q4; q5; q6; q7; q8; q9; q10; q11; q12; q13;
+  q14; q15; q16; q17; q18; q19; q20; q21; q22; q23; q24; q25;
+  return toBase64(JSON.stringify(buildQuestionResults()));
+}
+```
+
+```{ojs}
+//| echo: false
+
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded code exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and hit the *Run Code* button on each graded exercise before generating the hash below, to ensure your most recent results are recorded.
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
 
 :::
 

@@ -174,7 +174,7 @@ viewof q1 = Inputs.checkbox(
     ["A dotplot", 4],
     ["Side-by-side boxplots", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "[]") ?? []}
 );
 
 {
@@ -357,7 +357,7 @@ viewof q4 = Inputs.checkbox(
     ["fl (fuel type)", 10],
     ["class (vehicle class)", 11]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "[]") ?? []}
 );
 
 {
@@ -830,7 +830,7 @@ viewof q9 = Inputs.checkbox(
     ["A heatmap", 4],
     ["A mosaicplot", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "[]") ?? []}
 );
 
 {

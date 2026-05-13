@@ -449,7 +449,7 @@ viewof q10 = Inputs.checkbox(
     ["Virginica and Setosa", 2],
     ["Virginica and Versicolor", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q10") ?? "[]") ?? []}
 );
 
 localStorage.setItem("q10", JSON.stringify(q10));

@@ -123,7 +123,7 @@ viewof q1 = Inputs.checkbox(
     ["Shots are independent — that is, the hot hand phenomenon does not exist", 3],
     ["We must simulate at least 50 shots", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "[]") ?? []}
 );
 
 {

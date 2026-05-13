@@ -110,7 +110,7 @@ viewof q1 = Inputs.checkbox(
     ["point estimate.", 3],
     ["observation.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "[]") ?? []}
 );
 
 {
@@ -320,7 +320,7 @@ viewof q4 = Inputs.checkbox(
     ["There must be at least one success and one failure.", 4],
     ["Failure is an option.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "[]") ?? []}
 );
 
 {
@@ -709,7 +709,7 @@ viewof q12 = Inputs.checkbox(
     ["0.7489", 4],
     ["0.7505", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q12_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q12_selected") ?? "[]") ?? []}
 );
 
 {

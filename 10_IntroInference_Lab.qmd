@@ -1666,7 +1666,7 @@ viewof q19 = Inputs.checkbox(
     ["The sample taken must be random and representative of the population.", 3],
     ["The confidence interval must contain the true population mean.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q19_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q19_selected") ?? "[]") ?? []}
 );
 
 {

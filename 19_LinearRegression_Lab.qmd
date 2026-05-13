@@ -733,7 +733,7 @@ viewof q11 = Inputs.checkbox(
     ["pic_color", 11],
     ["pic_outfit", 12]
   ]),
-  {value: JSON.parse(localStorage.getItem("q11") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q11") ?? "[]") ?? []}
 );
 
 localStorage.setItem("q11", JSON.stringify(q11));
@@ -908,7 +908,7 @@ viewof q13 = Inputs.checkbox(
     ["An instructor with a higher average beauty rating.", 7],
     ["An instructor whose picture is printed in color.", 8]
   ]),
-  {value: JSON.parse(localStorage.getItem("q13") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q13") ?? "[]") ?? []}
 );
 
 localStorage.setItem("q13", JSON.stringify(q13));

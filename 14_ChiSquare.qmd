@@ -326,7 +326,7 @@ viewof q5 = Inputs.checkbox(
     ["H₀: The distribution is uniform; Hₐ: The distribution is different.", 4],
     ["H₀: The racial demographics of the NH state prison population match those of the State; Hₐ: The distribution is different.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "[]") ?? []}
 );
 
 {

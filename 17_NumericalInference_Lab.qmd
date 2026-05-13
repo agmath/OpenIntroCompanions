@@ -266,7 +266,7 @@ viewof q3 = Inputs.checkbox(
     ["habit", 12],
     ["whitemom", 13]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q3") ?? "[]") ?? []}
 );
 
 localStorage.setItem("q3", JSON.stringify(q3));
@@ -662,7 +662,7 @@ viewof q5 = Inputs.checkbox(
     ["Pregnancies with mothers who are non-smokers.", 5],
     ["Pregnancies not resulting in premature births.", 6]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q5") ?? "[]") ?? []}
 );
 
 localStorage.setItem("q5", JSON.stringify(q5));

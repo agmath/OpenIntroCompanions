@@ -522,7 +522,7 @@ viewof q3 = Inputs.checkbox(
     ["Stratify the diamonds according to price (low, medium, and high) and take a random sample of diamonds of each price category.", 4],
     ["Take samples including more diamonds.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "[]") ?? []}
 );
 
 {
@@ -655,7 +655,7 @@ viewof q4 = Inputs.checkbox(
     ["Worker A and Worker B had identical door-knocking strategies.", 2],
     ["Measures of center alone are not enough to describe numerical data.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "[]") ?? []}
 );
 
 {

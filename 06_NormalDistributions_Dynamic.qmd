@@ -371,7 +371,7 @@ viewof q2 = Inputs.checkbox(
     ["95", 6],
     ["100", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "[]") ?? []}
 );
 
 {
@@ -2051,7 +2051,7 @@ viewof q9 = Inputs.checkbox(
     ["No. A result like this one is certainly possible.", 4],
     ["No. This result does not fall more than two standard deviations from the expected value.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "[]")}
+  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "[]") ?? []}
 );
 
 {

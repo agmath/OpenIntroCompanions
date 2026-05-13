@@ -1,0 +1,123 @@
+---
+title: "OpenIntro Companion Activity Hash Check"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - jsonlite
+        - base64enc
+      cell-options: 
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+:::{.callout-note}
+## About
+This page allows users to verify the results encoded within their hash codes. It also provides a low-barrier interface for instructors who are willing to grade student results by inputting one hash code at a time. A more convenient, comprehensive, and detailed grading resource is available and can be downloaded from the [instructor grading resources folder](https://drive.google.com/drive/folders/1od3fLIzSc8Q-w_fp-knrEcCJ-pB78LFW?usp=sharing). 
+:::
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(jsonlite)
+library(base64enc)
+library(dplyr)
+library(kableExtra)
+
+#Decoding Function
+decode <- function(hash) {
+  fromJSON(rawToChar(base64decode(hash)))
+}
+
+process_questions <- function(hash){
+  q_results_df <- tibble()
+  questions <- decode(hash)
+  notebook <- questions[[1]]
+  n_questions <- length(questions[[4]])
+    
+  q_response <- rep(NA, n_questions)
+  #q_right <- rep(NA, n_questions)
+  q_result <- rep(NA, n_questions)
+    
+  for(j in 1:n_questions){
+    q_response[j] <- if(length(questions[[4]][[j]][[1]]) > 1){
+      paste(questions[[4]][[j]][[1]], collapse =",")
+      } else{
+        questions[[4]][[j]][[1]]
+      }
+      #q_right[j] <- questions[[4]][[j]][[2]]
+      q_result[j] <- questions[[4]][[j]][[3]]
+    }
+    q_results_df <- q_results_df |>
+      bind_rows(
+        tibble(
+          notebook = notebook,
+          id = names(questions[[4]]),
+          response = q_response,
+          #right = q_right,
+          result = q_result
+        )
+      )
+  return(q_results_df)
+}
+
+#Process Exercises
+process_exercises <- function(hash){
+  e_results_df <- tibble()
+  
+  exercises <- decode(hash)
+  notebook <- exercises[[1]]
+    
+  e_results_df <- e_results_df |>
+    bind_rows(
+      tibble(
+        notebook = notebook,
+        id = names(exercises[2:(length(exercises) - 2)]),
+        result = unlist(exercises[2:(length(exercises) - 2)])
+        )
+      ) |>
+    mutate(
+      result = ifelse(result == "fail", "incorrect", result)
+    )
+
+  return(e_results_df)
+}
+```
+
+### Question and Checkbox Hash Check
+
+Use the interactive code cell below to paste in the hash from the `Question Hash` box near the end of the activity. If you are an instructor using this grading interface, then you'll need to paste in the hashes one student at a time from your collection mechanism.
+
+```{webr}
+question_hash <- ""
+
+process_questions(question_hash) |>
+  kable() |>
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+### Exercise (Code Cell) Hash Check
+
+Use the interactive code cell below to paste in the hash generate using the `Exercise Hash` box near the end of the activity. If you are an instructor using this grading interface, then you'll need to paste in the hashes one student at a time from your collection mechanism. 
+
+```{webr}
+exercise_hash <- ""
+
+process_exercises(exercise_hash) |>
+  kable() |>
+  kable_styling(bootstrap_options = c("striped", "hover"))
+```
+
+

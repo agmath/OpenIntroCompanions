@@ -145,6 +145,7 @@ Use the code block below to answer some basic questions about the `ames` dataset
 
 ```{webr}
 #| exercise: explore-ames
+#| caption: Ungraded, Exploratory Only
 # Explore the ames dataset
 
 ```
@@ -368,6 +369,7 @@ Let's look at the distributions of `price` and `area` in our population of home 
 
 ```{webr}
 #| exercise: eda-sandbox
+#| caption: Ungraded, Exploratory Only
 # Compute summary statistics for area and price
 
 ```
@@ -574,6 +576,7 @@ Use the code block below to verify your answers about the shapes of the distribu
 #| exercise: plot-area-price-dists
 #| message: false
 #| warning: false
+#| caption: Ungraded, Exploratory Only
 
 ggplot() + 
   geom_histogram(aes(x = area)) + 
@@ -730,6 +733,7 @@ If we were interested in estimating the mean living area in Ames based on a samp
 
 ```{webr}
 #| exercise: samp1
+#| caption: Ungraded, Exploratory Only
 
 samp1 <- sample(area, 50)
 samp1
@@ -743,6 +747,7 @@ Run the code block below to produce a histogram of all observations in the popul
 #| exercise: plot-dist-sampl
 #| message: false
 #| warning: false
+#| caption: Ungraded, Exploratory Only
 
 # Take a sample
 samp <- sample(area, 50)
@@ -768,6 +773,7 @@ If we're interested in estimating the average living area of homes in Ames using
 
 ```{webr}
 #| exercise: mean-samp1
+#| caption: Ungraded, Exploratory Only
 
 samp1 <- sample(area, 50)
 mean(samp1)
@@ -806,6 +812,7 @@ Use the code block below to take a second sample, also of size 50, and call it `
 
 ```{webr}
 #| exercise: second-sample
+#| caption: Ungraded, Exploratory Only
 # Take a second sample of size 50 and compare its mean to samp1
 
 ```
@@ -879,6 +886,7 @@ The code below generates 5,000 samples of size 50 and computes the sample mean o
 #| exercise: loop
 #| message: false
 #| warning: false
+#| caption: Ungraded, Exploratory Only
 
 sample_means50 <- rep(NA, 5000)
 
@@ -899,6 +907,7 @@ You may notice a warning message about bin width. The following code block shows
 #| exercise: hist-breaks
 #| message: false
 #| warning: false
+#| caption: Ungraded, Exploratory Only
 
 sample_means50 <- rep(NA, 5000)
 
@@ -1026,6 +1035,7 @@ You would only need to copy and paste that pattern 4,996 more times to fill in t
 
 ```{webr}
 #| exercise: simple-loop
+#| caption: Ungraded, Exploratory Only
 
 total <- 0
 
@@ -1483,6 +1493,7 @@ sample_means$SampDist <- factor(
 #| exercise: plot-samp-dists
 #| message: false
 #| warning: false
+#| caption: Ungraded, Exploratory Only
 
 ggplot(data = sample_means) + 
   geom_histogram(aes(x = SampleMean)) + 
@@ -1616,6 +1627,7 @@ samp <- sample(area, 60)
 
 ```{webr}
 #| exercise: ci
+#| caption: Ungraded, Exploratory Only
 
 # Calculate the sample mean
 sample_mean <- mean(samp)
@@ -1743,6 +1755,7 @@ Read the code below — does it make sense to you? What do you think the result 
 
 ```{webr}
 #| exercise: lots-of-ci
+#| caption: Ungraded, Exploratory Only
 
 samp_mean <- rep(NA, 100)
 samp_sd   <- rep(NA, 100)

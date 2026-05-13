@@ -846,7 +846,7 @@ If you are part of a course with an instructor who is grading your work on these
 :::{.callout-warning}
 ## Question Hash
 
-Since there were no multiple choice or checkbox exercises in this activity, there is no *question hash* to generate. You'll see both question and exercise hashes in all future activities.
+Since there were no multiple choice or checkbox exercises in this activity, there is no *question hash* to generate. You'll see both question and exercise hashes in the majority of future activities.
 
 :::
 

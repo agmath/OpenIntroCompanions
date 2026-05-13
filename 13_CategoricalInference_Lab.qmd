@@ -16,6 +16,8 @@ format:
         - gradethis
         - statsr
         - openintro
+        - jsonlite
+        - base64enc
       cell-options: 
         persist: true
     live:
@@ -48,6 +50,8 @@ library(ggplot2)
 library(dplyr)
 library(statsr)
 library(openintro)
+library(jsonlite)
+library(base64enc)
 
 data(atheism)
 
@@ -98,10 +102,14 @@ viewof q1 = Inputs.radio(
     ["Population Parameters", 2],
     ["A mix of both", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
 );
 
-localStorage.setItem("q1", JSON.stringify(q1));
+{
+  localStorage.setItem("q1_selected", JSON.stringify(q1));
+  localStorage.setItem("q1_correct", "1");
+  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q1, "1");
 ```
 
@@ -122,10 +130,14 @@ viewof q2 = Inputs.radio(
     ["The survey should be conducted by phone to ensure respondents understand the questions being asked.", 3],
     ["The sample must be random and representative of the global community.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
 );
 
-localStorage.setItem("q2", JSON.stringify(q2));
+{
+  localStorage.setItem("q2_selected", JSON.stringify(q2));
+  localStorage.setItem("q2_correct", "4");
+  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q2, "4");
 ```
 
@@ -146,10 +158,14 @@ viewof q3 = Inputs.radio(
     ["Yes. The study included a very large number of respondents.", 3],
     ["No. The study results can only be extended to countries and regions for which the sample data is representative.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
 );
 
-localStorage.setItem("q3", JSON.stringify(q3));
+{
+  localStorage.setItem("q3_selected", JSON.stringify(q3));
+  localStorage.setItem("q3_correct", "4");
+  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q3, "4");
 ```
 
@@ -178,10 +194,14 @@ viewof q4 = Inputs.radio(
     ["Each row of both Table 6 and the atheism data frame contain the response of an individual respondent.", 3],
     ["Each row of both Table 6 and the atheism data frame contain the summarized responses by country.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
 );
 
-localStorage.setItem("q4", JSON.stringify(q4));
+{
+  localStorage.setItem("q4_selected", JSON.stringify(q4));
+  localStorage.setItem("q4_correct", "1");
+  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q4, "1");
 ```
 
@@ -314,10 +334,14 @@ viewof q5 = Inputs.radio(
     ["0.0499", 4],
     ["0.0634", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
 );
 
-localStorage.setItem("q5", JSON.stringify(q5));
+{
+  localStorage.setItem("q5_selected", JSON.stringify(q5));
+  localStorage.setItem("q5_correct", "2");
+  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q5, "2");
 ```
 
@@ -407,10 +431,14 @@ viewof q6 = Inputs.radio(
     ["There is no meaningful relationship between the population proportion and margin of error.", 3],
     ["The margin of error is small if the population proportion is near 0 or 1 but is largest for values near 0.5.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
 );
 
-localStorage.setItem("q6", JSON.stringify(q6));
+{
+  localStorage.setItem("q6_selected", JSON.stringify(q6));
+  localStorage.setItem("q6_correct", "4");
+  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q6, "4");
 ```
 
@@ -430,10 +458,14 @@ viewof q7 = Inputs.radio(
     ["Margins of error, and therefore confidence intervals, will be widest when the population proportion to be captured is close to 0.5.", 2],
     ["Both of the above are true.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
 );
 
-localStorage.setItem("q7", JSON.stringify(q7));
+{
+  localStorage.setItem("q7_selected", JSON.stringify(q7));
+  localStorage.setItem("q7_correct", "3");
+  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q7, "3");
 ```
 
@@ -549,10 +581,14 @@ viewof q8 = Inputs.radio(
     ["The report can proceed with inference on all countries. Since there were over 50,000 total responses, the success-failure condition is satisfied.", 2],
     ["The report should not proceed with inference on either Ecuador or Australia, since the success-failure condition may not be satisfied for either country.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
 );
 
-localStorage.setItem("q8", JSON.stringify(q8));
+{
+  localStorage.setItem("q8_selected", JSON.stringify(q8));
+  localStorage.setItem("q8_correct", "1");
+  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q8, "1");
 ```
 
@@ -672,9 +708,93 @@ ceiling(n)
 
 ## Submit
 
-:::{.callout-warning}
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested (there is only a *question hash* for this activity, no *exercise hash*).
 
-Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+:::{.callout-warning}
+## Question Hash
+
+The hash below encodes your responses to the multiple choice questions in this activity.
+
+```{ojs}
+//| echo: false
+
+function buildQuestionResults() {
+  return {
+    notebook: "Topic 13: Inference for Categorical Data (Lab)",
+    type: "questions",
+    timestamp: new Date().toISOString(),
+    questions: {
+      q1_sample_stats_or_params: {
+        selected: q1,
+        correct_answer: "1",
+        result: q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect")
+      },
+      q2_sampling_assumption: {
+        selected: q2,
+        correct_answer: "4",
+        result: q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect")
+      },
+      q3_assumption_satisfied: {
+        selected: q3,
+        correct_answer: "4",
+        result: q3 === null ? "unattempted" : (q3 == 4 ? "correct" : "incorrect")
+      },
+      q4_table_vs_dataframe_rows: {
+        selected: q4,
+        correct_answer: "1",
+        result: q4 === null ? "unattempted" : (q4 == 1 ? "correct" : "incorrect")
+      },
+      q5_margin_of_error: {
+        selected: q5,
+        correct_answer: "2",
+        result: q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect")
+      },
+      q6_proportion_me_relationship: {
+        selected: q6,
+        correct_answer: "4",
+        result: q6 === null ? "unattempted" : (q6 == 4 ? "correct" : "incorrect")
+      },
+      q7_implications: {
+        selected: q7,
+        correct_answer: "3",
+        result: q7 === null ? "unattempted" : (q7 == 3 ? "correct" : "incorrect")
+      },
+      q8_ecuador_australia_inference: {
+        selected: q8,
+        correct_answer: "1",
+        result: q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect")
+      }
+    }
+  };
+}
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+question_hash = {
+  q1; q2; q3; q4; q5; q6; q7; q8;
+  return toBase64(JSON.stringify(buildQuestionResults()));
+}
+```
+
+```{ojs}
+//| echo: false
+
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Since there were no code cell exercises in this activity, there is no *exercise hash* to generate. You'll see exercise hashes in future activities.
 
 :::
 

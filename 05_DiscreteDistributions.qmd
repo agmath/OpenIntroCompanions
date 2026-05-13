@@ -97,7 +97,7 @@ This activity provides an introduction to discrete probability, including basic 
 
 ## Discrete Probability Distributions
 
-Throughout this activity you'll be introduced to the notion of probability and will explore applications of probability and discrete random variables. In particular we will focus on binomial experiments and using the binomial distribution to find probabilities of prescribed outcomes.
+Throughout this activity you'll be introduced to the notion of probability and will explore applications of probability and discrete random variables. After developing some intuition using foundational probability ideas, we'll focus on binomial experiments and using the binomial distribution to find probabilities of prescribed outcomes.
 
 :::{.callout-tip}
 ## Limitations 
@@ -107,17 +107,17 @@ There are entire courses devoted to probability -- we will only cover probabilit
 
 ## Objectives
 
-**Workbook Objectives:** After completing this workbook you should be able to:
+**Activity Objectives:** After completing this workbook you should be able to:
 
 + Define, discuss, and interpret the probability of an event as its likelihood.
 + Apply fundamental counting principles and the notion of independence to compute the probability associated with the occurrence of a sequence of events.
 + Use the definition of binomial experiments to identify scenarios to which the binomial distribution can be applied. 
-+ Apply the distribution in appropriate scenarios to find probabilities associated with specified outcomes. 
++ Apply the binomial distribution in appropriate scenarios to find probabilities associated with specified outcomes. 
 + Given a binomial experiment, compute the expected number of successful outcomes as well as the standard deviation for number of successes.
 
 ## Basic Probability
 
-**Definition of Probability (*frequentist*):** For a given random process, the probability of an event $A$ is the proportion of time we would observe outcome $A$ if the random process were repeated an infinite number of times.
+**Definition of Probability (*frequentist*):** For a given random process, the probability of an event $A$ is the proportion of time we would observe an outcome satisfying $A$ if the random process were repeated an infinite number of times.
 
 **Example:** Given a fair coin, the probability of a flip turning up heads is $0.5$ (or 50%). Similarly, given a fair six-sided die, the probability of a roll resulting in a number greater than four is $1/3$ (or about 33.3%) because there are two outcomes satisfying the criteria (rolling a 5 or rolling a 6) out of the six total possible outcomes.
 
@@ -217,8 +217,8 @@ Good work on that last set of questions. In those problems you could find the pr
 What if we try doing something a bit more complicated? Say we wanted to know the probability of rolling at least a two on a single roll of a die *and then* flipping a "tails" on a single flip of a coin?
 
 :::{.callout-tip}
-##Probability and Independent Events
-If $A$ and $B$ are independent events (that is, the probability that $B$ occurs does not depend on whether or not $A$ occurred and vice-versa), then the probability of $A$ and $B$ occurring is the product of the probability of $A$ occurring and the probability of $B$ occurring. Mathematically, we write: $\mathbb{P}\left[A~\text{and}~B\right] = \mathbb{P}\left[A\right]\cdot\mathbb{P}\left[B\right]$.
+## Probability and Independent Events
+If $A$ and $B$ are independent events (that is, the probability that $B$ occurs does not depend on whether or not $A$ occurred, and vice-versa), then the probability of $A$ and $B$ occurring is the product of the probability of $A$ occurring and the probability of $B$ occurring. Mathematically, we write: $\mathbb{P}\left[A~\text{and}~B\right] = \mathbb{P}\left[A\right]\cdot\mathbb{P}\left[B\right]$.
 
 :::
 
@@ -310,7 +310,23 @@ The flip of a coin and roll of a die are independent events.
 
 :::{.hint exercise="prob-a-and-b"}
 :::{.callout-note collapse="false"}
-## Hint 3 (Solved)
+## Hint 3
+
+Since the events are independent, multiply the probabilities of the individual outcomes together.
+
+```{r}
+#| echo: true
+#| eval: false
+
+(___) * (___)
+```
+
+:::
+:::
+
+:::{.hint exercise="prob-a-and-b"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
 
 Since the events are independent, multiply the probabilities of the individual outcomes together.
 
@@ -353,6 +369,222 @@ Good work so far. Let's say you forgot to study for your chemistry quiz today. I
 #| exercise: calc-box
 
 ```
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 1 (Guessing, Part I)
+
+There are five answer options possible and only one of them is correct.
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Guessing, Part I)
+
+There are five answer options possible and only one of them is correct. You're guessing randomly, so no one choice is more likely than any of the others.
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Guessing, Part I)
+
+There are five answer options possible and only one of them is correct. You're guessing randomly, so no one choice is more likely than any of the others. By choosing randomly, you have a one out of five (20% or 0.20) probability of selecting the correct answer on any one question.
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 1 (Guessing, Part II)
+
+The questions are independent events here.
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Guessing, Part II)
+
+The questions are independent events here. Multiply the probability associated with the outcome on each individual question together.
+
+```{r}
+#| echo: true
+#| eval: false
+(___)*(___)*(___)*(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Guessing, Part II)
+
+The questions are independent events here. Multiply the probability associated with the outcome on each individual question together. The probability of getting any individual question correct is 0.20.
+
+```{r}
+#| echo: true
+#| eval: false
+(0.20)*(0.20)*(0.20)*(0.20)
+```
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 1 (Guessing, Part III)
+
+Use the same approach here, but now every question is being answered incorrectly.
+
+```{r}
+#| echo: true
+#| eval: false
+(___)*(___)*(___)*(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Guessing, Part III)
+
+If the probability of getting any individual question correct is 0.20, then the probability of getting it wrong must be 0.80.
+
+```{r}
+#| echo: true
+#| eval: false
+(___)*(___)*(___)*(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Guessing, Part III)
+
+If the probability of getting any individual question correct is 0.20, then the probability of getting it wrong must be 0.80.
+
+```{r}
+#| echo: true
+#| eval: false
+(0.80)*(0.80)*(0.80)*(0.80)
+```
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 1 (Guessing, Part IV)
+
+We'll start with the same setup as for the previous two parts.
+
+```{r}
+#| echo: true
+#| eval: false
+(___)*(___)*(___)*(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 2 (Guessing, Part IV)
+
+We don't care about the result to question 4. We could get it right or get it wrong, and it makes no difference to whether or not our even of interest occurs. 
+
+```{r}
+#| echo: true
+#| eval: false
+(___)*(___)*(___)*(___)
+```
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Guessing, Part IV)
+
+We don't care about the result to question 4. We could get it right or get it wrong, and it makes no difference to whether or not our even of interest occurs. Since, on the fourth question, our event of interest is "getting the question right or wrong", the probability of that outcome is 100% (or 1), since no other outcome is possible.
+
+```{r}
+#| echo: true
+#| eval: false
+(___)*(___)*(___)*(1)
+```
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Guessing, Part IV)
+
+If the first question that we get right is question 3, what must have been the outcome for each of the first two questions?
+
+```{r}
+#| echo: true
+#| eval: false
+(___)*(___)*(___)*(1)
+```
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Guessing, Part IV)
+
+If the first question that we get right is question 3, what must have been the outcome for each of the first two questions? We must have gotten both of the first two questions wrong. The probability of getting any individual question wrong was 0.80.
+
+```{r}
+#| echo: true
+#| eval: false
+(0.80)*(0.80)*(___)*(1)
+```
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 5 (Guessing, Part IV)
+
+We must have gotten the third question right. The probability of guessing correctly was 0.20.
+
+```{r}
+#| echo: true
+#| eval: false
+(0.80)*(0.80)*(0.20)*(1)
+```
+
+:::
+:::
+
+:::{.hint exercise="calc-box"}
+:::{.callout-note collapse="false"}
+## Hint 1 (Guessing, Part V)
+
+Will the approach we've taken to each of the previous three questions work here? Why or why not?
+
+```{r}
+#| echo: true
+#| eval: false
+(___)*(___)*(___)*(___)
+```
+
+:::
+:::
 
 :::{.callout-caution}
 ## Check Your Understanding: Guessing on a Quiz I
@@ -902,6 +1134,13 @@ pbinom(___, 18, 0.34)
 
 For `pbinom()`, the first argument is the maximum number of successes you are willing to consider. If a "success" is a student having failed to hand in at least one assignment, what is the maximum number of successes you are interested in?
 
+```{r}
+#| echo: true
+#| eval: false
+
+pbinom(___, 18, 0.34)
+```
+
 :::
 :::
 
@@ -1012,7 +1251,14 @@ pbinom(11, 18, 0.34)
 :::{.callout-note collapse="false"}
 ## Hint 7
 
-That call calculates the probability of 0 through 11 successes. That's not what we want. Could we start with the probability of all possible outcomes and then remove the ones we don't want?
+This call calculates the probability of 0 through 11 successes. That's not what we want. Could we start with the probability of all possible outcomes and then remove the ones we don't want?
+
+```{r}
+#| echo: true
+#| eval: false
+
+pbinom(11, 18, 0.34)
+```
 
 :::
 :::
@@ -1212,7 +1458,7 @@ pbinom(12, 18, 0.34) - ___(___, 18, 0.34)
 :::{.callout-note collapse="false"}
 ## Hint 7
 
-Think carefully about which events we need to remove. What number goes in the blank?
+Since we need to remove a collection, let's use `pbinom()` again. Think carefully about which events we need to remove. What number goes in the blank?
 
 ```{r}
 #| echo: true

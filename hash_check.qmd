@@ -23,7 +23,9 @@ format:
 
 :::{.callout-note}
 ## About
-This page allows users to verify the results encoded within their hash codes. It also provides a low-barrier interface for instructors who are willing to grade student results by inputting one hash code at a time. A more convenient, comprehensive, and detailed grading resource is available and can be downloaded from the [instructor grading resources folder](https://drive.google.com/drive/folders/1od3fLIzSc8Q-w_fp-knrEcCJ-pB78LFW?usp=sharing). 
+This page is intended to be a student/user-facing resource that allows individuals to verify the results encoded within their hash codes. This way, those individuals have a convenient and transparent summary of the work verification they are submitting.
+
+This page can also be utilized as a low-barrier interface for instructors who are willing to grade student results by inputting one hash code at a time. A more convenient, comprehensive, and detailed grading resource is available and can be downloaded from the [instructor grading resources folder](https://drive.google.com/drive/folders/1od3fLIzSc8Q-w_fp-knrEcCJ-pB78LFW?usp=sharing). That resource, however, requires local installation of R and a small amount of setup.
 :::
 
 ```{webr}

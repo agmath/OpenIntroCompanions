@@ -54,7 +54,7 @@ process_questions <- function(hash){
   for(j in 1:n_questions){
     q_response[j] <- if(length(questions[[4]][[j]][[1]]) > 1){
       paste(questions[[4]][[j]][[1]], collapse =",")
-      } else if(nchar(questions[[4]][[j]][[1]]) > 0){
+      } else if(length(questions[[4]][[j]][[1]]) == 1){
         questions[[4]][[j]][[1]]
       } else{
         "unattempted"

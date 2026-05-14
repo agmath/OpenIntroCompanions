@@ -110,7 +110,7 @@ This activity formally introduces confidence intervals and hypothesis tests as t
 
 In this activity, we continue our exploration of statistical inference. We'll cover the basic hypothesis testing framework in addition to discussing confidence intervals more formally than we did in the previous activity.
 
-We'll motivate this activity by watching three short videos from volunteers at OpenIntro.org. The first two are from Dr. David Diez, a data scientist, and the last is from Dr. Shannon McLintock, a member of the statistics faculty at Cal Poly. After each video, you'll walk through a hands-on application of the video content to a real scenario.
+We'll motivate this activity by watching three short videos from volunteers at OpenIntro.org. The first two are from Dr. David Diez, a data scientist, and the last is from Dr. Shannon McClintock Pileggi, a member of the statistics faculty at Cal Poly. After each video, you'll walk through a hands-on application of the video content to a real scenario.
 
 ## Variability in Point Estimates
 
@@ -218,7 +218,7 @@ ok_response(q3, "1");
 
 :::
 
-The code below simulates a random sample of 9,654 individuals for which there is a 74% chance the individual is in support of a path to citizenship for DREAMers. This should look somewhat familiar if you completed the lab activity where we simulated shots taken by a basketball player in order to investigate the *hot hand* phenomenon. Run the code a few times to see the results.
+The code below simulates a random sample of 9,654 individuals for which there is a 74% chance the individual is in support of a path to citizenship for DREAMers. Some of this code should look familiar if you completed the lab activity where we simulated shots taken by a basketball player in order to investigate the *hot hand* phenomenon. Run the code a few times to see the results.
 
 ```{webr}
 #| exercise: sim-dream-support
@@ -247,7 +247,7 @@ When observations are independent and the sample size is sufficiently large, the
 
 $$\hat{p} \sim N\!\left(\mu = p,\ S_E = \sqrt{\frac{p\left(1-p\right)}{n}}\right)$$
 
-It is typical to assume that *sufficiently large* means that the *success-failure condition* is satisfied. The condition requires that the sample is large enough that we should *expect* at least 10 "successes" and at least 10 "failures".
+It is typical to assume that *sufficiently large* means that the *success-failure condition* is satisfied. This condition requires that the sample is large enough that we should *expect* at least 10 "successes" and at least 10 "failures".
 :::
 
 Use the code block below to answer the questions that follow.
@@ -478,7 +478,7 @@ ok_response(q8, "2");
 
 Notice that the standard error is about half of a percentage point (close to 0.005). Doubling this estimate closely matches what we observed about the sampling error using our simulations. This brings us to our next topic — *confidence intervals*.
 
-## Intro to Confidence Intervals
+## Introduction to Confidence Intervals
 
 Watch the next video from Dr. Diez. Once you've watched it, we'll continue with our example about the 2020 Pew Research study.
 
@@ -812,11 +812,11 @@ ok_response(q14, "2");
 So far, so good! There's one more topic to go. Sometimes we'll want to test a claim about a population parameter rather than build a confidence interval for it. Inferential statistics provides a formal framework called the *hypothesis test* for evaluating statistical claims such as:
 
 + Is a population mean or proportion larger, smaller, or different from some proposed value?
-+ Do the population means or proportions differ across multiple groups?
++ Do the population means or proportions differ across two or more groups?
 
 ## Intro to Hypothesis Testing
 
-Here's one more video from Dr. Shannon McLintock introducing the notion of the hypothesis test.
+Here's one more video from Dr. Shannon McClintock Pileggi introducing the notion of the hypothesis test.
 
 ```{=html}
 <center>
@@ -826,7 +826,7 @@ Here's one more video from Dr. Shannon McLintock introducing the notion of the h
 
 A [2018 poll from NPR](https://www.npr.org/2018/02/06/583402634/npr-poll-2-in-3-support-legal-status-for-dreamers-majority-oppose-building-a-wal){target="_blank"} reported that 65% of Americans supported a path to citizenship for DREAMers. Does the 2020 Pew Research poll provide evidence that support for a pathway to citizenship has grown over the past two years? Use a significance level of $\alpha = 0.05$.
 
-Use what you learned from Dr. McLintock to answer the following questions and complete the hypothesis test. You can use the code block below for any calculations.
+Use what you learned from Dr. McClintock Pileggi  to answer the following questions and complete the hypothesis test. You can use the code block below for any calculations.
 
 ```{webr}
 #| exercise: ht-questions-sandbox
@@ -905,7 +905,7 @@ se <- sqrt((0.65 * (1 - 0.65)) / 9654)
 z <- (0.74 - 0.65) / se
 
 # p-value (upper tail, since Ha: p > 0.65)
-1 - pnorm(z)
+1 - pnorm(z, 0, 1)
 ```
 
 The $p$-value will be extremely small — much less than $\alpha = 0.05$ — leading us to reject the null hypothesis.

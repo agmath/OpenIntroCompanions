@@ -1373,9 +1373,3 @@ In both this lab activity and the previous one, you've been building intuition f
 
 In the coming activities, we'll move beyond informal visual comparisons and develop formal statistical methods — *hypothesis tests* and *confidence intervals* — for answering exactly that question. The normal distribution will play an outsized role in much of what follows, which is why understanding when it applies (and when it doesn't) was worth the time we spent here.
 :::
-
-:::{.callout-note}
-## License
-
-This lab is a derivative of a product of OpenIntro that is released under a [Creative Commons Attribution-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-sa/3.0) license. This lab was adapted for OpenIntro by Andrew Bray and Mine Çetinkaya-Rundel from a lab written by Mark Hansen of UCLA Statistics.
-:::

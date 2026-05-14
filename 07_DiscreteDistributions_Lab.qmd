@@ -68,7 +68,10 @@ kobe_streak <- calc_streak(kobe_basket$shot)
 
 exercise_results <- list(
   notebook           = "Topic 7: Discrete Distributions Lab",
+  first9             = "unattempted",
+  calc_streak_kobe   = "unattempted"
   plot_streak_kobe   = "unattempted",
+  sim_fair_coin      = "unattempted".
   sim_independent    = "unattempted",
   sim_streak         = "unattempted"
 )

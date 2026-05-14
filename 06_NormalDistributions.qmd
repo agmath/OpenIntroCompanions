@@ -145,6 +145,37 @@ exercise_results <- list(
 ## About
 
 This activity covers working with normally distributed data, including the calculation of probabilities and percentiles, and introduces the notion of the z-score.
+
+```{ojs}
+//| echo: false
+
+{
+  const btn = html`<button style="
+    background: #436b95;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  ">🔄 Reset My Responses</button>`;
+
+  btn.onclick = () => {
+    if (confirm('Reset all responses for this activity? This cannot be undone.')) {
+      Object.keys(localStorage)
+        .filter(k => k.endsWith('_selected_t6') || k.endsWith('_correct_t6') || k.endsWith('_result_t6'))
+        .forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  };
+
+  return btn;
+}
+```
+
+
+*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting code cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
+
 :::
 
 ## The Normal Distribution
@@ -354,13 +385,13 @@ viewof q1 = Inputs.radio(
     ["Nearly 100%", 4],
     ["It is impossible to tell", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected_t6") ?? "null")}
 );
 
 {
-  localStorage.setItem("q1_selected", JSON.stringify(q1));
-  localStorage.setItem("q1_correct", "2");
-  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q1_selected_t6", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t6", "2");
+  localStorage.setItem("q1_result_t6", q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q1, "2");
 ```
@@ -385,13 +416,13 @@ viewof q2 = Inputs.checkbox(
     ["95", 6],
     ["100", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q2_selected_t6") ?? "[]") ?? []}
 );
 
 {
-  localStorage.setItem("q2_selected", JSON.stringify(q2));
-  localStorage.setItem("q2_correct", "3,6");
-  localStorage.setItem("q2_result", (!q2 || q2.length === 0) ? "unattempted" : (q2.toString() === "3,6" ? "correct" : "incorrect"));
+  localStorage.setItem("q2_selected_t6", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t6", "3,6");
+  localStorage.setItem("q2_result_t6", (!q2 || q2.length === 0) ? "unattempted" : (q2.toString() === "3,6" ? "correct" : "incorrect"));
 }
 ok_checkbox(q2, "3,6");
 ```
@@ -589,13 +620,13 @@ viewof q3 = Inputs.radio(
     ["1.76", 4],
     ["-1.76", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected_t6") ?? "null")}
 );
 
 {
-  localStorage.setItem("q3_selected", JSON.stringify(q3));
-  localStorage.setItem("q3_correct", "1");
-  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q3_selected_t6", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t6", "1");
+  localStorage.setItem("q3_result_t6", q3 === null ? "unattempted" : (q3 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q3, "1");
 ```
@@ -618,13 +649,13 @@ viewof q4 = Inputs.radio(
     ["1.76", 4],
     ["-1.76", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected_t6") ?? "null")}
 );
 
 {
-  localStorage.setItem("q4_selected", JSON.stringify(q4));
-  localStorage.setItem("q4_correct", "4");
-  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q4_selected_t6", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t6", "4");
+  localStorage.setItem("q4_result_t6", q4 === null ? "unattempted" : (q4 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q4, "4");
 ```
@@ -646,13 +677,13 @@ viewof q5 = Inputs.radio(
     ["Bob, since his score was 1400 and Sally's score was only 31.", 3],
     ["Bob, since the SAT had a larger standard deviation it is a harder exam.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected_t6") ?? "null")}
 );
 
 {
-  localStorage.setItem("q5_selected", JSON.stringify(q5));
-  localStorage.setItem("q5_correct", "1");
-  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q5_selected_t6", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t6", "1");
+  localStorage.setItem("q5_result_t6", q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q5, "1");
 ```
@@ -808,13 +839,13 @@ viewof q6 = Inputs.radio(
     ["0.9608", 4],
     ["0.0392", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected_t6") ?? "null")}
 );
 
 {
-  localStorage.setItem("q6_selected", JSON.stringify(q6));
-  localStorage.setItem("q6_correct", "1");
-  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q6_selected_t6", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t6", "1");
+  localStorage.setItem("q6_result_t6", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q6, "1");
 ```
@@ -837,13 +868,13 @@ viewof q7 = Inputs.radio(
     ["0.9607", 4],
     ["0.0392", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected_t6") ?? "null")}
 );
 
 {
-  localStorage.setItem("q7_selected", JSON.stringify(q7));
-  localStorage.setItem("q7_correct", "4");
-  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q7_selected_t6", JSON.stringify(q7));
+  localStorage.setItem("q7_correct_t6", "4");
+  localStorage.setItem("q7_result_t6", q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q7, "4");
 ```
@@ -865,13 +896,13 @@ viewof q8 = Inputs.radio(
     ["Bob, since he scored closer to the mean.", 3],
     ["Bob, since his percentile score was so high even though the standard deviation on the SAT was so large.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected_t6") ?? "null")}
 );
 
 {
-  localStorage.setItem("q8_selected", JSON.stringify(q8));
-  localStorage.setItem("q8_correct", "1");
-  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q8_selected_t6", JSON.stringify(q8));
+  localStorage.setItem("q8_correct_t6", "1");
+  localStorage.setItem("q8_result_t6", q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q8, "1");
 ```
@@ -2094,13 +2125,13 @@ viewof q9 = Inputs.checkbox(
     ["No. A result like this one is certainly possible.", 4],
     ["No. This result does not fall more than two standard deviations from the expected value.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q9_selected_t6") ?? "[]") ?? []}
 );
 
 {
-  localStorage.setItem("q9_selected", JSON.stringify(q9));
-  localStorage.setItem("q9_correct", "1,2");
-  localStorage.setItem("q9_result", (!q9 || q9.length === 0) ? "unattempted" : (q9.toString() === "1,2" ? "correct" : "incorrect"));
+  localStorage.setItem("q9_selected_t6", JSON.stringify(q9));
+  localStorage.setItem("q9_correct_t6", "1,2");
+  localStorage.setItem("q9_result_t6", (!q9 || q9.length === 0) ? "unattempted" : (q9.toString() === "1,2" ? "correct" : "incorrect"));
 }
 ok_checkbox(q9, "1,2");
 ```
@@ -2686,13 +2717,13 @@ viewof q10 = Inputs.radio(
     ["Sophia scored relatively higher on the Quantitative Reasoning exam since her Quantitative Reasoning z-score was closer to 0.", 3],
     ["It is impossible to tell which exam Sophia performed better on since the means and standard deviations are different.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q10_selected_t6") ?? "null")}
 );
 
 {
-  localStorage.setItem("q10_selected", JSON.stringify(q10));
-  localStorage.setItem("q10_correct", "1");
-  localStorage.setItem("q10_result", q10 === null ? "unattempted" : (q10 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q10_selected_t6", JSON.stringify(q10));
+  localStorage.setItem("q10_correct_t6", "1");
+  localStorage.setItem("q10_result_t6", q10 === null ? "unattempted" : (q10 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q10, "1");
 ```

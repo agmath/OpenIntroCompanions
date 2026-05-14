@@ -73,6 +73,37 @@ theme_set(theme_bw(base_size = 12))
 ## About
 
 In this lab, we explore what's at play when making inference about population proportions using categorical data. We work with real survey data on global atheism, practice using the `inference()` function from the `{statsr}` package, and investigate how sample size and population proportion affect the margin of error.
+
+```{ojs}
+//| echo: false
+
+{
+  const btn = html`<button style="
+    background: #436b95;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  ">🔄 Reset My Responses</button>`;
+
+  btn.onclick = () => {
+    if (confirm('Reset all responses for this activity? This cannot be undone.')) {
+      Object.keys(localStorage)
+        .filter(k => k.endsWith('_selected_t13') || k.endsWith('_correct_t13') || k.endsWith('_result_t13'))
+        .forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  };
+
+  return btn;
+}
+```
+
+
+*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting code cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
+
 :::
 
 :::{.callout-note}
@@ -102,13 +133,13 @@ viewof q1 = Inputs.radio(
     ["Population Parameters", 2],
     ["A mix of both", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected_t13") ?? "null")}
 );
 
 {
-  localStorage.setItem("q1_selected", JSON.stringify(q1));
-  localStorage.setItem("q1_correct", "1");
-  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q1_selected_t13", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t13", "1");
+  localStorage.setItem("q1_result_t13", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q1, "1");
 ```
@@ -130,13 +161,13 @@ viewof q2 = Inputs.radio(
     ["The survey should be conducted by phone to ensure respondents understand the questions being asked.", 3],
     ["The sample must be random and representative of the global community.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected_t13") ?? "null")}
 );
 
 {
-  localStorage.setItem("q2_selected", JSON.stringify(q2));
-  localStorage.setItem("q2_correct", "4");
-  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q2_selected_t13", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t13", "4");
+  localStorage.setItem("q2_result_t13", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q2, "4");
 ```
@@ -158,13 +189,13 @@ viewof q3 = Inputs.radio(
     ["Yes. The study included a very large number of respondents.", 3],
     ["No. The study results can only be extended to countries and regions for which the sample data is representative.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected_t13") ?? "null")}
 );
 
 {
-  localStorage.setItem("q3_selected", JSON.stringify(q3));
-  localStorage.setItem("q3_correct", "4");
-  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q3_selected_t13", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t13", "4");
+  localStorage.setItem("q3_result_t13", q3 === null ? "unattempted" : (q3 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q3, "4");
 ```
@@ -194,13 +225,13 @@ viewof q4 = Inputs.radio(
     ["Each row of both Table 6 and the atheism data frame contain the response of an individual respondent.", 3],
     ["Each row of both Table 6 and the atheism data frame contain the summarized responses by country.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected_t13") ?? "null")}
 );
 
 {
-  localStorage.setItem("q4_selected", JSON.stringify(q4));
-  localStorage.setItem("q4_correct", "1");
-  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q4_selected_t13", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t13", "1");
+  localStorage.setItem("q4_result_t13", q4 === null ? "unattempted" : (q4 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q4, "1");
 ```
@@ -334,13 +365,13 @@ viewof q5 = Inputs.radio(
     ["0.0499", 4],
     ["0.0634", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected_t13") ?? "null")}
 );
 
 {
-  localStorage.setItem("q5_selected", JSON.stringify(q5));
-  localStorage.setItem("q5_correct", "2");
-  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q5_selected_t13", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t13", "2");
+  localStorage.setItem("q5_result_t13", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q5, "2");
 ```
@@ -431,13 +462,13 @@ viewof q6 = Inputs.radio(
     ["There is no meaningful relationship between the population proportion and margin of error.", 3],
     ["The margin of error is small if the population proportion is near 0 or 1 but is largest for values near 0.5.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected_t13") ?? "null")}
 );
 
 {
-  localStorage.setItem("q6_selected", JSON.stringify(q6));
-  localStorage.setItem("q6_correct", "4");
-  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q6_selected_t13", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t13", "4");
+  localStorage.setItem("q6_result_t13", q6 === null ? "unattempted" : (q6 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q6, "4");
 ```
@@ -458,13 +489,13 @@ viewof q7 = Inputs.radio(
     ["Margins of error, and therefore confidence intervals, will be widest when the population proportion to be captured is close to 0.5.", 2],
     ["Both of the above are true.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected_t13") ?? "null")}
 );
 
 {
-  localStorage.setItem("q7_selected", JSON.stringify(q7));
-  localStorage.setItem("q7_correct", "3");
-  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q7_selected_t13", JSON.stringify(q7));
+  localStorage.setItem("q7_correct_t13", "3");
+  localStorage.setItem("q7_result_t13", q7 === null ? "unattempted" : (q7 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q7, "3");
 ```
@@ -581,13 +612,13 @@ viewof q8 = Inputs.radio(
     ["The report can proceed with inference on all countries. Since there were over 50,000 total responses, the success-failure condition is satisfied.", 2],
     ["The report should not proceed with inference on either Ecuador or Australia, since the success-failure condition may not be satisfied for either country.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected_t13") ?? "null")}
 );
 
 {
-  localStorage.setItem("q8_selected", JSON.stringify(q8));
-  localStorage.setItem("q8_correct", "1");
-  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q8_selected_t13", JSON.stringify(q8));
+  localStorage.setItem("q8_correct_t13", "1");
+  localStorage.setItem("q8_result_t13", q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q8, "1");
 ```

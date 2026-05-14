@@ -16,6 +16,7 @@ format:
         - jsonlite
         - base64enc
         - openintro
+        - skimr
       cell-options:
         persist: true
     live:
@@ -61,6 +62,7 @@ library(openintro)
 library(patchwork)
 library(jsonlite)
 library(base64enc)
+library(skimr)
 
 data(ames)
 
@@ -110,6 +112,7 @@ library(dplyr)
 library(ggplot2)
 library(openintro)
 library(patchwork)
+library(skimr)
 
 data(ames)
 
@@ -168,9 +171,9 @@ In this activity, we investigate the ways in which statistics from a random samp
 
 ## The Data
 
-We consider real estate data from the city of Ames, Iowa. The details of every real estate transaction in Ames is recorded by the City Assessor's office. Our particular focus for this lab will be a dataset containing all residential home sales in Ames between 2006 and 2010. This collection represents our *population* of interest. While we typically don't have access to population-level data, this will allow us to see the Central Limit Theorem in action and to see how close our estimates come to the corresponding true population mean.
+We consider real estate data from the city of Ames, Iowa. The details of every real estate transaction in Ames is recorded by the City Assessor's office. Our particular focus for this lab will be a dataset containing all residential home sales in Ames between 2006 and 2010. This collection represents our *population* of interest. While we typically don't have access to population-level data, this will allow us to see the Central Limit Theorem in action and to measure how close our estimates come to the corresponding true population mean.
 
-In this lab we investigate what we can learn about the full population of these home sales by taking smaller samples. We'll see how well our small samples can be used to estimate a population parameter. The data has been loaded for you in a dataset called `ames`.
+In this lab we investigate what we can learn about the full population of these home sales through random sampling. We'll see how well our small samples can be used to estimate a population parameter. The data has been loaded for you and is stored in a variable called `ames`.
 
 Use the code block below to answer some basic questions about the `ames` dataset.
 
@@ -281,7 +284,6 @@ We see that there are quite a few variables in the data set — enough to do a v
 
 ```{webr}
 #| exercise: assign
-
 area <- ames |>
   pull(area)
 ```
@@ -915,8 +917,6 @@ The code below generates 5,000 samples of size 50 and computes the sample mean o
 
 ```{webr}
 #| exercise: loop
-#| message: false
-#| warning: false
 #| caption: Ungraded, Exploratory Only
 
 sample_means50 <- rep(NA, 5000)
@@ -936,8 +936,6 @@ You may notice a warning message about bin width. The following code block shows
 
 ```{webr}
 #| exercise: hist-breaks
-#| message: false
-#| warning: false
 #| caption: Ungraded, Exploratory Only
 
 sample_means50 <- rep(NA, 5000)
@@ -1067,7 +1065,6 @@ You would only need to copy and paste that pattern 4,996 more times to fill in t
 ```{webr}
 #| exercise: simple-loop
 #| caption: Ungraded, Exploratory Only
-
 total <- 0
 
 for(i in 1:10){
@@ -1150,7 +1147,7 @@ ___
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-In the first line, the name of the container will be `sample_means_small`, and it will be initialized by repeating zero 100 times. We can initialize that container with any value we like (`NA` or 0 are natural choices) because they'll just be overwritten shortlyly.
+In the first line, the name of the container will be `sample_means_small`, and it will be initialized by repeating zero 100 times. We can initialize that container with any value we like (`NA` or 0 are natural choices) because they'll just be overwritten shortly.
 
 ```{r}
 #| echo: true
@@ -1222,7 +1219,7 @@ ___
 :::{.callout-note collapse="false"}
 ## Hint 6 (Solved)
 
-The sample means are now contained in `sample_means_small`. Print them out by typing `sample_means_small` in place of the blank on the last line.
+All of our sample means are now contained in `sample_means_small`. Print them out by typing `sample_means_small` in place of the blank on the last line.
 
 ```{r}
 #| echo: true
@@ -1335,7 +1332,6 @@ Now that we have a better understanding of the mechanics of our code, let's retu
 #| exercise: samp10-samp100
 #| message: false
 #| warning: false
-
 # Samples of 50 houses at a time
 sample_means50 <- rep(NA, 5000)
 
@@ -1592,12 +1588,12 @@ ok_response(q18, "2");
 
 Based on a sample, what can we infer about the population? In practice, we'll have just a single sample. In this case, the best estimate of the average living area of houses sold in Ames would be the sample mean $\bar{x}$. That serves as a reasonable *point estimate*, but it would be useful to also communicate how uncertain we are of that estimate. This can be captured by using a *confidence interval*.
 
-We can calculate a 95% confidence interval for a sample mean by adding and subtracting a certain number of standard errors to the point estimate. For a 95% confidence interval, that number comes from the normal distribution — specifically, the value that cuts off 2.5% in each tail. If you remember the Empirical Rule, you'll recall that approximately 95% of observations fall within two standard deviations of the mean. A more precise value is 1.96, and for now we'll use this as our multiplier.
+We can construct a 95% confidence interval for a population mean by adding and subtracting a certain number of standard errors to the point estimate. For a 95% confidence interval, that number comes from the normal distribution — specifically, the value that cuts off 2.5% in each tail. If you remember the Empirical Rule, you'll recall that approximately 95% of observations fall within two standard deviations of the mean. A more precise value is 1.96, and for now we'll use this as our multiplier.
 
 :::{.callout-tip}
 ## A Note on 1.96
 
-Using 1.96 assumes we know quite a bit about the population. In practice, we almost never do — and in later activities we'll introduce a refinement that accounts for this uncertainty. For now, 1.96 gives us a good working approximation and lets us focus on the core idea: that a confidence interval puts a range of plausible values around our point estimate.
+Using 1.96 assumes we know quite a bit about the population. In practice, we almost never do — and in later activities we'll introduce a refinement that accounts for this uncertainty. For now, 1.96 gives us a good working approximation and lets us focus on the core idea: that a confidence interval identifies a range of plausible values for the population parameter around our point estimate.
 :::
 
 Use the code block below to take a single sample of size 60 of areas from houses in Ames. Call it `samp`.
@@ -1677,7 +1673,7 @@ c(lower, upper)
 :::{.callout-tip}
 ## Interpreting a Confidence Interval
 
-This is an important inference: even though we don't know what the full population looks like, ***we're 95% confident that the true average size of houses in Ames lies between the calculated `lower` and `upper` bounds calculated***. 
+This is an important inference: even though we don't know what the full population looks like, ***we're 95% confident that the true average size of houses in Ames lies between the `lower` and `upper` bounds calculated***. 
 :::
 
 There are a few conditions that must be met for this interval to be valid -- the questions that follow test what you recall from our previous discussion on the *Central Limit Theorem*.
@@ -1975,12 +1971,6 @@ hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
 cat(hash)
 ```
 
-:::
-
-:::{.callout-note}
-## License
-
-This is a derivative of a product of OpenIntro that is released under a [Creative Commons Attribution-ShareAlike 3.0 Unported](http://creativecommons.org/licenses/by-sa/3.0) license. This lab was adapted for OpenIntro by Andrew Bray and Mine Çetinkaya-Rundel from a lab written by Mark Hansen of UCLA Statistics.
 :::
 
 ## Summary

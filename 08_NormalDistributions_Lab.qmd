@@ -99,6 +99,37 @@ theme_set(theme_bw(base_size = 12))
 ## About
 
 In this lab, we examine height and weight data. We explore what is meant by the near-normality assumption, a variety of methods for assessing near-normality, and what the consequences can be when this assumption is violated.
+
+```{ojs}
+//| echo: false
+
+{
+  const btn = html`<button style="
+    background: #436b95;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  ">🔄 Reset My Responses</button>`;
+
+  btn.onclick = () => {
+    if (confirm('Reset all responses for this activity? This cannot be undone.')) {
+      Object.keys(localStorage)
+        .filter(k => k.endsWith('_selected_t8') || k.endsWith('_correct_t8') || k.endsWith('_result_t8'))
+        .forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  };
+
+  return btn;
+}
+```
+
+
+*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting code cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
+
 :::
 
 :::{.callout-note}
@@ -467,13 +498,13 @@ viewof q1 = Inputs.radio(
     ["Females", 2],
     ["It is impossible to tell", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected_t8") ?? "null")}
 );
 
 {
-  localStorage.setItem("q1_selected", JSON.stringify(q1));
-  localStorage.setItem("q1_correct", "1");
-  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q1_selected_t8", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t8", "1");
+  localStorage.setItem("q1_result_t8", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q1, "1");
 ```
@@ -495,13 +526,13 @@ viewof q2 = Inputs.radio(
     ["No. The distribution is skewed right.", 3],
     ["No. The distribution is symmetric but is multimodal.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected_t8") ?? "null")}
 );
 
 {
-  localStorage.setItem("q2_selected", JSON.stringify(q2));
-  localStorage.setItem("q2_correct", "1");
-  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q2_selected_t8", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t8", "1");
+  localStorage.setItem("q2_result_t8", q2 === null ? "unattempted" : (q2 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q2, "1");
 ```
@@ -523,13 +554,13 @@ viewof q3 = Inputs.radio(
     ["No. The distribution is skewed right.", 3],
     ["No. The distribution is symmetric but is multimodal.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected_t8") ?? "null")}
 );
 
 {
-  localStorage.setItem("q3_selected", JSON.stringify(q3));
-  localStorage.setItem("q3_correct", "1");
-  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q3_selected_t8", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t8", "1");
+  localStorage.setItem("q3_result_t8", q3 === null ? "unattempted" : (q3 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q3, "1");
 ```
@@ -894,13 +925,13 @@ viewof q4 = Inputs.radio(
     ["Yes, the Q-Q plot for the weight data looks similar to the Q-Q plots for the simulated data from the known normal distribution.", 1],
     ["No, the Q-Q plot for the weight data differs from the Q-Q plots for the simulated data from the known normal distribution.", 2]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected_t8") ?? "null")}
 );
 
 {
-  localStorage.setItem("q4_selected", JSON.stringify(q4));
-  localStorage.setItem("q4_correct", "2");
-  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q4_selected_t8", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t8", "2");
+  localStorage.setItem("q4_result_t8", q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q4, "2");
 ```

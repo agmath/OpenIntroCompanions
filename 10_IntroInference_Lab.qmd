@@ -123,6 +123,37 @@ theme_set(theme_bw(base_size = 12))
 ## About
 
 In this lab, we investigate the ways in which statistics from a random sample can serve as point estimates for population parameters. We dig deeper into the Central Limit Theorem, explore connections between sample size and uncertainty, and introduce the notion of the confidence interval.
+
+```{ojs}
+//| echo: false
+
+{
+  const btn = html`<button style="
+    background: #436b95;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  ">🔄 Reset My Responses</button>`;
+
+  btn.onclick = () => {
+    if (confirm('Reset all responses for this activity? This cannot be undone.')) {
+      Object.keys(localStorage)
+        .filter(k => k.endsWith('_selected_t10') || k.endsWith('_correct_t10') || k.endsWith('_result_t10'))
+        .forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  };
+
+  return btn;
+}
+```
+
+
+*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting code cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
+
 :::
 
 :::{.callout-note}
@@ -175,13 +206,13 @@ viewof q1 = Inputs.radio(
     ["A person.", 3],
     ["A house listed for sale in Ames, Iowa.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q1_selected", JSON.stringify(q1));
-  localStorage.setItem("q1_correct", "1");
-  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q1_selected_t10", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t10", "1");
+  localStorage.setItem("q1_result_t10", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q1, "1");
 ```
@@ -204,13 +235,13 @@ viewof q2 = Inputs.radio(
     ["2,930", 4],
     ["It is impossible to tell.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q2_selected", JSON.stringify(q2));
-  localStorage.setItem("q2_correct", "4");
-  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q2_selected_t10", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t10", "4");
+  localStorage.setItem("q2_result_t10", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q2, "4");
 ```
@@ -233,13 +264,13 @@ viewof q3 = Inputs.radio(
     ["2,930", 4],
     ["It is impossible to tell.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q3_selected", JSON.stringify(q3));
-  localStorage.setItem("q3_correct", "2");
-  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q3_selected_t10", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t10", "2");
+  localStorage.setItem("q3_result_t10", q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q3, "2");
 ```
@@ -417,13 +448,13 @@ viewof q4 = Inputs.radio(
     ["$180,796.10", 3],
     ["$200,000", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q4_selected", JSON.stringify(q4));
-  localStorage.setItem("q4_correct", "3");
-  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q4_selected_t10", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t10", "3");
+  localStorage.setItem("q4_result_t10", q4 === null ? "unattempted" : (q4 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q4, "3");
 ```
@@ -445,13 +476,13 @@ viewof q5 = Inputs.radio(
     ["$180,796.10", 3],
     ["$200,000", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q5_selected", JSON.stringify(q5));
-  localStorage.setItem("q5_correct", "1");
-  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q5_selected_t10", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t10", "1");
+  localStorage.setItem("q5_result_t10", q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q5, "1");
 ```
@@ -473,13 +504,13 @@ viewof q6 = Inputs.radio(
     ["The `price` variable is bimodal.", 3],
     ["The `price` variable is symmetric.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q6_selected", JSON.stringify(q6));
-  localStorage.setItem("q6_correct", "1");
-  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q6_selected_t10", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t10", "1");
+  localStorage.setItem("q6_result_t10", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q6, "1");
 ```
@@ -501,13 +532,13 @@ viewof q7 = Inputs.radio(
     ["1,462.5 sqft", 3],
     ["1,499.69 sqft", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q7_selected", JSON.stringify(q7));
-  localStorage.setItem("q7_correct", "4");
-  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q7_selected_t10", JSON.stringify(q7));
+  localStorage.setItem("q7_correct_t10", "4");
+  localStorage.setItem("q7_result_t10", q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q7, "4");
 ```
@@ -529,13 +560,13 @@ viewof q8 = Inputs.radio(
     ["1,462.5 sqft", 3],
     ["1,499.69 sqft", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q8_selected", JSON.stringify(q8));
-  localStorage.setItem("q8_correct", "1");
-  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q8_selected_t10", JSON.stringify(q8));
+  localStorage.setItem("q8_correct_t10", "1");
+  localStorage.setItem("q8_result_t10", q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q8, "1");
 ```
@@ -557,13 +588,13 @@ viewof q9 = Inputs.radio(
     ["The `area` variable is bimodal.", 3],
     ["The `area` variable is symmetric.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q9_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q9_selected", JSON.stringify(q9));
-  localStorage.setItem("q9_correct", "1");
-  localStorage.setItem("q9_result", q9 === null ? "unattempted" : (q9 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q9_selected_t10", JSON.stringify(q9));
+  localStorage.setItem("q9_correct_t10", "1");
+  localStorage.setItem("q9_result_t10", q9 === null ? "unattempted" : (q9 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q9, "1");
 ```
@@ -793,13 +824,13 @@ viewof q10 = Inputs.radio(
     ["The sample mean is the true population mean.", 2],
     ["We are unable to say anything about the relationship between the sample mean and population mean.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q10_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q10_selected", JSON.stringify(q10));
-  localStorage.setItem("q10_correct", "1");
-  localStorage.setItem("q10_result", q10 === null ? "unattempted" : (q10 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q10_selected_t10", JSON.stringify(q10));
+  localStorage.setItem("q10_correct_t10", "1");
+  localStorage.setItem("q10_result_t10", q10 === null ? "unattempted" : (q10 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q10, "1");
 ```
@@ -863,13 +894,13 @@ viewof q11 = Inputs.radio(
     ["Sample of size 100", 2],
     ["Sample of size 200", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q11_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q11_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q11_selected", JSON.stringify(q11));
-  localStorage.setItem("q11_correct", "3");
-  localStorage.setItem("q11_result", q11 === null ? "unattempted" : (q11 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q11_selected_t10", JSON.stringify(q11));
+  localStorage.setItem("q11_correct_t10", "3");
+  localStorage.setItem("q11_result_t10", q11 === null ? "unattempted" : (q11 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q11, "3");
 ```
@@ -937,13 +968,13 @@ viewof q12 = Inputs.radio(
     ["2,930", 3],
     ["5,000", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q12_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q12_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q12_selected", JSON.stringify(q12));
-  localStorage.setItem("q12_correct", "4");
-  localStorage.setItem("q12_result", q12 === null ? "unattempted" : (q12 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q12_selected_t10", JSON.stringify(q12));
+  localStorage.setItem("q12_correct_t10", "4");
+  localStorage.setItem("q12_result_t10", q12 === null ? "unattempted" : (q12 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q12, "4");
 ```
@@ -965,13 +996,13 @@ viewof q13 = Inputs.radio(
     ["Approximately 1,600 sq ft", 3],
     ["Approximately 2,930 sq ft", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q13_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q13_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q13_selected", JSON.stringify(q13));
-  localStorage.setItem("q13_correct", "2");
-  localStorage.setItem("q13_result", q13 === null ? "unattempted" : (q13 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q13_selected_t10", JSON.stringify(q13));
+  localStorage.setItem("q13_correct_t10", "2");
+  localStorage.setItem("q13_result_t10", q13 === null ? "unattempted" : (q13 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q13, "2");
 ```
@@ -993,13 +1024,13 @@ viewof q14 = Inputs.radio(
     ["Yes. The distribution may change drastically since this is an entirely new set of samples.", 3],
     ["No. The distribution will be exactly the same.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q14_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q14_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q14_selected", JSON.stringify(q14));
-  localStorage.setItem("q14_correct", "1");
-  localStorage.setItem("q14_result", q14 === null ? "unattempted" : (q14 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q14_selected_t10", JSON.stringify(q14));
+  localStorage.setItem("q14_correct_t10", "1");
+  localStorage.setItem("q14_result_t10", q14 === null ? "unattempted" : (q14 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q14, "1");
 ```
@@ -1255,13 +1286,13 @@ viewof q15 = Inputs.radio(
     ["100", 3],
     ["2,930", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q15_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q15_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q15_selected", JSON.stringify(q15));
-  localStorage.setItem("q15_correct", "3");
-  localStorage.setItem("q15_result", q15 === null ? "unattempted" : (q15 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q15_selected_t10", JSON.stringify(q15));
+  localStorage.setItem("q15_correct_t10", "3");
+  localStorage.setItem("q15_result_t10", q15 === null ? "unattempted" : (q15 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q15, "3");
 ```
@@ -1283,13 +1314,13 @@ viewof q16 = Inputs.radio(
     ["The average living area of a random sample of 100 houses in square feet.", 3],
     ["The average living area of a random sample of 5,000 houses in square feet.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q16_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q16_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q16_selected", JSON.stringify(q16));
-  localStorage.setItem("q16_correct", "2");
-  localStorage.setItem("q16_result", q16 === null ? "unattempted" : (q16 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q16_selected_t10", JSON.stringify(q16));
+  localStorage.setItem("q16_correct_t10", "2");
+  localStorage.setItem("q16_result_t10", q16 === null ? "unattempted" : (q16 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q16, "2");
 ```
@@ -1516,13 +1547,13 @@ viewof q17 = Inputs.radio(
     ["The center bounces around uncontrollably.", 2],
     ["The center stayed near the population mean, but if we ran this a second time the results could be quite different.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q17_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q17_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q17_selected", JSON.stringify(q17));
-  localStorage.setItem("q17_correct", "1");
-  localStorage.setItem("q17_result", q17 === null ? "unattempted" : (q17 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q17_selected_t10", JSON.stringify(q17));
+  localStorage.setItem("q17_correct_t10", "1");
+  localStorage.setItem("q17_result_t10", q17 === null ? "unattempted" : (q17 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q17, "1");
 ```
@@ -1544,13 +1575,13 @@ viewof q18 = Inputs.radio(
     ["The sample size and spread of the sampling distribution are independent.", 3],
     ["Larger sample sizes resulted in a more narrow spread this time, but if we built new sampling distributions we may not reproduce this.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q18_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q18_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q18_selected", JSON.stringify(q18));
-  localStorage.setItem("q18_correct", "2");
-  localStorage.setItem("q18_result", q18 === null ? "unattempted" : (q18 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q18_selected_t10", JSON.stringify(q18));
+  localStorage.setItem("q18_correct_t10", "2");
+  localStorage.setItem("q18_result_t10", q18 === null ? "unattempted" : (q18 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q18, "2");
 ```
@@ -1666,13 +1697,13 @@ viewof q19 = Inputs.checkbox(
     ["The sample taken must be random and representative of the population.", 3],
     ["The confidence interval must contain the true population mean.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q19_selected") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q19_selected_t10") ?? "[]") ?? []}
 );
 
 {
-  localStorage.setItem("q19_selected", JSON.stringify(q19));
-  localStorage.setItem("q19_correct", "2,3");
-  localStorage.setItem("q19_result", (!q19 || q19.length === 0) ? "unattempted" : (q19.toString() === "2,3" ? "correct" : "incorrect"));
+  localStorage.setItem("q19_selected_t10", JSON.stringify(q19));
+  localStorage.setItem("q19_correct_t10", "2,3");
+  localStorage.setItem("q19_result_t10", (!q19 || q19.length === 0) ? "unattempted" : (q19.toString() === "2,3" ? "correct" : "incorrect"));
 }
 ok_checkbox(q19.toString(), "2,3");
 ```
@@ -1693,13 +1724,13 @@ viewof q20 = Inputs.radio(
     ["There is a 95% chance that the true population mean square footage of living area for houses sold in Ames, Iowa between 2006 and 2010 is between the lower and upper bound.", 2],
     ["We are 95% confident that the sample mean square footage of living area for houses sold in Ames, Iowa between 2006 and 2010 is between the lower and upper bound.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q20_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q20_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q20_selected", JSON.stringify(q20));
-  localStorage.setItem("q20_correct", "1");
-  localStorage.setItem("q20_result", q20 === null ? "unattempted" : (q20 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q20_selected_t10", JSON.stringify(q20));
+  localStorage.setItem("q20_correct_t10", "1");
+  localStorage.setItem("q20_result_t10", q20 === null ? "unattempted" : (q20 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q20, "1");
 ```
@@ -1725,13 +1756,13 @@ viewof q21 = Inputs.radio(
     ["About 95%", 3],
     ["100%", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q21_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q21_selected_t10") ?? "null")}
 );
 
 {
-  localStorage.setItem("q21_selected", JSON.stringify(q21));
-  localStorage.setItem("q21_correct", "3");
-  localStorage.setItem("q21_result", q21 === null ? "unattempted" : (q21 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q21_selected_t10", JSON.stringify(q21));
+  localStorage.setItem("q21_correct_t10", "3");
+  localStorage.setItem("q21_result_t10", q21 === null ? "unattempted" : (q21 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q21, "3");
 ```

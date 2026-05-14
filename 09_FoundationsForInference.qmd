@@ -64,6 +64,37 @@ theme_set(theme_bw(base_size = 10))
 ## About
 
 This activity provides an introduction to the Central Limit Theorem. We'll see the Central Limit Theorem in action through several simulations which construct the sampling distribution. We'll have opportunities to change parameters of the population distribution and the size of the samples being drawn. The goal is to discover connections between population parameters, sample size, and the resulting sampling distribution.
+
+```{ojs}
+//| echo: false
+
+{
+  const btn = html`<button style="
+    background: #436b95;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  ">🔄 Reset My Responses</button>`;
+
+  btn.onclick = () => {
+    if (confirm('Reset all responses for this activity? This cannot be undone.')) {
+      Object.keys(localStorage)
+        .filter(k => k.endsWith('_selected_t9') || k.endsWith('_correct_t9') || k.endsWith('_result_t9'))
+        .forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  };
+
+  return btn;
+}
+```
+
+
+*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting code cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
+
 :::
 
 ## Foundations for Inference
@@ -196,13 +227,13 @@ viewof q1 = Inputs.radio(
     ["The population distribution and sampling distribution are always identical.", 2],
     ["The population distribution and sampling distribution are never identical.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q1_selected", JSON.stringify(q1));
-  localStorage.setItem("q1_correct", "1");
-  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q1_selected_t9", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t9", "1");
+  localStorage.setItem("q1_result_t9", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q1, "1");
 ```
@@ -224,13 +255,13 @@ viewof q2 = Inputs.radio(
     ["The larger the sample size, the larger the mean of the sampling distribution.", 3],
     ["The mean of the population distribution and mean of the sampling distribution are independent of one another.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q2_selected", JSON.stringify(q2));
-  localStorage.setItem("q2_correct", "2");
-  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q2_selected_t9", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t9", "2");
+  localStorage.setItem("q2_result_t9", q2 === null ? "unattempted" : (q2 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q2, "2");
 ```
@@ -252,13 +283,13 @@ viewof q3 = Inputs.radio(
     ["The sampling distribution is completely unpredictable.", 3],
     ["The sampling distribution is always nearly normal.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q3_selected", JSON.stringify(q3));
-  localStorage.setItem("q3_correct", "4");
-  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q3_selected_t9", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t9", "4");
+  localStorage.setItem("q3_result_t9", q3 === null ? "unattempted" : (q3 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q3, "4");
 ```
@@ -280,13 +311,13 @@ viewof q4 = Inputs.radio(
     ["The larger the sample size, the less normal the sampling distribution becomes.", 3],
     ["The sample size and spread of the sampling distribution are independent of one another.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q4_selected", JSON.stringify(q4));
-  localStorage.setItem("q4_correct", "2");
-  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q4_selected_t9", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t9", "2");
+  localStorage.setItem("q4_result_t9", q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q4, "2");
 ```
@@ -407,13 +438,13 @@ viewof q5 = Inputs.radio(
     ["The sampling distribution is never nearly normal.", 3],
     ["The sampling distribution always shares a common shape with the population distribution.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q5_selected", JSON.stringify(q5));
-  localStorage.setItem("q5_correct", "1");
-  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q5_selected_t9", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t9", "1");
+  localStorage.setItem("q5_result_t9", q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q5, "1");
 ```
@@ -435,13 +466,13 @@ viewof q6 = Inputs.radio(
     ["The mean of the sampling distribution always falls near the mean of the population distribution.", 3],
     ["The mean of the population distribution and mean of the sampling distribution are independent of one another.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q6_selected", JSON.stringify(q6));
-  localStorage.setItem("q6_correct", "3");
-  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q6_selected_t9", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t9", "3");
+  localStorage.setItem("q6_result_t9", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q6, "3");
 ```
@@ -463,13 +494,13 @@ viewof q7 = Inputs.radio(
     ["The larger the sample size, the more narrow the sampling distribution becomes.", 3],
     ["The sample size and spread of the sampling distribution are independent of one another.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q7_selected", JSON.stringify(q7));
-  localStorage.setItem("q7_correct", "3");
-  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q7_selected_t9", JSON.stringify(q7));
+  localStorage.setItem("q7_correct_t9", "3");
+  localStorage.setItem("q7_result_t9", q7 === null ? "unattempted" : (q7 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q7, "3");
 ```
@@ -588,13 +619,13 @@ viewof q8 = Inputs.radio(
     ["No, the distributions are getting closer to the assumed normal sampling distribution, but still exhibit some skew in the opposite direction as the population distribution.", 2],
     ["No, the distributions are getting closer to the assumed normal sampling distribution, but still exhibit some skew in the same direction as the population distribution.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q8_selected", JSON.stringify(q8));
-  localStorage.setItem("q8_correct", "3");
-  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q8_selected_t9", JSON.stringify(q8));
+  localStorage.setItem("q8_correct_t9", "3");
+  localStorage.setItem("q8_result_t9", q8 === null ? "unattempted" : (q8 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q8, "3");
 ```
@@ -615,13 +646,13 @@ viewof q9 = Inputs.radio(
     ["There is no connection between the shape of the sampling distribution and the sample size.", 2],
     ["The sampling distribution always maintains the same shape as the population distribution.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q9_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q9_selected", JSON.stringify(q9));
-  localStorage.setItem("q9_correct", "1");
-  localStorage.setItem("q9_result", q9 === null ? "unattempted" : (q9 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q9_selected_t9", JSON.stringify(q9));
+  localStorage.setItem("q9_correct_t9", "1");
+  localStorage.setItem("q9_result_t9", q9 === null ? "unattempted" : (q9 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q9, "1");
 ```
@@ -643,13 +674,13 @@ viewof q10 = Inputs.radio(
     ["The larger the sample size, the larger the mean of the sampling distribution.", 3],
     ["The mean of the population distribution and mean of the sampling distribution are independent of one another.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q10_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q10_selected", JSON.stringify(q10));
-  localStorage.setItem("q10_correct", "2");
-  localStorage.setItem("q10_result", q10 === null ? "unattempted" : (q10 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q10_selected_t9", JSON.stringify(q10));
+  localStorage.setItem("q10_correct_t9", "2");
+  localStorage.setItem("q10_result_t9", q10 === null ? "unattempted" : (q10 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q10, "2");
 ```
@@ -671,13 +702,13 @@ viewof q11 = Inputs.radio(
     ["The sample size and spread of the sampling distribution are independent of one another.", 3],
     ["The larger the sample size, the more narrow the sampling distribution becomes.", 4],
   ]),
-  {value: JSON.parse(localStorage.getItem("q11_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q11_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q11_selected", JSON.stringify(q11));
-  localStorage.setItem("q11_correct", "4");
-  localStorage.setItem("q11_result", q11 === null ? "unattempted" : (q11 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q11_selected_t9", JSON.stringify(q11));
+  localStorage.setItem("q11_correct_t9", "4");
+  localStorage.setItem("q11_result_t9", q11 === null ? "unattempted" : (q11 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q11, "4");
 ```
@@ -701,13 +732,13 @@ viewof q12 = Inputs.radio(
     ["Nothing can be said, since we don't know what the population distribution looks like.", 3],
     ["The sampling distribution always retains the same general shape as the population distribution.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q12_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q12_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q12_selected", JSON.stringify(q12));
-  localStorage.setItem("q12_correct", "2");
-  localStorage.setItem("q12_result", q12 === null ? "unattempted" : (q12 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q12_selected_t9", JSON.stringify(q12));
+  localStorage.setItem("q12_correct_t9", "2");
+  localStorage.setItem("q12_result_t9", q12 === null ? "unattempted" : (q12 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q12, "2");
 ```
@@ -729,13 +760,13 @@ viewof q13 = Inputs.radio(
     ["The mean of the sampling distribution is always greater than the mean of the population distribution.", 3],
     ["The mean of the sampling distribution and mean of the population distribution are independent of one another.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q13_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q13_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q13_selected", JSON.stringify(q13));
-  localStorage.setItem("q13_correct", "1");
-  localStorage.setItem("q13_result", q13 === null ? "unattempted" : (q13 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q13_selected_t9", JSON.stringify(q13));
+  localStorage.setItem("q13_correct_t9", "1");
+  localStorage.setItem("q13_result_t9", q13 === null ? "unattempted" : (q13 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q13, "1");
 ```
@@ -756,13 +787,13 @@ viewof q14 = Inputs.radio(
     ["The sample size and spread of the sampling distribution are independent of one another.", 2],
     ["The larger the sample size, the more narrow the sampling distribution.", 3],
   ]),
-  {value: JSON.parse(localStorage.getItem("q14_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q14_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q14_selected", JSON.stringify(q14));
-  localStorage.setItem("q14_correct", "3");
-  localStorage.setItem("q14_result", q14 === null ? "unattempted" : (q14 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q14_selected_t9", JSON.stringify(q14));
+  localStorage.setItem("q14_correct_t9", "3");
+  localStorage.setItem("q14_result_t9", q14 === null ? "unattempted" : (q14 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q14, "3");
 ```
@@ -902,13 +933,13 @@ viewof q15 = Inputs.radio(
     ["11.5", 4],
     ["12", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q15_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q15_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q15_selected", JSON.stringify(q15));
-  localStorage.setItem("q15_correct", "4");
-  localStorage.setItem("q15_result", q15 === null ? "unattempted" : (q15 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q15_selected_t9", JSON.stringify(q15));
+  localStorage.setItem("q15_correct_t9", "4");
+  localStorage.setItem("q15_result_t9", q15 === null ? "unattempted" : (q15 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q15, "4");
 ```
@@ -931,13 +962,13 @@ viewof q16 = Inputs.radio(
     ["0.8413", 4],
     ["0.0228", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q16_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q16_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q16_selected", JSON.stringify(q16));
-  localStorage.setItem("q16_correct", "3");
-  localStorage.setItem("q16_result", q16 === null ? "unattempted" : (q16 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q16_selected_t9", JSON.stringify(q16));
+  localStorage.setItem("q16_correct_t9", "3");
+  localStorage.setItem("q16_result_t9", q16 === null ? "unattempted" : (q16 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q16, "3");
 ```
@@ -960,13 +991,13 @@ viewof q17 = Inputs.radio(
     ["0.8413", 4],
     ["0.0228", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q17_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q17_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q17_selected", JSON.stringify(q17));
-  localStorage.setItem("q17_correct", "5");
-  localStorage.setItem("q17_result", q17 === null ? "unattempted" : (q17 == 5 ? "correct" : "incorrect"));
+  localStorage.setItem("q17_selected_t9", JSON.stringify(q17));
+  localStorage.setItem("q17_correct_t9", "5");
+  localStorage.setItem("q17_result_t9", q17 === null ? "unattempted" : (q17 == 5 ? "correct" : "incorrect"));
 }
 ok_response(q17, "5");
 ```
@@ -988,13 +1019,13 @@ viewof q18 = Inputs.radio(
     ["We should plan to buy five since it is unlikely (less than 5% chance) that four cans will suffice to cover the whole wall.", 3],
     ["We should plan to buy five cans — four cans will only cover 40 square feet.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q18_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q18_selected_t9") ?? "null")}
 );
 
 {
-  localStorage.setItem("q18_selected", JSON.stringify(q18));
-  localStorage.setItem("q18_correct", "3");
-  localStorage.setItem("q18_result", q18 === null ? "unattempted" : (q18 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q18_selected_t9", JSON.stringify(q18));
+  localStorage.setItem("q18_correct_t9", "3");
+  localStorage.setItem("q18_result_t9", q18 === null ? "unattempted" : (q18 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q18, "3");
 ```

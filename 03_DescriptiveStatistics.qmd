@@ -127,6 +127,37 @@ cutSamples <- data.frame(
 ## About
 
 This activity builds off of what we learned in the Topic 1 and Topic 2 activities. We'll learn how to use R to analyse numeric and categorical data. We discuss and implement measures of central tendency and spread (including inquiry into robustness in the presence of outliers) for numerical data, and measures of frequency for categorical data.
+
+```{ojs}
+//| echo: false
+
+{
+  const btn = html`<button style="
+    background: #436b95;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  ">🔄 Reset My Responses</button>`;
+
+  btn.onclick = () => {
+    if (confirm('Reset all responses for this activity? This cannot be undone.')) {
+      Object.keys(localStorage)
+        .filter(k => k.endsWith('_selected_t3') || k.endsWith('_correct_t3') || k.endsWith('_result_t3'))
+        .forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  };
+
+  return btn;
+}
+```
+
+
+*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting code cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
+
 :::
 
 ## Descriptive Statistics
@@ -458,14 +489,14 @@ viewof q1 = Inputs.radio(
     ["The mean is usually close to the median.", 3],
     ["The mean is more strongly distorted by outliers (unusually large or small observed values) than the median is.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected_t3") ?? "null")}
 );
 
 {
 
-  localStorage.setItem("q1_selected", JSON.stringify(q1));
-  localStorage.setItem("q1_correct", "4");
-  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q1_selected_t3", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t3", "4");
+  localStorage.setItem("q1_result_t3", q1 === null ? "unattempted" : (q1 == 4 ? "correct" : "incorrect"));
 
 }
 
@@ -491,13 +522,13 @@ viewof q2 = Inputs.radio(
     ["Each of the sample means provides an estimate for the population mean.", 3],
     ["The population mean is equal to the sample means.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected_t3") ?? "null")}
 );
 
 {
-  localStorage.setItem("q2_selected", JSON.stringify(q2));
-  localStorage.setItem("q2_correct", "3");
-  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q2_selected_t3", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t3", "3");
+  localStorage.setItem("q2_result_t3", q2 === null ? "unattempted" : (q2 == 3 ? "correct" : "incorrect"));
 
 }
 
@@ -522,14 +553,14 @@ viewof q3 = Inputs.checkbox(
     ["Stratify the diamonds according to price (low, medium, and high) and take a random sample of diamonds of each price category.", 4],
     ["Take samples including more diamonds.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q3_selected_t3") ?? "[]") ?? []}
 );
 
 {
   
-  localStorage.setItem("q3_selected", JSON.stringify(q3));
-  localStorage.setItem("q3_correct", "1,2,5");
-  localStorage.setItem("q3_result", (!q3 || q3.length === 0) ? "unattempted" : (q3.toString() === "1,2,5" ? "correct" : "incorrect"));
+  localStorage.setItem("q3_selected_t3", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t3", "1,2,5");
+  localStorage.setItem("q3_result_t3", (!q3 || q3.length === 0) ? "unattempted" : (q3.toString() === "1,2,5" ? "correct" : "incorrect"));
 
 }
 
@@ -655,13 +686,13 @@ viewof q4 = Inputs.checkbox(
     ["Worker A and Worker B had identical door-knocking strategies.", 2],
     ["Measures of center alone are not enough to describe numerical data.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q4_selected_t3") ?? "[]") ?? []}
 );
 
 {
-  localStorage.setItem("q4_selected", JSON.stringify(q4));
-  localStorage.setItem("q4_correct", "1,3");
-  localStorage.setItem("q4_result", (!q4 || q4.length === 0) ? "unattempted" : (q4.toString() === "1,3" ? "correct" : "incorrect"));
+  localStorage.setItem("q4_selected_t3", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t3", "1,3");
+  localStorage.setItem("q4_result_t3", (!q4 || q4.length === 0) ? "unattempted" : (q4.toString() === "1,3" ? "correct" : "incorrect"));
   
 }
 
@@ -707,14 +738,14 @@ viewof q5 = Inputs.radio(
     ["Sample Two", 2],
     ["Sample Three", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected_t3") ?? "null")}
 );
 
 {
 
-  localStorage.setItem("q5_selected", JSON.stringify(q5));
-  localStorage.setItem("q5_correct", "3");
-  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q5_selected_t3", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t3", "3");
+  localStorage.setItem("q5_result_t3", q5 === null ? "unattempted" : (q5 == 3 ? "correct" : "incorrect"));
 
 }
 
@@ -736,13 +767,13 @@ viewof q6 = Inputs.radio(
     ["Standard Deviation", 1],
     ["Interquartile Range", 2]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected_t3") ?? "null")}
 );
 
 {
-  localStorage.setItem("q6_selected", JSON.stringify(q6));
-  localStorage.setItem("q6_correct", "1");
-  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q6_selected_t3", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t3", "1");
+  localStorage.setItem("q6_result_t3", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
 
 }
 
@@ -1021,34 +1052,34 @@ function buildQuestionResults() {
     timestamp: new Date().toISOString(),
     questions: {
       q1_measures_of_center: {
-        selected: getItem("q1_selected", null),
+        selected: getItem("q1_selected_t3", null),
         correct_answer: "4",
-        result: localStorage.getItem("q1_result") ?? "unattempted"
+        result: localStorage.getItem("q1_result_t3") ?? "unattempted"
       },
       q2_sampling_validity_1: {
-        selected: getItem("q2_selected", null),
+        selected: getItem("q2_selected_t3", null),
         correct_answer: "3",
-        result: localStorage.getItem("q2_result") ?? "unattempted"
+        result: localStorage.getItem("q2_result_t3") ?? "unattempted"
       },
       q3_sampling_validity_2: {
-        selected: getItem("q3_selected", []),
+        selected: getItem("q3_selected_t3", []),
         correct_answer: "1,2,5",
-        result: localStorage.getItem("q3_result") ?? "unattempted"
+        result: localStorage.getItem("q3_result_t3") ?? "unattempted"
       },
       q4_measures_of_center_2: {
-        selected: getItem("q4_selected", []),
+        selected: getItem("q4_selected_t3", []),
         correct_answer: "1,3",
-        result: localStorage.getItem("q4_result") ?? "unattempted"
+        result: localStorage.getItem("q4_result_t3") ?? "unattempted"
       },
       q5_measures_of_spread_1: {
-        selected: getItem("q5_selected", null),
+        selected: getItem("q5_selected_t3", null),
         correct_answer: "3",
-        result: localStorage.getItem("q5_result") ?? "unattempted"
+        result: localStorage.getItem("q5_result_t3") ?? "unattempted"
       },
       q6_measures_of_spread_2: {
-        selected: getItem("q6_selected", null),
+        selected: getItem("q6_selected_t3", null),
         correct_answer: "1",
-        result: localStorage.getItem("q6_result") ?? "unattempted"
+        result: localStorage.getItem("q6_result_t3") ?? "unattempted"
       }
     }
   };

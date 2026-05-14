@@ -83,6 +83,30 @@ housesSubset <- houses %>%
 ## About
 
 This activity covers an introduction to data, variable types (numeric and categorical variables, along with unique identifiers), and strategies for data collection.
+
+```{ojs}
+//| echo: false
+
+html`<button onclick="${() => {
+  if (confirm('Reset all responses for this activity? This cannot be undone.')) {
+    Object.keys(localStorage)
+      .filter(k => k.endsWith('_selected') || k.endsWith('_correct') || k.endsWith('_result'))
+      .forEach(k => localStorage.removeItem(k));
+    location.reload();
+  }
+}}" style="
+  background: #436b95;
+  color: white;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.9em;
+">
+  🔄 Reset My Responses
+</button>`
+```
+
 :::
 
 ## Data and Sampling

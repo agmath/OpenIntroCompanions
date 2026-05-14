@@ -166,15 +166,15 @@ This activity covers working with normally distributed data, including the calcu
 
 ## The Normal Distribution
 
-Throughout this activity we'll investigate the probability distribution that is most central to our study of statistics: the normal distribution. If we are confident that our data are nearly normal, that opens the door to many powerful statistical methods. This activity gives you practice working with normally distributed data.
+Throughout this activity we'll investigate the probability distribution that is most central to our study of statistics: the normal distribution. If we are confident that our data are nearly normal, that opens the door for us to leverage many powerful statistical methods. This activity gives you practice working with normally distributed data.
 
 ## Objectives
 
 **Workbook Objectives:** After completing this workbook you should be able to:
 
-+ Compute probabilities of events well-modeled by a normal distribution.
++ Compute probabilities of events from populations well-modeled by a normal distribution.
 + Given a variable $X$ which follows an assumed normal distribution, compute and interpret various percentile thresholds for $X$.
-+ Identify scenarios to which the normal or binomial distributions can be applied, and use them to answer various probability-related questions.
++ Identify scenarios to which the normal or binomial distributions can be applied, and use the appropriate distribution to answer various probability-related questions.
 
 ## The Normal Distribution
 
@@ -205,7 +205,7 @@ ggplot() +
 
 Notice that all three distributions are bell-shaped and are centered at their mean ($\mu = 0$). The larger the standard deviation, the shorter and wider the curve, while the smaller the standard deviation, the taller and more narrow the curve.
 
-Given that $X\sim N\left(\mu, \sigma\right)$, we can compute probabilities associated with observed values of $X$ by finding the corresponding area beneath the normal curve with mean $\mu$ and standard deviation $\sigma$.
+Given that $X\sim N\left(\mu, \sigma\right)$, we can compute probabilities associated with observed values of $X$ by finding the corresponding area beneath the normal curve having mean $\mu$ and standard deviation $\sigma$.
 
 **Properties of the Normal Distribution:** Consider $X\sim N\left(\mu, \sigma\right)$.
 
@@ -271,7 +271,7 @@ p_right <- ggplot(NULL, aes(c(-3, 3))) +
 p_left + p_right
 ```
 
-+ The distribution is symmetric. In symbols, $\mathbb{P}\left[X\leq \mu - k\right] = \mathbb{P}\left[X \geq \mu + k\right]$ for any $k$.
++ The distribution is symmetric. In symbols, we write $\mathbb{P}\left[X\leq \mu - k\right] = \mathbb{P}\left[X \geq \mu + k\right]$ for any $k$. Geometrically, this means that corresponding lower-tail (left-tail) and upper-tail (right-tail) areas are equal.
 
 ```{r}
 #| echo: false
@@ -423,7 +423,7 @@ How do we answer this question? We'll see two methods.
 
 **Method 1:** We can standardize the test scores so that they have comparable units.
 
-**Definition:** If an observation $x$ comes from a nearly normal population with mean $\mu$ and standard deviation $\sigma$, then we compute the $z$-score associated with $x$ as follows:
+**Definition (z-score):** If an observation $x$ comes from a nearly normal population with mean $\mu$ and standard deviation $\sigma$, then we compute the ***$z$-score*** associated with $x$ as follows:
 
 $$\displaystyle{z = \frac{x - \mu}{\sigma}}$$
 
@@ -690,7 +690,7 @@ We can use $z$-scores as a common unit for comparing observations from completel
 
 **Method 2:** We can compute the *percentile* corresponding to Bob's SAT score and the *percentile* corresponding to Sally's ACT score.
 
-**Definition:** Given an observation $x$ from a population, the *percentile* corresponding to $x$ is the proportion of the population which falls below $x$.
+**Definition (percentile):** Given an observation $x$ from a population, the ***percentile*** corresponding to $x$ is the proportion of the population which falls below $x$.
 
 ::::{.columns}
 :::{.column width="50%"}
@@ -1168,7 +1168,7 @@ The `pnorm()` function gives us the area to the *left* of our boundary value, no
 :::{.callout-note collapse="false"}
 ## Hint 4
 
-In a previous activity, we started with a probability that was too big and removed the probability associated with events we weren't interested in. Can we apply those same ideas here?
+When encountering a similar scenario with the binomial distribution, we started with a probability that was too big and removed the probability associated with events we weren't interested in. Can we apply those same ideas here?
 
 :::
 :::
@@ -1918,6 +1918,9 @@ gradethis::grade_this({
 
 Through this last section you'll work through a set of problems, some of which use the normal distribution while others use the binomial distribution. It is up to you to determine which distribution should be applied in each problem. Below are a few helpful reminders:
 
+:::{.callout-tip}
+## Binomial and Normal Distributions Recap
+
 + The **binomial distribution** can be applied to scenarios of repeated trials, where each trial has two possible outcomes and the probability of "success" on each trial remains constant. If $X$ is the number of successes in a binomial experiment with $n$ trials and probability of success $p$:
   + $\mathbb{P}\left[X = k\right] = \tt{dbinom(k, n, p)}$
   + $\mathbb{P}\left[X \leq k\right] = \tt{pbinom(k, n, p)}$
@@ -1925,6 +1928,8 @@ Through this last section you'll work through a set of problems, some of which u
 + The **normal distribution** can be applied to scenarios where data follows at least a nearly-normal distribution. If $X\sim N\left(\mu, \sigma\right)$:
   + $\mathbb{P}\left[X \leq k\right] = \tt{pnorm(k, mean = \mu, sd = \sigma)}$
   + The $p^{th}$ percentile of $X$ is given by $\tt{qnorm(p, mean = \mu, sd = \sigma)}$
+  
+:::
 
 ---
 

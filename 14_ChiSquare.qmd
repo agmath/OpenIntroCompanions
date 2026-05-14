@@ -204,7 +204,7 @@ In this activity, we consider two methods for testing claims corresponding to ca
 
 ## Chi-Squared Goodness of Fit
 
-Consider a sociologist interested in better understanding incarceration rates in the state of New Hampshire. The researcher wants to determine whether minority populations are disproportionately represented in State Penitentiaries. Using estimates from the [United States Census Bureau](https://www.census.gov/quickfacts/NH){target="_blank"}, the population of New Hampshire had the following racial breakdown as of 2019: white (89.8%), Black (1.8%), Hispanic (4.0%), other (4.4%). A reasonable expectation is that the incarcerated population should roughly reflect this same distribution.
+Consider a sociologist interested in better understanding incarceration rates in the state of New Hampshire. The researcher wants to determine whether minority populations are disproportionately represented in State Penitentiaries. Using estimates from the [United States Census Bureau](https://www.census.gov/quickfacts/NH){target="_blank"}, the population of New Hampshire had the following racial breakdown as of 2019: white (89.8%), Black (1.8%), Hispanic (4.0%), other (4.4%). A reasonable expectation is that the incarcerated population in state prisons should roughly reflect this same distribution.
 
 The researcher took a random sample of 300 inmates in State Penitentiaries across New Hampshire and observed the following results: 243 inmates were white, 24 were Black, 15 were Hispanic, and 18 were of another race. The researcher wants to determine whether this sample provides evidence that the state prison population does *not* reflect the racial demographics of the State.
 
@@ -229,7 +229,7 @@ Running a $\chi^2$ Goodness of Fit test requires the following conditions:
 Now, back to our application. As a reminder, New Hampshire is estimated to be 89.8% white, 1.8% Black, 4.0% Hispanic, and 4.4% of other races. We have a sample of 300 inmates: 243 white, 24 Black, 15 Hispanic, and 18 of another race. We want to know whether this sample provides evidence that the prison population does not reflect the State's racial demographics.
 
 :::{.callout-caution}
-## Check Your Understanding: GoF I
+## Check Your Understanding: Goodness of Fit I
 
 What is the variable of interest in this study?
 
@@ -258,7 +258,7 @@ ok_response(q1, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: GoF II
+## Check Your Understanding: Goodness of Fit II
 
 The variable of interest in this study is:
 
@@ -285,7 +285,7 @@ ok_response(q2, "2");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: GoF III
+## Check Your Understanding: Goodness of Fit III
 
 How many measured levels of the variable of interest are there?
 
@@ -314,7 +314,7 @@ ok_response(q3, "4");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: GoF IV
+## Check Your Understanding: Goodness of Fit IV
 
 In order to answer the question as posed, we should:
 
@@ -342,7 +342,7 @@ ok_response(q4, "2");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: GoF V
+## Check Your Understanding: Goodness of Fit V
 
 Which of the following are the correct hypotheses associated with this test? Select all that apply.
 
@@ -593,7 +593,7 @@ Now we're ready to compute the test statistic. Recall from Dr. Çetinkaya-Rundel
 
 $$\chi^2 = \sum_{i = 1}^{k}{\frac{\left(\text{observed} - \text{expected}\right)^2}{\text{expected}}}$$
 
-where $k$ is the number of groups. As a reminder, the $\sigma$ symbol is used to indicate that we should add terms together. You'll calculate  $\displaystyle{\frac{\left(\text{observed} - \text{ expected}\right)^2}{\text{expected}}}$ for each group (white, black, hispanic, and other) and add those quantities together.
+where $k$ is the number of groups. As a reminder, the $\Sigma$ symbol is used to indicate that we should add terms together. You'll calculate  $\displaystyle{\frac{\left(\text{observed} - \text{ expected}\right)^2}{\text{expected}}}$ for each group (White, Black, Hispanic, and other) and add those quantities together.
 
 Use the code block below to compute the $\chi^2$ test statistic. The block is pre-populated to get you started.
 
@@ -615,16 +615,16 @@ test_stat
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Fill in the `expected` vector with the four expected counts you just computed — in the same order as the observed counts: white, Black, Hispanic, other.
+Fill in the `expected` vector with the four expected counts you just computed — in the same order as the observed counts: White, Black, Hispanic, other.
 
 :::
 :::
 
 :::{.hint exercise="test-stat"}
 :::{.callout-note collapse="false"}
-## Hint 2
+## Hint 2 (Solved)
 
-The expected counts are 269.4, 5.4, 12.0, and 13.2 for white, Black, Hispanic, and other respectively.
+The expected counts are 269.4, 5.4, 12.0, and 13.2 for White, Black, Hispanic, and other respectively.
 
 ```{r}
 #| echo: true
@@ -826,7 +826,7 @@ gradethis::grade_this({
 Assume the test was conducted at the $\alpha = 0.05$ level of significance.
 
 :::{.callout-caution}
-## Check Your Understanding: GoF VI
+## Check Your Understanding: Goodness of Fit VI
 
 What is the result of the test?
 
@@ -855,7 +855,7 @@ ok_response(q6, "3");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: GoF VII
+## Check Your Understanding: Goodness of Fit VII
 
 The result of the test means that:
 
@@ -1060,11 +1060,13 @@ $\mathbb{P}\left[\text{Poverty}\right] = 0.16$ and $\mathbb{P}\left[\text{DrugUs
 
 Multiply the total number of adolescents (2,500) by the joint probability.
 
+$$\text{Expected Count} = \mathbb{P}\left[\text{poverty}\right]\cdot \mathbb{P}\left[\text{drug use}\right]\cdot n$$
+
 ```{r}
 #| echo: true
 #| eval: false
 
-2500 * 0.16 * 0.14
+0.16 * 0.14 * 2500
 ```
 
 :::
@@ -1130,7 +1132,7 @@ $$\text{Expected Count} = \mathbb{P}\left[\text{low income}\right]\cdot \mathbb{
 #| echo: true
 #| eval: false
 
-0.38*0.14*2500
+0.38 * 0.14 * 2500
 ```
 
 :::

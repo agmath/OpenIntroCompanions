@@ -18,6 +18,7 @@ format:
         - openintro
         - jsonlite
         - base64enc
+        - skimr
       cell-options: 
         persist: true
     live:
@@ -52,6 +53,7 @@ library(statsr)
 library(openintro)
 library(jsonlite)
 library(base64enc)
+library(skimr)
 
 data(atheism)
 
@@ -119,7 +121,7 @@ In August of 2012, news outlets ranging from the [Washington Post](http://www.wa
 You can find the press release for the WIN-Gallup International poll on the Global Index of Religion and Atheism [here](www/Religiosity_and_Atheism.pdf){target="_blank"}. Please take a moment to review the report and then address the following questions.
 
 :::{.callout-caution}
-## Check Your Understanding: Question 1
+## Check Your Understanding: Sample Statistics or Population Parameters
 
 In the first paragraph of the report, several key findings are reported. Do these percentages appear to be *sample statistics* (derived from the data sample) or *population parameters*?
 
@@ -147,7 +149,7 @@ ok_response(q1, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Question 2
+## Check Your Understanding: Sampling Methods and Generalizability
 
 The title of the report is *Global Index of Religiosity and Atheism*. To generalize the report's findings to the global human population, what must we assume about the sampling method?
 
@@ -175,7 +177,7 @@ ok_response(q2, "4");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Question 3
+## Check Your Understanding: Limits of Analyses
 
 Do you expect that the required assumption was satisfied? What are the implications of this?
 
@@ -206,12 +208,13 @@ Turn your attention to Table 6 (pages 14 and 15) of the report, which summarizes
 
 ```{webr}
 #| exercise: calculator-cell-1
+#| caption: Ungraded, Exploration Only
 # Use this block to explore the atheism data frame
 
 ```
 
 :::{.callout-caution}
-## Check Your Understanding: Question 4
+## Check Your Understanding: Knowing Our Data
 
 What does each row of Table 6 correspond to? What does each row of the `atheism` data frame correspond to?
 
@@ -244,7 +247,7 @@ Run the command in the code block below and be sure to understand what the code 
 
 ```{webr}
 #| exercise: us-atheism
-
+#| caption: Ungraded, Exploration Only
 us12 <- atheism |>
   filter(nationality == "United States", 
          year == 2012)
@@ -276,7 +279,7 @@ us12 <- atheism |>
 
 ```{webr}
 #| exercise: us-atheism-ci
-
+#| caption: Ungraded, Exploration Only
 inference(y = response,
           data = us12,
           statistic = "proportion", 
@@ -287,14 +290,14 @@ inference(y = response,
 
 Let's pause for a moment to go through the arguments of this function:
 
-+ `y` — the response variable of interest: `response`
++ `y` — the response variable (column) of interest: `response`
 + `data` — the data frame containing the `response` column
 + `statistic` — the parameter we're estimating: `"proportion"` (other options include `"mean"` and `"median"`)
 + `type` — the type of inference: `"ci"` for a confidence interval or `"ht"` for a hypothesis test
 + `method` — `"theoretical"` or `"simulation"` based; we use the theoretical framework throughout this course
-+ `success` — since we are estimating a proportion, we specify which level counts as a "success": `"atheist"`
++ `success` — since we are estimating a proportion, we specify which level counts as a "success" (the group whose relative size we want to measure or test): `"atheist"`
 
-The default confidence level is 95% (`conf_level = 0.95`), though this can be adjusted.
+The default confidence level is 95% (`conf_level = 0.95`), though this can be adjusted. You'll be asked to use a different confidence level later in this activity.
 
 Although formal confidence intervals and hypothesis tests don't appear explicitly in the WIN-Gallup report, suggestions of inference appear at the bottom of page 6: *"In general, the error margin for surveys of this kind is ±3–5% at 95% confidence."* We will check the validity of this claim shortly.
 
@@ -302,6 +305,7 @@ Use the code block below to help you answer the question that follows.
 
 ```{webr}
 #| exercise: calculator-cell-2
+#| caption: Ungraded, Exploratory Only
 # Use this block for any calculations
 
 ```
@@ -350,7 +354,7 @@ We can take the upper bound for the confidence interval minus the lower bound to
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Question 5
+## Check Your Understanding: Margin of Error
 
 Based on the R output, what is the margin of error for the estimate of the proportion of atheists in the US in 2012?
 
@@ -382,6 +386,7 @@ Using the code block below and the `inference()` function, calculate confidence 
 
 ```{webr}
 #| exercise: use-inference
+#| caption: Ungraded, Exploration Only
 # Explore atheism proportions in two countries of your choice
 
 ```
@@ -429,16 +434,15 @@ inference(y = response, data = country1,
 
 Imagine you've set out to survey 1,000 people on two questions: are you female? and are you left-handed? Since both sample proportions were calculated from the same sample size, they should have the same margin of error, right? Not so fast! While the margin of error does change with sample size, it is also affected by the proportion itself.
 
-Think back to the formula for the standard error: $SE = \sqrt{p(1-p)/n}$. This feeds into the margin of error for a 95% confidence interval: $ME = 1.96 \times SE = 1.96 \times \sqrt{p(1-p)/n}$. Since the population proportion $p$ appears in this formula, it makes sense that the margin of error depends on the population proportion. We can visualize this relationship by plotting $ME$ vs. $p$.
+Think back to the formula for the standard error: $S_E = \sqrt{p(1-p)/n}$. This feeds into the margin of error for a 95% confidence interval: $M_E = 1.96 \times S_E = 1.96 \times \sqrt{p(1-p)/n}$. Since the population proportion $p$ appears in this formula, it makes sense that the margin of error depends on the population proportion. We can visualize this relationship by plotting $M_E$ vs. $p$.
 
-The code block below creates a vector `p` from 0 to 1 in steps of 0.01, calculates the corresponding margin of error for each value of $p$ (using $ME \approx 2 \times SE$), and plots the relationship.
+The code block below creates a vector `p` from 0 to 1 in steps of 0.01, calculates the corresponding margin of error for each value of $p$ (using $M_E =1.96 \times S_E$), and plots the relationship.
 
 ```{webr}
 #| exercise: me-plot
-
 n <- 1000
 p <- seq(0, 1, 0.01)
-me <- 2 * sqrt(p * (1 - p) / n)
+me <- 1.96 * sqrt(p * (1 - p) / n)
 
 ggplot() + 
   geom_point(aes(x = p, y = me)) + 
@@ -448,7 +452,7 @@ ggplot() +
 ```
 
 :::{.callout-caution}
-## Check Your Understanding: Question 6
+## Check Your Understanding: Population Proportion and Margin of Error
 
 Describe the relationship between the population proportion $p$ and the margin of error.
 
@@ -476,7 +480,7 @@ ok_response(q6, "4");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Question 7
+## Check Your Understanding: Implications
 
 Which of the following are implications of your answer above?
 
@@ -518,7 +522,7 @@ We can investigate the interplay between $n$ and $p$ and the shape of the sampli
 
 ```{webr}
 #| exercise: sim-np
-
+#| caption: Ungraded, Exploration Only
 p <- 0.1
 n <- 1040
 p_hats <- rep(0, 5000)
@@ -542,6 +546,7 @@ Use the code block below to repeat this simulation with `n = 400` and `p = 0.1`.
 
 ```{webr}
 #| exercise: p-dist-400-10
+#| caption: Ungraded, Exploration Only
 # Simulate with n = 400 and p = 0.1
 
 ```
@@ -568,6 +573,7 @@ Now re-run the experiment with `n = 1040` and `p = 0.02`. Think about the impact
 
 ```{webr}
 #| exercise: p-dist-1040-02
+#| caption: Ungraded, Exploration Only
 # Simulate with n = 1040 and p = 0.02
 
 ```
@@ -585,6 +591,7 @@ Finally, re-run the experiment with `n = 400` and `p = 0.02`. Compare all four d
 
 ```{webr}
 #| exercise: p-dist-400-02
+#| caption: Ungraded, Exploration Only
 # Simulate with n = 400 and p = 0.02
 
 ```
@@ -599,7 +606,7 @@ Same approach again — update `n` to 400 and `p` to 0.02. After running all fou
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Question 8
+## Check Your Understanding: Validation of Assumptions
 
 Referring to Table 6 in [the WIN-Gallup report](www/Religiosity_and_Atheism.pdf){target="_blank"}, Australia has a sample proportion of 0.1 on a sample size of 1,040, and Ecuador has a sample proportion of 0.02 on 400 subjects. Suppose these point estimates are the true population proportions. Given the shapes of their respective sampling distributions, is it sensible to proceed with inference and report margins of error as the report does?
 
@@ -636,6 +643,7 @@ The question of atheism was asked by WIN-Gallup International in a similar surve
 
 ```{webr}
 #| exercise: on-your-own-1
+#| caption: Ungraded, Exploration Only
 # Investigate Spain and the United States
 
 ```
@@ -683,6 +691,7 @@ You can ignore the warning about converting `year` to a factor — R is doing ex
 
 ```{webr}
 #| exercise: on-your-own-2
+#| #| caption: Ungraded, Exploration Only
 # Use this block for any calculations
 
 ```
@@ -691,6 +700,7 @@ You can ignore the warning about converting `year` to a factor — R is doing ex
 
 ```{webr}
 #| exercise: on-your-own-3
+#| #| caption: Ungraded, Exploration Only
 # Use the sample size formula for inference on proportions
 
 ```

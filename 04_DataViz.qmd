@@ -107,6 +107,37 @@ data <- data.frame(
 ## About
 
 This activity provides an introduction to the grammar of graphics, plotting strategies, and using ggplot. The discussion you'll work through loosely follows Chapter 3 of Wickham and Grolemund's *R for Data Science*. Here's [a link to the updated second edition of the text](https://r4ds.hadley.nz/){target="_blank"}.
+
+```{ojs}
+//| echo: false
+
+{
+  const btn = html`<button style="
+    background: #436b95;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  ">🔄 Reset My Responses</button>`;
+
+  btn.onclick = () => {
+    if (confirm('Reset all responses for this activity? This cannot be undone.')) {
+      Object.keys(localStorage)
+        .filter(k => k.endsWith('_selected_t4') || k.endsWith('_correct_t4') || k.endsWith('_result_t4'))
+        .forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  };
+
+  return btn;
+}
+```
+
+
+*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting code cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
+
 :::
 
 ## Data Visualization
@@ -174,13 +205,13 @@ viewof q1 = Inputs.checkbox(
     ["A dotplot", 4],
     ["Side-by-side boxplots", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q1_selected_t4") ?? "[]") ?? []}
 );
 
 {
-  localStorage.setItem("q1_selected", JSON.stringify(q1));
-  localStorage.setItem("q1_correct", "2,3");
-  localStorage.setItem("q1_result", (!q1 || q1.length === 0) ? "unattempted" : (q1.toString() === "2,3" ? "correct" : "incorrect"));
+  localStorage.setItem("q1_selected_t4", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t4", "2,3");
+  localStorage.setItem("q1_result_t4", (!q1 || q1.length === 0) ? "unattempted" : (q1.toString() === "2,3" ? "correct" : "incorrect"));
 }
 ok_checkbox(q1, "2,3");
 ```
@@ -293,13 +324,13 @@ viewof q2 = Inputs.radio(
     ["245", 4],
     ["2574", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected_t4") ?? "null")}
 );
 
 {
-  localStorage.setItem("q2_selected", JSON.stringify(q2));
-  localStorage.setItem("q2_correct", "2");
-  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q2_selected_t4", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t4", "2");
+  localStorage.setItem("q2_result_t4", q2 === null ? "unattempted" : (q2 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q2, "2");
 ```
@@ -322,13 +353,13 @@ viewof q3 = Inputs.radio(
     ["245", 4],
     ["2574", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected_t4") ?? "null")}
 );
 
 {
-  localStorage.setItem("q3_selected", JSON.stringify(q3));
-  localStorage.setItem("q3_correct", "3");
-  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q3_selected_t4", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t4", "3");
+  localStorage.setItem("q3_result_t4", q3 === null ? "unattempted" : (q3 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q3, "3");
 ```
@@ -357,13 +388,13 @@ viewof q4 = Inputs.checkbox(
     ["fl (fuel type)", 10],
     ["class (vehicle class)", 11]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q4_selected_t4") ?? "[]") ?? []}
 );
 
 {
-  localStorage.setItem("q4_selected", JSON.stringify(q4));
-  localStorage.setItem("q4_correct", "3,4,6,8,9");
-  localStorage.setItem("q4_result", (!q4 || q4.length === 0) ? "unattempted" : (q4.toString() === "3,4,6,8,9" ? "correct" : "incorrect"));
+  localStorage.setItem("q4_selected_t4", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t4", "3,4,6,8,9");
+  localStorage.setItem("q4_result_t4", (!q4 || q4.length === 0) ? "unattempted" : (q4.toString() === "3,4,6,8,9" ? "correct" : "incorrect"));
 }
 ok_checkbox(q4, "3,4,6,8,9");
 ```
@@ -422,13 +453,13 @@ viewof q5 = Inputs.radio(
     ["It is impossible to tell whether the variables are associated or independent.", 3],
     ["Highway miles per gallon and engine displacement are both independent and associated.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected_t4") ?? "null")}
 );
 
 {
-  localStorage.setItem("q5_selected", JSON.stringify(q5));
-  localStorage.setItem("q5_correct", "2");
-  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q5_selected_t4", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t4", "2");
+  localStorage.setItem("q5_result_t4", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q5, "2");
 ```
@@ -450,13 +481,13 @@ viewof q6 = Inputs.radio(
     ["Engine displacement and highway miles per gallon share a negative, non-linear relationship.", 3],
     ["Engine displacement and highway miles per gallon share a positive, non-linear relationship.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected_t4") ?? "null")}
 );
 
 {
-  localStorage.setItem("q6_selected", JSON.stringify(q6));
-  localStorage.setItem("q6_correct", "3");
-  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q6_selected_t4", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t4", "3");
+  localStorage.setItem("q6_result_t4", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q6, "3");
 ```
@@ -478,13 +509,13 @@ viewof q7 = Inputs.radio(
     ["Higher engine displacement causes lower average highway miles per gallon ratings.", 3],
     ["Engine displacement causes higher average highway miles per gallon ratings.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected_t4") ?? "null")}
 );
 
 {
-  localStorage.setItem("q7_selected", JSON.stringify(q7));
-  localStorage.setItem("q7_correct", "1");
-  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q7_selected_t4", JSON.stringify(q7));
+  localStorage.setItem("q7_correct_t4", "1");
+  localStorage.setItem("q7_result_t4", q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q7, "1");
 ```
@@ -801,13 +832,13 @@ viewof q8 = Inputs.radio(
     ["A scatterplot would be okay but there are better options.", 3],
     ["There isn't enough data for a scatterplot.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected_t4") ?? "null")}
 );
 
 {
-  localStorage.setItem("q8_selected", JSON.stringify(q8));
-  localStorage.setItem("q8_correct", "2");
-  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q8_selected_t4", JSON.stringify(q8));
+  localStorage.setItem("q8_correct_t4", "2");
+  localStorage.setItem("q8_result_t4", q8 === null ? "unattempted" : (q8 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q8, "2");
 ```
@@ -830,13 +861,13 @@ viewof q9 = Inputs.checkbox(
     ["A heatmap", 4],
     ["A mosaicplot", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q9_selected_t4") ?? "[]") ?? []}
 );
 
 {
-  localStorage.setItem("q9_selected", JSON.stringify(q9));
-  localStorage.setItem("q9_correct", "3,4,5");
-  localStorage.setItem("q9_result", (!q9 || q9.length === 0) ? "unattempted" : (q9.toString() === "3,4,5" ? "correct" : "incorrect"));
+  localStorage.setItem("q9_selected_t4", JSON.stringify(q9));
+  localStorage.setItem("q9_correct_t4", "3,4,5");
+  localStorage.setItem("q9_result_t4", (!q9 || q9.length === 0) ? "unattempted" : (q9.toString() === "3,4,5" ? "correct" : "incorrect"));
 }
 ok_checkbox(q9, "3,4,5");
 ```
@@ -1179,13 +1210,13 @@ viewof q10 = Inputs.radio(
     ["It tells R to include two plots per row.", 4],
     ["Nothing -- it is irrelevant and ignored.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q10_selected_t4") ?? "null")}
 );
 
 {
-  localStorage.setItem("q10_selected", JSON.stringify(q10));
-  localStorage.setItem("q10_correct", "3");
-  localStorage.setItem("q10_result", q10 === null ? "unattempted" : (q10 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q10_selected_t4", JSON.stringify(q10));
+  localStorage.setItem("q10_correct_t4", "3");
+  localStorage.setItem("q10_result_t4", q10 === null ? "unattempted" : (q10 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q10, "3");
 ```

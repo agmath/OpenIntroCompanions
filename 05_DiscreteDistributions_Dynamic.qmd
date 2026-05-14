@@ -116,6 +116,37 @@ library(gradethis)
 ## About
 
 This activity provides an introduction to discrete probability, including basic probability through counting outcomes, and calculating probabilities associated with outcomes of binomial experiments using the binomial distribution.
+
+```{ojs}
+//| echo: false
+
+{
+  const btn = html`<button style="
+    background: #436b95;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  ">🔄 Reset My Responses</button>`;
+
+  btn.onclick = () => {
+    if (confirm('Reset all responses for this activity? This cannot be undone.')) {
+      Object.keys(localStorage)
+        .filter(k => k.endsWith('_selected_t5d') || k.endsWith('_correct_t5d') || k.endsWith('_result_t5d'))
+        .forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  };
+
+  return btn;
+}
+```
+
+
+*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting code cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
+
 :::
 
 ## Discrete Probability Distributions
@@ -165,13 +196,13 @@ viewof q1 = Inputs.radio(
     ["5 / 6", 6],
     ["6 / 6", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q1_selected", JSON.stringify(q1));
-  localStorage.setItem("q1_correct", "2");
-  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q1_selected_t5d", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t5d", "2");
+  localStorage.setItem("q1_result_t5d", q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q1, "2");
 ```
@@ -196,13 +227,13 @@ viewof q2 = Inputs.radio(
     ["5 / 6", 6],
     ["6 / 6", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q2_selected", JSON.stringify(q2));
-  localStorage.setItem("q2_correct", "4");
-  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q2_selected_t5d", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t5d", "4");
+  localStorage.setItem("q2_result_t5d", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q2, "4");
 ```
@@ -222,13 +253,13 @@ viewof q3 = Inputs.radio(
     ["The probability of rolling a total of two.", 1],
     ["The probability of rolling a total of five.", 2]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q3_selected", JSON.stringify(q3));
-  localStorage.setItem("q3_correct", "2");
-  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q3_selected_t5d", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t5d", "2");
+  localStorage.setItem("q3_result_t5d", q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q3, "2");
 ```
@@ -261,13 +292,13 @@ viewof q4 = Inputs.radio(
     ["5 / 6", 6],
     ["6 / 6", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q4_selected", JSON.stringify(q4));
-  localStorage.setItem("q4_correct", "6");
-  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 6 ? "correct" : "incorrect"));
+  localStorage.setItem("q4_selected_t5d", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t5d", "6");
+  localStorage.setItem("q4_result_t5d", q4 === null ? "unattempted" : (q4 == 6 ? "correct" : "incorrect"));
 }
 ok_response(q4, "6");
 ```
@@ -288,13 +319,13 @@ viewof q5 = Inputs.radio(
     ["1 / 2", 2],
     ["2 / 2", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q5_selected", JSON.stringify(q5));
-  localStorage.setItem("q5_correct", "2");
-  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q5_selected_t5d", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t5d", "2");
+  localStorage.setItem("q5_result_t5d", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q5, "2");
 ```
@@ -626,13 +657,13 @@ viewof q6 = Inputs.radio(
     ["0.80", 6],
     ["1", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q6_selected", JSON.stringify(q6));
-  localStorage.setItem("q6_correct", "3");
-  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q6_selected_t5d", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t5d", "3");
+  localStorage.setItem("q6_result_t5d", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q6, "3");
 ```
@@ -658,13 +689,13 @@ viewof q7 = Inputs.radio(
     ["0.998", 7],
     ["1", 8]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q7_selected", JSON.stringify(q7));
-  localStorage.setItem("q7_correct", "2");
-  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q7_selected_t5d", JSON.stringify(q7));
+  localStorage.setItem("q7_correct_t5d", "2");
+  localStorage.setItem("q7_result_t5d", q7 === null ? "unattempted" : (q7 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q7, "2");
 ```
@@ -690,13 +721,13 @@ viewof q8 = Inputs.radio(
     ["0.998", 7],
     ["1", 8]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q8_selected", JSON.stringify(q8));
-  localStorage.setItem("q8_correct", "5");
-  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 5 ? "correct" : "incorrect"));
+  localStorage.setItem("q8_selected_t5d", JSON.stringify(q8));
+  localStorage.setItem("q8_correct_t5d", "5");
+  localStorage.setItem("q8_result_t5d", q8 === null ? "unattempted" : (q8 == 5 ? "correct" : "incorrect"));
 }
 ok_response(q8, "5");
 ```
@@ -720,13 +751,13 @@ viewof q9 = Inputs.radio(
     ["0.20", 5],
     ["1.2", 6]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q9_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q9_selected", JSON.stringify(q9));
-  localStorage.setItem("q9_correct", "3");
-  localStorage.setItem("q9_result", q9 === null ? "unattempted" : (q9 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q9_selected_t5d", JSON.stringify(q9));
+  localStorage.setItem("q9_correct_t5d", "3");
+  localStorage.setItem("q9_result_t5d", q9 === null ? "unattempted" : (q9 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q9, "3");
 ```
@@ -752,13 +783,13 @@ viewof q10 = Inputs.radio(
     ["0.64", 7],
     ["None of These", 8]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q10_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q10_selected", JSON.stringify(q10));
-  localStorage.setItem("q10_correct", "8");
-  localStorage.setItem("q10_result", q10 === null ? "unattempted" : (q10 == 8 ? "correct" : "incorrect"));
+  localStorage.setItem("q10_selected_t5d", JSON.stringify(q10));
+  localStorage.setItem("q10_correct_t5d", "8");
+  localStorage.setItem("q10_result_t5d", q10 === null ? "unattempted" : (q10 == 8 ? "correct" : "incorrect"));
 }
 ok_response(q10, "8");
 ```

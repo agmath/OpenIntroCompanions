@@ -18,6 +18,8 @@ format:
         - openintro
         - skimr
         - tidyr
+        - jsonlite
+        - base64enc
       cell-options:
         persist: true
     live:
@@ -63,11 +65,20 @@ library(statsr)
 library(openintro)
 library(skimr)
 library(tidyr)
+library(jsonlite)
+library(base64enc)
 
 data(nc)
 rm(inference)
 
 theme_set(theme_bw(base_size = 12))
+
+exercise_results <- list(
+  notebook                          = "Topic 17: Inference for Numerical Data (Lab)",
+  plot_habit_weight                 = "unattempted",
+  check_inference_conditions_habit  = "unattempted",
+  first_inference_run               = "unattempted"
+)
 ```
 
 ```{r setup, include=FALSE}
@@ -165,10 +176,14 @@ viewof q1 = Inputs.radio(
     ["Each case corresponds to a doctor visit.", 3],
     ["Each case corresponds to a baby.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
 );
 
-localStorage.setItem("q1", JSON.stringify(q1));
+{
+  localStorage.setItem("q1_selected", JSON.stringify(q1));
+  localStorage.setItem("q1_correct", "1");
+  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q1, "1");
 ```
 
@@ -190,10 +205,14 @@ viewof q2 = Inputs.radio(
     ["1,000", 4],
     ["1,387", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
 );
 
-localStorage.setItem("q2", JSON.stringify(q2));
+{
+  localStorage.setItem("q2_selected", JSON.stringify(q2));
+  localStorage.setItem("q2_correct", "4");
+  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q2, "4");
 ```
 
@@ -249,7 +268,6 @@ Which of the variables in the `nc` dataset are numerical? Select all that apply.
 ```{ojs}
 //| echo: false
 
-//mutable ok_checkbox = (response, n) => { return html`Loading...` };
 viewof q3 = Inputs.checkbox(
   new Map([
     ["fage", 1],
@@ -266,10 +284,14 @@ viewof q3 = Inputs.checkbox(
     ["habit", 12],
     ["whitemom", 13]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "[]") ?? []}
 );
 
-localStorage.setItem("q3", JSON.stringify(q3));
+{
+  localStorage.setItem("q3_selected", JSON.stringify(q3));
+  localStorage.setItem("q3_correct", "1,2,4,6,8,9");
+  localStorage.setItem("q3_result", (!q3 || q3.length === 0) ? "unattempted" : (q3.toString() === "1,2,4,6,8,9" ? "correct" : "incorrect"));
+}
 ok_checkbox(q3.toString(), "1,2,4,6,8,9");
 ```
 
@@ -530,7 +552,15 @@ nc |>
 #| exercise: plot-habit-weight
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$plot_habit_weight <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$plot_habit_weight <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 The boxplots show how the medians of the two distributions compare, but we can also compare the means directly. The following code groups the data by `habit` and computes the mean `weight` for each group. Think about what the output will look like before running it, then run it and reflect on what it tells you.
@@ -557,10 +587,14 @@ viewof q_extra1 = Inputs.radio(
     ["Babies born to mothers who smoke during pregnancy are, on average, lower birthweight than babies born to mothers who don't smoke during pregnancy.", 2],
     ["Babies born to mothers who smoke during pregnancy are, on average, lower birthweight than babies born to mothers who don't smoke during pregnancy in our sample.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q_extra1") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q_extra1_selected") ?? "null")}
 );
 
-localStorage.setItem("q_extra1", JSON.stringify(q_extra1));
+{
+  localStorage.setItem("q_extra1_selected", JSON.stringify(q_extra1));
+  localStorage.setItem("q_extra1_correct", "3");
+  localStorage.setItem("q_extra1_result", q_extra1 === null ? "unattempted" : (q_extra1 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q_extra1, "3");
 ```
 
@@ -616,9 +650,14 @@ nc |>
 #| exercise: check-inference-conditions-habit
 #| check: true
 
+exercise_results$check_inference_conditions_habit <<- "fail"
 gradethis::grade_this({
-  pass_if_equal()
-  fail()
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$check_inference_conditions_habit <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
 })
 ```
 
@@ -636,10 +675,14 @@ viewof q4 = Inputs.radio(
     ["Two.", 2],
     ["More than two.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
 );
 
-localStorage.setItem("q4", JSON.stringify(q4));
+{
+  localStorage.setItem("q4_selected", JSON.stringify(q4));
+  localStorage.setItem("q4_correct", "2");
+  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q4, "2");
 ```
 
@@ -662,10 +705,14 @@ viewof q5 = Inputs.checkbox(
     ["Pregnancies with mothers who are non-smokers.", 5],
     ["Pregnancies not resulting in premature births.", 6]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "[]") ?? []}
 );
 
-localStorage.setItem("q5", JSON.stringify(q5));
+{
+  localStorage.setItem("q5_selected", JSON.stringify(q5));
+  localStorage.setItem("q5_correct", "2,5");
+  localStorage.setItem("q5_result", (!q5 || q5.length === 0) ? "unattempted" : (q5.toString() === "2,5" ? "correct" : "incorrect"));
+}
 ok_checkbox(q5.toString(), "2,5");
 ```
 
@@ -686,10 +733,14 @@ viewof q6 = Inputs.radio(
     ["No, the group sizes are too imbalanced.", 3],
     ["No, there is too much skew in the data.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
 );
 
-localStorage.setItem("q6", JSON.stringify(q6));
+{
+  localStorage.setItem("q6_selected", JSON.stringify(q6));
+  localStorage.setItem("q6_correct", "1");
+  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q6, "1");
 ```
 
@@ -710,10 +761,14 @@ viewof q7 = Inputs.radio(
     ["H₀: μ_smoker = μ_nonsmoker; Hₐ: μ_smoker < μ_nonsmoker", 3],
     ["H₀: p_smoker = p_nonsmoker; Hₐ: p_smoker ≠ p_nonsmoker", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
 );
 
-localStorage.setItem("q7", JSON.stringify(q7));
+{
+  localStorage.setItem("q7_selected", JSON.stringify(q7));
+  localStorage.setItem("q7_correct", "1");
+  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q7, "1");
 ```
 
@@ -806,9 +861,14 @@ inference(
 #| exercise: first-inference-run
 #| check: true
 
+exercise_results$first_inference_run <<- "fail"
 gradethis::grade_this({
-  pass_if_equal()
-  fail()
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$first_inference_run <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
 })
 ```
 
@@ -1172,9 +1232,106 @@ Explore and experiment with questions that are of interest to you. Start with an
 
 ## Submit
 
-:::{.callout-warning}
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested.
 
-Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+:::{.callout-warning}
+## Question Hash
+
+The hash below encodes your responses to the multiple choice and checkbox questions in this activity.
+
+```{ojs}
+//| echo: false
+
+function buildQuestionResults() {
+  return {
+    notebook: "Topic 17: Inference for Numerical Data (Lab)",
+    type: "questions",
+    timestamp: new Date().toISOString(),
+    questions: {
+      q1_cases_type: {
+        selected: q1,
+        correct_answer: "1",
+        result: q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect")
+      },
+      q2_num_cases: {
+        selected: q2,
+        correct_answer: "4",
+        result: q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect")
+      },
+      q3_numerical_variables: {
+        selected: q3,
+        correct_answer: "1,2,4,6,8,9",
+        result: (!q3 || q3.length === 0) ? "unattempted" : (q3.toString() === "1,2,4,6,8,9" ? "correct" : "incorrect")
+      },
+      q_extra1_grouped_summary: {
+        selected: q_extra1,
+        correct_answer: "3",
+        result: q_extra1 === null ? "unattempted" : (q_extra1 == 3 ? "correct" : "incorrect")
+      },
+      q4_num_groups: {
+        selected: q4,
+        correct_answer: "2",
+        result: q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect")
+      },
+      q5_which_groups: {
+        selected: q5,
+        correct_answer: "2,5",
+        result: (!q5 || q5.length === 0) ? "unattempted" : (q5.toString() === "2,5" ? "correct" : "incorrect")
+      },
+      q6_conditions_satisfied: {
+        selected: q6,
+        correct_answer: "1",
+        result: q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect")
+      },
+      q7_hypotheses: {
+        selected: q7,
+        correct_answer: "1",
+        result: q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect")
+      }
+    }
+  };
+}
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+question_hash = {
+  q1; q2; q3; q_extra1; q4; q5; q6; q7;
+  return toBase64(JSON.stringify(buildQuestionResults()));
+}
+```
+
+```{ojs}
+//| echo: false
+
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded code exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and hit the *Run Code* button on each graded exercise before generating the hash below, to ensure your most recent results are recorded.
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
 
 :::
 

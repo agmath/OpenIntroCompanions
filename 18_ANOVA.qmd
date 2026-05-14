@@ -14,6 +14,8 @@ format:
         - ggplot2
         - gradethis
         - broom
+        - jsonlite
+        - base64enc
       cell-options:
         persist: true
     live:
@@ -56,10 +58,17 @@ function ok_checkbox(response, n) {
 library(dplyr)
 library(ggplot2)
 library(broom)
+library(jsonlite)
+library(base64enc)
 
 data(iris)
 
 theme_set(theme_bw(base_size = 12))
+
+exercise_results <- list(
+  notebook   = "Topic 18: Inference for Comparing Many Group Means (ANOVA)",
+  run_anova  = "unattempted"
+)
 ```
 
 ```{r setup, include=FALSE}
@@ -132,14 +141,18 @@ mutable ok_response = (response, n) => { return html`Loading...` };
 viewof q1 = Inputs.radio(
   new Map([
     ["H₀: μ_setosa = μ_versicolor = μ_virginica; Hₐ: μ_setosa ≠ μ_versicolor ≠ μ_virginica", 1],
-    ["H₀: μ_setosa = μ_versicolor = μ_virginica = 0; Hₐ: μ_setosa ≠ μ_versicolor ≠ μ_virginica ≠ 0", 2]
+    ["H₀: μ_setosa = μ_versicolor = μ_virginica = 0; Hₐ: μ_setosa ≠ μ_versicolor ≠ μ_virginica ≠ 0", 2],
     ["H₀: μ_setosa = μ_versicolor = μ_virginica; Hₐ: At least one variety has a different average petal width.", 3],
-    ["H₀: μ_setosa = μ_versicolor = μ_virginica; Hₐ: All varieties have different average petal widths.", 4],
+    ["H₀: μ_setosa = μ_versicolor = μ_virginica; Hₐ: All varieties have different average petal widths.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
 );
 
-localStorage.setItem("q1", JSON.stringify(q1));
+{
+  localStorage.setItem("q1_selected", JSON.stringify(q1));
+  localStorage.setItem("q1_correct", "3");
+  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q1, "3");
 ```
 
@@ -160,10 +173,14 @@ viewof q2 = Inputs.radio(
     ["3", 3],
     ["4", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
 );
 
-localStorage.setItem("q2", JSON.stringify(q2));
+{
+  localStorage.setItem("q2_selected", JSON.stringify(q2));
+  localStorage.setItem("q2_correct", "3");
+  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q2, "3");
 ```
 
@@ -184,10 +201,14 @@ viewof q3 = Inputs.radio(
     ["3", 3],
     ["4", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
 );
 
-localStorage.setItem("q3", JSON.stringify(q3));
+{
+  localStorage.setItem("q3_selected", JSON.stringify(q3));
+  localStorage.setItem("q3_correct", "2");
+  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q3, "2");
 ```
 
@@ -210,10 +231,14 @@ viewof q4 = Inputs.radio(
     ["2", 5],
     ["3", 6]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
 );
 
-localStorage.setItem("q4", JSON.stringify(q4));
+{
+  localStorage.setItem("q4_selected", JSON.stringify(q4));
+  localStorage.setItem("q4_correct", "3");
+  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q4, "3");
 ```
 
@@ -288,9 +313,11 @@ summary(ANOVAtable)
 #| exercise: run-anova
 #| check: true
 
+exercise_results$run_anova <<- "fail"
 gradethis::grade_this({
-  expected <- summary(aov(Petal.Width ~ Species, data = iris))
-  if (identical(.result, expected)) {
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$run_anova <<- "pass"
     pass(random_praise())
   }
   fail(random_encouragement())
@@ -314,10 +341,14 @@ viewof q5 = Inputs.radio(
     ["Mean Sq values are unrelated to the other entries and are output as standalone meaningful values.", 3],
     ["Mean Sq values are the product of the F value and the p-value.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
 );
 
-localStorage.setItem("q5", JSON.stringify(q5));
+{
+  localStorage.setItem("q5_selected", JSON.stringify(q5));
+  localStorage.setItem("q5_correct", "1");
+  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q5, "1");
 ```
 
@@ -339,10 +370,14 @@ viewof q6 = Inputs.radio(
     ["2 and 147", 4],
     ["There is no test statistic associated with an ANOVA test.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
 );
 
-localStorage.setItem("q6", JSON.stringify(q6));
+{
+  localStorage.setItem("q6_selected", JSON.stringify(q6));
+  localStorage.setItem("q6_correct", "3");
+  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q6, "3");
 ```
 
@@ -364,10 +399,14 @@ viewof q7 = Inputs.radio(
     ["A number smaller than 0.0000000000000002", 4],
     ["-14", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
 );
 
-localStorage.setItem("q7", JSON.stringify(q7));
+{
+  localStorage.setItem("q7_selected", JSON.stringify(q7));
+  localStorage.setItem("q7_correct", "4");
+  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q7, "4");
 ```
 
@@ -388,10 +427,14 @@ viewof q8 = Inputs.radio(
     ["Since p < α, we accept the null hypothesis.", 3],
     ["Since p ≥ α, we fail to reject the null hypothesis.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
 );
 
-localStorage.setItem("q8", JSON.stringify(q8));
+{
+  localStorage.setItem("q8_selected", JSON.stringify(q8));
+  localStorage.setItem("q8_correct", "1");
+  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q8, "1");
 ```
 
@@ -412,10 +455,14 @@ viewof q9 = Inputs.radio(
     ["The iris data does not provide significant evidence to suggest that average petal width differs across at least one variety.", 3],
     ["The iris data provides significant evidence to suggest that all three varieties have different average petal widths.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "null")}
 );
 
-localStorage.setItem("q9", JSON.stringify(q9));
+{
+  localStorage.setItem("q9_selected", JSON.stringify(q9));
+  localStorage.setItem("q9_correct", "1");
+  localStorage.setItem("q9_result", q9 === null ? "unattempted" : (q9 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q9, "1");
 ```
 
@@ -442,17 +489,20 @@ Which pairs of iris varieties have significantly different average petal widths?
 ```{ojs}
 //| echo: false
 
-//mutable ok_checkbox = (response, n) => { return html`Loading...` };
 viewof q10 = Inputs.checkbox(
   new Map([
     ["Versicolor and Setosa", 1],
     ["Virginica and Setosa", 2],
     ["Virginica and Versicolor", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q10_selected") ?? "[]") ?? []}
 );
 
-localStorage.setItem("q10", JSON.stringify(q10));
+{
+  localStorage.setItem("q10_selected", JSON.stringify(q10));
+  localStorage.setItem("q10_correct", "1,2,3");
+  localStorage.setItem("q10_result", (!q10 || q10.length === 0) ? "unattempted" : (q10.toString() === "1,2,3" ? "correct" : "incorrect"));
+}
 ok_checkbox(q10.toString(), "1,2,3");
 ```
 
@@ -490,9 +540,116 @@ Which do you find more useful for communicating the results — the table, the p
 
 ## Submit
 
-:::{.callout-warning}
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested.
 
-Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+:::{.callout-warning}
+## Question Hash
+
+The hash below encodes your responses to the multiple choice and checkbox questions in this activity.
+
+```{ojs}
+//| echo: false
+
+function buildQuestionResults() {
+  return {
+    notebook: "Topic 18: Inference for Comparing Many Group Means (ANOVA)",
+    type: "questions",
+    timestamp: new Date().toISOString(),
+    questions: {
+      q1_anova_hypotheses: {
+        selected: q1,
+        correct_answer: "3",
+        result: q1 === null ? "unattempted" : (q1 == 3 ? "correct" : "incorrect")
+      },
+      q2_anova_num_groups: {
+        selected: q2,
+        correct_answer: "3",
+        result: q2 === null ? "unattempted" : (q2 == 3 ? "correct" : "incorrect")
+      },
+      q3_anova_group_df: {
+        selected: q3,
+        correct_answer: "2",
+        result: q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect")
+      },
+      q4_anova_total_df: {
+        selected: q4,
+        correct_answer: "3",
+        result: q4 === null ? "unattempted" : (q4 == 3 ? "correct" : "incorrect")
+      },
+      q5_anova_mean_sq: {
+        selected: q5,
+        correct_answer: "1",
+        result: q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect")
+      },
+      q6_anova_test_stat: {
+        selected: q6,
+        correct_answer: "3",
+        result: q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect")
+      },
+      q7_anova_pvalue: {
+        selected: q7,
+        correct_answer: "4",
+        result: q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect")
+      },
+      q8_anova_conclusion: {
+        selected: q8,
+        correct_answer: "1",
+        result: q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect")
+      },
+      q9_anova_conclusion_context: {
+        selected: q9,
+        correct_answer: "1",
+        result: q9 === null ? "unattempted" : (q9 == 1 ? "correct" : "incorrect")
+      },
+      q10_tukey_significant_pairs: {
+        selected: q10,
+        correct_answer: "1,2,3",
+        result: (!q10 || q10.length === 0) ? "unattempted" : (q10.toString() === "1,2,3" ? "correct" : "incorrect")
+      }
+    }
+  };
+}
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+question_hash = {
+  q1; q2; q3; q4; q5; q6; q7; q8; q9; q10;
+  return toBase64(JSON.stringify(buildQuestionResults()));
+}
+```
+
+```{ojs}
+//| echo: false
+
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded code exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and hit the *Run Code* button on each graded exercise before generating the hash below, to ensure your most recent results are recorded.
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
 
 :::
 

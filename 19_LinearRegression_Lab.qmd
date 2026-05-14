@@ -16,6 +16,8 @@ format:
         - gradethis
         - openintro
         - skimr
+        - jsonlite
+        - base64enc
       cell-options:
         persist: true
     live:
@@ -59,10 +61,20 @@ library(dplyr)
 library(ggplot2)
 library(openintro)
 library(skimr)
+library(jsonlite)
+library(base64enc)
 
 data(evals)
 
 theme_set(theme_bw(base_size = 12))
+
+exercise_results <- list(
+  notebook          = "Topic 19: Linear Regression (Lab)",
+  hist_scores       = "unattempted",
+  bty_score         = "unattempted",
+  model_second_it   = "unattempted",
+  model_final       = "unattempted"
+)
 ```
 
 ```{r setup, include=FALSE}
@@ -160,10 +172,14 @@ viewof q1 = Inputs.radio(
     ["Participants in an experiment must sign a waiver.", 3],
     ["An experiment includes much more data.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
 );
 
-localStorage.setItem("q1", JSON.stringify(q1));
+{
+  localStorage.setItem("q1_selected", JSON.stringify(q1));
+  localStorage.setItem("q1_correct", "2");
+  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q1, "2");
 ```
 
@@ -182,10 +198,14 @@ viewof q2 = Inputs.radio(
     ["An observational study.", 1],
     ["An experiment.", 2]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
 );
 
-localStorage.setItem("q2", JSON.stringify(q2));
+{
+  localStorage.setItem("q2_selected", JSON.stringify(q2));
+  localStorage.setItem("q2_correct", "1");
+  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q2, "1");
 ```
 
@@ -206,10 +226,14 @@ viewof q3 = Inputs.radio(
     ["No, the study did not include enough data to answer the question as phrased.", 3],
     ["No. The question posed is not a data question.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "null")}
 );
 
-localStorage.setItem("q3", JSON.stringify(q3));
+{
+  localStorage.setItem("q3_selected", JSON.stringify(q3));
+  localStorage.setItem("q3_correct", "2");
+  localStorage.setItem("q3_result", q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q3, "2");
 ```
 
@@ -302,7 +326,15 @@ evals |>
 #| exercise: hist-scores
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$hist_scores <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$hist_scores <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 :::{.callout-caution}
@@ -321,10 +353,14 @@ viewof q4 = Inputs.radio(
     ["The distribution is skewed left.", 4],
     ["The distribution is skewed right.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
 );
 
-localStorage.setItem("q4", JSON.stringify(q4));
+{
+  localStorage.setItem("q4_selected", JSON.stringify(q4));
+  localStorage.setItem("q4_correct", "4");
+  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q4, "4");
 ```
 
@@ -344,10 +380,14 @@ viewof q5 = Inputs.radio(
     ["Students give low scores more often than high scores.", 2],
     ["Students typically give moderate scores with fewer giving very high or very low scores.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "null")}
 );
 
-localStorage.setItem("q5", JSON.stringify(q5));
+{
+  localStorage.setItem("q5_selected", JSON.stringify(q5));
+  localStorage.setItem("q5_correct", "1");
+  localStorage.setItem("q5_result", q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q5, "1");
 ```
 
@@ -449,7 +489,15 @@ evals |>
 #| exercise: bty-score
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$bty_score <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$bty_score <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 Before drawing conclusions, compare the number of observations in `evals` with the number of visible points in your scatterplot. Does something seem off? Use the code block below to replot using `geom_jitter()` instead of `geom_point()`. What was misleading about the original scatterplot?
@@ -494,10 +542,14 @@ viewof q6 = Inputs.radio(
     ["Yes, the p-value associated with bty_avg is below 0.05.", 4],
     ["No, the p-value associated with bty_avg is above 0.05.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
 );
 
-localStorage.setItem("q6", JSON.stringify(q6));
+{
+  localStorage.setItem("q6_selected", JSON.stringify(q6));
+  localStorage.setItem("q6_correct", "4");
+  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q6, "4");
 ```
 
@@ -519,10 +571,14 @@ viewof q7 = Inputs.radio(
     ["3.88", 4],
     ["2e-16", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
 );
 
-localStorage.setItem("q7", JSON.stringify(q7));
+{
+  localStorage.setItem("q7_selected", JSON.stringify(q7));
+  localStorage.setItem("q7_correct", "4");
+  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect"));
+}
 ok_response(q7, "4");
 ```
 
@@ -544,10 +600,14 @@ viewof q8 = Inputs.radio(
     ["2e-16", 4],
     ["0.535", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected") ?? "null")}
 );
 
-localStorage.setItem("q8", JSON.stringify(q8));
+{
+  localStorage.setItem("q8_selected", JSON.stringify(q8));
+  localStorage.setItem("q8_correct", "1");
+  localStorage.setItem("q8_result", q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q8, "1");
 ```
 
@@ -634,10 +694,14 @@ viewof q9 = Inputs.radio(
     ["Yes. Students give better scores to instructors who are better looking.", 3],
     ["Yes. Students give worse scores to instructors who are better looking.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q9_selected") ?? "null")}
 );
 
-localStorage.setItem("q9", JSON.stringify(q9));
+{
+  localStorage.setItem("q9_selected", JSON.stringify(q9));
+  localStorage.setItem("q9_correct", "1");
+  localStorage.setItem("q9_result", q9 === null ? "unattempted" : (q9 == 1 ? "correct" : "incorrect"));
+}
 ok_response(q9, "1");
 ```
 
@@ -658,10 +722,14 @@ viewof q10 = Inputs.radio(
     ["The regression model suggests that there is implicit bias in course evaluation scores depending on the attractiveness of the instructor.", 3],
     ["The attractiveness of an instructor is a primary driver of how students rate their courses.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q10_selected") ?? "null")}
 );
 
-localStorage.setItem("q10", JSON.stringify(q10));
+{
+  localStorage.setItem("q10_selected", JSON.stringify(q10));
+  localStorage.setItem("q10_correct", "3");
+  localStorage.setItem("q10_result", q10 === null ? "unattempted" : (q10 == 3 ? "correct" : "incorrect"));
+}
 ok_response(q10, "3");
 ```
 
@@ -717,7 +785,6 @@ Using $\alpha = 0.05$, which predictor variables in the full model are **not** s
 ```{ojs}
 //| echo: false
 
-//mutable ok_checkbox = (response, n) => { return html`Loading...` };
 viewof q11 = Inputs.checkbox(
   new Map([
     ["ethnicity", 1],
@@ -733,10 +800,14 @@ viewof q11 = Inputs.checkbox(
     ["pic_color", 11],
     ["pic_outfit", 12]
   ]),
-  {value: JSON.parse(localStorage.getItem("q11") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q11_selected") ?? "[]") ?? []}
 );
 
-localStorage.setItem("q11", JSON.stringify(q11));
+{
+  localStorage.setItem("q11_selected", JSON.stringify(q11));
+  localStorage.setItem("q11_correct", "1,6,7,8,12");
+  localStorage.setItem("q11_result", (!q11 || q11.length === 0) ? "unattempted" : (q11.toString() === "1,6,7,8,12" ? "correct" : "incorrect"));
+}
 ok_checkbox(q11.toString(), "1,6,7,8,12");
 ```
 
@@ -756,10 +827,14 @@ viewof q12 = Inputs.radio(
     ["1 — remove only the least significant predictor, then reassess.", 2],
     ["All insignificant predictors at once.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q12") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q12_selected") ?? "null")}
 );
 
-localStorage.setItem("q12", JSON.stringify(q12));
+{
+  localStorage.setItem("q12_selected", JSON.stringify(q12));
+  localStorage.setItem("q12_correct", "2");
+  localStorage.setItem("q12_result", q12 === null ? "unattempted" : (q12 == 2 ? "correct" : "incorrect"));
+}
 ok_response(q12, "2");
 ```
 
@@ -827,7 +902,15 @@ summary(m_reduce1)
 #| exercise: model-second-it
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$model_second_it <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$model_second_it <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 Continue the backward elimination process in the code block below, removing one predictor at a time until all remaining predictors are statistically significant.
@@ -886,7 +969,15 @@ summary(m_final)
 #| exercise: model-final
 #| check: true
 
-gradethis::grade_this_code()
+exercise_results$model_final <<- "fail"
+gradethis::grade_this({
+  feedback <- gradethis::code_feedback()
+  if (is.null(feedback)) {
+    exercise_results$model_final <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
 ```
 
 :::{.callout-caution}
@@ -908,10 +999,14 @@ viewof q13 = Inputs.checkbox(
     ["An instructor with a higher average beauty rating.", 7],
     ["An instructor whose picture is printed in color.", 8]
   ]),
-  {value: JSON.parse(localStorage.getItem("q13") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q13_selected") ?? "[]") ?? []}
 );
 
-localStorage.setItem("q13", JSON.stringify(q13));
+{
+  localStorage.setItem("q13_selected", JSON.stringify(q13));
+  localStorage.setItem("q13_correct", "1,2,3,5,6,7");
+  localStorage.setItem("q13_result", (!q13 || q13.length === 0) ? "unattempted" : (q13.toString() === "1,2,3,5,6,7" ? "correct" : "incorrect"));
+}
 ok_checkbox(q13.toString(), "1,2,3,5,6,7");
 ```
 
@@ -929,9 +1024,131 @@ If you found this lab interesting, linear regression is just the beginning of a 
 
 ## Submit
 
-:::{.callout-warning}
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested.
 
-Grading function is not currently available for these web-based notebooks. If you would like to utilize grading functionality, please use either the [Posit Cloud pre-built instance](https://posit.cloud/content/6328402){target="_blank"} or [install the `{learnr}` notebooks locally](https://agmath.github.io/IntroductoryStatistics/AccessingInteractiveNotes.html){target="_blank"}.
+:::{.callout-warning}
+## Question Hash
+
+The hash below encodes your responses to the multiple choice and checkbox questions in this activity.
+
+```{ojs}
+//| echo: false
+
+function buildQuestionResults() {
+  return {
+    notebook: "Topic 19: Linear Regression (Lab)",
+    type: "questions",
+    timestamp: new Date().toISOString(),
+    questions: {
+      q1_study_design_obs_vs_exp: {
+        selected: q1,
+        correct_answer: "2",
+        result: q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect")
+      },
+      q2_study_design_type: {
+        selected: q2,
+        correct_answer: "1",
+        result: q2 === null ? "unattempted" : (q2 == 1 ? "correct" : "incorrect")
+      },
+      q3_study_design_causation: {
+        selected: q3,
+        correct_answer: "2",
+        result: q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect")
+      },
+      q4_score_distribution_shape: {
+        selected: q4,
+        correct_answer: "4",
+        result: q4 === null ? "unattempted" : (q4 == 4 ? "correct" : "incorrect")
+      },
+      q5_score_distribution_meaning: {
+        selected: q5,
+        correct_answer: "1",
+        result: q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect")
+      },
+      q6_simple_reg_significance: {
+        selected: q6,
+        correct_answer: "4",
+        result: q6 === null ? "unattempted" : (q6 == 4 ? "correct" : "incorrect")
+      },
+      q7_simple_reg_intercept: {
+        selected: q7,
+        correct_answer: "4",
+        result: q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect")
+      },
+      q8_simple_reg_slope: {
+        selected: q8,
+        correct_answer: "1",
+        result: q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect")
+      },
+      q9_practical_significance: {
+        selected: q9,
+        correct_answer: "1",
+        result: q9 === null ? "unattempted" : (q9 == 1 ? "correct" : "incorrect")
+      },
+      q10_practical_significance_meaning: {
+        selected: q10,
+        correct_answer: "3",
+        result: q10 === null ? "unattempted" : (q10 == 3 ? "correct" : "incorrect")
+      },
+      q11_full_model_insignificant: {
+        selected: q11,
+        correct_answer: "1,6,7,8,12",
+        result: (!q11 || q11.length === 0) ? "unattempted" : (q11.toString() === "1,6,7,8,12" ? "correct" : "incorrect")
+      },
+      q12_backward_elim_how_many: {
+        selected: q12,
+        correct_answer: "2",
+        result: q12 === null ? "unattempted" : (q12 == 2 ? "correct" : "incorrect")
+      },
+      q13_final_model_higher_scores: {
+        selected: q13,
+        correct_answer: "1,2,3,5,6,7",
+        result: (!q13 || q13.length === 0) ? "unattempted" : (q13.toString() === "1,2,3,5,6,7" ? "correct" : "incorrect")
+      }
+    }
+  };
+}
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+question_hash = {
+  q1; q2; q3; q4; q5; q6; q7; q8; q9; q10; q11; q12; q13;
+  return toBase64(JSON.stringify(buildQuestionResults()));
+}
+```
+
+```{ojs}
+//| echo: false
+
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded code exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and hit the *Run Code* button on each graded exercise before generating the hash below, to ensure your most recent results are recorded.
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
 
 :::
 

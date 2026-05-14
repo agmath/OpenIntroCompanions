@@ -108,7 +108,7 @@ In the Topic 11 activity you learned about statistical inference — hypothesis 
 
 ## A Tour of the Decision Tree
 
-From this point on you'll make heavy use of the [*Standard Error Decision Tree*](www/StdErrorDecisionTree.pdf){target="_blank"}. The tree may look intimidating, but it contains almost everything we'll need to get through the majority of what remains in our course. Let's start with a tour.
+From this point on you'll make heavy use of the [*Standard Error Decision Tree*](www/StdErrorDecisionTree.pdf){target="_blank"}. The tree may look intimidating, but it contains most of what you'll need for the what remains in our introductory course. Let's start with a tour.
 
 ```{=html}
 <center>
@@ -118,7 +118,7 @@ From this point on you'll make heavy use of the [*Standard Error Decision Tree*]
 
 ## Practice Problems
 
-This section contains three practice problems. Be sure to note any questions you have or trouble you run into. You might also check back with the Topic 11 activity to revisit the videos from Dr. Diez and Dr. McLintock, which discussed approaches similar to the ones required for these problems. The links below contain detailed versions of the general strategies for inference tasks — keep them handy!
+This section contains three practice problems. Be sure to note any questions you have or trouble you run into. You might also check back with the Topic 11 activity to revisit the videos from Dr. Diez and Dr. McClintock Pileggi, which discussed approaches similar to the ones required for these problems. The links below contain detailed versions of the general strategies for our inference tasks — keep them handy!
 
 + [General Strategy for Conducting a Hypothesis Test](www/HTgeneral.pdf){target="_blank"}
 + [General Strategy for Computing a Confidence Interval](www/CIgeneral.pdf){target="_blank"}
@@ -266,7 +266,7 @@ se <- sqrt(0.48*(1 - 0.48)/331)
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a — I
+## Check Your Understanding: Try It 1a, Part I
 
 To answer the question as asked, we should:
 
@@ -295,7 +295,7 @@ ok_response(q1, "3");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a — II
+## Check Your Understanding: Try It 1a, Part II
 
 The point estimate is:
 
@@ -324,7 +324,7 @@ ok_response(q2, "3");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a — III
+## Check Your Understanding: Try It 1a, Part III
 
 The standard error formula is:
 
@@ -353,7 +353,7 @@ ok_response(q3, "3");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a — IV
+## Check Your Understanding: Try It 1a, Part IV
 
 The standard error (rounded to four decimal places) is:
 
@@ -382,7 +382,7 @@ ok_response(q4, "3");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a — V
+## Check Your Understanding: Try It 1a, Part V
 
 The distribution to be used is:
 
@@ -411,7 +411,7 @@ ok_response(q5, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a — VI
+## Check Your Understanding: Try It 1a, Part VI
 
 The desired level of confidence is:
 
@@ -440,7 +440,7 @@ ok_response(q6, "2");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a — VII
+## Check Your Understanding: Try It 1a, Part VII
 
 The critical value is:
 
@@ -469,7 +469,7 @@ ok_response(q7, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a — VIII
+## Check Your Understanding: Try It 1a, Part VIII
 
 The correct expression for computing the confidence interval is:
 
@@ -498,7 +498,7 @@ ok_response(q8, "5");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a — IX
+## Check Your Understanding: Try It 1a, Part IX
 
 The correct lower and upper bounds for the confidence interval are:
 
@@ -527,7 +527,7 @@ ok_response(q9, "4");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a — X
+## Check Your Understanding: Try It 1a, Part X
 
 The correct interpretation of this confidence interval is:
 
@@ -555,7 +555,7 @@ ok_response(q10, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a — XI
+## Check Your Understanding: Try It 1a, Part XI
 
 Does this your interval suggest that a *majority* of Americans choosing not to go to college have made that choice because they cannot afford it?
 
@@ -728,7 +728,7 @@ Round up to the nearest whole number — you can never sample a fraction of a pe
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b — I
+## Check Your Understanding: Try It 1b, Part I
 
 To answer the question as asked, we should:
 
@@ -756,7 +756,7 @@ ok_response(q12, "4");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b — II
+## Check Your Understanding: Try It 1b, Part II
 
 The value of $z_{\alpha/2}$ is:
 
@@ -785,7 +785,7 @@ ok_response(q13, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b — III
+## Check Your Understanding: Try It 1b, Part III
 
 The value of the margin of error ($M_E$) is:
 
@@ -814,7 +814,7 @@ ok_response(q14, "4");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b — IV
+## Check Your Understanding: Try It 1b, Part IV
 
 The value of $p$ (the estimate for the proportion) should be:
 
@@ -849,7 +849,7 @@ Using $p = 0.50$ is a conservative choice that maximizes the required sample siz
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b — V
+## Check Your Understanding: Try It 1b, Part V
 
 The required sample size is:
 
@@ -1027,7 +1027,7 @@ $$S_E = \sqrt{\frac{p1\left(1 - p_1\right)}{n_1} + \frac{p_2\left(1 - p_2\right)
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2 — I
+## Check Your Understanding: Try It 2, Part I
 
 To answer the question as asked, we should:
 
@@ -1055,7 +1055,7 @@ ok_response(q17, "2");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2 — II
+## Check Your Understanding: Try It 2, Part II
 
 The hypotheses associated with this test are:
 
@@ -1083,7 +1083,7 @@ ok_response(q18, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2 — III
+## Check Your Understanding: Try It 2, Part III
 
 The null value is:
 
@@ -1112,7 +1112,7 @@ ok_response(q19, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2 — IV
+## Check Your Understanding: Try It 2, Part IV
 
 The point estimate is:
 
@@ -1141,7 +1141,7 @@ ok_response(q20, "2");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2 — V
+## Check Your Understanding: Try It 2, Part V
 
 How many groups are being compared in this study?
 
@@ -1169,7 +1169,7 @@ ok_response(q21, "2");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2 — VI
+## Check Your Understanding: Try It 2, Part VI
 
 The standard error formula is:
 
@@ -1197,7 +1197,7 @@ ok_response(q22, "4");
 
 :::
 
-Compute the standard error in the code block below. Be sure to carry at least five decimal places in any intermediate calculations.
+Compute the standard error in the code block below. If you do any rounding during intermediate steps, be sure to carry at least five decimal places.
 
 ```{webr}
 #| exercise: try-it-2-se
@@ -1320,14 +1320,6 @@ ______
 
 You've got the *point estimate*, the *null value*, and the *standard error* now. That's all the ingredients required to construct the test statistic.
 
-```{r}
-#| echo: true
-#| eval: false
-
-se <- sqrt((0.27*(1 - 0.27) / 1145) + (0.25*(1 - 0.25) / 675))
-se
-```
-
 :::
 :::
 
@@ -1425,7 +1417,7 @@ gradethis::grade_this({
 ```
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2 — VII
+## Check Your Understanding: Try It 2, Part VII
 
 The distribution to be used is:
 
@@ -1613,7 +1605,7 @@ gradethis::grade_this({
 ```
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2 — VIII
+## Check Your Understanding: Try It 2, Part VIII
 
 The result of the test is:
 
@@ -1867,15 +1859,15 @@ cat(hash)
 :::{.callout-tip}
 ## Main Takeaways
 
-+ The **Standard Error Decision Tree** is your primary reference for identifying which standard error formula applies to a given inference problem. The key questions are: Are you working with means or proportions? One group or two?
-+ **Confidence intervals** and **hypothesis tests** follow a structured process. The general strategy documents walk you through each step — use them until the process becomes second nature.
++ The **Standard Error Decision Tree** is your primary reference for identifying which standard error formula applies to a given inference problem. You walk through the tree by asking and answering a series of questions about your inference scenario.
++ **Confidence intervals** and **hypothesis tests** follow a structured process. The general strategy documents walk you through each step — lean on them until you are comfortable with the procedures.
 + **Sample size planning** allows you to determine how large a sample is needed to achieve a desired margin of error before data collection begins. Using a prior estimate of the proportion (when available) gives a more efficient answer than defaulting to $p = 0.50$.
-+ **Two-proportion hypothesis tests** compare the difference in proportions across two groups. The null hypothesis is typically that the difference is zero, and the standard error formula accounts for both groups' sample sizes and proportions.
++ **Two-proportion hypothesis tests** compare the *difference* in proportions across two groups. The null hypothesis is typically that the difference is zero, and the standard error formula accounts for both groups' sample sizes and proportions.
 + When a **$p$-value exceeds $\alpha$**, we do not have sufficient evidence to reject the null hypothesis — but this is not the same as proving the null is true. Absence of evidence is not evidence of absence.
 :::
 
 :::{.callout-tip}
 ## Looking Ahead
 
-The inference framework you've been practicing here — identify the parameter, state hypotheses, compute a test statistic or confidence interval, draw a conclusion — will carry forward unchanged throughout the rest of the course. What will change is the specific standard error formula and distribution used, depending on whether you're working with proportions or means, one group or two. The decision tree will guide those choices. In the coming activities, we'll extend these ideas to numerical data and the $t$-distribution.
+The inference framework you've been practicing here will carry forward unchanged throughout the rest of our course. What will change is the specific standard error formula and distribution used, depending on whether you're working with proportions or means and one, two, or more than two group. The decision tree will guide you through identifying the appropriate standard error formula and distribution. In the coming activities, we'll explore more of the tree, but our general approaches to inference tasks will remain consistent.
 :::

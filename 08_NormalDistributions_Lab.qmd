@@ -197,7 +197,7 @@ You'll see that for every observation we have 25 measurements, many of which are
 
 Since males and females tend to have different body dimensions, it will be useful to create two additional data sets: one with only men and another with only women. In the `bdims` dataset females are denoted by a 0 in the `sex` column while males are denoted by a 1.
 
-The code block below is set up to create a dataset `mdims` consisting of only males. Add a second line to create a dataset of only females called `fdims`.
+The code block below is set up to create a dataset `mdims` consisting of only males. Add the code necessary to create a dataset of only females called `fdims`.
 
 ```{webr}
 #| exercise: subset-mf
@@ -579,7 +579,7 @@ You may have been surprised or frustrated that the activity suggests female heig
 
 ## Using the Normal Model
 
-In your description of the distributions, did you use words like *bell-shaped* or *normal*? It's tempting to say so when faced with a unimodal symmetric distribution. Below we will explore two additional methods for assessing how closely our data follows a normal distribution.
+In your description of the distributions, did you use words like *bell-shaped* or *normal*? It's tempting to say so when faced with a unimodal, symmetric distribution. Below we will explore two additional methods for assessing how closely our data follows a normal distribution.
 
 To see how accurate that "*approximately normal*" description is, we can plot a normal distribution curve on top of a histogram to see how closely the data follow a normal distribution. The normal curve we use should have the same mean and standard deviation as the data. The code block that follows is preset to do this for the distribution of male heights:
 
@@ -673,12 +673,12 @@ Notice how convenient `ggplot`'s layered plotting syntax makes it to add multipl
 :::{.callout-tip}
 ## Position of the `data` Argument
 
-We've generally seen our data frames being piped into `ggplot()`. This works great when every plot layer utilizes the same data. In cases where plot layers use different data, it is appropriate to pass the `data` argument directly to the plot layer in the way we did above. This allows greater flexibility in your plots.
+We've generally seen our data frames being piped into `ggplot()`. This works great when every plot layer utilizes the same data. In cases where plot layers use different data, it is necessary to pass the `data` argument directly to the plot layer in the way we did above. This allows greater flexibility in your plots.
 :::
 
 **Question:** Based on the plots you built, are you more (or less) comfortable with the assumption that the heights data follow a nearly normal distribution?
 
-Eyeballing the shape of the histogram is one way to determine if the data appear to be nearly normally distributed, but it can still be frustrating to decide just how close the histogram is to the assumed normal curve. An alternative approach involves constructing a **normal probability plot**, also called a **normal Q-Q plot** (Q-Q stands for "*quantile-quantile*"). Execute the code block below to produce a Q-Q plot for female heights.
+Eyeballing the shape of the histogram with the overlayed density is one way to determine if the data appear to be nearly normally distributed, but it can still be frustrating to decide just how close the histogram is to the assumed normal curve. An alternative approach involves constructing a **normal probability plot**, also called a **normal Q-Q plot** (Q-Q stands for "*quantile-quantile*"). Execute the code block below to produce a Q-Q plot for female heights.
 
 ```{webr}
 #| exercise: qq
@@ -690,7 +690,7 @@ qqline(fdims |> pull(hgt))
 :::{.callout-tip}
 ## Reading a Q-Q Plot
 
-A data set that is nearly normal will result in a normal probability plot where the points closely follow the line. Any deviations from normality leads to deviations of these points from the line. 
+A data set that is nearly normal will result in a normal probability plot where the points closely follow the line. Any deviations from normality lead to deviations of these points from the line. 
 :::
 
 The plot for female heights shows points that tend to follow the line but with some errant points towards the tails. We're left with the same problem that we encountered with the histogram above: how close is close enough?

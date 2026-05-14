@@ -99,6 +99,37 @@ theme_set(theme_bw(base_size = 12))
 ## About
 
 In this lab, we work with data on 1,000 pregnancies recorded in North Carolina in 2004. We revisit the `inference()` function from the `{statsr}` package — this time applying it to numerical data. We'll conduct hypothesis tests and construct confidence intervals for means.
+
+```{ojs}
+//| echo: false
+
+{
+  const btn = html`<button style="
+    background: #436b95;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  ">🔄 Reset My Responses</button>`;
+
+  btn.onclick = () => {
+    if (confirm('Reset all responses for this activity? This cannot be undone.')) {
+      Object.keys(localStorage)
+        .filter(k => k.endsWith('_selected_t17') || k.endsWith('_correct_t17') || k.endsWith('_result_t17'))
+        .forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  };
+
+  return btn;
+}
+```
+
+
+*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting code cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
+
 :::
 
 :::{.callout-note}
@@ -176,13 +207,13 @@ viewof q1 = Inputs.radio(
     ["Each case corresponds to a doctor visit.", 3],
     ["Each case corresponds to a baby.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected_t17") ?? "null")}
 );
 
 {
-  localStorage.setItem("q1_selected", JSON.stringify(q1));
-  localStorage.setItem("q1_correct", "1");
-  localStorage.setItem("q1_result", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q1_selected_t17", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t17", "1");
+  localStorage.setItem("q1_result_t17", q1 === null ? "unattempted" : (q1 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q1, "1");
 ```
@@ -205,13 +236,13 @@ viewof q2 = Inputs.radio(
     ["1,000", 4],
     ["1,387", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected_t17") ?? "null")}
 );
 
 {
-  localStorage.setItem("q2_selected", JSON.stringify(q2));
-  localStorage.setItem("q2_correct", "4");
-  localStorage.setItem("q2_result", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q2_selected_t17", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t17", "4");
+  localStorage.setItem("q2_result_t17", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q2, "4");
 ```
@@ -284,13 +315,13 @@ viewof q3 = Inputs.checkbox(
     ["habit", 12],
     ["whitemom", 13]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q3_selected_t17") ?? "[]") ?? []}
 );
 
 {
-  localStorage.setItem("q3_selected", JSON.stringify(q3));
-  localStorage.setItem("q3_correct", "1,2,4,6,8,9");
-  localStorage.setItem("q3_result", (!q3 || q3.length === 0) ? "unattempted" : (q3.toString() === "1,2,4,6,8,9" ? "correct" : "incorrect"));
+  localStorage.setItem("q3_selected_t17", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t17", "1,2,4,6,8,9");
+  localStorage.setItem("q3_result_t17", (!q3 || q3.length === 0) ? "unattempted" : (q3.toString() === "1,2,4,6,8,9" ? "correct" : "incorrect"));
 }
 ok_checkbox(q3.toString(), "1,2,4,6,8,9");
 ```
@@ -587,13 +618,13 @@ viewof q_extra1 = Inputs.radio(
     ["Babies born to mothers who smoke during pregnancy are, on average, lower birthweight than babies born to mothers who don't smoke during pregnancy.", 2],
     ["Babies born to mothers who smoke during pregnancy are, on average, lower birthweight than babies born to mothers who don't smoke during pregnancy in our sample.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q_extra1_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q_extra1_selected_t17") ?? "null")}
 );
 
 {
-  localStorage.setItem("q_extra1_selected", JSON.stringify(q_extra1));
-  localStorage.setItem("q_extra1_correct", "3");
-  localStorage.setItem("q_extra1_result", q_extra1 === null ? "unattempted" : (q_extra1 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q_extra1_selected_t17", JSON.stringify(q_extra1));
+  localStorage.setItem("q_extra1_correct_t17", "3");
+  localStorage.setItem("q_extra1_result_t17", q_extra1 === null ? "unattempted" : (q_extra1 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q_extra1, "3");
 ```
@@ -675,13 +706,13 @@ viewof q4 = Inputs.radio(
     ["Two.", 2],
     ["More than two.", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected_t17") ?? "null")}
 );
 
 {
-  localStorage.setItem("q4_selected", JSON.stringify(q4));
-  localStorage.setItem("q4_correct", "2");
-  localStorage.setItem("q4_result", q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q4_selected_t17", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t17", "2");
+  localStorage.setItem("q4_result_t17", q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q4, "2");
 ```
@@ -705,13 +736,13 @@ viewof q5 = Inputs.checkbox(
     ["Pregnancies with mothers who are non-smokers.", 5],
     ["Pregnancies not resulting in premature births.", 6]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5_selected") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q5_selected_t17") ?? "[]") ?? []}
 );
 
 {
-  localStorage.setItem("q5_selected", JSON.stringify(q5));
-  localStorage.setItem("q5_correct", "2,5");
-  localStorage.setItem("q5_result", (!q5 || q5.length === 0) ? "unattempted" : (q5.toString() === "2,5" ? "correct" : "incorrect"));
+  localStorage.setItem("q5_selected_t17", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t17", "2,5");
+  localStorage.setItem("q5_result_t17", (!q5 || q5.length === 0) ? "unattempted" : (q5.toString() === "2,5" ? "correct" : "incorrect"));
 }
 ok_checkbox(q5.toString(), "2,5");
 ```
@@ -733,13 +764,13 @@ viewof q6 = Inputs.radio(
     ["No, the group sizes are too imbalanced.", 3],
     ["No, there is too much skew in the data.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected_t17") ?? "null")}
 );
 
 {
-  localStorage.setItem("q6_selected", JSON.stringify(q6));
-  localStorage.setItem("q6_correct", "1");
-  localStorage.setItem("q6_result", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q6_selected_t17", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t17", "1");
+  localStorage.setItem("q6_result_t17", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q6, "1");
 ```
@@ -761,13 +792,13 @@ viewof q7 = Inputs.radio(
     ["H₀: μ_smoker = μ_nonsmoker; Hₐ: μ_smoker < μ_nonsmoker", 3],
     ["H₀: p_smoker = p_nonsmoker; Hₐ: p_smoker ≠ p_nonsmoker", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7_selected") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected_t17") ?? "null")}
 );
 
 {
-  localStorage.setItem("q7_selected", JSON.stringify(q7));
-  localStorage.setItem("q7_correct", "1");
-  localStorage.setItem("q7_result", q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q7_selected_t17", JSON.stringify(q7));
+  localStorage.setItem("q7_correct_t17", "1");
+  localStorage.setItem("q7_result_t17", q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q7, "1");
 ```

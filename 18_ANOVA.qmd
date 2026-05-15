@@ -705,5 +705,5 @@ cat(hash)
 :::{.callout-tip}
 ## Looking Ahead
 
-The final activity in this series is a regression lab. We'll shift from comparing group means to modeling the relationship between two numerical variables — using one to predict the other. Linear regression extends the inference framework you've built throughout this course into a new and widely-used context.
+The final activity in this series is a regression lab. We'll shift from comparing group means to modeling the relationship between two numerical variables — using one to predict (or explain) the other. Linear regression extends the inference framework you've built throughout this course into a new and widely-used context.
 :::

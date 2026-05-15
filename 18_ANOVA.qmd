@@ -16,6 +16,7 @@ format:
         - broom
         - jsonlite
         - base64enc
+        - skimr
       cell-options:
         persist: true
     live:
@@ -60,6 +61,7 @@ library(ggplot2)
 library(broom)
 library(jsonlite)
 library(base64enc)
+library(skimr)
 
 data(iris)
 
@@ -84,7 +86,7 @@ theme_set(theme_bw(base_size = 12))
 :::{.callout-note}
 ## About
 
-This activity introduces Analysis of Variance (ANOVA) for comparing means across more than two groups simultaneously. We'll test whether average petal width differs across three varieties of iris using the famous `iris` dataset collected by Anderson and published by Fisher. We'll also introduce the Tukey Honest Significant Differences test for pairwise follow-up comparisons.
+This activity introduces Analysis of Variance (ANOVA) for comparing means across more than two groups simultaneously. We'll test whether average petal width differs across three varieties of iris using the famous `iris` dataset collected by Anderson and published by Fisher. We'll also introduce the Tukey Honestly Significant Differences test for pairwise follow-up comparisons.
 
 ```{ojs}
 //| echo: false
@@ -126,7 +128,7 @@ In this activity, we consider a method for comparing means from multiple groups.
 <img src="images/iris.png" alt="Three varieties of iris: setosa, versicolor, and virginica" width="75%"/>
 </center>
 
-Notice that none of the tools we've encountered so far can be applied directly here. Our hypothesis testing strategies have been limited to comparing numerical measures across one or two populations. We could apply three separate one-versus-one tests (versicolor vs. setosa, versicolor vs. virginica, and setosa vs. virginica), but the probability of an erroneous conclusion grows quickly. At a 5% significance level, the probability of making at least one Type I error across three comparisons is $1 - (0.95)^3 \approx 14.26\%$. A better option is **ANalysis Of VAriance** — an ANOVA test.
+Notice that none of the tools we've encountered so far can be applied directly here. Our hypothesis testing strategies have been limited to comparing numerical measures across one or two populations. We could apply three separate pairwise tests (versicolor vs. setosa, versicolor vs. virginica, and setosa vs. virginica), but the probability of an erroneous conclusion grows quickly. At a 5% significance level, the probability of making at least one Type I error across three comparisons is $1 - (0.95)^3 \approx 14.26\%$. A better option is **ANalysis Of VAriance** — an ANOVA test.
 
 Watch the video below from Dr. Çetinkaya-Rundel introducing ANOVA.
 
@@ -138,7 +140,7 @@ Watch the video below from Dr. Çetinkaya-Rundel introducing ANOVA.
 
 Dr. Çetinkaya-Rundel's video walked through the details of ANOVA. The key ideas to carry forward are:
 
-+ ANOVA tests whether there is significant evidence of a difference in means across **three or more** populations.
++ ANOVA tests whether there is significant evidence of a difference in means across **three or more** groups.
 + The test statistic follows an **$F$-distribution** rather than the normal or $t$-distribution.
 + The $p$-value is the area from the computed $F$-statistic into the **upper tail** of the $F$-distribution.
 + The interpretation of the $p$-value is the same as always — the probability of observing a sample at least as extreme as ours, assuming the null hypothesis is true.
@@ -147,6 +149,7 @@ Use the code block below to explore the `iris` dataset as you answer the questio
 
 ```{webr}
 #| exercise: quiz-anova-playground
+#| caption: Ungraded, Exploratory Only
 # Explore the iris dataset
 
 ```
@@ -155,7 +158,7 @@ Use the code block below to explore the `iris` dataset as you answer the questio
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-As we've done with previous datasets, you can call the name of the data frame or pipe it into functions like `head()`, `dim()`, or `glimpse()`.
+As we've done with previous datasets, you can simply call the name of the data frame or pipe it into functions like `head()`, `dim()`, `glimpse()`, or `skim()`.
 
 :::
 :::
@@ -501,13 +504,13 @@ ok_response(q9, "1");
 
 ## The Tukey Test
 
-The ANOVA result tells us that *at least one variety has a different average petal width* — but it doesn't tell us which one. The **Tukey Honest Significant Differences (HSD) Test** can fill that gap. When ANOVA returns a significant result, the Tukey Test runs a collection of pairwise comparisons with adjusted $p$-values that account for the multiple comparisons being made.
+The ANOVA result tells us that *at least one variety has a different average petal width* — but it doesn't tell us which one. The **Tukey Honestly Significant Differences (HSD) Test** can fill that gap. When ANOVA returns a significant result, the Tukey HSD Test runs a collection of pairwise comparisons with adjusted $p$-values that account for the multiple comparisons being made.
 
-Since our ANOVA was significant, we'll follow up with a Tukey Test. In R, we pass the result of `aov()` directly to `TukeyHSD()`. Run the code block below and use the output to answer the question that follows.
+Since the result from our ANOVA test was significant, we'll follow up with a Tukey HSD Test. In R, we pass the result of `aov()` directly to `TukeyHSD()`. Run the code block below and use the output to answer the question that follows.
 
 ```{webr}
 #| exercise: tukey
-
+#| caption: Ungraded, Exploratory Only
 ANOVAtable <- aov(Petal.Width ~ Species, data = iris)
 TukeyHSD(ANOVAtable)
 ```
@@ -543,7 +546,7 @@ You may have used the adjusted $p$-value column to make your decisions, or you m
 
 ```{webr}
 #| exercise: tukey-plot
-
+#| caption: Ungraded, Exploratory Only
 ANOVAtable <- aov(Petal.Width ~ Species, data = iris)
 
 TukeyHSD(ANOVAtable) |>
@@ -572,6 +575,8 @@ Which do you find more useful for communicating the results — the table, the p
 ## Submit
 
 If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested.
+
+If you'd like to verify the results contained in your hashes, you can [do so here](https://agmath.github.io/OpenIntroCompanions/hash_check.html).
 
 :::{.callout-warning}
 ## Question Hash

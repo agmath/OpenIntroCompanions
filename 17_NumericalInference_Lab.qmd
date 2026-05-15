@@ -98,7 +98,7 @@ theme_set(theme_bw(base_size = 12))
 :::{.callout-note}
 ## About
 
-In this lab, we work with data on 1,000 pregnancies recorded in North Carolina in 2004. We revisit the `inference()` function from the `{statsr}` package — this time applying it to numerical data. We'll conduct hypothesis tests and construct confidence intervals for means.
+In this lab, we work with data on 1,000 pregnancies recorded in North Carolina during the year 2004. We revisit the `inference()` function from the `{statsr}` package — this time applying it to numerical data. We'll conduct hypothesis tests and construct confidence intervals for means.
 
 ```{ojs}
 //| echo: false
@@ -140,7 +140,7 @@ This is a derivative of a product of OpenIntro released under a [Creative Common
 
 ## Inference for Numerical Data
 
-During 2004, the state of North Carolina released a large data set containing information on births recorded in the state. This data set is useful to researchers studying the relationship between the habits, practices, and demographic characteristics of expectant mothers and the birth outcomes of their children. This includes important questions about equity in prenatal care access and outcomes. We will work with a random sample of 1,000 observations from this data set, loaded as `nc`.
+During 2004, the state of North Carolina released a large data set containing information on births recorded in the state. This data set is useful to researchers studying the relationship between the habits, practices, and demographic characteristics of expectant mothers and the birth outcomes of their children. This includes important questions about equity in access to prenatal care and outcomes. We will work with a random sample of 1,000 observations from this data set, loaded as `nc`.
 
 The `nc` dataset contains 13 variables:
 
@@ -164,6 +164,7 @@ Use the code block below to explore the `nc` data frame and answer the questions
 
 ```{webr}
 #| exercise: nc-cases-questions
+#| caption: Ungraded, Exploratory Only
 # Explore the nc data frame
 
 ```
@@ -253,6 +254,7 @@ As a first step in any analysis, it's good practice to review summaries of the d
 
 ```{webr}
 #| exercise: nc-summary
+#| caption: Ungraded, Exploratory Only
 # Summarize the nc data frame
 
 ```
@@ -334,6 +336,7 @@ For the numerical variables in the `nc` dataset, are there any obvious outliers?
 #| exercise: nc-explore-num-cat-out
 #| message: false
 #| warning: false
+#| caption: Ungraded, Exploratory Only
 # Explore distributions and look for outliers
 
 ```
@@ -598,7 +601,7 @@ The boxplots show how the medians of the two distributions compare, but we can a
 
 ```{webr}
 #| exercise: by-means
-
+#| caption: Ungraded, Exploratory Only
 nc |>
   group_by(habit) |>
   summarize(avg_birth_weight = mean(weight))
@@ -820,7 +823,6 @@ The code block below runs the hypothesis test. Review the output, then modify th
 
 ```{webr}
 #| exercise: first-inference-run
-
 inference(
   y = weight,
   x = habit,
@@ -907,7 +909,7 @@ By default, `inference()` reports the interval for $\mu_{\text{nonsmoker}} - \mu
 
 ```{webr}
 #| exercise: inference-ci-ordered
-
+#| caption: Ungraded, Exploratory Only
 inference(
   y = weight,
   x = habit,
@@ -925,6 +927,7 @@ Use the code block below to work through the following tasks. Each task includes
 
 ```{webr}
 #| exercise: own-probs
+#| caption: Ungraded, Exploratory Only
 # Use this block for all five tasks below
 
 ```

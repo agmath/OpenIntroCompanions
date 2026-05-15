@@ -164,7 +164,7 @@ This activity introduces techniques for inference on a single population mean an
 
 ## Hypothesis Testing and Confidence Intervals for Numerical Data
 
-In this activity, we continue our exploration of statistical inference. Through the past few activities you became more comfortable with hypothesis testing and confidence intervals for categorical variables — here we extend those ideas to numerical variables. We'll first be formally introduced to the family of $t$-distributions, and then work through a pair of applications to real sentencing data.
+In this activity, we continue our exploration of statistical inference. Through the past few activities you became more comfortable with hypothesis testing and confidence intervals for categorical variables — here we extend those ideas to numerical variables. We'll first be formally introduced to the family of $t$-distributions, and then work through a pair of applications to real criminal sentencing data.
 
 As a reminder, the [*Standard Error Decision Tree*](https://agmath.github.io/SiteFiles/StdErrorDecisionTree.pdf){target="_blank"}, [*General Strategy for Conducting Hypothesis Tests*](https://agmath.github.io/SiteFiles/HTgeneral.pdf){target="_blank"}, and [*General Strategy for Constructing Confidence Intervals*](https://agmath.github.io/SiteFiles/CIgeneral.pdf){target="_blank"} are all available for reference. The walkthrough video for the decision tree is below.
 
@@ -174,7 +174,7 @@ As a reminder, the [*Standard Error Decision Tree*](https://agmath.github.io/Sit
 </center>
 ```
 
-While watching the walkthrough video you probably noticed that the side of the decision tree corresponding to numerical data (inference for the mean $\mu$) is more involved than the side for proportions. Much of this stems from the fact that using a sample standard deviation as an approximation for the population standard deviation adds uncertainty to our approach. To account for this added uncertainty, we utilize a class of *penalized* normal distributions called the $t$-distributions. Watch at least one of the introductory videos below.
+While watching the walkthrough video you probably noticed that the side of the decision tree corresponding to numerical data (inference for the mean $\mu$) is more involved than the side for proportions. Much of this stems from the fact that using a sample standard deviation ($s$) as an approximation for the population standard deviation ($\sigma$) adds uncertainty to our approach. To account for this added uncertainty, we utilize a class of *penalized* normal distributions called the $t$-distributions. Watch at least one of the introductory videos below.
 
 **A Detailed Introduction:**
 
@@ -194,7 +194,7 @@ While watching the walkthrough video you probably noticed that the side of the d
 
 ## What Does the $t$-Distribution Look Like?
 
-We've identified scenarios where we should utilize a $t$-distribution instead of the normal ($z$) distribution. The simple rule to follow: **any time we use a sample standard deviation as a proxy for the population standard deviation in the standard error estimate, we should use a $t$-distribution**.
+The videos above have helped us identify scenarios where we should utilize a $t$-distribution instead of the normal ($z$) distribution. The simple rule to follow: **any time we use a sample standard deviation as a proxy for the population standard deviation in the standard error estimate, we should use a $t$-distribution**.
 
 The plot below shows a standard normal distribution in **black**, a $t$-distribution with 3 degrees of freedom in **red**, and a $t$-distribution with 12 degrees of freedom in **blue**.
 
@@ -223,10 +223,10 @@ Notice that all three distributions are bell-shaped, but the $t$-distributions h
 
 When we introduced the normal distribution, we identified two helper functions: `pnorm()` to find probabilities (areas to the left of a boundary value) and `qnorm()` to find cutoff values (percentiles). We have analogous functions for the $t$-distribution:
 
-+ `pt(q, df)` — finds the probability of falling to the *left* of the boundary value `q` in a $t$-distribution with `df` degrees of freedom.
++ `pt(q, df)` — finds the probability of a randomly chosen observation falling to the *left* of the boundary value `q` in a $t$-distribution with `df` degrees of freedom.
 + `qt(p, df)` — finds the cutoff value for which the area to the *left* of that cutoff in a $t$-distribution with `df` degrees of freedom is `p`.
 
-Note that these functions have no `mean` or `sd` parameters — we always work with standardized variables (the test statistic formula) when using the $t$-distributions.
+Note that these functions have no `mean` or `sd` parameters — we always work with standardized variables (via the test statistic formula) when using the $t$-distributions.
 
 Let's practice. Don't forget to draw pictures — you are much more likely to find errors if you skip this step.
 

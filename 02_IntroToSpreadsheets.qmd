@@ -1,0 +1,556 @@
+---
+title: "Topic 2: An Introduction to Spreadsheet Software"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        </style>
+    webr:
+      packages:
+        - gradethis
+        - jsonlite
+        - base64enc
+      cell-options: 
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{ojs}
+//| echo: false
+
+function ok_checkbox(response, n) {
+  if (!response || response.length === 0) 
+    return html`<span style="color:purple">You haven't answered yet.</span>`;
+  if (response.toString() === n) 
+    return html`<span style="color:green">Correct ✓</span>`;
+  return html`<span style="color:red">Not Yet! ✗</span>`;
+}
+```
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - normalize_checkbox_response
+
+normalize_checkbox_response <- function(x) {
+  return(cat(sort(x), sep = ","))
+}
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(jsonlite)
+library(base64enc)
+
+exercise_results <- list(
+  notebook           = "Topic 2: An Introduction to Spreadsheet Software",
+  a_first_operation  = "unattempted",
+  arithmetic         = "unattempted",
+  test_stat_eval     = "unattempted",
+  cell_reference     = "unattempted",
+  define_and_compute = "unattempted"
+)
+```
+
+```{r setup, include=FALSE}
+library(gradethis)
+```
+
+:::{.callout-note}
+## About
+
+This notebook is a first introduction to spreadsheet software (Microsoft Excel or Google Sheets) for data analysis. You will learn how to enter and format data, write formulas, reference cells, work with ranges, and navigate a dataset organized as a table.
+:::
+
+:::{.callout-note}
+## Using a Spreadsheet Program
+Throughout this activity you'll be doing hands-on work inside your favorite spreadsheet program.
+
++ If you are a Google Sheets user, [open a blank Google Sheet](https://sheets.new){target="_blank"}
++ If you are an Excel user, open an empty workbook on your computer or [create a blank workbook in Excel online](https://office.live.com/start/Excel.aspx)
+
+Keep your spreadsheet open alongside this notebook as you work through the exercises.
+:::
+
+## An Introduction to Spreadsheet Software
+
+Through these workbooks you'll be interacting with data using spreadsheet software — either Microsoft Excel or Google Sheets. Alongside programming languages like R and Python, spreadsheet tools are among the most widely used platforms for data analysis in business, research, and education. This workbook is a first introduction to working with data using a spreadsheet.
+
+## Why Excel / Google Sheets?
+
+You might be asking why we are using a spreadsheet program rather than a dedicated statistics package or a programming language. Consider the following points.
+
++ Spreadsheets are **ubiquitous**. Excel is installed on the vast majority of workplace computers, and Google Sheets is freely available to anyone with a Google account. You are unlikely to find yourself in a context — academic or professional — where a spreadsheet tool is unavailable.
++ **No installation or setup is required.** Unlike programming languages, you can open a spreadsheet and start entering data immediately. This makes it easy to explore ideas quickly.
++ Spreadsheets are **visual and interactive**. You can see your data, your formulas, and your results all at once. Being able to *see* your data can make it easier to work with.
++ **Most of the statistical ideas in this course** — means, standard deviations, proportions, confidence intervals, hypothesis tests — can be computed directly in a spreadsheet using built-in functions, without writing a single line of traditional code.
+
+That said, spreadsheets do have limitations. They are not ideal for very large datasets, complex automation, or reproducible research pipelines. They are also not transparent, in that they can hide flawed components of an analysis behind a cell that will remain undiscovered unless a reviewer intentionally investigates the formula behind the cell (here's [a fairly famous example from the field of economics](https://theconversation.com/the-reinhart-rogoff-error-or-how-not-to-excel-at-economics-13646){target="_blank"}). As you advance in your studies or career you may encounter situations where a programming language is the better tool. For now, though, a spreadsheet is an excellent environment for learning and practicing statistics.
+
+## A Few Warnings
+
+Working in a spreadsheet can occasionally be frustrating. Here are a few things to watch out for.
+
++ **Spelling and capitalization count in function names.** If you get an error, check your spelling first.
++ **Every formula must begin with "`=`".** If you type `SQRT(9)` without the equals sign, the spreadsheet treats it as plain text rather than a calculation.
++ **Be careful with cell references.** If you move or delete a cell that another formula refers to, your results may change unexpectedly. We will discuss this more when we get to *relative reference* and *absolute reference*.
++ **Ask for help when you need it.** Both Excel and Google Sheets have built-in help — you can search for any function name directly in the help menu. Online resources like the [Microsoft Support site](https://support.microsoft.com/en-us/excel){target="_blank"} and [Google Sheets Help](https://support.google.com/docs/topic/9054603){target="_blank"} are excellent references.
++ If you find yourself frustrated, take a break. A fresh set of eyes can often reveal an error that was staring you in the face for twenty minutes.
+
+## Getting Oriented: The Spreadsheet Interface
+
+Before we start calculating, let's make sure you are comfortable with the basic layout of a spreadsheet.
+
+:::{.callout-tip}
+## Key Parts of the Spreadsheet Interface
+
++ **Cells** are the individual boxes that make up the grid. Each cell has an address made up of a column letter and a row number — for example, **A1** is the cell in the first column, first row.
++ **Columns** run vertically and are labeled with letters (A, B, C, …).
++ **Rows** run horizontally and are labeled with numbers (1, 2, 3, …).
++ **The formula bar** sits above the grid and shows the contents of whichever cell is currently selected. When a cell contains a formula, the formula bar shows the formula (e.g. `=2+3`) even though the cell itself displays the result (e.g. `5`).
++ **The Name Box** is the small box to the left of the formula bar that shows the address of the selected cell (e.g. `A1`). You can also click it and type a cell address to navigate directly to that cell.
+:::
+
+## Using a Spreadsheet as a Calculator
+
+One of the most immediate uses of a spreadsheet is as a powerful calculator. Any cell can hold a formula, and a formula always begins with the `=` sign. After the `=`, you can type any arithmetic expression and the spreadsheet will evaluate it when you press **Enter**.
+
+**Arithmetic operators:**
+
+| Operation      | Symbol | Example formula | Result |
+|----------------|--------|-----------------|--------|
+| Addition       | `+`    | `=2+3`          | 5      |
+| Subtraction    | `-`    | `=10-4`         | 6      |
+| Multiplication | `*`    | `=3*7`          | 21     |
+| Division       | `/`    | `=15/4`         | 3.75   |
+| Exponentiation | `^`    | `=2^8`          | 256    |
+
+You can also combine these in one formula: `=1+1-(5*2)+(8/4)` evaluates to `-6`.
+
+**Try it now.** In your spreadsheet, click on cell **A1**, type `=2+2`, and press **Enter**. You should see `4` appear in the cell. Now click **A1** again and look at the formula bar — it shows `=2+2`, while the cell shows `4`.
+
+Now change the formula so that it computes `2 + 3` instead. Click **A1**, type `=2+3`, and press **Enter**. Enter your result in the answer cell below.
+
+```{webr}
+#| exercise: a-first-operation
+# Enter your answer / result here
+
+```
+
+:::{.hint exercise="a-first-operation"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+In cell A1, type `=2+3` and press Enter. The cell will display the result.
+
+:::
+:::
+
+:::{.hint exercise="a-first-operation"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+`2 + 3` equals `5`. Type `5` into the answer cell above.
+
+:::
+:::
+
+```{webr}
+#| exercise: a-first-operation
+#| solution: true
+
+5
+```
+
+```{webr}
+#| exercise: a-first-operation
+#| check: true
+
+exercise_results$a_first_operation <<- "fail"
+gradethis::grade_this({
+  if (.result == .solution) {
+    exercise_results$a_first_operation <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Now use your spreadsheet to evaluate `4^3 - 16`. Type a formula into a blank cell and enter your result below.
+
+```{webr}
+#| exercise: arithmetic
+# Enter your answer / result here
+
+```
+
+:::{.hint exercise="arithmetic"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+In a blank cell, type `=` followed by the expression. Use `^` for exponentiation.
+
+:::
+:::
+
+:::{.hint exercise="arithmetic"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+In a blank cell, type `=4^3-16` and press Enter.
+
+:::
+:::
+
+```{webr}
+#| exercise: arithmetic
+#| solution: true
+
+48
+```
+
+```{webr}
+#| exercise: arithmetic
+#| check: true
+
+exercise_results$arithmetic <<- "fail"
+gradethis::grade_this({
+  if (.result == .solution) {
+    exercise_results$arithmetic <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Spreadsheets also have many built-in functions for operations beyond simple arithmetic. For example, the `SQRT()` function will calculate the square root of a number. Typing "`=SQRT(16)`" into a cell and hitting the return key will result in the value `4` being displayed in that cell. We'll encounter more built-in functions throughout the coming activities.
+
+### Grouping with Parentheses
+
+Just like on a calculator, you can use parentheses `()` to control the order of operations inside a spreadsheet formula. The spreadsheet follows standard mathematical order of operations (exponentiation first, then multiplication and division, then addition and subtraction), so parentheses are essential whenever you need to override that default order.
+
+Use your spreadsheet to evaluate $\displaystyle{\frac{54 - 50}{8/\sqrt{20}}}$. Enter your result below.
+
+```{webr}
+#| exercise: test-stat-eval
+# Enter your answer / result here
+
+```
+
+:::{.hint exercise="test-stat-eval"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+The overall expression is a fraction — a numerator divided by a denominator. Wrap each part in its own set of parentheses: `=(numerator)/(denominator)`.
+
+:::
+:::
+
+:::{.hint exercise="test-stat-eval"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The numerator is `54 - 50`. The denominator is `8` divided by `√20`. Use `SQRT()` for the square root. Your formula will have the shape `=(54-50)/(8/SQRT(___))`
+
+:::
+:::
+
+:::{.hint exercise="test-stat-eval"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+In a blank cell, type `=(54-50)/(8/SQRT(20))` and press Enter.
+
+:::
+:::
+
+```{webr}
+#| exercise: test-stat-eval
+#| solution: true
+
+(54 - 50)/(8/sqrt(20))
+```
+
+```{webr}
+#| exercise: test-stat-eval
+#| check: true
+
+exercise_results$test_stat_eval <<- "fail"
+gradethis::grade_this({
+  if (abs(.result - .solution) < 0.0001) {
+    exercise_results$test_stat_eval <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+## Storing Values in Cells and Referencing Them
+
+In a spreadsheet, every cell can act as a named container for a value. Instead of typing a number directly into every formula, you can store a value in one cell and then *reference* that cell elsewhere. This makes your work easier to read, update, and check.
+
+**Example:** Suppose you store the value `4` in cell **B1** and the value `5` in cell **B2**. You can then type `=B1*B2 - B2` in cell **B3** and the spreadsheet will compute `4*5 - 5 = 15`. If you later change the value in **B1** to `-22`, cell **B3** will automatically update to `-22*5 - 5 = -115` — without you having to touch the formula.
+
+**Try it now.** In your spreadsheet:
+
+1. Click cell **B1** and type `4`, then press **Enter**.
+2. Click cell **B2** and type `5`, then press **Enter**.
+3. Click cell **B3** and type `=B1*B2-B2`, then press **Enter**.
+
+Confirm that **B3** shows `15`. Now change **B1** to `-22` and confirm that **B3** automatically updates. Enter the new value of **B3** below.
+
+```{webr}
+#| exercise: cell-reference
+# Enter your answer / result here
+
+```
+
+:::{.hint exercise="cell-reference"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+After changing B1 to `-22`, the formula in B3 computes `-22 * 5 - 5`. What is that?
+
+:::
+:::
+
+:::{.hint exercise="cell-reference"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+`-22 * 5 = -110`, and `-110 - 5 = -115`. Enter `-115` in the answer cell.
+
+:::
+:::
+
+```{webr}
+#| exercise: cell-reference
+#| solution: true
+
+-115
+```
+
+```{webr}
+#| exercise: cell-reference
+#| check: true
+
+exercise_results$cell_reference <<- "fail"
+gradethis::grade_this({
+  if (.result == .solution) {
+    exercise_results$cell_reference <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+### Relative and Absolute Cell References
+
+When you copy a formula from one cell to another, the spreadsheet *adjusts* the cell references automatically. For example, if cell **C1** contains `=B1*2` and you copy that formula down to **C2**, it becomes `=B2*2`. This is called a **relative reference** — the reference shifts to match the new position.
+
+Sometimes, however, you want a reference to *stay fixed* no matter where you copy the formula. This is called an **absolute reference** and is written by adding dollar signs: `$B$1` always refers to cell B1, regardless of where the formula is copied.
+
+:::{.callout-tip}
+## When to Use Each
+
++ **Relative references** (`B1`) — use these when you want the reference to shift as you fill a formula down or across a column or row. This is what you want most of the time when applying the same calculation to many rows of data.
++ **Absolute references** (`$B$1`) — use these when one cell holds a fixed value (like a tax rate, a sample size, or a probability) that every formula in your table should use. Without the dollar signs, copying the formula will accidentally shift away from that fixed value and give you wrong answers.
+:::
+
+Now use your spreadsheet to complete the following. In cell **D1** enter the value `5`. In cell **D2**, write a formula that multiplies `$B$1` (the value `-22` you set earlier) by `$D$1` and then subtracts `$D$1`. Then enter the result of that formula below.
+
+```{webr}
+#| exercise: define-and-compute
+# Enter your answer / result here
+
+```
+
+:::{.hint exercise="define-and-compute"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+In cell D1, type `5` and press Enter. Then click D2.
+
+:::
+:::
+
+:::{.hint exercise="define-and-compute"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+In D2, type `=$B$1*$D$1-$D$1` and press Enter. This multiplies the value in B1 by the value in D1, then subtracts D1.
+
+:::
+:::
+
+:::{.hint exercise="define-and-compute"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+With B1 = -22 and D1 = 5, the formula computes `-22 * 5 - 5`. What does that equal?
+
+:::
+:::
+
+```{webr}
+#| exercise: define-and-compute
+#| solution: true
+
+-115
+```
+
+```{webr}
+#| exercise: define-and-compute
+#| check: true
+
+exercise_results$define_and_compute <<- "fail"
+gradethis::grade_this({
+  if (.result == .solution) {
+    exercise_results$define_and_compute <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Note that if you click into the cell **D2** and drag the solid square in the lower-right corner of the cell down, you'll get the results of the same calculation over and over again. If you try this same thing, but omit the dollar signs from your formula, you'll see that the cell reference locations update and the results of your formula change from one row to the next.
+
+## Working with Ranges and Lists of Values
+
+In a spreadsheet, a **range** is a rectangular block of cells identified by its top-left and bottom-right corners, separated by a colon. For example, `A1:A6` refers to the six cells from A1 down to A6, and `A1:C3` refers to a 3×3 block.
+
+Many spreadsheet functions accept a range as their input. For example:
+
+| What you want                    | Formula using a range     |
+|----------------------------------|---------------------------|
+| Sum of values in A1 through A6   | `=SUM(A1:A6)`             |
+| Average of values in A1:A6       | `=AVERAGE(A1:A6)`         |
+| Largest value in A1:A6           | `=MAX(A1:A6)`             |
+| Smallest value in A1:A6          | `=MIN(A1:A6)`             |
+| Count of numeric values in A1:A6 | `=COUNT(A1:A6)`           |
+| Standard deviation of A1:A6      | `=STDEV(A1:A6)`           |
+
+**Try it now.** In your spreadsheet, enter the following six values in cells **A1** through **A6**: `1, 8, -2, 2, -99, 43`. Then:
+
+1. In cell **B1**, type `=SUM(A1:A6)` and confirm the result is `-47`.
+2. In cell **B2**, type `=AVERAGE(A1:A6)` and confirm the result is about `-7.83`.
+3. In cell **B3**, type `=MAX(A1:A6)` and confirm it returns `43`.
+
+:::{.callout-important}
+## A Pitfall to Watch Out For: Accidentally Expanding or Shrinking Your Range
+
+When you copy or fill a formula that contains a range reference, the range shifts just like any other relative reference. This is usually what you want — but it can cause subtle errors when you are applying the same summary (like an average) to different columns of data.
+
+For example, if cell **B1** contains `=AVERAGE(A1:A6)` and you copy it to **C1**, it becomes `=AVERAGE(B1:B6)`, which is probably what you intended. But if you accidentally copy it to **B2**, it becomes `=AVERAGE(A2:A7)`, silently shifting your range by one row and dropping the first value.
+
+The fix is the same as before: use absolute references (`$A$1:$A$6`) when the range should stay fixed as you copy the formula, and relative references when you want it to shift. 
+
+Additionally, you may choose to anchor only the columns or only the rows. For example, using typing `SUM(A$1:A$6)` in cell **D1** and then pasting the formula into cell **E2**, the formula in **E2** would read `SUM(B$1:B$6)`. The column is shifted, but the rows are not.
+:::
+
+## Data Tables in a Spreadsheet
+
+We typically aren't just working with a handful of individual values. Usually a statistician, analyst, or data scientist will be working with a full table of raw data. In a spreadsheet, a **data table** is simply a region of the grid where:
+
++ Each **column** represents a **variable** (something measured or recorded about each subject).
++ Each **row** represents an **observation** (one subject or case).
++ The **first row** typically contains column headers — short labels that name each variable.
+
+Check out [this example data table containing data on diamonds](https://docs.google.com/spreadsheets/d/1SGVef3nVZ4Sg34U4rfudJgLV0eOCcgg1EnAsVecR1IU/edit?usp=sharing){target="_blank"}. This is exactly the same structure as what a programmer would call a *data frame*. If you have ever used a data file in Excel or Sheets, you have already worked with a data table, even if you didn't call it that.
+
+:::{.callout-tip}
+## Navigating a Data Table
+
+A few useful keyboard shortcuts for working with data tables:
+
++ **Ctrl + End** (Windows) or **Cmd + End** (Mac) — jump to the last cell containing data, giving you a quick sense of how large the table is.
++ **Ctrl + Arrow key** — jump to the last non-empty cell in the current direction.
++ **Ctrl + Shift + End** — select from the current cell to the last data cell (useful for selecting an entire table quickly).
++ Clicking a **column header letter** (e.g. the "A" above the grid) selects the entire column.
++ Clicking a **row number** selects the entire row.
+:::
+
+When working with data tables you will frequently need to reference an entire column of data — for example, to compute the average of one variable across all observations. You can do this by:
+
+1. **Referencing the entire column** with a range like `A:A` to select the whole column. That is, you'll write a formula like `=AVERAGE(A:A)`. This works but can be slow on large files.
+2. **Typing a specific range** like `=AVERAGE(A2:A101)` that covers exactly your data rows (excluding the header in row 1). This is more precise and is generally the better habit.
+
+In future activities you'll work with data tables directly. For now, the key ideas to take away are that your data lives in a table, variables are columns, observations are rows, and you reference data by specifying the appropriate range.
+
+## Submit
+
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit the hash below using the method your instructor has requested (there is only an *exercise hash* for this activity, no *question hash*).
+
+:::{.callout-warning}
+## Question Hash
+
+Since there were no multiple choice or checkbox exercises in this activity, there is no *question hash* to generate. You'll see both question and exercise hashes in the majority of future activities.
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and enter your answer in each graded exercise cell before generating the hash below, to ensure your most recent results are recorded.
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
+
+:::
+
+## Summary
+
+:::{.callout-tip}
+## Main Takeaways
+
++ A spreadsheet is organized as a grid of **cells**, each identified by a column letter and row number (e.g. **B3**). Columns are variables, rows are observations.
++ Every **formula** begins with `=`. Without it, the spreadsheet treats your input as plain text.
++ Spreadsheets follow standard **order of operations** — use parentheses `()` to control grouping, just as you would in any mathematical expression.
++ **Built-in functions** like `SQRT()`, `AVERAGE()`, `SUM()`, and `STDEV()` allow you to carry out complex calculations without writing them from scratch.
++ A **cell reference** (e.g. `B1`) lets you store a value in one place and use it in many formulas. Changing the stored value automatically updates every formula that references it.
+  + **Relative references** (e.g. `B1`) shift when you copy a formula to a new location — useful for applying the same calculation to many rows.
+  + **Absolute references** (e.g. `$B$1`) stay fixed when copied — use these for constants shared across many formulas.
++ A **range** (e.g. `A1:A6`) refers to a block of cells and is the spreadsheet equivalent of a list or vector of values.
++ A **data table** in a spreadsheet has the same structure as a data frame: columns are variables, rows are observations, and the first row contains column headers.
++ Spreadsheets are powerful and accessible, but require care — silent errors from shifted references or accidentally expanded ranges are common pitfalls.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+The next activity introduces descriptive statistics — computing and interpreting numerical summaries for both numerical and categorical data. You'll use the tools introduced here (formulas, built-in functions, cell references, and ranges) to calculate means, medians, standard deviations, and more directly in your spreadsheet.
+:::

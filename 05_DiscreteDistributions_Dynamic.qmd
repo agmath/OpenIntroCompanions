@@ -1361,7 +1361,7 @@ Something is still wrong if we fill in the blanks with `{ojs} thresh_atleast`, `
 :::{.callout-note collapse="false"}
 ## Hint 12
 
-That call removes the probability of at most `{ojs} thresh_atleast` successes, leaving only the probability of *more than* `{ojs} thresh_atleast`. We want *at least* `{ojs} thresh_atleast`, which includes `{ojs} thresh_atleast` itself. Replace the first argument with `thresh_atleast - 1`.
+That call removes the probability of at most `{ojs} thresh_atleast` successes, leaving only the probability of *more than* `{ojs} thresh_atleast`. We want *at least* `{ojs} thresh_atleast`, which includes `{ojs} thresh_atleast` itself. Replace the first argument with `{ojs} Number(thresh_atleast) - 1`.
 
 ```{r}
 #| echo: true
@@ -1377,7 +1377,7 @@ That call removes the probability of at most `{ojs} thresh_atleast` successes, l
 :::{.callout-note collapse="false"}
 ## Hint 13 (Solved)
 
-Use `{ojs} thresh_atleast - 1` as the first argument, `{ojs} n_students` as the second, and `{ojs} p_assign` as the third.
+Use `{ojs} Number(thresh_atleast) - 1` as the first argument, `{ojs} n_students` as the second, and `{ojs} p_assign` as the third.
 
 ```{r}
 #| echo: true
@@ -1516,7 +1516,7 @@ pbinom(___, ___, ___) - pbinom(___, ___, ___)
 :::{.callout-note collapse="false"}
 ## Hint 8
 
-Filling in the blanks of the second call to `pbinom()` with `{ojs} thresh_between_lo`, `{ojs} n_students`, and `{ojs} p_assign` subtracts the probability of at most `{ojs} thresh_between_lo` successes, which *excludes* `{ojs} thresh_between_lo` itself from the answer. We want to *include* `{ojs} thresh_between_lo`, so replace the first argument of that second call to `pbinom()` with `{ojs} thresh_between_lo - 1`.
+Filling in the blanks of the second call to `pbinom()` with `{ojs} thresh_between_lo`, `{ojs} n_students`, and `{ojs} p_assign` subtracts the probability of at most `{ojs} thresh_between_lo` successes, which *excludes* `{ojs} thresh_between_lo` itself from the answer. We want to *include* `{ojs} thresh_between_lo`, so replace the first argument of that second call to `pbinom()` with `{ojs} Number(thresh_between_lo) - 1`.
 
 ```{r}
 #| echo: true
@@ -1532,7 +1532,7 @@ pbinom(___, ___, ___) - pbinom(___, ___, ___)
 :::{.callout-note collapse="false"}
 ## Hint 9 (Solved)
 
-Use `{ojs} thresh_between_hi` and `{ojs} thresh_between_lo - 1` as the first arguments of the two `pbinom()` calls, with `{ojs} n_students` and `{ojs} p_assign` as the remaining arguments in both.
+Use `{ojs} thresh_between_hi` and `{ojs} Number(thresh_between_lo) - 1` as the first arguments of the two `pbinom()` calls, with `{ojs} n_students` and `{ojs} p_assign` as the remaining arguments in both.
 
 ```{r}
 #| echo: true

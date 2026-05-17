@@ -1,5 +1,5 @@
 ---
-title: "Topic 5: Discrete Probability Distributions (Sheets, Dynamic)"
+title: "Topic 5: Discrete Probability Distributions (Spreadsheets, Dynamic)"
 format: 
   live-html:
     include-in-header:
@@ -9,7 +9,6 @@ format:
         </style>
     webr:
       packages:
-        - dplyr
         - gradethis
         - jsonlite
         - base64enc
@@ -107,8 +106,6 @@ exercise_results <- list(
 ```
 
 ```{r setup, include=FALSE}
-library(dplyr)
-library(ggplot2)
 library(gradethis)
 ```
 
@@ -134,7 +131,7 @@ This activity provides an introduction to discrete probability, including basic 
   btn.onclick = () => {
     if (confirm('Reset all responses for this activity? This cannot be undone.')) {
       Object.keys(localStorage)
-        .filter(k => k.endsWith('_selected_t5de') || k.endsWith('_correct_t5de') || k.endsWith('_result_t5de'))
+        .filter(k => k.endsWith('_selected_t5d') || k.endsWith('_correct_t5d') || k.endsWith('_result_t5d'))
         .forEach(k => localStorage.removeItem(k));
       location.reload();
     }
@@ -144,9 +141,16 @@ This activity provides an introduction to discrete probability, including basic 
 }
 ```
 
+*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting answer entry cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
 
-*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting code cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
+:::
 
+:::{.callout-note}
+## Using a Spreadsheet Program
+There are times throughout this activity where you'll be asked to do work inside of your favorite spreadsheet program. 
+
++ If you are a Google Sheets user, [open a blank Google Sheet](https://sheets.new){target="_blank"}
++ If you are an Excel user, open an empty workbook on your computer or [create a blank workbook in Excel online](https://office.live.com/start/Excel.aspx)
 :::
 
 ## Discrete Probability Distributions
@@ -166,7 +170,7 @@ There are entire courses devoted to probability -- we will only cover probabilit
 + Define, discuss, and interpret the probability of an event as its likelihood.
 + Apply fundamental counting principles and the notion of independence to compute the probability associated with the occurrence of a sequence of events.
 + Use the definition of binomial experiments to identify scenarios to which the binomial distribution can be applied.
-+ Apply the binomial distribution in appropriate scenarios to find probabilities associated with specified outcomes.
++ Apply the binomial distribution in appropriate scenarios to find probabilities associated with specified outcomes using spreadsheet software.
 + Given a binomial experiment, compute the expected number of successful outcomes as well as the standard deviation for number of successes.
 
 ## Basic Probability
@@ -196,13 +200,13 @@ viewof q1 = Inputs.radio(
     ["5 / 6", 6],
     ["6 / 6", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected_t5de") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q1_selected_t5de", JSON.stringify(q1));
-  localStorage.setItem("q1_correct_t5de", "2");
-  localStorage.setItem("q1_result_t5de", q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q1_selected_t5d", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t5d", "2");
+  localStorage.setItem("q1_result_t5d", q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q1, "2");
 ```
@@ -227,13 +231,13 @@ viewof q2 = Inputs.radio(
     ["5 / 6", 6],
     ["6 / 6", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected_t5de") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q2_selected_t5de", JSON.stringify(q2));
-  localStorage.setItem("q2_correct_t5de", "4");
-  localStorage.setItem("q2_result_t5de", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q2_selected_t5d", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t5d", "4");
+  localStorage.setItem("q2_result_t5d", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q2, "4");
 ```
@@ -253,13 +257,13 @@ viewof q3 = Inputs.radio(
     ["The probability of rolling a total of two.", 1],
     ["The probability of rolling a total of five.", 2]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected_t5de") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q3_selected_t5de", JSON.stringify(q3));
-  localStorage.setItem("q3_correct_t5de", "2");
-  localStorage.setItem("q3_result_t5de", q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q3_selected_t5d", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t5d", "2");
+  localStorage.setItem("q3_result_t5d", q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q3, "2");
 ```
@@ -292,13 +296,13 @@ viewof q4 = Inputs.radio(
     ["5 / 6", 6],
     ["6 / 6", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected_t5de") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q4_selected_t5de", JSON.stringify(q4));
-  localStorage.setItem("q4_correct_t5de", "6");
-  localStorage.setItem("q4_result_t5de", q4 === null ? "unattempted" : (q4 == 6 ? "correct" : "incorrect"));
+  localStorage.setItem("q4_selected_t5d", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t5d", "6");
+  localStorage.setItem("q4_result_t5d", q4 === null ? "unattempted" : (q4 == 6 ? "correct" : "incorrect"));
 }
 ok_response(q4, "6");
 ```
@@ -319,13 +323,13 @@ viewof q5 = Inputs.radio(
     ["1 / 2", 2],
     ["2 / 2", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5_selected_t5de") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q5_selected_t5de", JSON.stringify(q5));
-  localStorage.setItem("q5_correct_t5de", "2");
-  localStorage.setItem("q5_result_t5de", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q5_selected_t5d", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t5d", "2");
+  localStorage.setItem("q5_result_t5d", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q5, "2");
 ```
@@ -335,51 +339,19 @@ ok_response(q5, "2");
 :::{.callout-caution}
 ## Check Your Understanding: Probability and Independent Events III
 
-Use the code block below to compute the probability that in a single roll of a fair die and a flip of a coin we observe a roll of at least two and a flip of tails.
-
-```{=html}
-<div id="sheet-wrapper" style="width:100%; height:150px; overflow:hidden;">
-  <iframe 
-    id="gsheet-embed"
-    src="https://docs.google.com/spreadsheets/d/1La7usmZk1Lwn04FEfYvXPAmBSvKUHphCGco51CH38lY/edit?usp=sharing&rm=minimal"
-    width="100%"
-    height="500px"
-    frameborder="0">
-  </iframe>
-</div>
-
-<script>
-(function() {
-  var wrapper = document.getElementById('sheet-wrapper');
-  var lastScrollY = window.scrollY;
-
-  // Save scroll position when iframe is interacted with
-  wrapper.addEventListener('mouseenter', function() {
-    lastScrollY = window.scrollY;
-  });
-
-  // Restore scroll position if the page jumps
-  window.addEventListener('scroll', function() {
-    var iframe = document.getElementById('gsheet-embed');
-    if (document.activeElement === iframe) {
-      window.scrollTo(0, lastScrollY);
-    }
-  });
-})();
-</script>
-```
-
+Use your spreadsheet to compute the probability that in a single roll of a fair die and a flip of a coin we observe a roll of at least two and a flip of tails. Enter your result below.
 
 ```{webr}
 #| exercise: prob-a-and-b
-______
+# Enter your answer / result here
+
 ```
 
 :::{.hint exercise="prob-a-and-b"}
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Use the probabilities you identified above.
+Use the probabilities you identified in the two questions above. You can multiply values together in a spreadsheet cell by typing `=` followed by the values separated by `*`. For example, typing `=(1/4)*(1/3)` and pressing Enter gives the product of those two fractions.
 
 :::
 :::
@@ -388,7 +360,7 @@ Use the probabilities you identified above.
 :::{.callout-note collapse="false"}
 ## Hint 2
 
-Use the probabilities you identified above. The flip of a coin and roll of a fair die are independent events.
+The flip of a coin and roll of a fair die are independent events, so we can multiply their individual probabilities together. In a blank spreadsheet cell, start with `=` and multiply the two probabilities.
 
 :::
 :::
@@ -397,30 +369,7 @@ Use the probabilities you identified above. The flip of a coin and roll of a fai
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-Since the events are independent, we can multiply the probabilities of the individual outcomes together.
-
-```{r}
-#| echo: true
-#| eval: false
-
-(___) * (___)
-```
-
-:::
-:::
-
-:::{.hint exercise="prob-a-and-b"}
-:::{.callout-note collapse="false"}
-## Hint 4 (Solved)
-
-Since the events are independent, we can multiply the probabilities of the individual outcomes together.
-
-```{r}
-#| echo: true
-#| eval: false
-
-(5/6) * (1/2)
-```
+In a blank cell, type `=(5/6)*(1/2)` and press Enter. The result is the probability of rolling at least a two **and** flipping tails.
 
 :::
 :::
@@ -448,229 +397,7 @@ gradethis::grade_this({
 
 :::
 
-Good work so far. Let's say you forgot to study for your chemistry quiz today. It is a four question multiple choice quiz with answer options $a)$ through $e)$ on each question. You decide that your best option is to guess randomly on each of the questions. Answer the following, using the empty code block below to carry out any necessary computations.
-
-```{webr}
-#| exercise: calc-box
-# Use this space for scratch calculations
-
-```
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 1 (Guessing, Part I)
-
-There are five answer options possible and only one of them is correct.
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 2 (Guessing, Part I)
-
-There are five answer options possible and only one of them is correct. You're guessing randomly, so no one choice is more likely than any of the others.
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 3 (Guessing, Part I)
-
-There are five answer options possible and only one of them is correct. You're guessing randomly, so no one choice is more likely than any of the others. By choosing randomly, you have a one out of five (20% or 0.20) probability of selecting the correct answer on any one question.
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 1 (Guessing, Part II)
-
-The questions are independent events here.
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 2 (Guessing, Part II)
-
-The questions are independent events here. Multiply the probability associated with the outcome on each individual question together.
-
-```{r}
-#| echo: true
-#| eval: false
-(___)*(___)*(___)*(___)
-```
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 3 (Guessing, Part II)
-
-The questions are independent events here. Multiply the probability associated with the outcome on each individual question together. The probability of getting any individual question correct is 0.20.
-
-```{r}
-#| echo: true
-#| eval: false
-(0.20)*(0.20)*(0.20)*(0.20)
-```
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 1 (Guessing, Part III)
-
-Use the same approach here, but now every question is being answered incorrectly.
-
-```{r}
-#| echo: true
-#| eval: false
-(___)*(___)*(___)*(___)
-```
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 2 (Guessing, Part III)
-
-If the probability of getting any individual question correct is 0.20, then the probability of getting it wrong must be 0.80.
-
-```{r}
-#| echo: true
-#| eval: false
-(___)*(___)*(___)*(___)
-```
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 3 (Guessing, Part III)
-
-If the probability of getting any individual question correct is 0.20, then the probability of getting it wrong must be 0.80.
-
-```{r}
-#| echo: true
-#| eval: false
-(0.80)*(0.80)*(0.80)*(0.80)
-```
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 1 (Guessing, Part IV)
-
-We'll start with the same setup as for the previous two parts.
-
-```{r}
-#| echo: true
-#| eval: false
-(___)*(___)*(___)*(___)
-```
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 2 (Guessing, Part IV)
-
-We don't care about the result to question 4. We could get it right or get it wrong, and it makes no difference to whether or not our even of interest occurs. 
-
-```{r}
-#| echo: true
-#| eval: false
-(___)*(___)*(___)*(___)
-```
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 3 (Guessing, Part IV)
-
-We don't care about the result to question 4. We could get it right or get it wrong, and it makes no difference to whether or not our even of interest occurs. Since, on the fourth question, our event of interest is "getting the question right or wrong", the probability of that outcome is 100% (or 1), since no other outcome is possible.
-
-```{r}
-#| echo: true
-#| eval: false
-(___)*(___)*(___)*(1)
-```
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 4 (Guessing, Part IV)
-
-If the first question that we get right is question 3, what must have been the outcome for each of the first two questions?
-
-```{r}
-#| echo: true
-#| eval: false
-(___)*(___)*(___)*(1)
-```
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 4 (Guessing, Part IV)
-
-If the first question that we get right is question 3, what must have been the outcome for each of the first two questions? We must have gotten both of the first two questions wrong. The probability of getting any individual question wrong was 0.80.
-
-```{r}
-#| echo: true
-#| eval: false
-(0.80)*(0.80)*(___)*(1)
-```
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 5 (Guessing, Part IV)
-
-We must have gotten the third question right. The probability of guessing correctly was 0.20.
-
-```{r}
-#| echo: true
-#| eval: false
-(0.80)*(0.80)*(0.20)*(1)
-```
-
-:::
-:::
-
-:::{.hint exercise="calc-box"}
-:::{.callout-note collapse="false"}
-## Hint 1 (Guessing, Part V)
-
-Will the approach we've taken to each of the previous three questions work here? Why or why not?
-
-```{r}
-#| echo: true
-#| eval: false
-(___)*(___)*(___)*(___)
-```
-
-:::
-:::
+Good work so far. Let's say you forgot to study for your chemistry quiz today. It is a four question multiple choice quiz with answer options $a)$ through $e)$ on each question. You decide that your best option is to guess randomly on each of the questions. Answer the following, using your spreadsheet to carry out any necessary computations.
 
 :::{.callout-caution}
 ## Check Your Understanding: Guessing on a Quiz I
@@ -690,13 +417,13 @@ viewof q6 = Inputs.radio(
     ["0.80", 6],
     ["1", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6_selected_t5de") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q6_selected_t5de", JSON.stringify(q6));
-  localStorage.setItem("q6_correct_t5de", "3");
-  localStorage.setItem("q6_result_t5de", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q6_selected_t5d", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t5d", "3");
+  localStorage.setItem("q6_result_t5d", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q6, "3");
 ```
@@ -706,7 +433,7 @@ ok_response(q6, "3");
 :::{.callout-caution}
 ## Check Your Understanding: Guessing on a Quiz II
 
-What is the probability that you get every one of the questions correct?
+What is the probability that you get every one of the questions correct? Use your spreadsheet to compute this, then select your answer.
 
 ```{ojs}
 //| echo: false
@@ -722,23 +449,41 @@ viewof q7 = Inputs.radio(
     ["0.998", 7],
     ["1", 8]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7_selected_t5de") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q7_selected_t5de", JSON.stringify(q7));
-  localStorage.setItem("q7_correct_t5de", "2");
-  localStorage.setItem("q7_result_t5de", q7 === null ? "unattempted" : (q7 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q7_selected_t5d", JSON.stringify(q7));
+  localStorage.setItem("q7_correct_t5d", "2");
+  localStorage.setItem("q7_result_t5d", q7 === null ? "unattempted" : (q7 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q7, "2");
 ```
+
+:::{.hint exercise="q7-hint"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+There are five answer options and only one is correct, so the probability of guessing correctly on one question is 1/5 = 0.20. The questions are independent of one another.
+
+:::
+:::
+
+:::{.hint exercise="q7-hint"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Because the questions are independent, multiply the probability of getting each individual question correct together. In a spreadsheet cell, type `=0.20*0.20*0.20*0.20` and press Enter.
+
+:::
+:::
 
 :::
 
 :::{.callout-caution}
 ## Check Your Understanding: Guessing on a Quiz III
 
-What is the probability that you get every one of the questions wrong?
+What is the probability that you get every one of the questions wrong? Use your spreadsheet to compute this, then select your answer.
 
 ```{ojs}
 //| echo: false
@@ -754,23 +499,41 @@ viewof q8 = Inputs.radio(
     ["0.998", 7],
     ["1", 8]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8_selected_t5de") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q8_selected_t5de", JSON.stringify(q8));
-  localStorage.setItem("q8_correct_t5de", "5");
-  localStorage.setItem("q8_result_t5de", q8 === null ? "unattempted" : (q8 == 5 ? "correct" : "incorrect"));
+  localStorage.setItem("q8_selected_t5d", JSON.stringify(q8));
+  localStorage.setItem("q8_correct_t5d", "5");
+  localStorage.setItem("q8_result_t5d", q8 === null ? "unattempted" : (q8 == 5 ? "correct" : "incorrect"));
 }
 ok_response(q8, "5");
 ```
+
+:::{.hint exercise="q8-hint"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+If the probability of getting a single question *correct* is 0.20, what is the probability of getting it *wrong*? These two outcomes cover every possibility, so they must add up to 1.
+
+:::
+:::
+
+:::{.hint exercise="q8-hint"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The probability of getting a single question wrong is 1 - 0.20 = 0.80. Because the questions are independent, multiply this probability four times — once for each question. In your spreadsheet, type `=0.80*0.80*0.80*0.80` and press Enter.
+
+:::
+:::
 
 :::
 
 :::{.callout-caution}
 ## Check Your Understanding: Guessing on a Quiz IV
 
-What is the probability that the first one you get wrong is question three?
+What is the probability that the first one you get *right* is question three? Use your spreadsheet to compute this, then select your answer.
 
 ```{ojs}
 //| echo: false
@@ -784,16 +547,43 @@ viewof q9 = Inputs.radio(
     ["0.20", 5],
     ["1.2", 6]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9_selected_t5de") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q9_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q9_selected_t5de", JSON.stringify(q9));
-  localStorage.setItem("q9_correct_t5de", "3");
-  localStorage.setItem("q9_result_t5de", q9 === null ? "unattempted" : (q9 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q9_selected_t5d", JSON.stringify(q9));
+  localStorage.setItem("q9_correct_t5d", "3");
+  localStorage.setItem("q9_result_t5d", q9 === null ? "unattempted" : (q9 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q9, "3");
 ```
+
+:::{.hint exercise="q9-hint"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+If the first correct answer is on question three, what must have happened on questions one and two? And what do we know about question four?
+
+:::
+:::
+
+:::{.hint exercise="q9-hint"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Questions one and two must both have been answered *incorrectly* (probability 0.80 each), question three must have been answered *correctly* (probability 0.20), and question four's outcome doesn't matter — whether right or wrong, the event of interest has already occurred. The probability of "right or wrong" on question four is 1.
+
+:::
+:::
+
+:::{.hint exercise="q9-hint"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+Multiply the four probabilities together. In your spreadsheet, type `=0.80*0.80*0.20*1` and press Enter.
+
+:::
+:::
 
 :::
 
@@ -816,13 +606,13 @@ viewof q10 = Inputs.radio(
     ["0.64", 7],
     ["None of These", 8]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10_selected_t5de") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q10_selected_t5d") ?? "null")}
 );
 
 {
-  localStorage.setItem("q10_selected_t5de", JSON.stringify(q10));
-  localStorage.setItem("q10_correct_t5de", "8");
-  localStorage.setItem("q10_result_t5de", q10 === null ? "unattempted" : (q10 == 8 ? "correct" : "incorrect"));
+  localStorage.setItem("q10_selected_t5d", JSON.stringify(q10));
+  localStorage.setItem("q10_correct_t5d", "8");
+  localStorage.setItem("q10_result_t5d", q10 === null ? "unattempted" : (q10 == 8 ? "correct" : "incorrect"));
 }
 ok_response(q10, "8");
 ```
@@ -839,14 +629,27 @@ So in the last question, none of the choices were correct -- but why? There are 
 + Each trial has two possible outcomes (usually called *success* and *failure* for convenience).
 + The trials are independent of one another. That is, for each trial, the probability of success is $p$ (which remains constant).
 
-**Binomial Distribution:** Let $X$ be the number of successes resulting from a binomial experiment with $n$ trials. We can compute the following probabilities:
+**Binomial Distribution:** Let $X$ be the number of successes resulting from a binomial experiment with $n$ trials. We can compute the following probabilities using the `BINOM.DIST()` function in Excel or Google Sheets:
 
 + The probability of <u>exactly</u> $k$ successes is given by
-<center> $\displaystyle{\mathbb{P}\left[X = k\right] = \binom{n}{k}\cdot p^k\left(1 - p\right)^{n-k} \approx \tt{dbinom(k, n, p)}}$</center>
+<center> $\displaystyle{\mathbb{P}\left[X = k\right] = \binom{n}{k}\cdot p^k\left(1 - p\right)^{n-k} \approx \tt{BINOM.DIST(k,\ n,\ p,\ FALSE)}}$</center>
 + The probability of <u>at most</u> $k$ successes is given by
-<center> $\displaystyle{\mathbb{P}\left[X \leq k\right] = \sum_{i=0}^{k}{\binom{n}{i}\cdot p^i\left(1 - p\right)^{n-i}} \approx \tt{pbinom(k, n, p)}}$</center>
+<center> $\displaystyle{\mathbb{P}\left[X \leq k\right] = \sum_{i=0}^{k}{\binom{n}{i}\cdot p^i\left(1 - p\right)^{n-i}} \approx \tt{BINOM.DIST(k,\ n,\ p,\ TRUE)}}$</center>
 
-In the equations above, $\binom{n}{k} = \frac{n!}{k!\left(n-k\right)!}$ counts the number of ways to arrange the $k$ successes amongst the $n$ trials. That being said, the R functionality, `dbinom()` and `pbinom()` allow us to bypass the messy formulas -- but you'll still need to know what these functions do in order to use them correctly!
+In the equations above, $\binom{n}{k} = \frac{n!}{k!\left(n-k\right)!}$ counts the number of ways to arrange the $k$ successes amongst the $n$ trials. The `BINOM.DIST()` function in your spreadsheet allows you to bypass the messy formulas -- but you'll still need to understand what the function does in order to use it correctly!
+
+:::{.callout-tip}
+## Tip: Using `BINOM.DIST()` in a Spreadsheet
+
+The `BINOM.DIST()` function takes four arguments, in order:
+
+1. **Number of successes** ($k$) — the outcome count you are interested in
+2. **Number of trials** ($n$) — the total number of independent trials
+3. **Probability of success** ($p$) — the probability of success on a single trial
+4. **Cumulative** — use `FALSE` for *exactly* $k$ successes; use `TRUE` for *at most* $k$ successes
+
+For example, `=BINOM.DIST(2, 7, 0.5, FALSE)` gives the probability of *exactly* 2 heads in 7 coin flips.
+:::
 
 :::{.callout-tip}
 ## Tip: Binomial Distribution
@@ -854,23 +657,19 @@ In the equations above, $\binom{n}{k} = \frac{n!}{k!\left(n-k\right)!}$ counts t
 We need to use the binomial distribution to find probabilities associated with numbers of successful (or failing) outcomes in which *we do not know for certain the trials on which the successes (or failures) occur*.
 :::
 
-The code block below is set up to find the probability of exactly two flips of a coin landing heads-up out of seven total flips. Edit the code block so that it finds the probability that you got exactly two of the four questions on your chemistry quiz from earlier correct. As a reminder, there were five answer options for each question and you were guessing randomly.
+In your spreadsheet, use `BINOM.DIST()` to find the probability that you got exactly two of the four chemistry quiz questions from earlier correct. As a reminder, there were five answer options for each question and you were guessing randomly. Enter your result in the cell below.
 
 ```{webr}
 #| exercise: chem-quiz-binom
+# Enter your answer / result here
 
-dbinom(2, 7, 0.5)
 ```
 
 :::{.hint exercise="chem-quiz-binom"}
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-The arguments to `dbinom()` are, in order:
-
-+ number of successful outcomes
-+ total number of trials
-+ probability of a successful outcome on one trial
+In a blank spreadsheet cell, begin by typing `=BINOM.DIST(`. The four arguments you need to supply are: number of successes, number of trials, probability of success, and whether to use the cumulative form.
 
 :::
 :::
@@ -879,7 +678,7 @@ The arguments to `dbinom()` are, in order:
 :::{.callout-note collapse="false"}
 ## Hint 2
 
-You are interested in two successful outcomes, so the first argument doesn't need changing. The other two will need to be changed though.
+We want *exactly* two correct, so the last argument should be `FALSE`. The first argument is `2` (the number of correct answers we're interested in). Fill in the other two.
 
 :::
 :::
@@ -888,14 +687,7 @@ You are interested in two successful outcomes, so the first argument doesn't nee
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-For the second argument, how many questions are on the quiz?
-
-```{r}
-#| echo: true
-#| eval: false
-
-dbinom(2, ___, ___)
-```
+The quiz has four questions, so the number of trials is `4`. What is the probability of guessing correctly on a single question?
 
 :::
 :::
@@ -904,30 +696,7 @@ dbinom(2, ___, ___)
 :::{.callout-note collapse="false"}
 ## Hint 4
 
-For the third argument, what is the probability of guessing correctly on a single question?
-
-```{r}
-#| echo: true
-#| eval: false
-
-dbinom(2, 4, ___)
-```
-
-:::
-:::
-
-:::{.hint exercise="chem-quiz-binom"}
-:::{.callout-note collapse="false"}
-## Hint 5 (Solved)
-
-Since each question has five possible choices, one of which is correct, the probability of guessing a correct response on one question is 0.2.
-
-```{r}
-#| echo: true
-#| eval: false
-
-dbinom(2, 4, 0.2)
-```
+Since each question has five possible choices (a–e), one of which is correct, the probability of guessing correctly on one question is 0.2. In your spreadsheet, type `=BINOM.DIST(2, 4, 0.2, FALSE)` and press Enter.
 
 :::
 :::
@@ -953,7 +722,7 @@ gradethis::grade_this({
 })
 ```
 
-Good work. Now you'll get to try a few more problems! As you work through the next set of questions, you may want to check out [this example and solution](www/BinomialExample.pdf){target="_blank"}. Note that in that document, I mention that drawing a simple picture for each problem will help you decide which function(s) you might use and whether you might need to make multiple computations. This is a really important strategy that will help you develop an approach to solve each problem.
+Good work. Now you'll get to try a few more problems! As you work through the next set of questions, you may want to check out [this example and solution](www/BinomialExample_Excel.pdf){target="_blank"}. Note that in that document, I mention that drawing a simple picture for each problem will help you decide which form of `BINOM.DIST()` to use and whether you might need to combine multiple calculations. This is a really important strategy that will help you develop an approach to solve each problem.
 
 **Practice:** For each of the following, consider a scenario in which a random sample of `{ojs} n_students` students is asked (in private) whether they've failed to hand in at least one assignment this semester. We assume that about `{ojs} p_pct`% of students fail to hand in at least one assignment.
 
@@ -963,14 +732,15 @@ Good work. Now you'll get to try a few more problems! As you work through the ne
 #| exercise: binom-assignments-ex1
 #| input:
 #|   - p_assign
-______
+# Enter your answer / result here
+
 ```
 
 :::{.hint exercise="binom-assignments-ex1"}
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-If we had 100 randomly chosen students, how many might you expect failed to hand in at least one assignment? How did you know that? What, mathematically, did you do?
+If we had 100 randomly chosen students, how many might you expect to have failed to hand in at least one assignment? How did you get that number? What mathematical operation did you perform?
 
 :::
 :::
@@ -979,16 +749,16 @@ If we had 100 randomly chosen students, how many might you expect failed to hand
 :::{.callout-note collapse="false"}
 ## Hint 2
 
-The percentage given in the problem statement directly tells you the probability for a single randomly selected student. Convert `{ojs} p_pct`% to a decimal.
+The percentage given in the problem statement directly tells you the probability for a single randomly selected student. Convert `{ojs} p_pct`% to a decimal — no spreadsheet formula is needed for this one.
 
 :::
 :::
 
 :::{.hint exercise="binom-assignments-ex1"}
 :::{.callout-note collapse="false"}
-## Hint 3 (Solved)
+## Hint 3
 
-`{ojs} p_pct`% as a decimal is `{ojs} p_assign`.
+`{ojs} p_pct`% as a decimal is `{ojs} p_assign`. You can type this value directly into the answer cell.
 
 :::
 :::
@@ -1008,7 +778,7 @@ p_assign
 
 exercise_results$binom_assignments_ex1 <<- "fail"
 gradethis::grade_this({
-  if (.result == .solution) {
+  if (abs(.result - .solution) < 0.001) {
     exercise_results$binom_assignments_ex1 <<- "pass"
     pass(random_praise())
   }
@@ -1016,21 +786,22 @@ gradethis::grade_this({
 })
 ```
 
-2. Find the probability that exactly 7 of the `{ojs} n_students` students have failed to hand in at least one assignment.
+2. Find the probability that exactly 7 of the `{ojs} n_students` students have failed to hand in at least one assignment. Do the calculations in your spreadsheet, then enter your result below.
 
 ```{webr}
 #| exercise: binom-assignments-ex2
 #| input:
 #|   - n_students
 #|   - p_assign
-______
+# Enter your answer / result here
+
 ```
 
 :::{.hint exercise="binom-assignments-ex2"}
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-We don't know exactly which of the students are failing to hand in at least one assignment here. We'll need a special function to account for the different combinations of students.
+We don't know which specific students have failed to hand in an assignment — only the total count. This is a job for `BINOM.DIST()`. In a blank spreadsheet cell, start by typing `=BINOM.DIST(`.
 
 :::
 :::
@@ -1039,7 +810,7 @@ We don't know exactly which of the students are failing to hand in at least one 
 :::{.callout-note collapse="false"}
 ## Hint 2
 
-Which function is more appropriate, `dbinom()` or `pbinom()`?
+We want the probability of *exactly* 7 students, so the last argument (cumulative) should be `FALSE`. The first argument is the number of successes we're interested in — that's `7` here.
 
 :::
 :::
@@ -1048,7 +819,7 @@ Which function is more appropriate, `dbinom()` or `pbinom()`?
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-We'll use `dbinom()` since we want the probability of *exactly* 7 students failing to hand in an assignment.
+The second argument is the total number of trials (students in the sample), which is `{ojs} n_students`. The third argument is the probability that any single student has failed to hand in an assignment, which is `{ojs} p_assign`.
 
 :::
 :::
@@ -1057,62 +828,7 @@ We'll use `dbinom()` since we want the probability of *exactly* 7 students faili
 :::{.callout-note collapse="false"}
 ## Hint 4
 
-Fill in the blanks to calculate the desired probability.
-
-```{r}
-#| echo: true
-#| eval: false
-
-dbinom(___, ___, ___)
-```
-
-:::
-:::
-
-:::{.hint exercise="binom-assignments-ex2"}
-:::{.callout-note collapse="false"}
-## Hint 5
-
-The first argument is the number of successes (students not handing in an assignment) we are interested in — that's 7 here.
-
-```{r}
-#| echo: true
-#| eval: false
-
-dbinom(7, ___, ___)
-```
-
-:::
-:::
-
-:::{.hint exercise="binom-assignments-ex2"}
-:::{.callout-note collapse="false"}
-## Hint 6
-
-The second argument is the total number of trials. There are `{ojs} n_students` students in the sample, so fill in the second blank with `n_students`.
-
-```{r}
-#| echo: true
-#| eval: false
-
-dbinom(7, ___, ___)
-```
-
-:::
-:::
-
-:::{.hint exercise="binom-assignments-ex2"}
-:::{.callout-note collapse="false"}
-## Hint 7 (Solved)
-
-The third argument is the probability of a single student failing to hand in at least one assignment, which is `{ojs} p_assign`. So the full call has the second and third blanks filled with `{ojs} n_students` and `{ojs} p_assign`, respectively.
-
-```{r}
-#| echo: true
-#| eval: false
-
-dbinom(7, ___, ___)
-```
+In your spreadsheet, type `=BINOM.DIST(7, ___, ___, FALSE)`, where the second argument is `{ojs} n_students` and the third is `{ojs} p_assign`, then press Return. Enter the resulting value below.
 
 :::
 :::
@@ -1141,7 +857,7 @@ gradethis::grade_this({
 })
 ```
 
-3. Find the probability that at most `{ojs} thresh_atmost` of the `{ojs} n_students` students have failed to hand in at least one assignment.
+3. Find the probability that at most `{ojs} thresh_atmost` of the `{ojs} n_students` students have failed to hand in at least one assignment. Do the calculations in your spreadsheet, then enter your result below.
 
 ```{webr}
 #| exercise: binom-assignments-ex3
@@ -1149,14 +865,15 @@ gradethis::grade_this({
 #|   - n_students
 #|   - p_assign
 #|   - thresh_atmost
-______
+# Enter your answer / result here
+
 ```
 
 :::{.hint exercise="binom-assignments-ex3"}
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Similar to the previous question, we don't know exactly which of the students are failing to hand in at least one assignment here. We'll need a special function to account for the different combinations of students.
+We want the probability of a *range* of outcomes (0, 1, 2, … up to `{ojs} thresh_atmost` students), not just one specific count. The `BINOM.DIST()` function with its cumulative option can handle this directly. In a blank spreadsheet cell, start by typing `=BINOM.DIST(`.
 
 :::
 :::
@@ -1165,7 +882,7 @@ Similar to the previous question, we don't know exactly which of the students ar
 :::{.callout-note collapse="false"}
 ## Hint 2
 
-Which function is more appropriate here, `dbinom()` or `pbinom()`?
+"At most" means we want the cumulative probability up through `{ojs} thresh_atmost`. Set the last argument (cumulative) to `TRUE`. The first argument is the maximum number of successes you are willing to consider, which is `{ojs} thresh_atmost`.
 
 :::
 :::
@@ -1174,55 +891,16 @@ Which function is more appropriate here, `dbinom()` or `pbinom()`?
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-We'll use `pbinom()` since we want the probability of *at most* a certain number of students failing to hand in an assignment.
+The second argument is the number of students ( `{ojs} n_students` ) and the third is the probability of a single student having failed to hand in an assignment ( `{ojs} p_assign` ).
 
 :::
 :::
 
 :::{.hint exercise="binom-assignments-ex3"}
 :::{.callout-note collapse="false"}
-## Hint 4
+## Hint 4 (Solved)
 
-Fill in the blanks to calculate the desired probability.
-
-```{r}
-#| echo: true
-#| eval: false
-
-pbinom(___, ___, ___)
-```
-
-:::
-:::
-
-:::{.hint exercise="binom-assignments-ex3"}
-:::{.callout-note collapse="false"}
-## Hint 5
-
-For `pbinom()`, the first argument is the maximum number of successes you are willing to consider — that's `thresh_atmost` here. The second and third arguments are the number of trials and the probability of success.
-
-```{r}
-#| echo: true
-#| eval: false
-
-pbinom(___, ___, ___)
-```
-
-:::
-:::
-
-:::{.hint exercise="binom-assignments-ex3"}
-:::{.callout-note collapse="false"}
-## Hint 6 (Solved)
-
-Fill in `{ojs} thresh_atmost` for the maximum number of successes, `{ojs} n_students` for the number of trials, and `{ojs} p_assign` for the probability of success.
-
-```{r}
-#| echo: true
-#| eval: false
-
-pbinom(___, ___, ___)
-```
+In your spreadsheet, type `=BINOM.DIST(___, ___, ___, TRUE)` where the first argument is filled by `{ojs} thresh_atmost`, the second is filled by `{ojs} n_students`, and the third is filled by `{ojs} p_assign`.
 
 :::
 :::
@@ -1252,7 +930,7 @@ gradethis::grade_this({
 })
 ```
 
-4. Find the probability that at least `{ojs} thresh_atleast` of the `{ojs} n_students` students have failed to hand in at least one assignment.
+4. Find the probability that at least `{ojs} thresh_atleast` of the `{ojs} n_students` students have failed to hand in at least one assignment. Do the calculations in your spreadsheet, then enter your result below.
 
 ```{webr}
 #| exercise: binom-assignments-ex4
@@ -1260,14 +938,15 @@ gradethis::grade_this({
 #|   - n_students
 #|   - p_assign
 #|   - thresh_atleast
-______
+# Enter your answer / result here
+
 ```
 
 :::{.hint exercise="binom-assignments-ex4"}
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Again, we'll need a special function because we don't know which of the students will have failed to hand in an assignment.
+The `BINOM.DIST()` function with `TRUE` gives the probability of *at most* some number of successes. "At least `{ojs} thresh_atleast`" is not quite the same thing — think about how you might use what `BINOM.DIST()` gives you to get what you need.
 
 :::
 :::
@@ -1276,7 +955,7 @@ Again, we'll need a special function because we don't know which of the students
 :::{.callout-note collapse="false"}
 ## Hint 2
 
-Unfortunately, neither `dbinom()` nor `pbinom()` are a perfect fit for this scenario. Is either one *better*-suited to it, though?
+Between 0 and `{ojs} n_students` students must fail to hand in an assignment — that covers every possibility, so the total probability is 1. If you can find the probability of everything *below* your threshold, you can subtract it from 1 to get what remains.
 
 :::
 :::
@@ -1285,7 +964,7 @@ Unfortunately, neither `dbinom()` nor `pbinom()` are a perfect fit for this scen
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-The `pbinom()` function can handle multiple possible outcomes, while `dbinom()` is most useful when we are interested in exactly one outcome.
+You want to subtract the probability of outcomes that are *too small* — that is, the probability of *fewer than* `{ojs} thresh_atleast` students. Be careful: "fewer than `{ojs} thresh_atleast`" means at most `{ojs} Number(thresh_atleast) - 1`. Try building a formula of the form `=1 - BINOM.DIST(___, ___, ___, TRUE)`.
 
 :::
 :::
@@ -1294,7 +973,7 @@ The `pbinom()` function can handle multiple possible outcomes, while `dbinom()` 
 :::{.callout-note collapse="false"}
 ## Hint 4
 
-Is there a way that we could utilize the `pbinom()` function here?
+In your spreadsheet formula, `=1 - BINOM.DIST(___, ___, ___, TRUE)`, the second blank should be filled in by `{ojs} n_students` and the third should be filled in by `{ojs} p_assign`. What should be placed into the first blank?
 
 :::
 :::
@@ -1303,7 +982,7 @@ Is there a way that we could utilize the `pbinom()` function here?
 :::{.callout-note collapse="false"}
 ## Hint 5
 
-The challenge is that `pbinom()` will find the probability of *at most* some number of successes, not the probability of *at least* some number of successes.
+In your spreadsheet formula, `=1 - BINOM.DIST(___, ___, ___, TRUE)`, the second blank should be filled in by `{ojs} n_students` and the third should be filled in by `{ojs} p_assign`. Filling the first blank with `{ojs} thresh_atleast` doesn't give the correct result. Why not?
 
 :::
 :::
@@ -1312,112 +991,18 @@ The challenge is that `pbinom()` will find the probability of *at most* some num
 :::{.callout-note collapse="false"}
 ## Hint 6
 
-The approach below, filling the blanks with `{ojs} thresh_atleast`, `{ojs} n_students`, and `{ojs} p_assign`, results in the wrong probability — why?
+In your spreadsheet formula, `=1 - BINOM.DIST(___, ___, ___, TRUE)`, the second blank should be filled in by `{ojs} n_students` and the third should be filled in by `{ojs} p_assign`. Filling the first blank with `{ojs} thresh_atleast` doesn't give the correct result. Why not?
 
-```{r}
-#| echo: true
-#| eval: false
-
-pbinom(___, ___, ___)
-```
+Using `{ojs} thresh_atleast` in that first blank removes the probability of at most `{ojs} thresh_atleast` students failing to hand in an assignment. This leaves us only with the probability that `{ojs} Number(thresh_atleast) + 1` or more students have failed to hand in an assignment.
 
 :::
 :::
 
 :::{.hint exercise="binom-assignments-ex4"}
 :::{.callout-note collapse="false"}
-## Hint 7
+## Hint 6
 
-Filling the blanks with `{ojs} thresh_atleast`, `{ojs} n_students`, and `{ojs} p_assign` calculates the probability of 0 through `{ojs} thresh_atleast` successes. That's not what we want. We want `{ojs} thresh_atleast` *or more*.
-
-```{r}
-#| echo: true
-#| eval: false
-
-pbinom(___, ___, ___)
-```
-
-:::
-:::
-
-:::{.hint exercise="binom-assignments-ex4"}
-:::{.callout-note collapse="false"}
-## Hint 8
-
-Could we start with the probability of any (all) outcomes, and then just remove the probability of the events we don't want?
-
-:::
-:::
-
-:::{.hint exercise="binom-assignments-ex4"}
-:::{.callout-note collapse="false"}
-## Hint 9
-
-Since we only have `{ojs} n_students` students, it must be the case that somewhere between 0 and `{ojs} n_students` students fail to hand in at least one assignment. This probability is 1 (or 100%).
-
-:::
-:::
-
-:::{.hint exercise="binom-assignments-ex4"}
-:::{.callout-note collapse="false"}
-## Hint 10
-
-Fill in the blanks to answer the question.
-
-```{r}
-#| echo: true
-#| eval: false
-
-1 - pbinom(___, ___, ___)
-```
-
-:::
-:::
-
-:::{.hint exercise="binom-assignments-ex4"}
-:::{.callout-note collapse="false"}
-## Hint 11
-
-Something is still wrong if we fill in the blanks with `{ojs} thresh_atleast`, `{ojs} n_students`, and `{ojs} p_assign`. What needs to be adjusted?
-
-```{r}
-#| echo: true
-#| eval: false
-
-1 - pbinom(___, ___, ___)
-```
-
-:::
-:::
-
-:::{.hint exercise="binom-assignments-ex4"}
-:::{.callout-note collapse="false"}
-## Hint 12
-
-That call removes the probability of at most `{ojs} thresh_atleast` successes, leaving only the probability of *more than* `{ojs} thresh_atleast`. We want *at least* `{ojs} thresh_atleast`, which includes `{ojs} thresh_atleast` itself. Replace the first argument with `thresh_atleast - 1`.
-
-```{r}
-#| echo: true
-#| eval: false
-
-1 - pbinom(___, ___, ___)
-```
-
-:::
-:::
-
-:::{.hint exercise="binom-assignments-ex4"}
-:::{.callout-note collapse="false"}
-## Hint 13 (Solved)
-
-Use `{ojs} thresh_atleast - 1` as the first argument, `{ojs} n_students` as the second, and `{ojs} p_assign` as the third.
-
-```{r}
-#| echo: true
-#| eval: false
-
-1 - pbinom(___, ___, ___)
-```
+In your spreadsheet formula, `=1 - BINOM.DIST(___, ___, ___, TRUE)`, the second blank should be filled in by `{ojs} n_students` and the third should be filled in by `{ojs} p_assign`. Fill the first blank with `{ojs} thresh_atleast - 1` to remove the probability associated with the events you aren't interested in.
 
 :::
 :::
@@ -1447,7 +1032,7 @@ gradethis::grade_this({
 })
 ```
 
-5. Find the probability that between a minimum of `{ojs} thresh_between_lo` and a maximum of `{ojs} thresh_between_hi` out of the `{ojs} n_students` students have failed to hand in at least one assignment.
+5. Find the probability that between a minimum of `{ojs} thresh_between_lo` and a maximum of `{ojs} thresh_between_hi` out of the `{ojs} n_students` students have failed to hand in at least one assignment. Do the calculations in your spreadsheet, then enter your result below.
 
 ```{webr}
 #| exercise: binom-assignments-ex5
@@ -1456,14 +1041,15 @@ gradethis::grade_this({
 #|   - p_assign
 #|   - thresh_between_lo
 #|   - thresh_between_hi
-______
+# Enter your answer / result here
+
 ```
 
 :::{.hint exercise="binom-assignments-ex5"}
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Similar to the previous question, neither `dbinom()` nor `pbinom()` are perfect fits here. We should prefer `pbinom()` though, since we are interested in a collection of outcomes rather than exactly a single outcome.
+We want the probability of an outcome somewhere in the *middle* — not too few, not too many. A single `BINOM.DIST()` call with `TRUE` always gives everything from 0 up to some value, so you'll need to use two calls and combine them.
 
 :::
 :::
@@ -1472,7 +1058,7 @@ Similar to the previous question, neither `dbinom()` nor `pbinom()` are perfect 
 :::{.callout-note collapse="false"}
 ## Hint 2
 
-The strategy we used in the previous question won't *exactly* work either. Maybe we can use a similar idea, though!
+Start by computing a cumulative probability which is too big. Which probability is definitely larger than the answer we are seeking out: filling the first blank in `BINOM.DIST(___, ___, ___, TRUE)` with `{ojs} thresh_between_hi` or filling it with `{ojs} thresh_between_lo`? 
 
 :::
 :::
@@ -1481,7 +1067,9 @@ The strategy we used in the previous question won't *exactly* work either. Maybe
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-Which of the following corresponds to a probability that is definitely too big — filling the first argument of `pbinom()` with `thresh_between_lo` or with `thresh_between_hi`?
+Filling the first blank in `BINOM.DIST(___, ___, ___, TRUE)` with `{ojs} thresh_between_hi` results in a probability which is definitely larger than the probability we are trying to find. That's because it includes all the outcomes we're interested in along with some others as well. 
+
+We'll need to make the probability smaller.
 
 :::
 :::
@@ -1490,7 +1078,7 @@ Which of the following corresponds to a probability that is definitely too big �
 :::{.callout-note collapse="false"}
 ## Hint 4
 
-Filling the first argument with `{ojs} thresh_between_hi` results in a probability that is too large because it includes outcomes below our minimum of `{ojs} thresh_between_lo`. Can we subtract out some of the probability to get only the outcomes we care about?
+Let's finish off that first call to `BINOM.DIST(___, ___, ___, TRUE)`. Fill the first blank with `{ojs} thresh_between_hi`, the second with `{ojs} n_students`, and the third with `{ojs} p_assign`.
 
 :::
 :::
@@ -1499,16 +1087,9 @@ Filling the first argument with `{ojs} thresh_between_hi` results in a probabili
 :::{.callout-note collapse="false"}
 ## Hint 5
 
-Fill in the blanks:
+Let's finish off that first call to `BINOM.DIST(___, ___, ___, TRUE)`. Fill the first blank with `{ojs} thresh_between_hi`, the second with `{ojs} n_students`, and the third with `{ojs} p_assign`.
 
-```{r}
-#| echo: true
-#| eval: false
-
-pbinom(___, ___, ___) - ___(___, ___, ___)
-```
-
-The first `pbinom()` call uses `{ojs} thresh_between_hi` as its first argument, `{ojs} n_students` as its second, and `{ojs} p_assign` as its third.
+We mentioned that this probability is too large, so we'll need to subtract some away.
 
 :::
 :::
@@ -1517,14 +1098,11 @@ The first `pbinom()` call uses `{ojs} thresh_between_hi` as its first argument, 
 :::{.callout-note collapse="false"}
 ## Hint 6
 
-We want to remove a collection of outcomes (not just one), so use `pbinom()` for the subtracted term as well.
+Let's finish off that first call to `BINOM.DIST(___, ___, ___, TRUE)`. Fill the first blank with `{ojs} thresh_between_hi`, the second with `{ojs} n_students`, and the third with `{ojs} p_assign`.
 
-```{r}
-#| echo: true
-#| eval: false
+We mentioned that this probability is too large, so we'll need to subtract some away. You'll use another call to `BINOM.DIST()`, so the formula you type into the cell will look like the following:
 
-pbinom(___, ___, ___) - pbinom(___, ___, ___)
-```
+`BINOM.DIST(___, ___, ___, TRUE) - BINOM.DIST(___, ___, ___, TRUE)`
 
 :::
 :::
@@ -1533,14 +1111,11 @@ pbinom(___, ___, ___) - pbinom(___, ___, ___)
 :::{.callout-note collapse="false"}
 ## Hint 7
 
-Filling the blanks in the first call to `pbinom()` with `{ojs} thresh_between_hi`, `{ojs} n_students`, and `{ojs} p_assign` is a good start. If we fill in the blanks of the second call to `pbinom()` with `{ojs} thresh_between_lo`, `{ojs} n_students`, and `{ojs} p_assign`, we obtain the wrong probability though. Why is that?
+The formula you type into the cell will look like the following:
 
-```{r}
-#| echo: true
-#| eval: false
+`BINOM.DIST(___, ___, ___, TRUE) - BINOM.DIST(___, ___, ___, TRUE)`
 
-pbinom(___, ___, ___) - pbinom(___, ___, ___)
-```
+You'll fill in the second and third blanks in each call to `BINOM.DIST()` with `{ojs} n_students` and `{ojs} p_assign`. The first blank in the first call will be `{ojs} thresh_between_hi`. What should the first blank in the second call to `BINOM.DIST()` be?
 
 :::
 :::
@@ -1549,14 +1124,13 @@ pbinom(___, ___, ___) - pbinom(___, ___, ___)
 :::{.callout-note collapse="false"}
 ## Hint 8
 
-Filling in the blanks of the second call to `pbinom()` with `{ojs} thresh_between_lo`, `{ojs} n_students`, and `{ojs} p_assign` subtracts the probability of at most `{ojs} thresh_between_lo` successes, which *excludes* `{ojs} thresh_between_lo` itself from the answer. We want to *include* `{ojs} thresh_between_lo`, so replace the first argument of that second call to `pbinom()` with `{ojs} thresh_between_lo - 1`.
+The formula you type into the cell will look like the following:
 
-```{r}
-#| echo: true
-#| eval: false
+`BINOM.DIST(___, ___, ___, TRUE) - BINOM.DIST(___, ___, ___, TRUE)`
 
-pbinom(___, ___, ___) - pbinom(___, ___, ___)
-```
+You'll fill in the second and third blanks in each call to `BINOM.DIST()` with `{ojs} n_students` and `{ojs} p_assign`. The first blank in the first call will be `{ojs} thresh_between_hi`. What should the first blank in the second call to `BINOM.DIST()` be?
+
+Filling that blank with `{ojs} thresh_between_lo` results in the wrong answer -- why?
 
 :::
 :::
@@ -1565,14 +1139,13 @@ pbinom(___, ___, ___) - pbinom(___, ___, ___)
 :::{.callout-note collapse="false"}
 ## Hint 9 (Solved)
 
-Use `{ojs} thresh_between_hi` and `{ojs} thresh_between_lo - 1` as the first arguments of the two `pbinom()` calls, with `{ojs} n_students` and `{ojs} p_assign` as the remaining arguments in both.
+The formula you type into the cell will look like the following:
 
-```{r}
-#| echo: true
-#| eval: false
+`BINOM.DIST(___, ___, ___, TRUE) - BINOM.DIST(___, ___, ___, TRUE)`
 
-pbinom(___, ___, ___) - pbinom(___, ___, ___)
-```
+You'll fill in the second and third blanks in each call to `BINOM.DIST()` with `{ojs} n_students` and `{ojs} p_assign`. The first blank in the first call will be `{ojs} thresh_between_hi`. What should the first blank in the second call to `BINOM.DIST()` be?
+
+Filling that blank with `{ojs} thresh_between_lo` results in the wrong answer -- why? That removes the probability associated with one of the events we were interested in! Fill that blank with `{ojs} Number(thresh_between_lo) - 1` instead.
 
 :::
 :::
@@ -1606,26 +1179,27 @@ gradethis::grade_this({
 :::{.callout-important}
 ## Don't Memorize Approaches
 
-In several of the previous scenarios, we needed to think about the correct "first argument" being passed to `pbinom()`. Don't try to memorize when to subtract one, when to add one, when to leave the number the same as it appeared in the problem, etc. The *language* is what matters, and there are lots of ways to express which outcomes we are most interested in. If you insist on memorizing, you'll become frustrated quickly.
+In several of the previous scenarios, we needed to think carefully about the correct first argument to pass to `BINOM.DIST()`, and whether to add or subtract a second call. Don't try to memorize when to subtract one from the threshold, when to leave it as-is, etc. The *language* of the problem is what matters, and there are lots of ways to express which outcomes we care about. If you insist on memorizing, you'll become frustrated quickly.
 
-Instead of memorizing, take the time to *draw a picture* to help you. Examples of what these pictures might look like can be seen in [the example and solution document](www/BinomialExample.pdf){target="_blank"}, which I pointed you to earlier.
+Instead of memorizing, take the time to *draw a picture* to help you. Examples of what these pictures might look like can be seen in [the example and solution document](www/BinomialExample_Excel.pdf){target="_blank"}, which I pointed you to earlier.
 :::
 
-6. The expected number of successes in a binomial experiment is sometimes denoted by $\mathbb{E}\left[X\right]$ and can be computed as $\mathbb{E}\left[X\right] = n\cdot p$, where $n$ denotes the number of trials run and $p$ denotes the probability of success on a single trial. Sometimes it is convenient to think of the expected number of successes as "the mean". Use the code block below to compute the expected number of students (out of `{ojs} n_students`) who have failed to hand in at least one assignment:
+6. The expected number of successes in a binomial experiment is sometimes denoted by $\mathbb{E}\left[X\right]$ and can be computed as $\mathbb{E}\left[X\right] = n\cdot p$, where $n$ denotes the number of trials run and $p$ denotes the probability of success on a single trial. Sometimes it is convenient to think of the expected number of successes as "the mean". Use your spreadsheet to compute the expected number of students (out of `{ojs} n_students`) who have failed to hand in at least one assignment, then enter your result below.
 
 ```{webr}
 #| exercise: binom-assignments-ex6
 #| input:
 #|   - n_students
 #|   - p_assign
-______
+# Enter your answer / result here
+
 ```
 
 :::{.hint exercise="binom-assignments-ex6"}
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Use the formula $\mathbb{E}\left[X\right] = n\cdot p$ from the problem statement to compute the expected value.
+Use the formula $\mathbb{E}\left[X\right] = n\cdot p$ from the problem statement. In a blank spreadsheet cell, type `=` followed by the values of $n$ and $p$ multiplied together.
 
 :::
 :::
@@ -1634,7 +1208,7 @@ Use the formula $\mathbb{E}\left[X\right] = n\cdot p$ from the problem statement
 :::{.callout-note collapse="false"}
 ## Hint 2
 
-$n$ is the number of trials. Here that's `{ojs} n_students` students.
+Here $n$ is the number of students in the sample (`{ojs} n_students`) and $p$ is the probability that any one student has failed to hand in an assignment (`{ojs} p_assign`).
 
 :::
 :::
@@ -1643,23 +1217,7 @@ $n$ is the number of trials. Here that's `{ojs} n_students` students.
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-$p$ is the probability of success on a single trial, which is `{ojs} p_assign` in this scenario.
-
-:::
-:::
-
-:::{.hint exercise="binom-assignments-ex6"}
-:::{.callout-note collapse="false"}
-## Hint 4 (Solved)
-
-$n \cdot p$ = `{ojs} n_students` * `{ojs} p_assign`
-
-```{r}
-#| echo: true
-#| eval: false
-
-___ * ___
-```
+In your spreadsheet, type = `{ojs} n_students` * `{ojs} p_assign` and press Return. Enter the resulting value below.
 
 :::
 :::
@@ -1688,21 +1246,22 @@ gradethis::grade_this({
 })
 ```
 
-7. The standard deviation in the number of successes for a binomial experiment can also be computed. The quantity $\displaystyle{s_X = \sqrt{n\cdot p\left(1 - p\right)}}$, where $n$ denotes the number of trials run and $p$ denotes the probability of success on a single trial, is the standard deviation in number of successes. Use the code block below to compute the standard deviation in number of students who have failed to hand in at least one assignment from random samples of `{ojs} n_students` students:
+7. The standard deviation in the number of successes for a binomial experiment can also be computed. The quantity $\displaystyle{s_X = \sqrt{n\cdot p\left(1 - p\right)}}$, where $n$ denotes the number of trials run and $p$ denotes the probability of success on a single trial, is the standard deviation in number of successes. Use your spreadsheet to compute the standard deviation in number of students who have failed to hand in at least one assignment from random samples of `{ojs} n_students` students, then enter your result below.
 
 ```{webr}
 #| exercise: binom-assignments-ex7
 #| input:
 #|   - n_students
 #|   - p_assign
-______
+# Enter your answer / result here
+
 ```
 
 :::{.hint exercise="binom-assignments-ex7"}
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Use the formula from the statement of the question to compute the answer.
+Use the formula $s_X = \sqrt{n\cdot p\left(1 - p\right)}$ from the problem statement. As a reminder, you can compute a square root in a spreadsheet using the `SQRT()` function.
 
 :::
 :::
@@ -1711,7 +1270,7 @@ Use the formula from the statement of the question to compute the answer.
 :::{.callout-note collapse="false"}
 ## Hint 2
 
-Recall that you can compute the square root in R using the `sqrt()` function.
+For this problem, $n$ = `{ojs} n_students` and $p$ = `{ojs} p_assign`. Build your formula inside `SQRT()` by multiplying $n$, $p$, and $(1 - p)$ together.
 
 :::
 :::
@@ -1720,23 +1279,7 @@ Recall that you can compute the square root in R using the `sqrt()` function.
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-For this problem, $n$ = `{ojs} n_students` and $p$ = `{ojs} p_assign`.
-
-:::
-:::
-
-:::{.hint exercise="binom-assignments-ex7"}
-:::{.callout-note collapse="false"}
-## Hint 4 (Solved)
-
-Fill in the blanks with `{ojs} n_students`, `{ojs} p_assign`, and `{ojs} p_assign` again:
-
-```{r}
-#| echo: true
-#| eval: false
-
-sqrt(___ * ___ * (1 - ___))
-```
+In your spreadsheet, type =SQRT( `{ojs} n_students` * `{ojs} p_assign` * (1 - `{ojs} p_assign`)) and press Enter. Enter the resulting value below.
 
 :::
 :::
@@ -1865,9 +1408,9 @@ html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5;
 :::{.callout-warning}
 ## Exercise Hash
 
-Click the button below to generate your exercise submission code. This hash encodes your work on the graded code exercises in this activity.
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded exercises in this activity.
 
-You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and hit the *Run Code* button on each graded exercise before generating the hash below, to ensure your most recent results are recorded.
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and enter your answer in each graded exercise cell before generating the hash below, to ensure your most recent results are recorded.
 
 ```{webr}
 #| exercise: generate-exercise-hash
@@ -1890,12 +1433,12 @@ cat(hash)
 + The **probability** of an event $A$ is a measure of its likelihood and is denoted $\mathbb{P}[A]$. Every probability must be between 0 and 1.
 + If $A$ and $B$ are **independent events**, then $\mathbb{P}[A \text{ and } B] = \mathbb{P}[A] \cdot \mathbb{P}[B]$.
 + A **binomial experiment** satisfies: (1) $n$ repeated trials, (2) each trial has two possible outcomes, and (3) trials are independent with constant probability of success $p$.
-+ If $X$ counts successes in a binomial experiment with $n$ trials and success probability $p$:
-  + $\mathbb{P}[X = k] \approx$ `dbinom(k, n, p)` — for **exactly** $k$ successes
-  + $\mathbb{P}[X \leq k] \approx$ `pbinom(k, n, p)` — for **at most** $k$ successes
-  + Draw a picture to help you see how to use `pbinom()` and/or `dbinom()` to calculate probabilities. These two functions above are sufficient to handle any binomial probability scenario — the challenge is identifying how to combine them.
++ If $X$ counts successes in a binomial experiment with $n$ trials and success probability $p$, use `BINOM.DIST()` in your spreadsheet:
+  + `=BINOM.DIST(k, n, p, FALSE)` — probability of **exactly** $k$ successes
+  + `=BINOM.DIST(k, n, p, TRUE)` — probability of **at most** $k$ successes
+  + Draw a picture to help you see how to combine these to handle "at least", "more than", or "between" scenarios. These two forms of `BINOM.DIST()` are sufficient to handle any binomial probability scenario — the challenge is identifying how to combine them.
 + The **expected number** of successes is $\mathbb{E}[X] = n \cdot p$.
-+ The **standard deviation** of number of successes is $s_X = \sqrt{n \cdot p \cdot (1 - p)}$.
++ The **standard deviation** of number of successes is $s_X = \sqrt{n \cdot p \cdot (1 - p)}$. Use `=SQRT(n * p * (1 - p))` in your spreadsheet.
 :::
 
 :::{.callout-tip}

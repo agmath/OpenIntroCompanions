@@ -533,7 +533,7 @@ The probability of getting a single question wrong is 1 - 0.20 = 0.80. Because t
 :::{.callout-caution}
 ## Check Your Understanding: Guessing on a Quiz IV
 
-What is the probability that the first one you get *right* is question three? Use your spreadsheet to compute this, then select your answer.
+What is the probability that the first one you get wrong is question three? Use your spreadsheet to compute this, then select your answer.
 
 ```{ojs}
 //| echo: false
@@ -562,7 +562,7 @@ ok_response(q9, "3");
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-If the first correct answer is on question three, what must have happened on questions one and two? And what do we know about question four?
+If the first incorrect answer is on question three, what must have happened on questions one and two? And what do we know about question four?
 
 :::
 :::
@@ -571,7 +571,7 @@ If the first correct answer is on question three, what must have happened on que
 :::{.callout-note collapse="false"}
 ## Hint 2
 
-Questions one and two must both have been answered *incorrectly* (probability 0.80 each), question three must have been answered *correctly* (probability 0.20), and question four's outcome doesn't matter — whether right or wrong, the event of interest has already occurred. The probability of "right or wrong" on question four is 1.
+Questions one and two must both have been answered correctly (probability 0.20 each), question three must have been answered incorrectly (probability 0.80), and question four's outcome doesn't matter — whether right or wrong, the event of interest has already occurred. The probability of either "right or wrong" on question four is 1.
 
 :::
 :::
@@ -580,7 +580,7 @@ Questions one and two must both have been answered *incorrectly* (probability 0.
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-Multiply the four probabilities together. In your spreadsheet, type `=0.80*0.80*0.20*1` and press Enter.
+Multiply the four probabilities together. In your spreadsheet, type `=0.20*0.20*0.80*1` and press Enter.
 
 :::
 :::

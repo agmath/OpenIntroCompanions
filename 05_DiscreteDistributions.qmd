@@ -561,7 +561,7 @@ We don't care about the result to question 4. We could get it right or get it wr
 :::{.callout-note collapse="false"}
 ## Hint 4 (Guessing, Part IV)
 
-If the first question that we get right is question 3, what must have been the outcome for each of the first two questions?
+If the first question that we get wrong is question 3, what must have been the outcome for each of the first two questions?
 
 ```{r}
 #| echo: true
@@ -576,12 +576,12 @@ If the first question that we get right is question 3, what must have been the o
 :::{.callout-note collapse="false"}
 ## Hint 4 (Guessing, Part IV)
 
-If the first question that we get right is question 3, what must have been the outcome for each of the first two questions? We must have gotten both of the first two questions wrong. The probability of getting any individual question wrong was 0.80.
+If the first question that we get right is question 3, what must have been the outcome for each of the first two questions? We must have gotten both of the first two questions right. The probability of getting any individual question right was 0.20.
 
 ```{r}
 #| echo: true
 #| eval: false
-(0.80)*(0.80)*(___)*(1)
+(0.20)*(0.20)*(___)*(1)
 ```
 
 :::
@@ -591,12 +591,12 @@ If the first question that we get right is question 3, what must have been the o
 :::{.callout-note collapse="false"}
 ## Hint 5 (Guessing, Part IV)
 
-We must have gotten the third question right. The probability of guessing correctly was 0.20.
+We must have gotten the third question wrong. The probability of guessing incorrectly was 0.80.
 
 ```{r}
 #| echo: true
 #| eval: false
-(0.80)*(0.80)*(0.20)*(1)
+(0.20)*(0.20)*(0.80)*(1)
 ```
 
 :::

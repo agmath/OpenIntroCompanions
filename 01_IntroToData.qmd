@@ -700,5 +700,5 @@ Since there were no code cell exercises in this activity, there is no *exercise 
 :::{.callout-tip}
 ## Looking Ahead
 
-The next activity introduces R — the statistical computing environment we'll use throughout this course. You'll learn how to use R as a calculator and get your first exposure to working with data frames. The `diamonds` dataset you met here will make a return appearance.
+The next activity introduces working in a statistical computing environment. Depending on your course/track, you may encounter the computing language R or working with a spreadsheet program like Excel or Google Sheets. In either case, you'll learn how to make calculations in that environment and get your first exposure to working with data frames / data tables. The `diamonds` dataset that you met here will make a return appearance.
 :::

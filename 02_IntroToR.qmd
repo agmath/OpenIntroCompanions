@@ -892,3 +892,9 @@ The next activity introduces descriptive statistics — computing and interpreti
 
 Remember that you are ***not*** expected to have any prior programming background to be successful here. We'll build everything we need from the ground up.
 :::
+
+---
+
+## References
+
+[1] Wickham, H. (2016). ggplot2: Elegant graphics for data analysis [Diamonds Dataset]. Springer-Verlag New York. https://ggplot2.tidyverse.org/

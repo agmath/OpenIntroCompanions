@@ -982,3 +982,9 @@ cat(hash)
 
 In the next activity we'll shift from summarizing data numerically to visualizing it. We'll learn how to construct histograms, boxplots, and bar charts. In addition to syntax and structure, you'll develop intuition for choosing the right visualization for a given variable type(s) and question.
 :::
+
+---
+
+## References
+
+[1] Wickham, H. (2016). ggplot2: Elegant graphics for data analysis [Diamonds Dataset]. Springer-Verlag New York. https://ggplot2.tidyverse.org/

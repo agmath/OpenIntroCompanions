@@ -554,3 +554,9 @@ cat(hash)
 
 The next activity introduces descriptive statistics — computing and interpreting numerical summaries for both numerical and categorical data. You'll use the tools introduced here (formulas, built-in functions, cell references, and ranges) to calculate means, medians, standard deviations, and more directly in your spreadsheet.
 :::
+
+---
+
+## References
+
+[1] Wickham, H. (2016). ggplot2: Elegant graphics for data analysis [Diamonds Dataset]. Springer-Verlag New York. https://ggplot2.tidyverse.org/

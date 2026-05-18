@@ -702,3 +702,11 @@ Since there were no code cell exercises in this activity, there is no *exercise 
 
 The next activity introduces working in a statistical computing environment. Depending on your course/track, you may encounter the computing language R or working with a spreadsheet program like Excel or Google Sheets. In either case, you'll learn how to make calculations in that environment and get your first exposure to working with data frames / data tables. The `diamonds` dataset that you met here will make a return appearance.
 :::
+
+---
+
+## References
+
+[1] House Sales in King County, USA (2016). Kaggle. Retrieved from [Kaggle House Sales Dataset](https://www.kaggle.com/datasets/harlfoxem/housesalesprediction).
+
+[2] Wickham, H. (2016). ggplot2: Elegant graphics for data analysis [Diamonds Dataset]. Springer-Verlag New York. https://ggplot2.tidyverse.org/

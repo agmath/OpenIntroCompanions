@@ -1,0 +1,1064 @@
+---
+title: "Topic 4: Data Visualization"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        </style>
+    webr:
+      packages:
+        - gradethis
+        - jsonlite
+        - base64enc
+      cell-options: 
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{ojs}
+//| echo: false
+
+function ok_checkbox(response, n) {
+  if (!response || response.length === 0) 
+    return html`<span style="color:purple">You haven't answered yet.</span>`;
+  if (response.toString() === n) 
+    return html`<span style="color:green">Correct ✓</span>`;
+  return html`<span style="color:red">Not Yet! ✗</span>`;
+}
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+library(stringr)
+library(gradethis)
+library(kableExtra)
+
+data <- data.frame(
+  "FuelType"    = c("F1", "F1", "F1", "F2", "F2", "F2"),
+  "EngineBrand" = c("E1", "E2", "E3", "E1", "E2", "E3")
+)
+
+theme_set(theme_bw())
+```
+
+:::{.callout-note}
+## About
+
+This activity provides an introduction to data visualization — thinking carefully about which plot types are appropriate for different variable types, how to build them in a spreadsheet, and how to read and interpret what they show.
+
+Before we jump in, it is worth calling out that data visualization is one place where spreadsheet tools really show their limits. Because plots are all produced by clicking a button, each button basically behaves as a specialized wizard which attempts to produce a reasonable plot given the user's "inputs". Often times, getting your intended plot requires editing how the data is being utilized in the default plot generated. This *produce the wrong plot and then try to fix it* approach can be quite frustrating.
+
+```{ojs}
+//| echo: false
+
+{
+  const btn = html`<button style="
+    background: #436b95;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  ">🔄 Reset My Responses</button>`;
+
+  btn.onclick = () => {
+    if (confirm('Reset all responses for this activity? This cannot be undone.')) {
+      Object.keys(localStorage)
+        .filter(k => k.endsWith('_selected_t4e') || k.endsWith('_correct_t4e') || k.endsWith('_result_t4e'))
+        .forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  };
+
+  return btn;
+}
+```
+
+*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting answer entry cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
+
+:::
+
+:::{.callout-note}
+## Using a Spreadsheet Program
+Throughout this activity you'll be building charts inside your spreadsheet program using the `mpg` dataset. This data set includes information about a variety of vehicles and their fuel economy.
+
++ If you are a Google Sheets user, [click here to create a copy of the spreadsheet for this activity](https://docs.google.com/spreadsheets/d/17aIFa-v22GBdNJ0c2XEx6Iwznm9O_TVJmWtE50bRXgk/copy){target="_blank"}
++ If you are an Excel user, [click here to download a copy of the spreadsheet for this activity](https://docs.google.com/spreadsheets/d/17aIFa-v22GBdNJ0c2XEx6Iwznm9O_TVJmWtE50bRXgk/export?format=xlsx)
+
+Keep your spreadsheet open alongside this notebook as you work through the walkthroughs.
+:::
+
+## Data Visualization
+
+Through this workbook you'll learn techniques for data visualization. You'll think about how the type of plot chosen impacts what information is conveyed (or lost). Choosing the wrong plot type can result in a useless plot (at best) or even a plot which is misleading. Think about the *types* (numerical, categorical) of variables you are working with and how they dictate which plot type should be utilized — for example, a scatterplot is not appropriate in every scenario!
+
+## Objectives
+
+**Workbook Objectives:** After completing this workbook you should be able to:
+
++ Read a plot, describe any interesting features, and accurately convey the *story* being told by the plot.
++ Identify and utilize the most appropriate plot types for your scenario by considering the *types* of variables you are working with.
++ Utilize color and fill to show additional dimensions of data in a plot, but also recognize that adding more information to a plot can negatively impact our ability to read the graphic.
++ Use your knowledge of data visualization to generate informative plots which uncover a compelling (and truthful) story about the relationships that exist between variables.
+
+## Choosing the Right Plot
+
+Choosing an appropriate plot is extremely important in data visualization. Some plots don't make sense for certain variable types. For example, a scatterplot in the case of two-categorical predictors is quite a silly choice – the only thing this plot tells us is that every combination of fuel type and engine brand exists in our dataset. We have no idea which combinations are most or least popular.
+
+```{r}
+#| echo: false
+#| eval: true
+#| fig.height: 2.25
+#| fig.width: 2.25
+
+data |> 
+  ggplot() + 
+  geom_point(aes(x = FuelType, y = EngineBrand), size = 2) + 
+  labs(y = "Engine Brand", x = "Fuel Type")
+```
+
+The following are recommended basic plot types for common scenarios:
+
++ A single numerical variable: a **histogram** or **boxplot**
++ A single categorical variable: a **bar chart**
++ Numerical versus numerical: a **scatterplot**
++ Numerical versus categorical: **side-by-side boxplots**
++ Categorical versus categorical: a **stacked bar chart** or a **100% stacked bar chart**
+
+:::{.callout-caution}
+## Check Your Understanding: A Better Plot
+
+Which of the following plot types would have been a better choice to display the engine brand and fuel type data? Select all that apply.
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.checkbox(
+  new Map([
+    ["A histogram", 1],
+    ["A barplot with fill color", 2],
+    ["A heatmap", 3],
+    ["A dotplot", 4],
+    ["Side-by-side boxplots", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1_selected_t4e") ?? "[]") ?? []}
+);
+
+{
+  localStorage.setItem("q1_selected_t4e", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t4e", "2,3");
+  localStorage.setItem("q1_result_t4e", (!q1 || q1.length === 0) ? "unattempted" : (q1.toString() === "2,3" ? "correct" : "incorrect"));
+}
+ok_checkbox(q1, "2,3");
+```
+
+:::
+
+## Getting Started: Exploring the Data
+
+Throughout this workbook we will explore fuel efficiencies of multiple classes of vehicles using the `mpg` dataset. Open your spreadsheet now and take a few minutes to explore the data. The spreadsheet contains just a single tab containing all of the data, labeled `mpg`. Use it to familiarize yourself with what is available.
+
+A limited data dictionary (a listing of the column names and their explanations) appears below.
+
+| Variable | Description |
+|---|---|
+| `manufacturer` | Vehicle manufacturer |
+| `model` | Model name |
+| `displ` | Engine displacement in litres (a measure of engine size) |
+| `year` | Year of manufacture |
+| `cyl` | Number of cylinders |
+| `trans` | Transmission type (detail level) |
+| `drv` | Drive type: `f` = front-wheel, `r` = rear-wheel, `4` = four-wheel |
+| `cty` | City fuel economy (miles per gallon) |
+| `hwy` | Highway fuel economy (miles per gallon) |
+| `fl` | Fuel type |
+| `class` | Vehicle class (e.g. compact, SUV, pickup) |
+| `trans2` | Automatic or manual transmission indicator |
+
+Use the table above, and your exploration of the dataset, to answer the following questions.
+
+:::{.callout-caution}
+## Check Your Understanding: Variables
+
+How many variables are contained in the `mpg` dataset?
+
+```{ojs}
+//| echo: false
+
+viewof q2 = Inputs.radio(
+  new Map([
+    ["1", 1],
+    ["12", 2],
+    ["234", 3],
+    ["245", 4],
+    ["2574", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2_selected_t4e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q2_selected_t4e", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t4e", "2");
+  localStorage.setItem("q2_result_t4e", q2 === null ? "unattempted" : (q2 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q2, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Observations
+
+How many observations (records) are contained in the `mpg` dataset?
+
+```{ojs}
+//| echo: false
+
+viewof q3 = Inputs.radio(
+  new Map([
+    ["1", 1],
+    ["12", 2],
+    ["234", 3],
+    ["245", 4],
+    ["2574", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3_selected_t4e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q3_selected_t4e", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t4e", "3");
+  localStorage.setItem("q3_result_t4e", q3 === null ? "unattempted" : (q3 == 3 ? "correct" : "incorrect"));
+}
+ok_response(q3, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Numerical Variables
+
+Which of the variables is numerical? Select all that apply.
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.checkbox(
+  new Map([
+    ["manufacturer", 1],
+    ["model", 2],
+    ["displ (displacement)", 3],
+    ["cyl (cylinders)", 4],
+    ["trans (transmission type)", 5],
+    ["year", 6],
+    ["drv (drive type)", 7],
+    ["cty (city fuel economy)", 8],
+    ["hwy (highway fuel economy)", 9],
+    ["fl (fuel type)", 10],
+    ["class (vehicle class)", 11],
+    ["trans2 (auto/manual transmission)", 12]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4_selected_t4e") ?? "[]") ?? []}
+);
+
+{
+  localStorage.setItem("q4_selected_t4e", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t4e", "3,4,6,8,9");
+  localStorage.setItem("q4_result_t4e", (!q4 || q4.length === 0) ? "unattempted" : (q4.toString() === "3,4,6,8,9" ? "correct" : "incorrect"));
+}
+ok_checkbox(q4, "3,4,6,8,9");
+```
+
+:::
+
+## Histograms and Boxplots: A Single Numerical Variable
+
+Before exploring relationships between variables, it is useful to understand the distribution of a single numerical variable on its own. Two plots are especially well suited for this: the **histogram** and the **boxplot**.
+
+A **histogram** divides the range of a numerical variable into equal-width intervals (called *bins*) and draws a bar for each bin whose height reflects how many observations fall into that bin. Histograms are excellent for showing the overall *shape* of a distribution — whether it is symmetric or skewed, unimodal or bimodal, and whether there are gaps or unusual concentrations of values.
+
+A **boxplot** summarizes a distribution using five key values: the minimum, $Q_1$ (the first quartile), the median, $Q_3$ (the third quartile), and the maximum. Any observations that extend more than 1.5 times the IQR beyond $Q_1$ or $Q_3$ are shown as individual dots and flagged as potential outliers. Boxplots are more compact than histograms and make it easy to read off the median and IQR at a glance, but they hide the detailed shape that a histogram reveals.
+
+The plots below show the distribution of highway fuel economy (`hwy`) for the vehicles in the `mpg` dataset, first as a histogram and then as a boxplot.
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+
+library(patchwork)
+
+p1 <- mpg |>
+  ggplot() +
+  geom_histogram(aes(x = hwy), binwidth = 2, fill = "purple", color = "black") +
+  labs(x = "Highway MPG", y = "Count", title = "Histogram of Highway MPG")
+
+p2 <- mpg |>
+  ggplot() +
+  geom_boxplot(aes(y = hwy)) +
+  coord_flip() +
+  labs(y = "Highway MPG", title = "Boxplot of Highway MPG")
+
+p1 + p2
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Reading a Histogram
+
+Based on the histogram above, which of the following best describes the distribution of highway fuel economy?
+
+```{ojs}
+//| echo: false
+
+viewof q_hist = Inputs.checkbox(
+  new Map([
+    ["The distribution is roughly symmetric with no apparent outliers.", 1],
+    ["The distribution is skewed right, with most vehicles achieving moderate highway MPG and a few achieving very high values.", 2],
+    ["The distribution is skewed left, with most vehicles achieving high highway MPG and a few achieving very low values.", 3],
+    ["The distribution is bimodal, with two distinct peaks.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q_hist_selected_t4e") ?? "[]") ?? []}
+);
+
+{
+  localStorage.setItem("q_hist_selected_t4e", JSON.stringify(q_hist));
+  localStorage.setItem("q_hist_correct_t4e", "2");
+  localStorage.setItem("q_hist_result_t4e", q_hist === null ? "unattempted" : (q_hist.toString === "2,4" ? "correct" : "incorrect"));
+}
+ok_checkbox(q_hist, "2,4");
+```
+
+:::
+
+**Try It!** Build a histogram of city fuel economy (`cty`) in your spreadsheet.
+
+:::{.callout-tip}
+## Creating a Histogram
+
+**In Google Sheets:**
+
+1. Click the column header for `cty` to select the entire column.
+2. Go to **Insert → Chart**.
+3. In the Chart Editor, change the **Chart type** to **Histogram chart**.
+4. Under the **Customize** tab, use the **Histogram** section to adjust the bucket (bin) size if desired.
+5. Add a title and axis labels using the **Customize** tab.
+
+**In Excel:**
+
+1. Click the column header for `cty` to select the entire column.
+2. Go to **Insert → Charts → Insert Statistic Chart → Histogram**.
+
+    + Note that the icon for the *Statistics Chart* looks like a histogram.
+3. Right-click (Windows) or `ctrl`+click (Mac) on the bars of the histogram and choose **Format Data Series** to adjust the bin width under **Bin width** or **Number of bins**, if desired.
+4. Add a title and axis labels via **Chart Design → Add Chart Element**.
+:::
+
+**Try It!** Now build a boxplot of `cty` in your spreadsheet.
+
+:::{.callout-tip}
+## Creating a Boxplot for a Single Variable
+
+**In Google Sheets:** Sheets does not have native boxplot functionality and requires the construction of a boxplot through its candle-stick plot functionality. Boxplots in Google Sheets are omitted from this activity, but there are some good tutorials for constructing them on YouTube.
+
+**In Excel:**
+
+1. Click the column header for `hwy` to select the entire column.
+2. Go to **Insert → Charts → Insert Statistic Chart → Box and Whisker**.
+3. Add a title and axis label via **Chart Design → Add Chart Element**.
+:::
+
+## Scatterplots: Two Numerical Variables
+
+A **scatterplot** is the standard choice when you want to explore the relationship between two numerical variables. Each observation becomes a point, with one variable on the x-axis and the other on the y-axis.
+
+The plot below shows highway miles per gallon (`hwy`) plotted against engine displacement (`displ`).
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+
+mpg |> 
+  ggplot() + 
+  geom_point(aes(x = displ, y = hwy)) +
+  labs(x = "Engine Displacement (L)", y = "Highway MPG")
+```
+
+Use the plot above to answer the following questions.
+
+:::{.callout-caution}
+## Check Your Understanding: Reading a Plot I
+
+Which of the following is true?
+
+```{ojs}
+//| echo: false
+
+viewof q5 = Inputs.radio(
+  new Map([
+    ["Highway miles per gallon and engine displacement are independent.", 1],
+    ["Highway miles per gallon and engine displacement are associated.", 2],
+    ["It is impossible to tell whether the variables are associated or independent.", 3],
+    ["Highway miles per gallon and engine displacement are both independent and associated.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5_selected_t4e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q5_selected_t4e", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t4e", "2");
+  localStorage.setItem("q5_result_t4e", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q5, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Reading a Plot II
+
+Describe the relationship between highway miles per gallon and engine displacement.
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["Engine displacement and highway miles per gallon share a negative, linear relationship.", 1],
+    ["Engine displacement and highway miles per gallon share a positive, linear relationship.", 2],
+    ["Engine displacement and highway miles per gallon share a negative, non-linear relationship.", 3],
+    ["Engine displacement and highway miles per gallon share a positive, non-linear relationship.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6_selected_t4e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q6_selected_t4e", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t4e", "3");
+  localStorage.setItem("q6_result_t4e", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
+}
+ok_response(q6, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Reading a Plot III
+
+Which is the best practical interpretation of the plot?
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["Generally, engines with higher displacement are associated with lower average highway miles per gallon ratings.", 1],
+    ["Generally, engines with higher displacement are associated with higher average highway miles per gallon ratings.", 2],
+    ["Higher engine displacement causes lower average highway miles per gallon ratings.", 3],
+    ["Engine displacement causes higher average highway miles per gallon ratings.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7_selected_t4e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q7_selected_t4e", JSON.stringify(q7));
+  localStorage.setItem("q7_correct_t4e", "1");
+  localStorage.setItem("q7_result_t4e", q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q7, "1");
+```
+
+:::
+
+**Try It!** Now build a scatterplot of your own. Using your spreadsheet, create a scatterplot of city miles per gallon (`cty`) on the y-axis against engine displacement (`displ`) on the x-axis.
+
+:::{.callout-tip}
+## Creating a Scatterplot
+
+**In Google Sheets:**
+
+1. Select the two columns you want to plot. To select non-adjacent columns (like `displ` in column C and `cty` in column H), hold **Ctrl** (Windows) or **Cmd** (Mac) while clicking the second column header.
+2. Go to **Insert → Chart**.
+3. In the Chart Editor, under **Chart type**, select **Scatter chart**.
+4. Under **X-axis**, confirm `displ` is selected. Under **Series**, confirm `cty` is selected. If not, use the dropdowns to correct them.
+   + If any extra **Series** columns are selected, use the triple-dot icon to *Remove* them from the plot.
+5. Click the chart title to add a descriptive title, and use the **Customize** tab to add axis labels.
+
+**In Excel:**
+
+1. Select the `displ` column first (this will become the x-axis). Then hold **Ctrl** and select the `cty` column.
+2. Go to **Insert → Charts → Scatter** and choose the first option (Scatter with only Markers).
+3. Right-click the chart and choose **Select Data** to verify which series is on which axis. If the axes are swapped, use **Switch Row/Column** or reassign the series.
+4. Use **Chart Design → Add Chart Element** to add a title and axis labels.
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: City vs. Displacement
+
+Based on the scatterplot you just built, which of the following best describes the relationship between engine displacement and city fuel economy?
+
+```{ojs}
+//| echo: false
+
+viewof q_cty_displ = Inputs.radio(
+  new Map([
+    ["City fuel economy tends to increase as engine displacement increases.", 1],
+    ["City fuel economy tends to decrease as engine displacement increases.", 2],
+    ["There is no clear relationship between city fuel economy and engine displacement.", 3],
+    ["City fuel economy and engine displacement are perfectly linearly related.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q_cty_displ_selected_t4e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q_cty_displ_selected_t4e", JSON.stringify(q_cty_displ));
+  localStorage.setItem("q_cty_displ_correct_t4e", "2");
+  localStorage.setItem("q_cty_displ_result_t4e", q_cty_displ === null ? "unattempted" : (q_cty_displ == 2 ? "correct" : "incorrect"));
+}
+ok_response(q_cty_displ, "2");
+```
+
+:::
+
+**Try It!** Build another scatterplot, but this time use the number of cylinders (`cyl`) along the $x$-axis and the highway gas mileage (`hwy`) along the $y$-axis.
+
+Notice that this plot isn't very useful because the cylinders variable takes on very few levels. We may be better off treating `cyl` as if it were a categorical variable here, which leads us naturally to the next plot type.
+
+## Boxplots: Numerical vs. Categorical
+
+When you want to compare the distribution of a numerical variable across the levels of a categorical variable, a set of **side-by-side boxplots** is usually the best choice. Each box summarizes one group, showing the median, IQR, and any outliers.
+
+Below is a set of side-by-side boxplots showing highway fuel economy (`hwy`) broken out by number of cylinders (`cyl`). Even though `cyl` is stored as a number, it behaves more like a category here since it only takes the values 4, 5, 6, and 8.
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+
+mpg |>
+  ggplot() + 
+  geom_boxplot(aes(x = factor(cyl), y = hwy)) +
+  labs(x = "Number of Cylinders", y = "Highway MPG")
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Reading Boxplots
+
+Based on the boxplots above, which number of cylinders is associated with the highest median highway fuel economy?
+
+```{ojs}
+//| echo: false
+
+viewof q_boxplot = Inputs.radio(
+  new Map([
+    ["4 cylinders", 1],
+    ["5 cylinders", 2],
+    ["6 cylinders", 3],
+    ["8 cylinders", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q_boxplot_selected_t4e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q_boxplot_selected_t4e", JSON.stringify(q_boxplot));
+  localStorage.setItem("q_boxplot_correct_t4e", "1");
+  localStorage.setItem("q_boxplot_result_t4e", q_boxplot === null ? "unattempted" : (q_boxplot == 1 ? "correct" : "incorrect"));
+}
+ok_response(q_boxplot, "1");
+```
+
+:::
+
+**Try It!** Now try building a set of side-by-side boxplots in your spreadsheet showing the distribution of `hwy` for each cylinder group if you'd like. Doing so is possible in both Google Sheets and Excel, but the process can be complex. The instructions for Excel are listed below and a general strategy for Google Sheets is listed, but the details are omitted.
+
+:::{.callout-tip}
+## Creating Side-by-Side Boxplots
+
+**In Google Sheets:** Building boxplots is possible, but you'll need to calculate the minimum, Q1 (first quartile), median, Q3 (third quartile), and maximum for each group prior to building the boxplots. Due to the complexity, boxplots in Google Sheets are omitted here.
+
+**In Excel:**
+
+1. Select the `cyl` column and the `hwy` column.
+2. Go to **Insert → Charts → Insert Statistic Chart → Box and Whisker**. Note that the icon for the "Statistical Chart" grouping may look like a histogram.
+3. Use the *Select Data* button to edit the data sources used for the chart.
+   + Under *Legend entries (Series)*, select `cyl` and use the minus icon (`-`) to remove that column.
+   + In the *Horizontal (Category) axis labels* section, choose the range corresponding to the cylinder values (`=mpg!$E$2:$E$235`) and click *OK*.
+4. Right-click the chart to add axis titles and a chart title via **Add Chart Element**.
+
+*Note:* Neither of these pathways are particularly easy. Focus instead on reading and interpreting the boxplot shown in the notebook above — the conceptual takeaways are what matter most here.
+:::
+
+## Bar Charts: A Single Categorical Variable
+
+A **bar chart** displays the frequency (or relative frequency) of each level of a categorical variable. The height of each bar shows how many observations fall into that category.
+
+Consider the vehicle classes in the `mpg` dataset. The bar chart below shows how many vehicles of each class appear in the data.
+
+```{r}
+#| echo: false
+#| eval: true
+
+mpg |>
+  ggplot() +
+  geom_bar(aes(x = class)) +
+  labs(x = "Vehicle Class", y = "Count", title = "Distribution of Vehicle Classes")
+```
+
+**Try It!** Now build this bar chart in your spreadsheet. Starting this requires the construction of a pivot table, a tool you first encountered in the Topic 3 notebook.
+
+:::{.callout-tip}
+## Creating a Bar Chart from a Pivot Table
+
+**In Google Sheets:**
+
+1. Click anywhere in your data and go to **Insert → Pivot table**.
+2. Add `class` to **Rows** and add `class` to **Values** (summarize by `COUNTA`).
+3. Highlight the cells corresponding to the classes and their counts, then go to **Insert → Chart**.
+4. Google Sheets should default to a bar or column chart. If not, change the Chart type to **Column chart** in the Chart Editor.
+5. Add a title and axis labels using the **Customize** tab.
+
+**In Excel:**
+
+1. Click anywhere in your data and go to **Insert → PivotTable**.
+2. Drag `class` to **Rows** and drag `class` to **Values** (it will count automatically).
+3. Click anywhere in the pivot table, then go to **PivotTable Analyze → PivotChart**.
+4. Choose **Column** and click **OK**.
+5. Add a title and axis labels via **Chart Design → Add Chart Element**.
+:::
+
+## Stacked Bar Charts: Two Categorical Variables
+
+When you have two categorical variables, a **stacked bar chart** lets you see both the total count for each level of one variable and the composition of those totals by the levels of the second variable.
+
+Consider vehicle `class` and drive type (`drv`). Neither variable is numerical, so a scatterplot would be inappropriate here.
+
+:::{.callout-caution}
+## Check Your Understanding: Appropriate Plot Types I
+
+Why would a scatterplot not be an appropriate visual to use with `class` and `drv`?
+
+```{ojs}
+//| echo: false
+
+viewof q8 = Inputs.radio(
+  new Map([
+    ["Trick question -- a scatterplot is always appropriate.", 1],
+    ["At least one of the two variables is not numerical.", 2],
+    ["A scatterplot would be okay but there are better options.", 3],
+    ["There isn't enough data for a scatterplot.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8_selected_t4e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q8_selected_t4e", JSON.stringify(q8));
+  localStorage.setItem("q8_correct_t4e", "2");
+  localStorage.setItem("q8_result_t4e", q8 === null ? "unattempted" : (q8 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q8, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Appropriate Plot Types II
+
+Which of the following plot types would be appropriate for visualizing `class` and `drv` together? Select all that apply.
+
+```{ojs}
+//| echo: false
+
+viewof q9 = Inputs.checkbox(
+  new Map([
+    ["A histogram", 1],
+    ["A side-by-side boxplot", 2],
+    ["A bar chart with fill color", 3],
+    ["A heatmap", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9_selected_t4e") ?? "[]") ?? []}
+);
+
+{
+  localStorage.setItem("q9_selected_t4e", JSON.stringify(q9));
+  localStorage.setItem("q9_correct_t4e", "3,4");
+  localStorage.setItem("q9_result_t4e", (!q9 || q9.length === 0) ? "unattempted" : (q9.toString() === "3,4" ? "correct" : "incorrect"));
+}
+ok_checkbox(q9, "3,4");
+```
+
+:::
+
+The stacked bar chart below shows vehicle class on the x-axis, with each bar filled by drive type (`drv`).
+
+```{r}
+#| echo: false
+#| eval: true
+
+mpg |>
+  ggplot() +
+  geom_bar(aes(x = class, fill = drv)) +
+  labs(x = "Vehicle Class", y = "Count", title = "Vehicle Class by Drive Type")
+```
+
+**Try It!** Now build this chart in your spreadsheet. The approach is very similar to the way we constructed a simple bar chart above.
+
+:::{.callout-tip}
+## Creating a Stacked Bar Chart
+
+**In Google Sheets:**
+
+1. Create a pivot table with `class` in **Rows** and `drv` in **Columns**, and `class` in **Values** summarized by `COUNTA`. This produces a cross-tabulation showing the count of each class × drive type combination.
+2. Highlight the range containing the class types (row labels), drive type labels (column labels), and calculated counts. Then choose **Insert → Chart**.
+3. If **Stacked column chart** is not already selected as the *Chart type*, use the dropdown menu to choose it.
+4. Use the *Customize* menu to add a title and axis labels.
+
+**In Excel:**
+
+1. Create a PivotTable with `class` in **Rows**, `drv` in **Columns**, and `class` in **Values** (set to `CountA`).
+2. Click anywhere in the PivotTable, then go to **PivotTable Analyze → PivotChart**.
+3. Choose **Bar** or **Column**, then select the **Stacked** subtype. Click **OK**.
+4. Add a title and axis labels.
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Reading a Stacked Bar Chart
+
+Based on the stacked bar chart above, which vehicle class appears to be most exclusively four-wheel drive (`4`)?
+
+```{ojs}
+//| echo: false
+
+viewof q_stackedbar = Inputs.radio(
+  new Map([
+    ["compact", 1],
+    ["midsize", 2],
+    ["pickup", 3],
+    ["subcompact", 4],
+    ["suv", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q_stackedbar_selected_t4e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q_stackedbar_selected_t4e", JSON.stringify(q_stackedbar));
+  localStorage.setItem("q_stackedbar_correct_t4e", "3");
+  localStorage.setItem("q_stackedbar_result_t4e", q_stackedbar === null ? "unattempted" : (q_stackedbar == 3 ? "correct" : "incorrect"));
+}
+ok_response(q_stackedbar, "3");
+```
+
+:::
+
+**Try It!** Create another stacked bar chart comparing the transmission type as automatic or manual (`trans2`) on the $x$-axis and using the drive type (`drv`) as the secondary variable.
+
+:::{.callout-note}
+## A Note on the Transmission Variable
+
+The original `trans` column in the `mpg` dataset contains detailed transmission codes like `auto(l5)` and `manual(m6)`. If you're interested in how I constructed the `trans2` variable, you can click into cell `L1` to view the formula I used.
+:::
+
+Notice that this stacked bar plot shows us that there are approximately twice as many automatic vehicles in the dataset as there are manual vehicles. It is more difficult to compare the drive types across the groups though.
+
+## 100% Stacked Bar Charts
+
+A stacked bar chart shows raw counts, which makes it easy to see how many vehicles fall into each category overall. But it can be hard to compare the *proportions* of drive types across vehicle classes when the bar heights differ. A **100% stacked bar chart** rescales every bar to the same height, making proportional comparisons much easier — at the cost of losing information about the total counts.
+
+The plot below uses a 100% stacked bar to show the distribution of transmission type (simplified to manual vs. automatic) broken out by drive type.
+
+```{r}
+#| echo: false
+#| eval: true
+
+mpg |>
+  mutate(trans2 = str_sub(trans, 1, -5)) |>
+  ggplot() + 
+  geom_bar(aes(x = trans2, fill = drv), position = "fill") +
+  labs(x = "Transmission Type", y = "Proportion",
+       title = "Drive Type Composition by Transmission Type")
+```
+
+**Try It!** Reproduce this plot in your spreadsheet environment.
+
+:::{.callout-tip}
+## 100% Stacked Bar Plots
+
+Follow the steps below to convert your stacked bar plot into a 100% stacked bar plot.
+
+**Google Sheets:**
+
+1. Click on the stacked bar plot you created.
+2. Use the triple-dot icon in the top-right corner of the plot to access the *Edit Chart* menu.
+3. Use the *Stacking* dropdown menu to choose 100%.
+4. Update your title and axis labels.
+
+**Excel:**
+
+1. Right click (Windows) or `ctrl`+click (Mac) the stacked barplot you created.
+2. Go to **Change chart type → Column → 100% Stacked Column**.
+3. Update your title and axis labels.
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Reading a 100% Stacked Bar Chart
+
+Based on the 100% stacked bar chart you created (or the one above), which of the following statements is best supported?
+
+```{ojs}
+//| echo: false
+
+viewof q10 = Inputs.radio(
+  new Map([
+    ["Front-wheel drive vehicles make up a larger proportion of automatic transmissions than of manual transmissions.", 1],
+    ["Front-wheel drive vehicles make up a larger proportion of manual transmissions than of automatic transmissions.", 2],
+    ["Rear-wheel drive vehicles make up a larger proportion of manual transmissions than of automatic transmissions.", 3],
+    ["The distribution of drive types is identical between manual and automatic transmission vehicles.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10_selected_t4e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q10_selected_t4e", JSON.stringify(q10));
+  localStorage.setItem("q10_correct_t4e", "2");
+  localStorage.setItem("q10_result_t4e", q10 === null ? "unattempted" : (q10 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q10, "2");
+```
+
+:::
+
+## Adding a Third Variable with Color
+
+One powerful feature of scatterplots is the ability to encode a third variable using point color. The plot below revisits the `hwy` vs. `displ` scatterplot, this time coloring each point by vehicle `class`. This reveals that the group of high-displacement, low-efficiency vehicles sitting in the lower right of the plot is dominated by two-seater sports cars — an interesting finding.
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+
+mpg |> 
+  ggplot() + 
+  geom_point(aes(x = displ, y = hwy, color = class)) +
+  labs(x = "Engine Displacement (L)", y = "Highway MPG",
+       title = "Highway MPG vs. Displacement, Colored by Class")
+```
+
+Adding color works well here because there are a manageable number of vehicle classes and the groups are reasonably separable. As a general rule: the more categories you have, the harder a colored scatterplot becomes to read.
+
+:::{.callout-tip}
+## Adding Color to a Scatterplot
+
+**In Google Sheets:**
+
+Google Sheets does not natively support coloring scatterplot points by a categorical variable in a single step. The most practical workaround is to split the data into separate ranges by class. This means you'll have the data organized into a pair of columns per class and then add each as a separate **Series** in the chart. This is tedious for seven classes but can work well for two or three groups.
+
+1. In a blank area of your sheet, create a separate column for `displ` and `hwy` for each vehicle class using `FILTER()`. For example, `=FILTER(displ_range, class_range="compact")` extracts the displacement values for compact vehicles.
+2. Insert a Scatter chart and add each class as a separate series.
+3. Use the **Customize → Series** tab to assign a distinct color to each series.
+
+**In Excel:**
+
+Excel also requires a workaround for this. The simplest approach is:
+
+1. Sort your data by `class`.
+2. Create a scatter chart and then use **Select Data → Add** to add each class as a separate series, specifying the corresponding `displ` and `hwy` ranges for each.
+3. Format each series with a distinct color.
+
+*Note:* For both tools, coloring by a categorical variable in a scatterplot is more involved than it would be in a dedicated statistics package. If you find the multi-series approach too cumbersome for seven classes, focus on reading and interpreting the plot shown above. Being able to interpret these types of plots is more important than being able to construct them at this stage.
+:::
+
+## Small Multiples: Viewing One Group at a Time
+
+One way to reduce clutter in a colored scatterplot is to split the data into separate panels — one per category — rather than overlaying everything in a single chart. In data visualization this is called **small multiples** or **faceting**. The idea is that seven simple, readable plots can communicate more clearly than one complex one.
+
+```{r}
+#| echo: false
+#| eval: true
+#| message: false
+#| warning: false
+
+mpg |> 
+  ggplot() + 
+  geom_point(aes(x = displ, y = hwy, color = class)) + 
+  facet_wrap(~ class, nrow = 2) +
+  labs(x = "Engine Displacement (L)", y = "Highway MPG")
+```
+
+In a spreadsheet program, you can achieve something similar by filtering the data to one class at a time and creating a separate chart for each group, then arranging them side by side. For datasets with many categories this is quite time-consuming, and it is one of the clearest illustrations of where a dedicated statistics tool has a significant practical advantage over a spreadsheet.
+
+## Submit
+
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit your **question hash** below using the method your instructor has requested.
+
+:::{.callout-warning}
+## Question Hash
+
+The hash below encodes your responses to the multiple choice and checkbox questions in this activity.
+
+```{ojs}
+//| echo: false
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+question_hash = {
+  q1; q2; q3; q4; q5; q6; q7; q8; q9; q10; q_cty_displ; q_boxplot; q_stackedbar; q_hist;
+  
+  const results = {
+    notebook: "Topic 4: Data Visualization",
+    type: "questions",
+    timestamp: new Date().toISOString(),
+    questions: {
+      q1_better_plot: {
+        selected: q1 ?? [],
+        correct_answer: "2,3",
+        result: (!q1 || q1.length === 0) ? "unattempted" : (q1.toString() === "2,3" ? "correct" : "incorrect")
+      },
+      q2_variables: {
+        selected: q2,
+        correct_answer: "2",
+        result: q2 === null ? "unattempted" : (q2 == 2 ? "correct" : "incorrect")
+      },
+      q3_observations: {
+        selected: q3,
+        correct_answer: "3",
+        result: q3 === null ? "unattempted" : (q3 == 3 ? "correct" : "incorrect")
+      },
+      q4_numerical_variables: {
+        selected: q4 ?? [],
+        correct_answer: "3,4,6,8,9",
+        result: (!q4 || q4.length === 0) ? "unattempted" : (q4.toString() === "3,4,6,8,9" ? "correct" : "incorrect")
+      },
+      q_hist_shape: {
+        selected: q_hist ?? [],
+        correct_answer: "2,4",
+        result: (!q_hist || q_hist.length === 0) ? "unattempted" : (q_hist.toString() === "2,4" ? "correct" : "incorrect")
+      },
+      q5_reading_plot_1: {
+        selected: q5,
+        correct_answer: "2",
+        result: q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect")
+      },
+      q6_reading_plot_2: {
+        selected: q6,
+        correct_answer: "3",
+        result: q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect")
+      },
+      q7_reading_plot_3: {
+        selected: q7,
+        correct_answer: "1",
+        result: q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect")
+      },
+      q_cty_displ_scatter: {
+        selected: q_cty_displ,
+        correct_answer: "2",
+        result: q_cty_displ === null ? "unattempted" : (q_cty_displ == 2 ? "correct" : "incorrect")
+      },
+      q_boxplot_cylinders: {
+        selected: q_boxplot,
+        correct_answer: "1",
+        result: q_boxplot === null ? "unattempted" : (q_boxplot == 1 ? "correct" : "incorrect")
+      },
+      q8_appropriate_plots_1: {
+        selected: q8,
+        correct_answer: "2",
+        result: q8 === null ? "unattempted" : (q8 == 2 ? "correct" : "incorrect")
+      },
+      q9_appropriate_plots_2: {
+        selected: q9 ?? [],
+        correct_answer: "3,4",
+        result: (!q9 || q9.length === 0) ? "unattempted" : (q9.toString() === "3,4" ? "correct" : "incorrect")
+      },
+      q_stackedbar_drv: {
+        selected: q_stackedbar,
+        correct_answer: "3",
+        result: q_stackedbar === null ? "unattempted" : (q_stackedbar == 3 ? "correct" : "incorrect")
+      },
+      q10_100pct_stacked: {
+        selected: q10,
+        correct_answer: "2",
+        result: q10 === null ? "unattempted" : (q10 == 2 ? "correct" : "incorrect")
+      }
+    }
+  };
+  
+  return toBase64(JSON.stringify(results));
+}
+```
+
+```{ojs}
+//| echo: false
+
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Since there were no code cell exercises in this activity, there is no *exercise hash* to generate.
+:::
+
+## Summary
+
+:::{.callout-tip}
+## Main Takeaways
+
++ **Variable types dictate plot types.** Always consider whether your variables are numerical or categorical before choosing a plot:
+  + Single numerical variable → histogram or boxplot
+  + Single categorical variable → bar chart
+  + Two numerical variables → scatterplot
+  + Numerical vs. categorical → side-by-side boxplots
+  + Two categorical variables → stacked bar chart or 100% stacked bar chart
++ **Histograms** reveal the shape of a distribution; **boxplots** highlight the median, IQR, and outliers. Both are useful for a single numerical variable and complement each other well.
++ **Stacked bar charts** show raw counts for two categorical variables simultaneously; **100% stacked bar charts** rescale to proportions, making within-group comparisons easier but hiding total counts.
++ **Adding color** to a scatterplot can encode a third variable, but more categories make the plot harder to read. **Small multiples** (one panel per category) are often a clearer alternative.
++ A well-labeled chart — with a descriptive title and clear axis labels — communicates far more effectively than an unlabeled one. Always label your charts.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+This activity concludes our foundational work on data exploration and visualization. Over the next several workbooks, we'll transition to probability and working with probability distributions. We'll start with basic, counting-based probability before moving to the binomial distribution and the normal distribution.
+:::
+
+---
+
+## References
+
+[1] Wickham, H., & Grolemund, G. (2017). R for data science: Import, tidy, transform, visualize, and model data. O'Reilly Media.
+
+[2] Wickham, H. (2016). ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York. [dataset]. https://ggplot2.tidyverse.org/reference/mpg.html

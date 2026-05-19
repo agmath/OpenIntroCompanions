@@ -1622,3 +1622,10 @@ This activity concludes our foundational and "R-onramping" work. Over the next s
 
 These interactive workbooks allow setup requirements to be hidden so that we can focus on the task at hand — in this workbook, plotting. When you make the switch to using a standalone R instance you'll need to install and load libraries to expand R's functionality. You can do this with the `install.packages()` and `library()` functions. You would need `{ggplot2}`, `{dplyr}`, `{skimr}`, and `{ggmosaic}` to run the code for this workbook in a local R session.
 :::
+
+---
+
+## References
+
+[1] Wickham, H., & Grolemund, G. (2017). R for data science: Import, tidy, transform, visualize, and model data. O'Reilly Media.
+[2] Wickham, H. (2016). ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York. [dataset]. https://ggplot2.tidyverse.org/reference/mpg.html

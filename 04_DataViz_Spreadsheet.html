@@ -1,0 +1,2083 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.43">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Topic 4: Data Visualization</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+</style>
+
+
+<script src="04_DataViz_Spreadsheet_files/libs/clipboard/clipboard.min.js"></script>
+<script src="04_DataViz_Spreadsheet_files/libs/quarto-html/quarto.js"></script>
+<script src="04_DataViz_Spreadsheet_files/libs/quarto-html/popper.min.js"></script>
+<script src="04_DataViz_Spreadsheet_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="04_DataViz_Spreadsheet_files/libs/quarto-html/anchor.min.js"></script>
+<link href="04_DataViz_Spreadsheet_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="04_DataViz_Spreadsheet_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="04_DataViz_Spreadsheet_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="04_DataViz_Spreadsheet_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="04_DataViz_Spreadsheet_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script src="04_DataViz_Spreadsheet_files/libs/quarto-contrib/live-runtime/live-runtime.js" type="module"></script>
+<link href="04_DataViz_Spreadsheet_files/libs/quarto-contrib/live-runtime/live-runtime.css" rel="stylesheet">
+<script type="module" src="04_DataViz_Spreadsheet_files/libs/quarto-ojs/quarto-ojs-runtime.js"></script>
+<link href="04_DataViz_Spreadsheet_files/libs/quarto-ojs/quarto-ojs.css" rel="stylesheet">
+<style>
+.btn-exercise-solution { display: none !important; }
+</style>
+
+  <script src="https://cdnjs.cloudflare.com/polyfill/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+<script type="text/javascript">
+const typesetMath = (el) => {
+  if (window.MathJax) {
+    // MathJax Typeset
+    window.MathJax.typeset([el]);
+  } else if (window.katex) {
+    // KaTeX Render
+    var mathElements = el.getElementsByClassName("math");
+    var macros = [];
+    for (var i = 0; i < mathElements.length; i++) {
+      var texText = mathElements[i].firstChild;
+      if (mathElements[i].tagName == "SPAN") {
+        window.katex.render(texText.data, mathElements[i], {
+          displayMode: mathElements[i].classList.contains('display'),
+          throwOnError: false,
+          macros: macros,
+          fleqn: false
+        });
+      }
+    }
+  }
+}
+window.Quarto = {
+  typesetMath
+};
+</script>
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Topic 4: Data Visualization</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<div class="cell" data-edit="false">
+<div>
+<div id="webr-1" class="exercise-cell">
+
+</div>
+<script type="webr-1-contents">
+eyJjb2RlIjoid2Vicjo6aW5zdGFsbChcImdyYWRldGhpc1wiLCBxdWlldCA9IFRSVUUpXG5saWJyYXJ5KGdyYWRldGhpcylcbm9wdGlvbnMod2Vici5leGVyY2lzZS5jaGVja2VyID0gZnVuY3Rpb24oXG4gIGxhYmVsLCB1c2VyX2NvZGUsIHNvbHV0aW9uX2NvZGUsIGNoZWNrX2NvZGUsIGVudmlyX3Jlc3VsdCwgZXZhbHVhdGVfcmVzdWx0LFxuICBlbnZpcl9wcmVwLCBsYXN0X3ZhbHVlLCBlbmdpbmUsIHN0YWdlLCAuLi5cbikge1xuICBpZiAoaXMubnVsbChjaGVja19jb2RlKSkge1xuICAgICMgTm8gZ3JhZGluZyBjb2RlLCBzbyBqdXN0IHNraXAgZ3JhZGluZ1xuICAgIGludmlzaWJsZShOVUxMKVxuICB9IGVsc2UgaWYgKGlzLm51bGwobGFiZWwpKSB7XG4gICAgbGlzdChcbiAgICAgIGNvcnJlY3QgPSBGQUxTRSxcbiAgICAgIHR5cGUgPSBcIndhcm5pbmdcIixcbiAgICAgIG1lc3NhZ2UgPSBcIkFsbCBleGVyY2lzZXMgbXVzdCBoYXZlIGEgbGFiZWwuXCJcbiAgICApXG4gIH0gZWxzZSBpZiAoaXMubnVsbChzb2x1dGlvbl9jb2RlKSkge1xuICAgIGxpc3QoXG4gICAgICBjb3JyZWN0ID0gRkFMU0UsXG4gICAgICB0eXBlID0gXCJ3YXJuaW5nXCIsXG4gICAgICBtZXNzYWdlID0gaHRtbHRvb2xzOjp0YWdzJGRpdihcbiAgICAgICAgaHRtbHRvb2xzOjp0YWdzJHAoXCJBIHByb2JsZW0gb2NjdXJyZWQgZ3JhZGluZyB0aGlzIGV4ZXJjaXNlLlwiKSxcbiAgICAgICAgaHRtbHRvb2xzOjp0YWdzJHAoXG4gICAgICAgICAgXCJObyBzb2x1dGlvbiBjb2RlIHdhcyBmb3VuZC4gTm90ZSB0aGF0IGdyYWRpbmcgZXhlcmNpc2VzIHVzaW5nIHRoZSBcIixcbiAgICAgICAgICBodG1sdG9vbHM6OnRhZ3MkY29kZShcImdyYWRldGhpc1wiKSxcbiAgICAgICAgICBcInBhY2thZ2UgcmVxdWlyZXMgYSBtb2RlbCBzb2x1dGlvbiB0byBiZSBpbmNsdWRlZCBpbiB0aGUgZG9jdW1lbnQuXCJcbiAgICAgICAgKVxuICAgICAgKVxuICAgIClcbiAgfSBlbHNlIHtcbiAgICBncmFkZXRoaXM6OmdyYWRldGhpc19leGVyY2lzZV9jaGVja2VyKFxuICAgICAgbGFiZWwgPSBsYWJlbCwgc29sdXRpb25fY29kZSA9IHNvbHV0aW9uX2NvZGUsIHVzZXJfY29kZSA9IHVzZXJfY29kZSxcbiAgICAgIGNoZWNrX2NvZGUgPSBjaGVja19jb2RlLCBlbnZpcl9yZXN1bHQgPSBlbnZpcl9yZXN1bHQsXG4gICAgICBldmFsdWF0ZV9yZXN1bHQgPSBldmFsdWF0ZV9yZXN1bHQsIGVudmlyX3ByZXAgPSBlbnZpcl9wcmVwLFxuICAgICAgbGFzdF92YWx1ZSA9IGxhc3RfdmFsdWUsIHN0YWdlID0gc3RhZ2UsIGVuZ2luZSA9IGVuZ2luZSlcbiAgfVxufSkiLCJhdHRyIjp7ImV2YWwiOnRydWUsIm91dHB1dCI6ZmFsc2UsImVkaXQiOmZhbHNlLCJwZXJzaXN0Ijp0cnVlfX0=
+</script>
+</div>
+</div>
+<div class="cell" data-edit="false" data-define="ok_response">
+<div>
+<div id="webr-2" class="exercise-cell">
+
+</div>
+<script type="webr-2-contents">
+eyJjb2RlIjoiXG5saWJyYXJ5KGh0bWx0b29scylcbm9rX3Jlc3BvbnNlIDwtIGZ1bmN0aW9uKHJlc3BvbnNlLCBuKSB7XG4gIGlmIChpcy5uYShyZXNwb25zZSkpIGRpdihIVE1MKFwiWW91IGhhdmVuJ3QgYW5zd2VyZWQgeWV0LlwiKSwgc3R5bGUgPSBcImNvbG9yOiBwdXJwbGVcIilcbiAgZWxzZSBpZiAocmVzcG9uc2UgPT0gbikgZGl2KEhUTUwoXCJDb3JyZWN0IOKck1wiKSwgc3R5bGUgPSBcImNvbG9yOiBncmVlblwiKVxuICBlbHNlIGRpdihIVE1MKFwiSW5jb3JyZWN0IOKcl1wiKSwgc3R5bGUgPSBcImNvbG9yOiByZWRcIilcbn0iLCJhdHRyIjp7Im91dHB1dCI6ZmFsc2UsImV2YWwiOnRydWUsImVkaXQiOmZhbHNlLCJwZXJzaXN0Ijp0cnVlLCJkZWZpbmUiOlsib2tfcmVzcG9uc2UiXX19
+</script>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb1" data-startfrom="39" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 38;"><span id="cb1-39"><a href="#cb1-39" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">ok_checkbox</span>(response<span class="op">,</span> n) {</span>
+<span id="cb1-40"><a href="#cb1-40" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="op">!</span>response <span class="op">||</span> response<span class="op">.</span><span class="at">length</span> <span class="op">===</span> <span class="dv">0</span>) </span>
+<span id="cb1-41"><a href="#cb1-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">html</span><span class="vs">`&lt;span style="color:purple"&gt;You haven't answered yet.&lt;/span&gt;`</span><span class="op">;</span></span>
+<span id="cb1-42"><a href="#cb1-42" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (response<span class="op">.</span><span class="fu">toString</span>() <span class="op">===</span> n) </span>
+<span id="cb1-43"><a href="#cb1-43" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="fu">html</span><span class="vs">`&lt;span style="color:green"&gt;Correct ✓&lt;/span&gt;`</span><span class="op">;</span></span>
+<span id="cb1-44"><a href="#cb1-44" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">html</span><span class="vs">`&lt;span style="color:red"&gt;Not Yet! ✗&lt;/span&gt;`</span><span class="op">;</span></span>
+<span id="cb1-45"><a href="#cb1-45" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+About
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This activity provides an introduction to data visualization — thinking carefully about which plot types are appropriate for different variable types, how to build them in a spreadsheet, and how to read and interpret what they show.</p>
+<p>Before we jump in, it is worth calling out that data visualization is one place where spreadsheet tools really show their limits. Because plots are all produced by clicking a button, each button basically behaves as a specialized wizard which attempts to produce a reasonable plot given the user’s “inputs”. Often times, getting your intended plot requires editing how the data is being utilized in the default plot generated. This <em>produce the wrong plot and then try to fix it</em> approach can be quite frustrating.</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb2" data-startfrom="73" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 72;"><span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> btn <span class="op">=</span> <span class="fu">html</span><span class="vs">`&lt;button style="</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="vs">    background: #436b95;</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="vs">    color: white;</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="vs">    border: none;</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="vs">    padding: 8px 16px;</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="vs">    border-radius: 4px;</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="vs">    cursor: pointer;</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="vs">    font-size: 0.9em;</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="vs">  "&gt;🔄 Reset My Responses&lt;/button&gt;`</span><span class="op">;</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a>  btn<span class="op">.</span><span class="at">onclick</span> <span class="op">=</span> () <span class="kw">=&gt;</span> {</span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">confirm</span>(<span class="st">'Reset all responses for this activity? This cannot be undone.'</span>)) {</span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a>      <span class="bu">Object</span><span class="op">.</span><span class="fu">keys</span>(localStorage)</span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">filter</span>(k <span class="kw">=&gt;</span> k<span class="op">.</span><span class="fu">endsWith</span>(<span class="st">'_selected_t4e'</span>) <span class="op">||</span> k<span class="op">.</span><span class="fu">endsWith</span>(<span class="st">'_correct_t4e'</span>) <span class="op">||</span> k<span class="op">.</span><span class="fu">endsWith</span>(<span class="st">'_result_t4e'</span>))</span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a>        <span class="op">.</span><span class="fu">forEach</span>(k <span class="kw">=&gt;</span> localStorage<span class="op">.</span><span class="fu">removeItem</span>(k))<span class="op">;</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a>      location<span class="op">.</span><span class="fu">reload</span>()<span class="op">;</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> btn<span class="op">;</span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<p><em>Note.</em> The button above resets multiple choice and checkbox questions. Currently, resetting answer entry cells must be done manually via hitting the <em>Start Over</em> button on each individual interactive cell.</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Using a Spreadsheet Program
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Throughout this activity you’ll be building charts inside your spreadsheet program using the <code>mpg</code> dataset. This data set includes information about a variety of vehicles and their fuel economy.</p>
+<ul>
+<li>If you are a Google Sheets user, <a href="https://docs.google.com/spreadsheets/d/17aIFa-v22GBdNJ0c2XEx6Iwznm9O_TVJmWtE50bRXgk/copy" target="_blank">click here to create a copy of the spreadsheet for this activity</a></li>
+<li>If you are an Excel user, <a href="https://docs.google.com/spreadsheets/d/17aIFa-v22GBdNJ0c2XEx6Iwznm9O_TVJmWtE50bRXgk/export?format=xlsx">click here to download a copy of the spreadsheet for this activity</a></li>
+</ul>
+<p>Keep your spreadsheet open alongside this notebook as you work through the walkthroughs.</p>
+</div>
+</div>
+<section id="data-visualization" class="level2">
+<h2 class="anchored" data-anchor-id="data-visualization">Data Visualization</h2>
+<p>Through this workbook you’ll learn techniques for data visualization. You’ll think about how the type of plot chosen impacts what information is conveyed (or lost). Choosing the wrong plot type can result in a useless plot (at best) or even a plot which is misleading. Think about the <em>types</em> (numerical, categorical) of variables you are working with and how they dictate which plot type should be utilized — for example, a scatterplot is not appropriate in every scenario!</p>
+</section>
+<section id="objectives" class="level2">
+<h2 class="anchored" data-anchor-id="objectives">Objectives</h2>
+<p><strong>Workbook Objectives:</strong> After completing this workbook you should be able to:</p>
+<ul>
+<li>Read a plot, describe any interesting features, and accurately convey the <em>story</em> being told by the plot.</li>
+<li>Identify and utilize the most appropriate plot types for your scenario by considering the <em>types</em> of variables you are working with.</li>
+<li>Utilize color and fill to show additional dimensions of data in a plot, but also recognize that adding more information to a plot can negatively impact our ability to read the graphic.</li>
+<li>Use your knowledge of data visualization to generate informative plots which uncover a compelling (and truthful) story about the relationships that exist between variables.</li>
+</ul>
+</section>
+<section id="choosing-the-right-plot" class="level2">
+<h2 class="anchored" data-anchor-id="choosing-the-right-plot">Choosing the Right Plot</h2>
+<p>Choosing an appropriate plot is extremely important in data visualization. Some plots don’t make sense for certain variable types. For example, a scatterplot in the case of two-categorical predictors is quite a silly choice – the only thing this plot tells us is that every combination of fuel type and engine brand exists in our dataset. We have no idea which combinations are most or least popular.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_DataViz_Spreadsheet_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="216"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The following are recommended basic plot types for common scenarios:</p>
+<ul>
+<li>A single numerical variable: a <strong>histogram</strong> or <strong>boxplot</strong></li>
+<li>A single categorical variable: a <strong>bar chart</strong></li>
+<li>Numerical versus numerical: a <strong>scatterplot</strong></li>
+<li>Numerical versus categorical: <strong>side-by-side boxplots</strong></li>
+<li>Categorical versus categorical: a <strong>stacked bar chart</strong> or a <strong>100% stacked bar chart</strong></li>
+</ul>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: A Better Plot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Which of the following plot types would have been a better choice to display the engine brand and fuel type data? Select all that apply.</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb3" data-startfrom="158" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 157;"><span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a>mutable ok_response <span class="op">=</span> (response<span class="op">,</span> n) <span class="kw">=&gt;</span> { <span class="cf">return</span> <span class="fu">html</span><span class="vs">`Loading...`</span> }<span class="op">;</span></span>
+<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a>viewof q1 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
+<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"A histogram"</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"A barplot with fill color"</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"A heatmap"</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"A dotplot"</span><span class="op">,</span> <span class="dv">4</span>]<span class="op">,</span></span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Side-by-side boxplots"</span><span class="op">,</span> <span class="dv">5</span>]</span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q1_selected_t4e"</span>) <span class="op">??</span> <span class="st">"[]"</span>) <span class="op">??</span> []}</span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q1_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q1))<span class="op">;</span></span>
+<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q1_correct_t4e"</span><span class="op">,</span> <span class="st">"2,3"</span>)<span class="op">;</span></span>
+<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q1_result_t4e"</span><span class="op">,</span> (<span class="op">!</span>q1 <span class="op">||</span> q1<span class="op">.</span><span class="at">length</span> <span class="op">===</span> <span class="dv">0</span>) <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q1<span class="op">.</span><span class="fu">toString</span>() <span class="op">===</span> <span class="st">"2,3"</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb4" data-startfrom="175" data-source-offset="-589"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 174;"><span id="cb4-175"><a href="#cb4-175" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_checkbox</span>(q1<span class="op">,</span> <span class="st">"2,3"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-3-4" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="getting-started-exploring-the-data" class="level2">
+<h2 class="anchored" data-anchor-id="getting-started-exploring-the-data">Getting Started: Exploring the Data</h2>
+<p>Throughout this workbook we will explore fuel efficiencies of multiple classes of vehicles using the <code>mpg</code> dataset. Open your spreadsheet now and take a few minutes to explore the data. The spreadsheet contains just a single tab containing all of the data, labeled <code>mpg</code>. Use it to familiarize yourself with what is available.</p>
+<p>A limited data dictionary (a listing of the column names and their explanations) appears below.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Variable</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>manufacturer</code></td>
+<td>Vehicle manufacturer</td>
+</tr>
+<tr class="even">
+<td><code>model</code></td>
+<td>Model name</td>
+</tr>
+<tr class="odd">
+<td><code>displ</code></td>
+<td>Engine displacement in litres (a measure of engine size)</td>
+</tr>
+<tr class="even">
+<td><code>year</code></td>
+<td>Year of manufacture</td>
+</tr>
+<tr class="odd">
+<td><code>cyl</code></td>
+<td>Number of cylinders</td>
+</tr>
+<tr class="even">
+<td><code>trans</code></td>
+<td>Transmission type (detail level)</td>
+</tr>
+<tr class="odd">
+<td><code>drv</code></td>
+<td>Drive type: <code>f</code> = front-wheel, <code>r</code> = rear-wheel, <code>4</code> = four-wheel</td>
+</tr>
+<tr class="even">
+<td><code>cty</code></td>
+<td>City fuel economy (miles per gallon)</td>
+</tr>
+<tr class="odd">
+<td><code>hwy</code></td>
+<td>Highway fuel economy (miles per gallon)</td>
+</tr>
+<tr class="even">
+<td><code>fl</code></td>
+<td>Fuel type</td>
+</tr>
+<tr class="odd">
+<td><code>class</code></td>
+<td>Vehicle class (e.g.&nbsp;compact, SUV, pickup)</td>
+</tr>
+<tr class="even">
+<td><code>trans2</code></td>
+<td>Automatic or manual transmission indicator</td>
+</tr>
+</tbody>
+</table>
+<p>Use the table above, and your exploration of the dataset, to answer the following questions.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: Variables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>How many variables are contained in the <code>mpg</code> dataset?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb5" data-startfrom="211" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 210;"><span id="cb5-211"><a href="#cb5-211" aria-hidden="true" tabindex="-1"></a>viewof q2 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb5-212"><a href="#cb5-212" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb5-213"><a href="#cb5-213" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"1"</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb5-214"><a href="#cb5-214" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"12"</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb5-215"><a href="#cb5-215" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"234"</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb5-216"><a href="#cb5-216" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"245"</span><span class="op">,</span> <span class="dv">4</span>]<span class="op">,</span></span>
+<span id="cb5-217"><a href="#cb5-217" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"2574"</span><span class="op">,</span> <span class="dv">5</span>]</span>
+<span id="cb5-218"><a href="#cb5-218" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb5-219"><a href="#cb5-219" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q2_selected_t4e"</span>) <span class="op">??</span> <span class="st">"null"</span>)}</span>
+<span id="cb5-220"><a href="#cb5-220" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb5-221"><a href="#cb5-221" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-222"><a href="#cb5-222" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb5-223"><a href="#cb5-223" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q2_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q2))<span class="op">;</span></span>
+<span id="cb5-224"><a href="#cb5-224" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q2_correct_t4e"</span><span class="op">,</span> <span class="st">"2"</span>)<span class="op">;</span></span>
+<span id="cb5-225"><a href="#cb5-225" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q2_result_t4e"</span><span class="op">,</span> q2 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q2 <span class="op">==</span> <span class="dv">2</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb5-226"><a href="#cb5-226" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb6" data-startfrom="227" data-source-offset="-421"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 226;"><span id="cb6-227"><a href="#cb6-227" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q2<span class="op">,</span> <span class="st">"2"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-4-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: Observations
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>How many observations (records) are contained in the <code>mpg</code> dataset?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb7" data-startfrom="240" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 239;"><span id="cb7-240"><a href="#cb7-240" aria-hidden="true" tabindex="-1"></a>viewof q3 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb7-241"><a href="#cb7-241" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb7-242"><a href="#cb7-242" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"1"</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb7-243"><a href="#cb7-243" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"12"</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb7-244"><a href="#cb7-244" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"234"</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb7-245"><a href="#cb7-245" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"245"</span><span class="op">,</span> <span class="dv">4</span>]<span class="op">,</span></span>
+<span id="cb7-246"><a href="#cb7-246" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"2574"</span><span class="op">,</span> <span class="dv">5</span>]</span>
+<span id="cb7-247"><a href="#cb7-247" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb7-248"><a href="#cb7-248" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q3_selected_t4e"</span>) <span class="op">??</span> <span class="st">"null"</span>)}</span>
+<span id="cb7-249"><a href="#cb7-249" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb7-250"><a href="#cb7-250" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-251"><a href="#cb7-251" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb7-252"><a href="#cb7-252" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q3_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q3))<span class="op">;</span></span>
+<span id="cb7-253"><a href="#cb7-253" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q3_correct_t4e"</span><span class="op">,</span> <span class="st">"3"</span>)<span class="op">;</span></span>
+<span id="cb7-254"><a href="#cb7-254" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q3_result_t4e"</span><span class="op">,</span> q3 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q3 <span class="op">==</span> <span class="dv">3</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb7-255"><a href="#cb7-255" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb8" data-startfrom="256" data-source-offset="-421"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 255;"><span id="cb8-256"><a href="#cb8-256" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q3<span class="op">,</span> <span class="st">"3"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-5-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: Numerical Variables
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Which of the variables is numerical? Select all that apply.</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb9" data-startfrom="269" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 268;"><span id="cb9-269"><a href="#cb9-269" aria-hidden="true" tabindex="-1"></a>viewof q4 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
+<span id="cb9-270"><a href="#cb9-270" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb9-271"><a href="#cb9-271" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"manufacturer"</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb9-272"><a href="#cb9-272" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"model"</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb9-273"><a href="#cb9-273" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"displ (displacement)"</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb9-274"><a href="#cb9-274" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"cyl (cylinders)"</span><span class="op">,</span> <span class="dv">4</span>]<span class="op">,</span></span>
+<span id="cb9-275"><a href="#cb9-275" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"trans (transmission type)"</span><span class="op">,</span> <span class="dv">5</span>]<span class="op">,</span></span>
+<span id="cb9-276"><a href="#cb9-276" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"year"</span><span class="op">,</span> <span class="dv">6</span>]<span class="op">,</span></span>
+<span id="cb9-277"><a href="#cb9-277" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"drv (drive type)"</span><span class="op">,</span> <span class="dv">7</span>]<span class="op">,</span></span>
+<span id="cb9-278"><a href="#cb9-278" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"cty (city fuel economy)"</span><span class="op">,</span> <span class="dv">8</span>]<span class="op">,</span></span>
+<span id="cb9-279"><a href="#cb9-279" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"hwy (highway fuel economy)"</span><span class="op">,</span> <span class="dv">9</span>]<span class="op">,</span></span>
+<span id="cb9-280"><a href="#cb9-280" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"fl (fuel type)"</span><span class="op">,</span> <span class="dv">10</span>]<span class="op">,</span></span>
+<span id="cb9-281"><a href="#cb9-281" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"class (vehicle class)"</span><span class="op">,</span> <span class="dv">11</span>]<span class="op">,</span></span>
+<span id="cb9-282"><a href="#cb9-282" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"trans2 (auto/manual transmission)"</span><span class="op">,</span> <span class="dv">12</span>]</span>
+<span id="cb9-283"><a href="#cb9-283" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb9-284"><a href="#cb9-284" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q4_selected_t4e"</span>) <span class="op">??</span> <span class="st">"[]"</span>) <span class="op">??</span> []}</span>
+<span id="cb9-285"><a href="#cb9-285" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb9-286"><a href="#cb9-286" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-287"><a href="#cb9-287" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb9-288"><a href="#cb9-288" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q4_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q4))<span class="op">;</span></span>
+<span id="cb9-289"><a href="#cb9-289" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q4_correct_t4e"</span><span class="op">,</span> <span class="st">"3,4,6,8,9"</span>)<span class="op">;</span></span>
+<span id="cb9-290"><a href="#cb9-290" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q4_result_t4e"</span><span class="op">,</span> (<span class="op">!</span>q4 <span class="op">||</span> q4<span class="op">.</span><span class="at">length</span> <span class="op">===</span> <span class="dv">0</span>) <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q4<span class="op">.</span><span class="fu">toString</span>() <span class="op">===</span> <span class="st">"3,4,6,8,9"</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb9-291"><a href="#cb9-291" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-6-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-6-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb10" data-startfrom="292" data-source-offset="-766"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 291;"><span id="cb10-292"><a href="#cb10-292" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_checkbox</span>(q4<span class="op">,</span> <span class="st">"3,4,6,8,9"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-6-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="histograms-and-boxplots-a-single-numerical-variable" class="level2">
+<h2 class="anchored" data-anchor-id="histograms-and-boxplots-a-single-numerical-variable">Histograms and Boxplots: A Single Numerical Variable</h2>
+<p>Before exploring relationships between variables, it is useful to understand the distribution of a single numerical variable on its own. Two plots are especially well suited for this: the <strong>histogram</strong> and the <strong>boxplot</strong>.</p>
+<p>A <strong>histogram</strong> divides the range of a numerical variable into equal-width intervals (called <em>bins</em>) and draws a bar for each bin whose height reflects how many observations fall into that bin. Histograms are excellent for showing the overall <em>shape</em> of a distribution — whether it is symmetric or skewed, unimodal or bimodal, and whether there are gaps or unusual concentrations of values.</p>
+<p>A <strong>boxplot</strong> summarizes a distribution using five key values: the minimum, <span class="math inline">\(Q_1\)</span> (the first quartile), the median, <span class="math inline">\(Q_3\)</span> (the third quartile), and the maximum. Any observations that extend more than 1.5 times the IQR beyond <span class="math inline">\(Q_1\)</span> or <span class="math inline">\(Q_3\)</span> are shown as individual dots and flagged as potential outliers. Boxplots are more compact than histograms and make it easy to read off the median and IQR at a glance, but they hide the detailed shape that a histogram reveals.</p>
+<p>The plots below show the distribution of highway fuel economy (<code>hwy</code>) for the vehicles in the <code>mpg</code> dataset, first as a histogram and then as a boxplot.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_DataViz_Spreadsheet_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: Reading a Histogram
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Based on the histogram above, which of the following best describes the distribution of highway fuel economy?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb11" data-startfrom="337" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 336;"><span id="cb11-337"><a href="#cb11-337" aria-hidden="true" tabindex="-1"></a>viewof q_hist <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
+<span id="cb11-338"><a href="#cb11-338" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb11-339"><a href="#cb11-339" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"The distribution is roughly symmetric with no apparent outliers."</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb11-340"><a href="#cb11-340" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"The distribution is skewed right, with most vehicles achieving moderate highway MPG and a few achieving very high values."</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb11-341"><a href="#cb11-341" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"The distribution is skewed left, with most vehicles achieving high highway MPG and a few achieving very low values."</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb11-342"><a href="#cb11-342" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"The distribution is bimodal, with two distinct peaks."</span><span class="op">,</span> <span class="dv">4</span>]</span>
+<span id="cb11-343"><a href="#cb11-343" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb11-344"><a href="#cb11-344" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q_hist_selected_t4e"</span>) <span class="op">??</span> <span class="st">"[]"</span>) <span class="op">??</span> []}</span>
+<span id="cb11-345"><a href="#cb11-345" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb11-346"><a href="#cb11-346" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-347"><a href="#cb11-347" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb11-348"><a href="#cb11-348" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q_hist_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q_hist))<span class="op">;</span></span>
+<span id="cb11-349"><a href="#cb11-349" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q_hist_correct_t4e"</span><span class="op">,</span> <span class="st">"2"</span>)<span class="op">;</span></span>
+<span id="cb11-350"><a href="#cb11-350" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q_hist_result_t4e"</span><span class="op">,</span> q_hist <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q_hist<span class="op">.</span><span class="at">toString</span> <span class="op">===</span> <span class="st">"2,4"</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb11-351"><a href="#cb11-351" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-7-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-7-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb12" data-startfrom="352" data-source-offset="-801"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 351;"><span id="cb12-352"><a href="#cb12-352" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_checkbox</span>(q_hist<span class="op">,</span> <span class="st">"2,4"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-7-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Try It!</strong> Build a histogram of city fuel economy (<code>cty</code>) in your spreadsheet.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Creating a Histogram
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>In Google Sheets:</strong></p>
+<ol type="1">
+<li>Click the column header for <code>cty</code> to select the entire column.</li>
+<li>Go to <strong>Insert → Chart</strong>.</li>
+<li>In the Chart Editor, change the <strong>Chart type</strong> to <strong>Histogram chart</strong>.</li>
+<li>Under the <strong>Customize</strong> tab, use the <strong>Histogram</strong> section to adjust the bucket (bin) size if desired.</li>
+<li>Add a title and axis labels using the <strong>Customize</strong> tab.</li>
+</ol>
+<p><strong>In Excel:</strong></p>
+<ol type="1">
+<li><p>Click the column header for <code>cty</code> to select the entire column.</p></li>
+<li><p>Go to <strong>Insert → Charts → Insert Statistic Chart → Histogram</strong>.</p>
+<ul>
+<li>Note that the icon for the <em>Statistics Chart</em> looks like a histogram.</li>
+</ul></li>
+<li><p>Right-click (Windows) or <code>ctrl</code>+click (Mac) on the bars of the histogram and choose <strong>Format Data Series</strong> to adjust the bin width under <strong>Bin width</strong> or <strong>Number of bins</strong>, if desired.</p></li>
+<li><p>Add a title and axis labels via <strong>Chart Design → Add Chart Element</strong>.</p></li>
+</ol>
+</div>
+</div>
+<p><strong>Try It!</strong> Now build a boxplot of <code>cty</code> in your spreadsheet.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Creating a Boxplot for a Single Variable
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>In Google Sheets:</strong> Sheets does not have native boxplot functionality and requires the construction of a boxplot through its candle-stick plot functionality. Boxplots in Google Sheets are omitted from this activity, but there are some good tutorials for constructing them on YouTube.</p>
+<p><strong>In Excel:</strong></p>
+<ol type="1">
+<li>Click the column header for <code>hwy</code> to select the entire column.</li>
+<li>Go to <strong>Insert → Charts → Insert Statistic Chart → Box and Whisker</strong>.</li>
+<li>Add a title and axis label via <strong>Chart Design → Add Chart Element</strong>.</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="scatterplots-two-numerical-variables" class="level2">
+<h2 class="anchored" data-anchor-id="scatterplots-two-numerical-variables">Scatterplots: Two Numerical Variables</h2>
+<p>A <strong>scatterplot</strong> is the standard choice when you want to explore the relationship between two numerical variables. Each observation becomes a point, with one variable on the x-axis and the other on the y-axis.</p>
+<p>The plot below shows highway miles per gallon (<code>hwy</code>) plotted against engine displacement (<code>displ</code>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_DataViz_Spreadsheet_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Use the plot above to answer the following questions.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: Reading a Plot I
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Which of the following is true?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb13" data-startfrom="422" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 421;"><span id="cb13-422"><a href="#cb13-422" aria-hidden="true" tabindex="-1"></a>viewof q5 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb13-423"><a href="#cb13-423" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb13-424"><a href="#cb13-424" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Highway miles per gallon and engine displacement are independent."</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb13-425"><a href="#cb13-425" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Highway miles per gallon and engine displacement are associated."</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb13-426"><a href="#cb13-426" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"It is impossible to tell whether the variables are associated or independent."</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb13-427"><a href="#cb13-427" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Highway miles per gallon and engine displacement are both independent and associated."</span><span class="op">,</span> <span class="dv">4</span>]</span>
+<span id="cb13-428"><a href="#cb13-428" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb13-429"><a href="#cb13-429" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q5_selected_t4e"</span>) <span class="op">??</span> <span class="st">"null"</span>)}</span>
+<span id="cb13-430"><a href="#cb13-430" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb13-431"><a href="#cb13-431" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-432"><a href="#cb13-432" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb13-433"><a href="#cb13-433" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q5_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q5))<span class="op">;</span></span>
+<span id="cb13-434"><a href="#cb13-434" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q5_correct_t4e"</span><span class="op">,</span> <span class="st">"2"</span>)<span class="op">;</span></span>
+<span id="cb13-435"><a href="#cb13-435" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q5_result_t4e"</span><span class="op">,</span> q5 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q5 <span class="op">==</span> <span class="dv">2</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb13-436"><a href="#cb13-436" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-8-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-8-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb14" data-startfrom="437" data-source-offset="-686"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 436;"><span id="cb14-437"><a href="#cb14-437" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q5<span class="op">,</span> <span class="st">"2"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-8-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: Reading a Plot II
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Describe the relationship between highway miles per gallon and engine displacement.</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb15" data-startfrom="450" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 449;"><span id="cb15-450"><a href="#cb15-450" aria-hidden="true" tabindex="-1"></a>viewof q6 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb15-451"><a href="#cb15-451" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb15-452"><a href="#cb15-452" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Engine displacement and highway miles per gallon share a negative, linear relationship."</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb15-453"><a href="#cb15-453" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Engine displacement and highway miles per gallon share a positive, linear relationship."</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb15-454"><a href="#cb15-454" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Engine displacement and highway miles per gallon share a negative, non-linear relationship."</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb15-455"><a href="#cb15-455" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Engine displacement and highway miles per gallon share a positive, non-linear relationship."</span><span class="op">,</span> <span class="dv">4</span>]</span>
+<span id="cb15-456"><a href="#cb15-456" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb15-457"><a href="#cb15-457" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q6_selected_t4e"</span>) <span class="op">??</span> <span class="st">"null"</span>)}</span>
+<span id="cb15-458"><a href="#cb15-458" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb15-459"><a href="#cb15-459" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-460"><a href="#cb15-460" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb15-461"><a href="#cb15-461" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q6_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q6))<span class="op">;</span></span>
+<span id="cb15-462"><a href="#cb15-462" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q6_correct_t4e"</span><span class="op">,</span> <span class="st">"3"</span>)<span class="op">;</span></span>
+<span id="cb15-463"><a href="#cb15-463" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q6_result_t4e"</span><span class="op">,</span> q6 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q6 <span class="op">==</span> <span class="dv">3</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb15-464"><a href="#cb15-464" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-9-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-9-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb16" data-startfrom="465" data-source-offset="-751"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 464;"><span id="cb16-465"><a href="#cb16-465" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q6<span class="op">,</span> <span class="st">"3"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-9-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: Reading a Plot III
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Which is the best practical interpretation of the plot?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb17" data-startfrom="478" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 477;"><span id="cb17-478"><a href="#cb17-478" aria-hidden="true" tabindex="-1"></a>viewof q7 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb17-479"><a href="#cb17-479" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb17-480"><a href="#cb17-480" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Generally, engines with higher displacement are associated with lower average highway miles per gallon ratings."</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb17-481"><a href="#cb17-481" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Generally, engines with higher displacement are associated with higher average highway miles per gallon ratings."</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb17-482"><a href="#cb17-482" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Higher engine displacement causes lower average highway miles per gallon ratings."</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb17-483"><a href="#cb17-483" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Engine displacement causes higher average highway miles per gallon ratings."</span><span class="op">,</span> <span class="dv">4</span>]</span>
+<span id="cb17-484"><a href="#cb17-484" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb17-485"><a href="#cb17-485" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q7_selected_t4e"</span>) <span class="op">??</span> <span class="st">"null"</span>)}</span>
+<span id="cb17-486"><a href="#cb17-486" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb17-487"><a href="#cb17-487" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-488"><a href="#cb17-488" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb17-489"><a href="#cb17-489" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q7_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q7))<span class="op">;</span></span>
+<span id="cb17-490"><a href="#cb17-490" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q7_correct_t4e"</span><span class="op">,</span> <span class="st">"1"</span>)<span class="op">;</span></span>
+<span id="cb17-491"><a href="#cb17-491" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q7_result_t4e"</span><span class="op">,</span> q7 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q7 <span class="op">==</span> <span class="dv">1</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb17-492"><a href="#cb17-492" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb18" data-startfrom="493" data-source-offset="-774"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 492;"><span id="cb18-493"><a href="#cb18-493" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q7<span class="op">,</span> <span class="st">"1"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-10-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Try It!</strong> Now build a scatterplot of your own. Using your spreadsheet, create a scatterplot of city miles per gallon (<code>cty</code>) on the y-axis against engine displacement (<code>displ</code>) on the x-axis.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Creating a Scatterplot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>In Google Sheets:</strong></p>
+<ol type="1">
+<li>Select the two columns you want to plot. To select non-adjacent columns (like <code>displ</code> in column C and <code>cty</code> in column H), hold <strong>Ctrl</strong> (Windows) or <strong>Cmd</strong> (Mac) while clicking the second column header.</li>
+<li>Go to <strong>Insert → Chart</strong>.</li>
+<li>In the Chart Editor, under <strong>Chart type</strong>, select <strong>Scatter chart</strong>.</li>
+<li>Under <strong>X-axis</strong>, confirm <code>displ</code> is selected. Under <strong>Series</strong>, confirm <code>cty</code> is selected. If not, use the dropdowns to correct them.
+<ul>
+<li>If any extra <strong>Series</strong> columns are selected, use the triple-dot icon to <em>Remove</em> them from the plot.</li>
+</ul></li>
+<li>Click the chart title to add a descriptive title, and use the <strong>Customize</strong> tab to add axis labels.</li>
+</ol>
+<p><strong>In Excel:</strong></p>
+<ol type="1">
+<li>Select the <code>displ</code> column first (this will become the x-axis). Then hold <strong>Ctrl</strong> and select the <code>cty</code> column.</li>
+<li>Go to <strong>Insert → Charts → Scatter</strong> and choose the first option (Scatter with only Markers).</li>
+<li>Right-click the chart and choose <strong>Select Data</strong> to verify which series is on which axis. If the axes are swapped, use <strong>Switch Row/Column</strong> or reassign the series.</li>
+<li>Use <strong>Chart Design → Add Chart Element</strong> to add a title and axis labels.</li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: City vs.&nbsp;Displacement
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Based on the scatterplot you just built, which of the following best describes the relationship between engine displacement and city fuel economy?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb19" data-startfrom="528" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 527;"><span id="cb19-528"><a href="#cb19-528" aria-hidden="true" tabindex="-1"></a>viewof q_cty_displ <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb19-529"><a href="#cb19-529" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb19-530"><a href="#cb19-530" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"City fuel economy tends to increase as engine displacement increases."</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb19-531"><a href="#cb19-531" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"City fuel economy tends to decrease as engine displacement increases."</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb19-532"><a href="#cb19-532" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"There is no clear relationship between city fuel economy and engine displacement."</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb19-533"><a href="#cb19-533" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"City fuel economy and engine displacement are perfectly linearly related."</span><span class="op">,</span> <span class="dv">4</span>]</span>
+<span id="cb19-534"><a href="#cb19-534" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb19-535"><a href="#cb19-535" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q_cty_displ_selected_t4e"</span>) <span class="op">??</span> <span class="st">"null"</span>)}</span>
+<span id="cb19-536"><a href="#cb19-536" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb19-537"><a href="#cb19-537" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-538"><a href="#cb19-538" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb19-539"><a href="#cb19-539" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q_cty_displ_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q_cty_displ))<span class="op">;</span></span>
+<span id="cb19-540"><a href="#cb19-540" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q_cty_displ_correct_t4e"</span><span class="op">,</span> <span class="st">"2"</span>)<span class="op">;</span></span>
+<span id="cb19-541"><a href="#cb19-541" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q_cty_displ_result_t4e"</span><span class="op">,</span> q_cty_displ <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q_cty_displ <span class="op">==</span> <span class="dv">2</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb19-542"><a href="#cb19-542" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-11-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-11-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb20" data-startfrom="543" data-source-offset="-759"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 542;"><span id="cb20-543"><a href="#cb20-543" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q_cty_displ<span class="op">,</span> <span class="st">"2"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-11-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Try It!</strong> Build another scatterplot, but this time use the number of cylinders (<code>cyl</code>) along the <span class="math inline">\(x\)</span>-axis and the highway gas mileage (<code>hwy</code>) along the <span class="math inline">\(y\)</span>-axis.</p>
+<p>Notice that this plot isn’t very useful because the cylinders variable takes on very few levels. We may be better off treating <code>cyl</code> as if it were a categorical variable here, which leads us naturally to the next plot type.</p>
+</section>
+<section id="boxplots-numerical-vs.-categorical" class="level2">
+<h2 class="anchored" data-anchor-id="boxplots-numerical-vs.-categorical">Boxplots: Numerical vs.&nbsp;Categorical</h2>
+<p>When you want to compare the distribution of a numerical variable across the levels of a categorical variable, a set of <strong>side-by-side boxplots</strong> is usually the best choice. Each box summarizes one group, showing the median, IQR, and any outliers.</p>
+<p>Below is a set of side-by-side boxplots showing highway fuel economy (<code>hwy</code>) broken out by number of cylinders (<code>cyl</code>). Even though <code>cyl</code> is stored as a number, it behaves more like a category here since it only takes the values 4, 5, 6, and 8.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_DataViz_Spreadsheet_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: Reading Boxplots
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Based on the boxplots above, which number of cylinders is associated with the highest median highway fuel economy?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb21" data-startfrom="578" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 577;"><span id="cb21-578"><a href="#cb21-578" aria-hidden="true" tabindex="-1"></a>viewof q_boxplot <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb21-579"><a href="#cb21-579" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb21-580"><a href="#cb21-580" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"4 cylinders"</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb21-581"><a href="#cb21-581" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"5 cylinders"</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb21-582"><a href="#cb21-582" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"6 cylinders"</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb21-583"><a href="#cb21-583" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"8 cylinders"</span><span class="op">,</span> <span class="dv">4</span>]</span>
+<span id="cb21-584"><a href="#cb21-584" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb21-585"><a href="#cb21-585" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q_boxplot_selected_t4e"</span>) <span class="op">??</span> <span class="st">"null"</span>)}</span>
+<span id="cb21-586"><a href="#cb21-586" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb21-587"><a href="#cb21-587" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb21-588"><a href="#cb21-588" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb21-589"><a href="#cb21-589" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q_boxplot_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q_boxplot))<span class="op">;</span></span>
+<span id="cb21-590"><a href="#cb21-590" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q_boxplot_correct_t4e"</span><span class="op">,</span> <span class="st">"1"</span>)<span class="op">;</span></span>
+<span id="cb21-591"><a href="#cb21-591" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q_boxplot_result_t4e"</span><span class="op">,</span> q_boxplot <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q_boxplot <span class="op">==</span> <span class="dv">1</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb21-592"><a href="#cb21-592" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-12-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-12-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb22" data-startfrom="593" data-source-offset="-495"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 592;"><span id="cb22-593"><a href="#cb22-593" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q_boxplot<span class="op">,</span> <span class="st">"1"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-12-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Try It!</strong> Now try building a set of side-by-side boxplots in your spreadsheet showing the distribution of <code>hwy</code> for each cylinder group if you’d like. Doing so is possible in both Google Sheets and Excel, but the process can be complex. The instructions for Excel are listed below and a general strategy for Google Sheets is listed, but the details are omitted.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Creating Side-by-Side Boxplots
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>In Google Sheets:</strong> Building boxplots is possible, but you’ll need to calculate the minimum, Q1 (first quartile), median, Q3 (third quartile), and maximum for each group prior to building the boxplots. Due to the complexity, boxplots in Google Sheets are omitted here.</p>
+<p><strong>In Excel:</strong></p>
+<ol type="1">
+<li>Select the <code>cyl</code> column and the <code>hwy</code> column.</li>
+<li>Go to <strong>Insert → Charts → Insert Statistic Chart → Box and Whisker</strong>. Note that the icon for the “Statistical Chart” grouping may look like a histogram.</li>
+<li>Use the <em>Select Data</em> button to edit the data sources used for the chart.
+<ul>
+<li>Under <em>Legend entries (Series)</em>, select <code>cyl</code> and use the minus icon (<code>-</code>) to remove that column.</li>
+<li>In the <em>Horizontal (Category) axis labels</em> section, choose the range corresponding to the cylinder values (<code>=mpg!$E$2:$E$235</code>) and click <em>OK</em>.</li>
+</ul></li>
+<li>Right-click the chart to add axis titles and a chart title via <strong>Add Chart Element</strong>.</li>
+</ol>
+<p><em>Note:</em> Neither of these pathways are particularly easy. Focus instead on reading and interpreting the boxplot shown in the notebook above — the conceptual takeaways are what matter most here.</p>
+</div>
+</div>
+</section>
+<section id="bar-charts-a-single-categorical-variable" class="level2">
+<h2 class="anchored" data-anchor-id="bar-charts-a-single-categorical-variable">Bar Charts: A Single Categorical Variable</h2>
+<p>A <strong>bar chart</strong> displays the frequency (or relative frequency) of each level of a categorical variable. The height of each bar shows how many observations fall into that category.</p>
+<p>Consider the vehicle classes in the <code>mpg</code> dataset. The bar chart below shows how many vehicles of each class appear in the data.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_DataViz_Spreadsheet_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Try It!</strong> Now build this bar chart in your spreadsheet. Starting this requires the construction of a pivot table, a tool you first encountered in the Topic 3 notebook.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Creating a Bar Chart from a Pivot Table
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>In Google Sheets:</strong></p>
+<ol type="1">
+<li>Click anywhere in your data and go to <strong>Insert → Pivot table</strong>.</li>
+<li>Add <code>class</code> to <strong>Rows</strong> and add <code>class</code> to <strong>Values</strong> (summarize by <code>COUNTA</code>).</li>
+<li>Highlight the cells corresponding to the classes and their counts, then go to <strong>Insert → Chart</strong>.</li>
+<li>Google Sheets should default to a bar or column chart. If not, change the Chart type to <strong>Column chart</strong> in the Chart Editor.</li>
+<li>Add a title and axis labels using the <strong>Customize</strong> tab.</li>
+</ol>
+<p><strong>In Excel:</strong></p>
+<ol type="1">
+<li>Click anywhere in your data and go to <strong>Insert → PivotTable</strong>.</li>
+<li>Drag <code>class</code> to <strong>Rows</strong> and drag <code>class</code> to <strong>Values</strong> (it will count automatically).</li>
+<li>Click anywhere in the pivot table, then go to <strong>PivotTable Analyze → PivotChart</strong>.</li>
+<li>Choose <strong>Column</strong> and click <strong>OK</strong>.</li>
+<li>Add a title and axis labels via <strong>Chart Design → Add Chart Element</strong>.</li>
+</ol>
+</div>
+</div>
+</section>
+<section id="stacked-bar-charts-two-categorical-variables" class="level2">
+<h2 class="anchored" data-anchor-id="stacked-bar-charts-two-categorical-variables">Stacked Bar Charts: Two Categorical Variables</h2>
+<p>When you have two categorical variables, a <strong>stacked bar chart</strong> lets you see both the total count for each level of one variable and the composition of those totals by the levels of the second variable.</p>
+<p>Consider vehicle <code>class</code> and drive type (<code>drv</code>). Neither variable is numerical, so a scatterplot would be inappropriate here.</p>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: Appropriate Plot Types I
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Why would a scatterplot not be an appropriate visual to use with <code>class</code> and <code>drv</code>?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb23" data-startfrom="669" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 668;"><span id="cb23-669"><a href="#cb23-669" aria-hidden="true" tabindex="-1"></a>viewof q8 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb23-670"><a href="#cb23-670" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb23-671"><a href="#cb23-671" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Trick question -- a scatterplot is always appropriate."</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb23-672"><a href="#cb23-672" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"At least one of the two variables is not numerical."</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb23-673"><a href="#cb23-673" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"A scatterplot would be okay but there are better options."</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb23-674"><a href="#cb23-674" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"There isn't enough data for a scatterplot."</span><span class="op">,</span> <span class="dv">4</span>]</span>
+<span id="cb23-675"><a href="#cb23-675" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb23-676"><a href="#cb23-676" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q8_selected_t4e"</span>) <span class="op">??</span> <span class="st">"null"</span>)}</span>
+<span id="cb23-677"><a href="#cb23-677" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb23-678"><a href="#cb23-678" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb23-679"><a href="#cb23-679" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb23-680"><a href="#cb23-680" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q8_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q8))<span class="op">;</span></span>
+<span id="cb23-681"><a href="#cb23-681" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q8_correct_t4e"</span><span class="op">,</span> <span class="st">"2"</span>)<span class="op">;</span></span>
+<span id="cb23-682"><a href="#cb23-682" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q8_result_t4e"</span><span class="op">,</span> q8 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q8 <span class="op">==</span> <span class="dv">2</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb23-683"><a href="#cb23-683" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-13-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-13-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb24" data-startfrom="684" data-source-offset="-599"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 683;"><span id="cb24-684"><a href="#cb24-684" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q8<span class="op">,</span> <span class="st">"2"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-13-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: Appropriate Plot Types II
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Which of the following plot types would be appropriate for visualizing <code>class</code> and <code>drv</code> together? Select all that apply.</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb25" data-startfrom="697" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 696;"><span id="cb25-697"><a href="#cb25-697" aria-hidden="true" tabindex="-1"></a>viewof q9 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">checkbox</span>(</span>
+<span id="cb25-698"><a href="#cb25-698" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb25-699"><a href="#cb25-699" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"A histogram"</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb25-700"><a href="#cb25-700" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"A side-by-side boxplot"</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb25-701"><a href="#cb25-701" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"A bar chart with fill color"</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb25-702"><a href="#cb25-702" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"A heatmap"</span><span class="op">,</span> <span class="dv">4</span>]</span>
+<span id="cb25-703"><a href="#cb25-703" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb25-704"><a href="#cb25-704" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q9_selected_t4e"</span>) <span class="op">??</span> <span class="st">"[]"</span>) <span class="op">??</span> []}</span>
+<span id="cb25-705"><a href="#cb25-705" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb25-706"><a href="#cb25-706" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-707"><a href="#cb25-707" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb25-708"><a href="#cb25-708" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q9_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q9))<span class="op">;</span></span>
+<span id="cb25-709"><a href="#cb25-709" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q9_correct_t4e"</span><span class="op">,</span> <span class="st">"3,4"</span>)<span class="op">;</span></span>
+<span id="cb25-710"><a href="#cb25-710" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q9_result_t4e"</span><span class="op">,</span> (<span class="op">!</span>q9 <span class="op">||</span> q9<span class="op">.</span><span class="at">length</span> <span class="op">===</span> <span class="dv">0</span>) <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q9<span class="op">.</span><span class="fu">toString</span>() <span class="op">===</span> <span class="st">"3,4"</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb25-711"><a href="#cb25-711" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-14-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-14-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb26" data-startfrom="712" data-source-offset="-502"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 711;"><span id="cb26-712"><a href="#cb26-712" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_checkbox</span>(q9<span class="op">,</span> <span class="st">"3,4"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-14-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p>The stacked bar chart below shows vehicle class on the x-axis, with each bar filled by drive type (<code>drv</code>).</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_DataViz_Spreadsheet_files/figure-html/unnamed-chunk-23-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Try It!</strong> Now build this chart in your spreadsheet. The approach is very similar to the way we constructed a simple bar chart above.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Creating a Stacked Bar Chart
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>In Google Sheets:</strong></p>
+<ol type="1">
+<li>Create a pivot table with <code>class</code> in <strong>Rows</strong> and <code>drv</code> in <strong>Columns</strong>, and <code>class</code> in <strong>Values</strong> summarized by <code>COUNTA</code>. This produces a cross-tabulation showing the count of each class × drive type combination.</li>
+<li>Highlight the range containing the class types (row labels), drive type labels (column labels), and calculated counts. Then choose <strong>Insert → Chart</strong>.</li>
+<li>If <strong>Stacked column chart</strong> is not already selected as the <em>Chart type</em>, use the dropdown menu to choose it.</li>
+<li>Use the <em>Customize</em> menu to add a title and axis labels.</li>
+</ol>
+<p><strong>In Excel:</strong></p>
+<ol type="1">
+<li>Create a PivotTable with <code>class</code> in <strong>Rows</strong>, <code>drv</code> in <strong>Columns</strong>, and <code>class</code> in <strong>Values</strong> (set to <code>CountA</code>).</li>
+<li>Click anywhere in the PivotTable, then go to <strong>PivotTable Analyze → PivotChart</strong>.</li>
+<li>Choose <strong>Bar</strong> or <strong>Column</strong>, then select the <strong>Stacked</strong> subtype. Click <strong>OK</strong>.</li>
+<li>Add a title and axis labels.</li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: Reading a Stacked Bar Chart
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Based on the stacked bar chart above, which vehicle class appears to be most exclusively four-wheel drive (<code>4</code>)?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb27" data-startfrom="757" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 756;"><span id="cb27-757"><a href="#cb27-757" aria-hidden="true" tabindex="-1"></a>viewof q_stackedbar <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb27-758"><a href="#cb27-758" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb27-759"><a href="#cb27-759" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"compact"</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb27-760"><a href="#cb27-760" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"midsize"</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb27-761"><a href="#cb27-761" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"pickup"</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb27-762"><a href="#cb27-762" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"subcompact"</span><span class="op">,</span> <span class="dv">4</span>]<span class="op">,</span></span>
+<span id="cb27-763"><a href="#cb27-763" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"suv"</span><span class="op">,</span> <span class="dv">5</span>]</span>
+<span id="cb27-764"><a href="#cb27-764" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb27-765"><a href="#cb27-765" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q_stackedbar_selected_t4e"</span>) <span class="op">??</span> <span class="st">"null"</span>)}</span>
+<span id="cb27-766"><a href="#cb27-766" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb27-767"><a href="#cb27-767" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb27-768"><a href="#cb27-768" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb27-769"><a href="#cb27-769" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q_stackedbar_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q_stackedbar))<span class="op">;</span></span>
+<span id="cb27-770"><a href="#cb27-770" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q_stackedbar_correct_t4e"</span><span class="op">,</span> <span class="st">"3"</span>)<span class="op">;</span></span>
+<span id="cb27-771"><a href="#cb27-771" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q_stackedbar_result_t4e"</span><span class="op">,</span> q_stackedbar <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q_stackedbar <span class="op">==</span> <span class="dv">3</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb27-772"><a href="#cb27-772" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-15-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-15-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb28" data-startfrom="773" data-source-offset="-521"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 772;"><span id="cb28-773"><a href="#cb28-773" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q_stackedbar<span class="op">,</span> <span class="st">"3"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-15-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<p><strong>Try It!</strong> Create another stacked bar chart comparing the transmission type as automatic or manual (<code>trans2</code>) on the <span class="math inline">\(x\)</span>-axis and using the drive type (<code>drv</code>) as the secondary variable.</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+A Note on the Transmission Variable
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The original <code>trans</code> column in the <code>mpg</code> dataset contains detailed transmission codes like <code>auto(l5)</code> and <code>manual(m6)</code>. If you’re interested in how I constructed the <code>trans2</code> variable, you can click into cell <code>L1</code> to view the formula I used.</p>
+</div>
+</div>
+<p>Notice that this stacked bar plot shows us that there are approximately twice as many automatic vehicles in the dataset as there are manual vehicles. It is more difficult to compare the drive types across the groups though.</p>
+</section>
+<section id="stacked-bar-charts" class="level2">
+<h2 class="anchored" data-anchor-id="stacked-bar-charts">100% Stacked Bar Charts</h2>
+<p>A stacked bar chart shows raw counts, which makes it easy to see how many vehicles fall into each category overall. But it can be hard to compare the <em>proportions</em> of drive types across vehicle classes when the bar heights differ. A <strong>100% stacked bar chart</strong> rescales every bar to the same height, making proportional comparisons much easier — at the cost of losing information about the total counts.</p>
+<p>The plot below uses a 100% stacked bar to show the distribution of transmission type (simplified to manual vs.&nbsp;automatic) broken out by drive type.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_DataViz_Spreadsheet_files/figure-html/unnamed-chunk-25-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Try It!</strong> Reproduce this plot in your spreadsheet environment.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+100% Stacked Bar Plots
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Follow the steps below to convert your stacked bar plot into a 100% stacked bar plot.</p>
+<p><strong>Google Sheets:</strong></p>
+<ol type="1">
+<li>Click on the stacked bar plot you created.</li>
+<li>Use the triple-dot icon in the top-right corner of the plot to access the <em>Edit Chart</em> menu.</li>
+<li>Use the <em>Stacking</em> dropdown menu to choose 100%.</li>
+<li>Update your title and axis labels.</li>
+</ol>
+<p><strong>Excel:</strong></p>
+<ol type="1">
+<li>Right click (Windows) or <code>ctrl</code>+click (Mac) the stacked barplot you created.</li>
+<li>Go to <strong>Change chart type → Column → 100% Stacked Column</strong>.</li>
+<li>Update your title and axis labels.</li>
+</ol>
+</div>
+</div>
+<div class="callout callout-style-default callout-caution callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Check Your Understanding: Reading a 100% Stacked Bar Chart
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Based on the 100% stacked bar chart you created (or the one above), which of the following statements is best supported?</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb29" data-startfrom="835" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 834;"><span id="cb29-835"><a href="#cb29-835" aria-hidden="true" tabindex="-1"></a>viewof q10 <span class="op">=</span> Inputs<span class="op">.</span><span class="fu">radio</span>(</span>
+<span id="cb29-836"><a href="#cb29-836" aria-hidden="true" tabindex="-1"></a>  <span class="kw">new</span> <span class="bu">Map</span>([</span>
+<span id="cb29-837"><a href="#cb29-837" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Front-wheel drive vehicles make up a larger proportion of automatic transmissions than of manual transmissions."</span><span class="op">,</span> <span class="dv">1</span>]<span class="op">,</span></span>
+<span id="cb29-838"><a href="#cb29-838" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Front-wheel drive vehicles make up a larger proportion of manual transmissions than of automatic transmissions."</span><span class="op">,</span> <span class="dv">2</span>]<span class="op">,</span></span>
+<span id="cb29-839"><a href="#cb29-839" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"Rear-wheel drive vehicles make up a larger proportion of manual transmissions than of automatic transmissions."</span><span class="op">,</span> <span class="dv">3</span>]<span class="op">,</span></span>
+<span id="cb29-840"><a href="#cb29-840" aria-hidden="true" tabindex="-1"></a>    [<span class="st">"The distribution of drive types is identical between manual and automatic transmission vehicles."</span><span class="op">,</span> <span class="dv">4</span>]</span>
+<span id="cb29-841"><a href="#cb29-841" aria-hidden="true" tabindex="-1"></a>  ])<span class="op">,</span></span>
+<span id="cb29-842"><a href="#cb29-842" aria-hidden="true" tabindex="-1"></a>  {<span class="dt">value</span><span class="op">:</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">parse</span>(localStorage<span class="op">.</span><span class="fu">getItem</span>(<span class="st">"q10_selected_t4e"</span>) <span class="op">??</span> <span class="st">"null"</span>)}</span>
+<span id="cb29-843"><a href="#cb29-843" aria-hidden="true" tabindex="-1"></a>)<span class="op">;</span></span>
+<span id="cb29-844"><a href="#cb29-844" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb29-845"><a href="#cb29-845" aria-hidden="true" tabindex="-1"></a>{</span>
+<span id="cb29-846"><a href="#cb29-846" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q10_selected_t4e"</span><span class="op">,</span> <span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(q10))<span class="op">;</span></span>
+<span id="cb29-847"><a href="#cb29-847" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q10_correct_t4e"</span><span class="op">,</span> <span class="st">"2"</span>)<span class="op">;</span></span>
+<span id="cb29-848"><a href="#cb29-848" aria-hidden="true" tabindex="-1"></a>  localStorage<span class="op">.</span><span class="fu">setItem</span>(<span class="st">"q10_result_t4e"</span><span class="op">,</span> q10 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q10 <span class="op">==</span> <span class="dv">2</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>))<span class="op">;</span></span>
+<span id="cb29-849"><a href="#cb29-849" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-16-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-16-2" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+<div class="sourceCode cell-code hidden" id="cb30" data-startfrom="850" data-source-offset="-831"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 849;"><span id="cb30-850"><a href="#cb30-850" aria-hidden="true" tabindex="-1"></a><span class="fu">ok_response</span>(q10<span class="op">,</span> <span class="st">"2"</span>)<span class="op">;</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-16-3" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<section id="adding-a-third-variable-with-color" class="level2">
+<h2 class="anchored" data-anchor-id="adding-a-third-variable-with-color">Adding a Third Variable with Color</h2>
+<p>One powerful feature of scatterplots is the ability to encode a third variable using point color. The plot below revisits the <code>hwy</code> vs.&nbsp;<code>displ</code> scatterplot, this time coloring each point by vehicle <code>class</code>. This reveals that the group of high-displacement, low-efficiency vehicles sitting in the lower right of the plot is dominated by two-seater sports cars — an interesting finding.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_DataViz_Spreadsheet_files/figure-html/unnamed-chunk-27-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Adding color works well here because there are a manageable number of vehicle classes and the groups are reasonably separable. As a general rule: the more categories you have, the harder a colored scatterplot becomes to read.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Adding Color to a Scatterplot
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><strong>In Google Sheets:</strong></p>
+<p>Google Sheets does not natively support coloring scatterplot points by a categorical variable in a single step. The most practical workaround is to split the data into separate ranges by class. This means you’ll have the data organized into a pair of columns per class and then add each as a separate <strong>Series</strong> in the chart. This is tedious for seven classes but can work well for two or three groups.</p>
+<ol type="1">
+<li>In a blank area of your sheet, create a separate column for <code>displ</code> and <code>hwy</code> for each vehicle class using <code>FILTER()</code>. For example, <code>=FILTER(displ_range, class_range="compact")</code> extracts the displacement values for compact vehicles.</li>
+<li>Insert a Scatter chart and add each class as a separate series.</li>
+<li>Use the <strong>Customize → Series</strong> tab to assign a distinct color to each series.</li>
+</ol>
+<p><strong>In Excel:</strong></p>
+<p>Excel also requires a workaround for this. The simplest approach is:</p>
+<ol type="1">
+<li>Sort your data by <code>class</code>.</li>
+<li>Create a scatter chart and then use <strong>Select Data → Add</strong> to add each class as a separate series, specifying the corresponding <code>displ</code> and <code>hwy</code> ranges for each.</li>
+<li>Format each series with a distinct color.</li>
+</ol>
+<p><em>Note:</em> For both tools, coloring by a categorical variable in a scatterplot is more involved than it would be in a dedicated statistics package. If you find the multi-series approach too cumbersome for seven classes, focus on reading and interpreting the plot shown above. Being able to interpret these types of plots is more important than being able to construct them at this stage.</p>
+</div>
+</div>
+</section>
+<section id="small-multiples-viewing-one-group-at-a-time" class="level2">
+<h2 class="anchored" data-anchor-id="small-multiples-viewing-one-group-at-a-time">Small Multiples: Viewing One Group at a Time</h2>
+<p>One way to reduce clutter in a colored scatterplot is to split the data into separate panels — one per category — rather than overlaying everything in a single chart. In data visualization this is called <strong>small multiples</strong> or <strong>faceting</strong>. The idea is that seven simple, readable plots can communicate more clearly than one complex one.</p>
+<div class="cell">
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="04_DataViz_Spreadsheet_files/figure-html/unnamed-chunk-28-1.png" class="img-fluid figure-img" width="672"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>In a spreadsheet program, you can achieve something similar by filtering the data to one class at a time and creating a separate chart for each group, then arranging them side by side. For datasets with many categories this is quite time-consuming, and it is one of the clearest illustrations of where a dedicated statistics tool has a significant practical advantage over a spreadsheet.</p>
+</section>
+<section id="submit" class="level2">
+<h2 class="anchored" data-anchor-id="submit">Submit</h2>
+<p>If you are part of a course with an instructor who is grading your work on these activities, please copy and submit your <strong>question hash</strong> below using the method your instructor has requested.</p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Question Hash
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The hash below encodes your responses to the multiple choice and checkbox questions in this activity.</p>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb31" data-startfrom="927" data-source-offset="-1"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 926;"><span id="cb31-927"><a href="#cb31-927" aria-hidden="true" tabindex="-1"></a><span class="kw">function</span> <span class="fu">toBase64</span>(str) {</span>
+<span id="cb31-928"><a href="#cb31-928" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">btoa</span>(<span class="pp">unescape</span>(<span class="pp">encodeURIComponent</span>(str)))<span class="op">;</span></span>
+<span id="cb31-929"><a href="#cb31-929" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb31-930"><a href="#cb31-930" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-931"><a href="#cb31-931" aria-hidden="true" tabindex="-1"></a>question_hash <span class="op">=</span> {</span>
+<span id="cb31-932"><a href="#cb31-932" aria-hidden="true" tabindex="-1"></a>  q1<span class="op">;</span> q2<span class="op">;</span> q3<span class="op">;</span> q4<span class="op">;</span> q5<span class="op">;</span> q6<span class="op">;</span> q7<span class="op">;</span> q8<span class="op">;</span> q9<span class="op">;</span> q10<span class="op">;</span> q_cty_displ<span class="op">;</span> q_boxplot<span class="op">;</span> q_stackedbar<span class="op">;</span> q_hist<span class="op">;</span></span>
+<span id="cb31-933"><a href="#cb31-933" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb31-934"><a href="#cb31-934" aria-hidden="true" tabindex="-1"></a>  <span class="kw">const</span> results <span class="op">=</span> {</span>
+<span id="cb31-935"><a href="#cb31-935" aria-hidden="true" tabindex="-1"></a>    <span class="dt">notebook</span><span class="op">:</span> <span class="st">"Topic 4: Data Visualization"</span><span class="op">,</span></span>
+<span id="cb31-936"><a href="#cb31-936" aria-hidden="true" tabindex="-1"></a>    <span class="dt">type</span><span class="op">:</span> <span class="st">"questions"</span><span class="op">,</span></span>
+<span id="cb31-937"><a href="#cb31-937" aria-hidden="true" tabindex="-1"></a>    <span class="dt">timestamp</span><span class="op">:</span> <span class="kw">new</span> <span class="bu">Date</span>()<span class="op">.</span><span class="fu">toISOString</span>()<span class="op">,</span></span>
+<span id="cb31-938"><a href="#cb31-938" aria-hidden="true" tabindex="-1"></a>    <span class="dt">questions</span><span class="op">:</span> {</span>
+<span id="cb31-939"><a href="#cb31-939" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q1_better_plot</span><span class="op">:</span> {</span>
+<span id="cb31-940"><a href="#cb31-940" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q1 <span class="op">??</span> []<span class="op">,</span></span>
+<span id="cb31-941"><a href="#cb31-941" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"2,3"</span><span class="op">,</span></span>
+<span id="cb31-942"><a href="#cb31-942" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> (<span class="op">!</span>q1 <span class="op">||</span> q1<span class="op">.</span><span class="at">length</span> <span class="op">===</span> <span class="dv">0</span>) <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q1<span class="op">.</span><span class="fu">toString</span>() <span class="op">===</span> <span class="st">"2,3"</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-943"><a href="#cb31-943" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb31-944"><a href="#cb31-944" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q2_variables</span><span class="op">:</span> {</span>
+<span id="cb31-945"><a href="#cb31-945" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q2<span class="op">,</span></span>
+<span id="cb31-946"><a href="#cb31-946" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"2"</span><span class="op">,</span></span>
+<span id="cb31-947"><a href="#cb31-947" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> q2 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q2 <span class="op">==</span> <span class="dv">2</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-948"><a href="#cb31-948" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb31-949"><a href="#cb31-949" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q3_observations</span><span class="op">:</span> {</span>
+<span id="cb31-950"><a href="#cb31-950" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q3<span class="op">,</span></span>
+<span id="cb31-951"><a href="#cb31-951" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"3"</span><span class="op">,</span></span>
+<span id="cb31-952"><a href="#cb31-952" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> q3 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q3 <span class="op">==</span> <span class="dv">3</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-953"><a href="#cb31-953" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb31-954"><a href="#cb31-954" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q4_numerical_variables</span><span class="op">:</span> {</span>
+<span id="cb31-955"><a href="#cb31-955" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q4 <span class="op">??</span> []<span class="op">,</span></span>
+<span id="cb31-956"><a href="#cb31-956" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"3,4,6,8,9"</span><span class="op">,</span></span>
+<span id="cb31-957"><a href="#cb31-957" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> (<span class="op">!</span>q4 <span class="op">||</span> q4<span class="op">.</span><span class="at">length</span> <span class="op">===</span> <span class="dv">0</span>) <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q4<span class="op">.</span><span class="fu">toString</span>() <span class="op">===</span> <span class="st">"3,4,6,8,9"</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-958"><a href="#cb31-958" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb31-959"><a href="#cb31-959" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q_hist_shape</span><span class="op">:</span> {</span>
+<span id="cb31-960"><a href="#cb31-960" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q_hist <span class="op">??</span> []<span class="op">,</span></span>
+<span id="cb31-961"><a href="#cb31-961" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"2,4"</span><span class="op">,</span></span>
+<span id="cb31-962"><a href="#cb31-962" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> (<span class="op">!</span>q_hist <span class="op">||</span> q_hist<span class="op">.</span><span class="at">length</span> <span class="op">===</span> <span class="dv">0</span>) <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q_hist<span class="op">.</span><span class="fu">toString</span>() <span class="op">===</span> <span class="st">"2,4"</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-963"><a href="#cb31-963" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb31-964"><a href="#cb31-964" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q5_reading_plot_1</span><span class="op">:</span> {</span>
+<span id="cb31-965"><a href="#cb31-965" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q5<span class="op">,</span></span>
+<span id="cb31-966"><a href="#cb31-966" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"2"</span><span class="op">,</span></span>
+<span id="cb31-967"><a href="#cb31-967" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> q5 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q5 <span class="op">==</span> <span class="dv">2</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-968"><a href="#cb31-968" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb31-969"><a href="#cb31-969" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q6_reading_plot_2</span><span class="op">:</span> {</span>
+<span id="cb31-970"><a href="#cb31-970" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q6<span class="op">,</span></span>
+<span id="cb31-971"><a href="#cb31-971" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"3"</span><span class="op">,</span></span>
+<span id="cb31-972"><a href="#cb31-972" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> q6 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q6 <span class="op">==</span> <span class="dv">3</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-973"><a href="#cb31-973" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb31-974"><a href="#cb31-974" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q7_reading_plot_3</span><span class="op">:</span> {</span>
+<span id="cb31-975"><a href="#cb31-975" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q7<span class="op">,</span></span>
+<span id="cb31-976"><a href="#cb31-976" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"1"</span><span class="op">,</span></span>
+<span id="cb31-977"><a href="#cb31-977" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> q7 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q7 <span class="op">==</span> <span class="dv">1</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-978"><a href="#cb31-978" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb31-979"><a href="#cb31-979" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q_cty_displ_scatter</span><span class="op">:</span> {</span>
+<span id="cb31-980"><a href="#cb31-980" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q_cty_displ<span class="op">,</span></span>
+<span id="cb31-981"><a href="#cb31-981" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"2"</span><span class="op">,</span></span>
+<span id="cb31-982"><a href="#cb31-982" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> q_cty_displ <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q_cty_displ <span class="op">==</span> <span class="dv">2</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-983"><a href="#cb31-983" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb31-984"><a href="#cb31-984" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q_boxplot_cylinders</span><span class="op">:</span> {</span>
+<span id="cb31-985"><a href="#cb31-985" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q_boxplot<span class="op">,</span></span>
+<span id="cb31-986"><a href="#cb31-986" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"1"</span><span class="op">,</span></span>
+<span id="cb31-987"><a href="#cb31-987" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> q_boxplot <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q_boxplot <span class="op">==</span> <span class="dv">1</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-988"><a href="#cb31-988" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb31-989"><a href="#cb31-989" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q8_appropriate_plots_1</span><span class="op">:</span> {</span>
+<span id="cb31-990"><a href="#cb31-990" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q8<span class="op">,</span></span>
+<span id="cb31-991"><a href="#cb31-991" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"2"</span><span class="op">,</span></span>
+<span id="cb31-992"><a href="#cb31-992" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> q8 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q8 <span class="op">==</span> <span class="dv">2</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-993"><a href="#cb31-993" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb31-994"><a href="#cb31-994" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q9_appropriate_plots_2</span><span class="op">:</span> {</span>
+<span id="cb31-995"><a href="#cb31-995" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q9 <span class="op">??</span> []<span class="op">,</span></span>
+<span id="cb31-996"><a href="#cb31-996" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"3,4"</span><span class="op">,</span></span>
+<span id="cb31-997"><a href="#cb31-997" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> (<span class="op">!</span>q9 <span class="op">||</span> q9<span class="op">.</span><span class="at">length</span> <span class="op">===</span> <span class="dv">0</span>) <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q9<span class="op">.</span><span class="fu">toString</span>() <span class="op">===</span> <span class="st">"3,4"</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-998"><a href="#cb31-998" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb31-999"><a href="#cb31-999" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q_stackedbar_drv</span><span class="op">:</span> {</span>
+<span id="cb31-1000"><a href="#cb31-1000" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q_stackedbar<span class="op">,</span></span>
+<span id="cb31-1001"><a href="#cb31-1001" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"3"</span><span class="op">,</span></span>
+<span id="cb31-1002"><a href="#cb31-1002" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> q_stackedbar <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q_stackedbar <span class="op">==</span> <span class="dv">3</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-1003"><a href="#cb31-1003" aria-hidden="true" tabindex="-1"></a>      }<span class="op">,</span></span>
+<span id="cb31-1004"><a href="#cb31-1004" aria-hidden="true" tabindex="-1"></a>      <span class="dt">q10_100pct_stacked</span><span class="op">:</span> {</span>
+<span id="cb31-1005"><a href="#cb31-1005" aria-hidden="true" tabindex="-1"></a>        <span class="dt">selected</span><span class="op">:</span> q10<span class="op">,</span></span>
+<span id="cb31-1006"><a href="#cb31-1006" aria-hidden="true" tabindex="-1"></a>        <span class="dt">correct_answer</span><span class="op">:</span> <span class="st">"2"</span><span class="op">,</span></span>
+<span id="cb31-1007"><a href="#cb31-1007" aria-hidden="true" tabindex="-1"></a>        <span class="dt">result</span><span class="op">:</span> q10 <span class="op">===</span> <span class="kw">null</span> <span class="op">?</span> <span class="st">"unattempted"</span> <span class="op">:</span> (q10 <span class="op">==</span> <span class="dv">2</span> <span class="op">?</span> <span class="st">"correct"</span> <span class="op">:</span> <span class="st">"incorrect"</span>)</span>
+<span id="cb31-1008"><a href="#cb31-1008" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb31-1009"><a href="#cb31-1009" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb31-1010"><a href="#cb31-1010" aria-hidden="true" tabindex="-1"></a>  }<span class="op">;</span></span>
+<span id="cb31-1011"><a href="#cb31-1011" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb31-1012"><a href="#cb31-1012" aria-hidden="true" tabindex="-1"></a>  <span class="cf">return</span> <span class="fu">toBase64</span>(<span class="bu">JSON</span><span class="op">.</span><span class="fu">stringify</span>(results))<span class="op">;</span></span>
+<span id="cb31-1013"><a href="#cb31-1013" aria-hidden="true" tabindex="-1"></a>}</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-17-1" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<div id="ojs-cell-17-2" data-nodetype="declaration">
+
+</div>
+</div>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code hidden" id="cb32" data-startfrom="1017" data-source-offset="0"><pre class="sourceCode js code-with-copy"><code class="sourceCode javascript" style="counter-reset: source-line 1016;"><span id="cb32-1017"><a href="#cb32-1017" aria-hidden="true" tabindex="-1"></a><span class="fu">html</span><span class="vs">`&lt;div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)"&gt;</span></span>
+<span id="cb32-1018"><a href="#cb32-1018" aria-hidden="true" tabindex="-1"></a><span class="vs">  </span><span class="sc">${</span>question_hash<span class="sc">}</span></span>
+<span id="cb32-1019"><a href="#cb32-1019" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/div&gt;</span></span>
+<span id="cb32-1020"><a href="#cb32-1020" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;p style="margin-top: 8px; font-size: 0.9em; color: #555;"&gt;</span></span>
+<span id="cb32-1021"><a href="#cb32-1021" aria-hidden="true" tabindex="-1"></a><span class="vs">  Click the box to copy to clipboard.</span></span>
+<span id="cb32-1022"><a href="#cb32-1022" aria-hidden="true" tabindex="-1"></a><span class="vs">&lt;/p&gt;`</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display">
+<div id="ojs-cell-18" data-nodetype="expression">
+
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Exercise Hash
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Since there were no code cell exercises in this activity, there is no <em>exercise hash</em> to generate.</p>
+</div>
+</div>
+</section>
+<section id="summary" class="level2">
+<h2 class="anchored" data-anchor-id="summary">Summary</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Main Takeaways
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<ul>
+<li><strong>Variable types dictate plot types.</strong> Always consider whether your variables are numerical or categorical before choosing a plot:
+<ul>
+<li>Single numerical variable → histogram or boxplot</li>
+<li>Single categorical variable → bar chart</li>
+<li>Two numerical variables → scatterplot</li>
+<li>Numerical vs.&nbsp;categorical → side-by-side boxplots</li>
+<li>Two categorical variables → stacked bar chart or 100% stacked bar chart</li>
+</ul></li>
+<li><strong>Histograms</strong> reveal the shape of a distribution; <strong>boxplots</strong> highlight the median, IQR, and outliers. Both are useful for a single numerical variable and complement each other well.</li>
+<li><strong>Stacked bar charts</strong> show raw counts for two categorical variables simultaneously; <strong>100% stacked bar charts</strong> rescale to proportions, making within-group comparisons easier but hiding total counts.</li>
+<li><strong>Adding color</strong> to a scatterplot can encode a third variable, but more categories make the plot harder to read. <strong>Small multiples</strong> (one panel per category) are often a clearer alternative.</li>
+<li>A well-labeled chart — with a descriptive title and clear axis labels — communicates far more effectively than an unlabeled one. Always label your charts.</li>
+</ul>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Looking Ahead
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This activity concludes our foundational work on data exploration and visualization. Over the next several workbooks, we’ll transition to probability and working with probability distributions. We’ll start with basic, counting-based probability before moving to the binomial distribution and the normal distribution.</p>
+</div>
+</div>
+<hr>
+</section>
+<section id="references" class="level2">
+<h2 class="anchored" data-anchor-id="references">References</h2>
+<p>[1] Wickham, H., &amp; Grolemund, G. (2017). R for data science: Import, tidy, transform, visualize, and model data. O’Reilly Media.</p>
+<p>[2] Wickham, H. (2016). ggplot2: Elegant Graphics for Data Analysis. Springer-Verlag New York. [dataset]. https://ggplot2.tidyverse.org/reference/mpg.html</p>
+<script type="webr-data">
+eyJyZW5kZXJfZGYiOiJkZWZhdWx0IiwicGFja2FnZXMiOnsicmVwb3MiOltdLCJwa2dzIjpbImV2YWx1YXRlIiwia25pdHIiLCJodG1sdG9vbHMiLCJncmFkZXRoaXMiLCJqc29ubGl0ZSIsImJhc2U2NGVuYyJdfSwib3B0aW9ucyI6eyJiYXNlVXJsIjoiaHR0cHM6Ly93ZWJyLnItd2FzbS5vcmcvdjAuNC4yLyJ9fQ==
+</script>
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3sic291cmNlIjoie1xuICAvLyBXYWl0IGZvciBvdXRwdXQgdG8gYmUgd3JpdHRlbiB0byB0aGUgRE9NLCB0aGVuIHRyaWdnZXIgd2lkZ2V0IHJlbmRlcmluZ1xuICBhd2FpdCBfd2Vicl92YWx1ZV8yO1xuICBpZiAod2luZG93LkhUTUxXaWRnZXRzKSB7XG4gICAgd2luZG93LkhUTUxXaWRnZXRzLnN0YXRpY1JlbmRlcigpO1xuICB9XG4gIGlmICh3aW5kb3cuUGFnZWRUYWJsZURvYykge1xuICAgIHdpbmRvdy5QYWdlZFRhYmxlRG9jLmluaXRBbGwoKTtcbiAgfVxufVxuIiwiaW5saW5lIjpmYWxzZSwibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0IiwiY2VsbE5hbWUiOiJ3ZWJyLXdpZGdldC0yIn0seyJzb3VyY2UiOiJfd2Vicl92YWx1ZV8yID0ge1xuICBjb25zdCB7IGhpZ2hsaWdodFIsIGI2NERlY29kZSB9ID0gd2luZG93Ll9leGVyY2lzZV9vanNfcnVudGltZTtcbiAgY29uc3Qgc2NyaXB0Q29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ3ZWJyLTItY29udGVudHNcXFwiXWApLnRleHRDb250ZW50O1xuICBjb25zdCBibG9jayA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKHNjcmlwdENvbnRlbnQpKTtcblxuICAvLyBEZWZhdWx0IGV2YWx1YXRpb24gY29uZmlndXJhdGlvblxuICBjb25zdCBvcHRpb25zID0gT2JqZWN0LmFzc2lnbih7XG4gICAgaWQ6IFwid2Vici0yLWNvbnRlbnRzXCIsXG4gICAgZWNobzogdHJ1ZSxcbiAgICBvdXRwdXQ6IHRydWVcbiAgfSwgYmxvY2suYXR0cik7XG5cbiAgLy8gRXZhbHVhdGUgdGhlIHByb3ZpZGVkIFIgY29kZVxuICBjb25zdCByZXN1bHQgPSB3ZWJST2pzLnByb2Nlc3Moe2NvZGU6IGJsb2NrLmNvZGUsIG9wdGlvbnN9LCB7fSk7XG5cbiAgLy8gRWFybHkgeWllbGQgd2hpbGUgd2Ugd2FpdCBmb3IgdGhlIGZpcnN0IGV2YWx1YXRpb24gYW5kIHJlbmRlclxuICBpZiAob3B0aW9ucy5vdXRwdXQgJiYgIShcIjJcIiBpbiB3ZWJST2pzLnJlbmRlcmVkT2pzKSkge1xuICAgIGNvbnN0IGNvbnRhaW5lciA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoXCJkaXZcIik7XG4gICAgY29uc3Qgc3Bpbm5lciA9IGRvY3VtZW50LmNyZWF0ZUVsZW1lbnQoXCJkaXZcIik7XG5cbiAgICBpZiAob3B0aW9ucy5lY2hvKSB7XG4gICAgICAvLyBTaG93IG91dHB1dCBhcyBoaWdobGlnaHRlZCBzb3VyY2VcbiAgICAgIGNvbnN0IHByZUVsZW0gPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KFwicHJlXCIpO1xuICAgICAgY29udGFpbmVyLmNsYXNzTmFtZSA9IFwic291cmNlQ29kZVwiO1xuICAgICAgcHJlRWxlbS5jbGFzc05hbWUgPSBcInNvdXJjZUNvZGUgclwiO1xuICAgICAgcHJlRWxlbS5hcHBlbmRDaGlsZChoaWdobGlnaHRSKGJsb2NrLmNvZGUpKTtcbiAgICAgIHNwaW5uZXIuY2xhc3NOYW1lID0gXCJzcGlubmVyLWdyb3cgc3Bpbm5lci1ncm93LXNtIG0tMiBwb3NpdGlvbi1hYnNvbHV0ZSB0b3AtMCBlbmQtMFwiO1xuICAgICAgcHJlRWxlbS5hcHBlbmRDaGlsZChzcGlubmVyKTtcbiAgICAgIGNvbnRhaW5lci5hcHBlbmRDaGlsZChwcmVFbGVtKTtcbiAgICB9IGVsc2Uge1xuICAgICAgc3Bpbm5lci5jbGFzc05hbWUgPSBcInNwaW5uZXItYm9yZGVyIHNwaW5uZXItYm9yZGVyLXNtXCI7XG4gICAgICBjb250YWluZXIuYXBwZW5kQ2hpbGQoc3Bpbm5lcik7XG4gICAgfVxuXG4gICAgeWllbGQgY29udGFpbmVyO1xuICB9XG5cbiAgd2ViUk9qcy5yZW5kZXJlZE9qc1tcIjJcIl0gPSB0cnVlO1xuICB5aWVsZCBhd2FpdCByZXN1bHQ7XG59XG4iLCJpbmxpbmUiOmZhbHNlLCJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJ3ZWJyLTIifSx7InNvdXJjZSI6IntcbiAgLy8gV2FpdCBmb3Igb3V0cHV0IHRvIGJlIHdyaXR0ZW4gdG8gdGhlIERPTSwgdGhlbiB0cmlnZ2VyIHdpZGdldCByZW5kZXJpbmdcbiAgYXdhaXQgX3dlYnJfdmFsdWVfMTtcbiAgaWYgKHdpbmRvdy5IVE1MV2lkZ2V0cykge1xuICAgIHdpbmRvdy5IVE1MV2lkZ2V0cy5zdGF0aWNSZW5kZXIoKTtcbiAgfVxuICBpZiAod2luZG93LlBhZ2VkVGFibGVEb2MpIHtcbiAgICB3aW5kb3cuUGFnZWRUYWJsZURvYy5pbml0QWxsKCk7XG4gIH1cbn1cbiIsImlubGluZSI6ZmFsc2UsIm1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsImNlbGxOYW1lIjoid2Vici13aWRnZXQtMSJ9LHsic291cmNlIjoiX3dlYnJfdmFsdWVfMSA9IHtcbiAgY29uc3QgeyBoaWdobGlnaHRSLCBiNjREZWNvZGUgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG4gIGNvbnN0IHNjcmlwdENvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici0xLWNvbnRlbnRzXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgYmxvY2sgPSBKU09OLnBhcnNlKGI2NERlY29kZShzY3JpcHRDb250ZW50KSk7XG5cbiAgLy8gRGVmYXVsdCBldmFsdWF0aW9uIGNvbmZpZ3VyYXRpb25cbiAgY29uc3Qgb3B0aW9ucyA9IE9iamVjdC5hc3NpZ24oe1xuICAgIGlkOiBcIndlYnItMS1jb250ZW50c1wiLFxuICAgIGVjaG86IHRydWUsXG4gICAgb3V0cHV0OiB0cnVlXG4gIH0sIGJsb2NrLmF0dHIpO1xuXG4gIC8vIEV2YWx1YXRlIHRoZSBwcm92aWRlZCBSIGNvZGVcbiAgY29uc3QgcmVzdWx0ID0gd2ViUk9qcy5wcm9jZXNzKHtjb2RlOiBibG9jay5jb2RlLCBvcHRpb25zfSwge30pO1xuXG4gIC8vIEVhcmx5IHlpZWxkIHdoaWxlIHdlIHdhaXQgZm9yIHRoZSBmaXJzdCBldmFsdWF0aW9uIGFuZCByZW5kZXJcbiAgaWYgKG9wdGlvbnMub3V0cHV0ICYmICEoXCIxXCIgaW4gd2ViUk9qcy5yZW5kZXJlZE9qcykpIHtcbiAgICBjb25zdCBjb250YWluZXIgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KFwiZGl2XCIpO1xuICAgIGNvbnN0IHNwaW5uZXIgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KFwiZGl2XCIpO1xuXG4gICAgaWYgKG9wdGlvbnMuZWNobykge1xuICAgICAgLy8gU2hvdyBvdXRwdXQgYXMgaGlnaGxpZ2h0ZWQgc291cmNlXG4gICAgICBjb25zdCBwcmVFbGVtID0gZG9jdW1lbnQuY3JlYXRlRWxlbWVudChcInByZVwiKTtcbiAgICAgIGNvbnRhaW5lci5jbGFzc05hbWUgPSBcInNvdXJjZUNvZGVcIjtcbiAgICAgIHByZUVsZW0uY2xhc3NOYW1lID0gXCJzb3VyY2VDb2RlIHJcIjtcbiAgICAgIHByZUVsZW0uYXBwZW5kQ2hpbGQoaGlnaGxpZ2h0UihibG9jay5jb2RlKSk7XG4gICAgICBzcGlubmVyLmNsYXNzTmFtZSA9IFwic3Bpbm5lci1ncm93IHNwaW5uZXItZ3Jvdy1zbSBtLTIgcG9zaXRpb24tYWJzb2x1dGUgdG9wLTAgZW5kLTBcIjtcbiAgICAgIHByZUVsZW0uYXBwZW5kQ2hpbGQoc3Bpbm5lcik7XG4gICAgICBjb250YWluZXIuYXBwZW5kQ2hpbGQocHJlRWxlbSk7XG4gICAgfSBlbHNlIHtcbiAgICAgIHNwaW5uZXIuY2xhc3NOYW1lID0gXCJzcGlubmVyLWJvcmRlciBzcGlubmVyLWJvcmRlci1zbVwiO1xuICAgICAgY29udGFpbmVyLmFwcGVuZENoaWxkKHNwaW5uZXIpO1xuICAgIH1cblxuICAgIHlpZWxkIGNvbnRhaW5lcjtcbiAgfVxuXG4gIHdlYlJPanMucmVuZGVyZWRPanNbXCIxXCJdID0gdHJ1ZTtcbiAgeWllbGQgYXdhaXQgcmVzdWx0O1xufVxuIiwiaW5saW5lIjpmYWxzZSwibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoid2Vici0xIn0seyJzb3VyY2UiOiJ3ZWJST2pzID0ge1xuICBjb25zdCB7IFdlYlIsIENoYW5uZWxUeXBlIH0gPSB3aW5kb3cuX2V4ZXJjaXNlX29qc19ydW50aW1lLldlYlI7XG4gIGNvbnN0IHtcbiAgICBXZWJSRXZhbHVhdG9yLFxuICAgIFdlYlJFbnZpcm9ubWVudE1hbmFnZXIsXG4gICAgc2V0dXBSLFxuICAgIGI2NERlY29kZSxcbiAgICBjb2xsYXBzZVBhdGhcbiAgfSA9IHdpbmRvdy5fZXhlcmNpc2Vfb2pzX3J1bnRpbWU7XG5cbiAgY29uc3Qgc3RhdHVzQ29udGFpbmVyID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoXCJleGVyY2lzZS1sb2FkaW5nLXN0YXR1c1wiKTtcbiAgY29uc3QgaW5kaWNhdG9yQ29udGFpbmVyID0gZG9jdW1lbnQuZ2V0RWxlbWVudEJ5SWQoXCJleGVyY2lzZS1sb2FkaW5nLWluZGljYXRvclwiKTtcbiAgaW5kaWNhdG9yQ29udGFpbmVyLmNsYXNzTGlzdC5yZW1vdmUoXCJkLW5vbmVcIik7XG5cbiAgbGV0IHN0YXR1c1RleHQgPSBkb2N1bWVudC5jcmVhdGVFbGVtZW50KFwiZGl2XCIpXG4gIHN0YXR1c1RleHQuY2xhc3NMaXN0ID0gXCJleGVyY2lzZS1sb2FkaW5nLWRldGFpbHNcIjtcbiAgc3RhdHVzVGV4dCA9IHN0YXR1c0NvbnRhaW5lci5hcHBlbmRDaGlsZChzdGF0dXNUZXh0KTtcbiAgc3RhdHVzVGV4dC50ZXh0Q29udGVudCA9IGBJbml0aWFsaXNlYDtcblxuICAvLyBIb2lzdCBpbmRpY2F0b3Igb3V0IGZyb20gZmluYWwgc2xpZGUgd2hlbiBydW5uaW5nIHVuZGVyIHJldmVhbFxuICBjb25zdCByZXZlYWxTdGF0dXMgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKFwiLnJldmVhbCAuZXhlcmNpc2UtbG9hZGluZy1pbmRpY2F0b3JcIik7XG4gIGlmIChyZXZlYWxTdGF0dXMpIHtcbiAgICByZXZlYWxTdGF0dXMucmVtb3ZlKCk7XG4gICAgZG9jdW1lbnQucXVlcnlTZWxlY3RvcihcIi5yZXZlYWwgPiAuc2xpZGVzXCIpLmFwcGVuZENoaWxkKHJldmVhbFN0YXR1cyk7XG4gIH1cblxuICAvLyBNYWtlIGFueSByZXZlYWwgc2xpZGVzIHdpdGggbGl2ZSBjZWxscyBzY3JvbGxhYmxlXG4gIGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3JBbGwoXCIucmV2ZWFsIC5leGVyY2lzZS1jZWxsXCIpLmZvckVhY2goKGVsKSA9PiB7XG4gICAgZWwuY2xvc2VzdCgnc2VjdGlvbi5zbGlkZScpLmNsYXNzTGlzdC5hZGQoXCJzY3JvbGxhYmxlXCIpO1xuICB9KVxuXG4gIC8vIHdlYlIgc3VwcGxlbWVudGFsIGRhdGEgYW5kIG9wdGlvbnNcbiAgY29uc3QgZGF0YUNvbnRlbnQgPSBkb2N1bWVudC5xdWVyeVNlbGVjdG9yKGBzY3JpcHRbdHlwZT1cXFwid2Vici1kYXRhXFxcIl1gKS50ZXh0Q29udGVudDtcbiAgY29uc3QgZGF0YSA9IEpTT04ucGFyc2UoYjY0RGVjb2RlKGRhdGFDb250ZW50KSk7XG5cbiAgLy8gR3JhYiBsaXN0IG9mIHJlc291cmNlcyB0byBiZSBkb3dubG9hZGVkXG4gIGNvbnN0IGZpbGVzQ29udGVudCA9IGRvY3VtZW50LnF1ZXJ5U2VsZWN0b3IoYHNjcmlwdFt0eXBlPVxcXCJ2ZnMtZmlsZVxcXCJdYCkudGV4dENvbnRlbnQ7XG4gIGNvbnN0IGZpbGVzID0gSlNPTi5wYXJzZShiNjREZWNvZGUoZmlsZXNDb250ZW50KSk7XG5cbiAgLy8gVXNlIFBvc3RNZXNzYWdlIGNoYW5uZWwgZm9yIGFzeW5jIGNvbW11bmljYXRpb25cbiAgLy8gV2UgZG8gbm90IGV4cGVjdCB0byB0YWtlIG5lc3RlZCBwcm9tcHQgaW5wdXQgaW4gUXVhcnRvIExpdmUgY2VsbHNcbiAgZGF0YS5vcHRpb25zLmNoYW5uZWxUeXBlID0gQ2hhbm5lbFR5cGUuUG9zdE1lc3NhZ2U7XG5cbiAgLy8gSW5pdGlhbGlzZSB3ZWJSIGFuZCBzZXR1cCBmb3IgUiBjb2RlIGV2YWx1YXRpb25cbiAgbGV0IHdlYlJQcm9taXNlID0gKGFzeW5jICh3ZWJSKSA9PiB7XG4gICAgc3RhdHVzVGV4dC50ZXh0Q29udGVudCA9IGBEb3dubG9hZGluZyB3ZWJSYDtcbiAgICBhd2FpdCB3ZWJSLmluaXQoKTtcblxuICAgIC8vIEluc3RhbGwgcHJvdmlkZWQgbGlzdCBvZiBwYWNrYWdlc1xuICAgIC8vIEVuc3VyZSB3ZWJSIGRlZmF1bHQgcmVwbyBpcyBpbmNsdWRlZFxuICAgIGRhdGEucGFja2FnZXMucmVwb3MucHVzaChcImh0dHBzOi8vcmVwby5yLXdhc20ub3JnXCIpXG4gICAgYXdhaXQgZGF0YS5wYWNrYWdlcy5wa2dzLm1hcCgocGtnKSA9PiAoKSA9PiB7XG4gICAgICBzdGF0dXNUZXh0LnRleHRDb250ZW50ID0gYERvd25sb2FkaW5nIHBhY2thZ2U6ICR7cGtnfWA7XG4gICAgICByZXR1cm4gd2ViUi5ldmFsUlZvaWQoYFxuICAgICAgICB3ZWJyOjppbnN0YWxsKHBrZywgcmVwb3MgPSByZXBvcylcbiAgICAgICAgbGlicmFyeShwa2csIGNoYXJhY3Rlci5vbmx5ID0gVFJVRSlcbiAgICAgIGAsIHsgZW52OiB7XG4gICAgICAgIHBrZzogcGtnLFxuICAgICAgICByZXBvczogZGF0YS5wYWNrYWdlcy5yZXBvcyxcbiAgICAgIH19KTtcbiAgICB9KS5yZWR1Y2UoKGN1ciwgbmV4dCkgPT4gY3VyLnRoZW4obmV4dCksIFByb21pc2UucmVzb2x2ZSgpKTtcblxuICAgIC8vIERvd25sb2FkIGFuZCBpbnN0YWxsIHJlc291cmNlc1xuICAgIGF3YWl0IGZpbGVzLm1hcCgoZmlsZSkgPT4gYXN5bmMgKCkgPT4ge1xuICAgICAgY29uc3QgbmFtZSA9IGZpbGUuc3Vic3RyaW5nKGZpbGUubGFzdEluZGV4T2YoJy8nKSArIDEpO1xuICAgICAgc3RhdHVzVGV4dC50ZXh0Q29udGVudCA9IGBEb3dubG9hZGluZyByZXNvdXJjZTogJHtuYW1lfWA7XG4gICAgICBjb25zdCByZXNwb25zZSA9IGF3YWl0IGZldGNoKGZpbGUpO1xuICAgICAgaWYgKCFyZXNwb25zZS5vaykge1xuICAgICAgICB0aHJvdyBuZXcgRXJyb3IoYENhbid0IGRvd25sb2FkIFxcYCR7ZmlsZX1cXGAuIEVycm9yICR7cmVzcG9uc2Uuc3RhdHVzfTogXCIke3Jlc3BvbnNlLnN0YXR1c1RleHR9XCIuYCk7XG4gICAgICB9XG4gICAgICBjb25zdCBkYXRhID0gYXdhaXQgcmVzcG9uc2UuYXJyYXlCdWZmZXIoKTtcblxuICAgICAgLy8gU3RvcmUgVVJMcyBpbiB0aGUgY3dkIHdpdGhvdXQgYW55IHN1YmRpcmVjdG9yeSBzdHJ1Y3R1cmVcbiAgICAgIGlmIChmaWxlLmluY2x1ZGVzKFwiOi8vXCIpKSB7XG4gICAgICAgIGZpbGUgPSBuYW1lO1xuICAgICAgfVxuXG4gICAgICAvLyBDb2xsYXBzZSBoaWdoZXIgZGlyZWN0b3J5IHN0cnVjdHVyZVxuICAgICAgZmlsZSA9IGNvbGxhcHNlUGF0aChmaWxlKTtcblxuICAgICAgLy8gQ3JlYXRlIGRpcmVjdG9yeSB0cmVlLCBpZ25vcmluZyBcImRpcmVjdG9yeSBleGlzdHNcIiBWRlMgZXJyb3JzXG4gICAgICBjb25zdCBwYXJ0cyA9IGZpbGUuc3BsaXQoJy8nKS5zbGljZSgwLCAtMSk7XG4gICAgICBsZXQgcGF0aCA9ICcnO1xuICAgICAgd2hpbGUgKHBhcnRzLmxlbmd0aCA+IDApIHtcbiAgICAgICAgcGF0aCArPSBwYXJ0cy5zaGlmdCgpICsgJy8nO1xuICAgICAgICB0cnkge1xuICAgICAgICAgIGF3YWl0IHdlYlIuRlMubWtkaXIocGF0aCk7XG4gICAgICAgIH0gY2F0Y2ggKGUpIHtcbiAgICAgICAgICBpZiAoIWUubWVzc2FnZS5pbmNsdWRlcyhcIkZTIGVycm9yXCIpKSB7XG4gICAgICAgICAgICB0aHJvdyBlO1xuICAgICAgICAgIH1cbiAgICAgICAgfVxuICAgICAgfVxuXG4gICAgICAvLyBXcml0ZSB0aGlzIGZpbGUgdG8gdGhlIFZGU1xuICAgICAgcmV0dXJuIGF3YWl0IHdlYlIuRlMud3JpdGVGaWxlKGZpbGUsIG5ldyBVaW50OEFycmF5KGRhdGEpKTtcbiAgICB9KS5yZWR1Y2UoKGN1ciwgbmV4dCkgPT4gY3VyLnRoZW4obmV4dCksIFByb21pc2UucmVzb2x2ZSgpKTtcblxuICAgIHN0YXR1c1RleHQudGV4dENvbnRlbnQgPSBgSW5zdGFsbGluZyB3ZWJSIHNoaW1zYDtcbiAgICBhd2FpdCB3ZWJSLmV2YWxSVm9pZChgd2Vicjo6c2hpbV9pbnN0YWxsKClgKTtcblxuICAgIHN0YXR1c1RleHQudGV4dENvbnRlbnQgPSBgV2ViUiBlbnZpcm9ubWVudCBzZXR1cGA7XG4gICAgYXdhaXQgc2V0dXBSKHdlYlIsIGRhdGEpO1xuXG4gICAgc3RhdHVzVGV4dC5yZW1vdmUoKTtcbiAgICBpZiAoc3RhdHVzQ29udGFpbmVyLmNoaWxkcmVuLmxlbmd0aCA9PSAwKSB7XG4gICAgICBzdGF0dXNDb250YWluZXIucGFyZW50Tm9kZS5yZW1vdmUoKTtcbiAgICB9XG4gICAgcmV0dXJuIHdlYlI7XG4gIH0pKG5ldyBXZWJSKGRhdGEub3B0aW9ucykpO1xuXG4gIC8vIEtlZXAgdHJhY2sgb2YgaW5pdGlhbCBPSlMgYmxvY2sgcmVuZGVyXG4gIGNvbnN0IHJlbmRlcmVkT2pzID0ge307XG5cbiAgY29uc3QgcHJvY2VzcyA9IGFzeW5jIChjb250ZXh0LCBpbnB1dHMpID0+IHtcbiAgICBjb25zdCB3ZWJSID0gYXdhaXQgd2ViUlByb21pc2U7XG4gICAgY29uc3QgZXZhbHVhdG9yID0gbmV3IFdlYlJFdmFsdWF0b3Iod2ViUiwgY29udGV4dClcbiAgICBhd2FpdCBldmFsdWF0b3IucHJvY2VzcyhpbnB1dHMpO1xuICAgIHJldHVybiBldmFsdWF0b3IuY29udGFpbmVyO1xuICB9XG5cbiAgcmV0dXJuIHtcbiAgICBwcm9jZXNzLFxuICAgIHdlYlJQcm9taXNlLFxuICAgIHJlbmRlcmVkT2pzLFxuICB9O1xufVxuIiwiaW5saW5lIjpmYWxzZSwibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0IiwiY2VsbE5hbWUiOiJ3ZWJyLXByZWx1ZGUifV19
+</script>
+<div id="exercise-loading-indicator" class="exercise-loading-indicator d-none d-flex align-items-center gap-2">
+<div id="exercise-loading-status" class="d-flex gap-2">
+
+</div>
+<div class="spinner-grow spinner-grow-sm">
+
+</div>
+</div>
+<script type="vfs-file">
+W10=
+</script>
+</section>
+
+</main>
+<!-- /main column -->
+<script type="ojs-module-contents">
+eyJjb250ZW50cyI6W3sibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6IlxuZnVuY3Rpb24gb2tfY2hlY2tib3gocmVzcG9uc2UsIG4pIHtcbiAgaWYgKCFyZXNwb25zZSB8fCByZXNwb25zZS5sZW5ndGggPT09IDApIFxuICAgIHJldHVybiBodG1sYDxzcGFuIHN0eWxlPVwiY29sb3I6cHVycGxlXCI+WW91IGhhdmVuJ3QgYW5zd2VyZWQgeWV0Ljwvc3Bhbj5gO1xuICBpZiAocmVzcG9uc2UudG9TdHJpbmcoKSA9PT0gbikgXG4gICAgcmV0dXJuIGh0bWxgPHNwYW4gc3R5bGU9XCJjb2xvcjpncmVlblwiPkNvcnJlY3Qg4pyTPC9zcGFuPmA7XG4gIHJldHVybiBodG1sYDxzcGFuIHN0eWxlPVwiY29sb3I6cmVkXCI+Tm90IFlldCEg4pyXPC9zcGFuPmA7XG59XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTIiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbntcbiAgY29uc3QgYnRuID0gaHRtbGA8YnV0dG9uIHN0eWxlPVwiXG4gICAgYmFja2dyb3VuZDogIzQzNmI5NTtcbiAgICBjb2xvcjogd2hpdGU7XG4gICAgYm9yZGVyOiBub25lO1xuICAgIHBhZGRpbmc6IDhweCAxNnB4O1xuICAgIGJvcmRlci1yYWRpdXM6IDRweDtcbiAgICBjdXJzb3I6IHBvaW50ZXI7XG4gICAgZm9udC1zaXplOiAwLjllbTtcbiAgXCI+8J+UhCBSZXNldCBNeSBSZXNwb25zZXM8L2J1dHRvbj5gO1xuXG4gIGJ0bi5vbmNsaWNrID0gKCkgPT4ge1xuICAgIGlmIChjb25maXJtKCdSZXNldCBhbGwgcmVzcG9uc2VzIGZvciB0aGlzIGFjdGl2aXR5PyBUaGlzIGNhbm5vdCBiZSB1bmRvbmUuJykpIHtcbiAgICAgIE9iamVjdC5rZXlzKGxvY2FsU3RvcmFnZSlcbiAgICAgICAgLmZpbHRlcihrID0+IGsuZW5kc1dpdGgoJ19zZWxlY3RlZF90NGUnKSB8fCBrLmVuZHNXaXRoKCdfY29ycmVjdF90NGUnKSB8fCBrLmVuZHNXaXRoKCdfcmVzdWx0X3Q0ZScpKVxuICAgICAgICAuZm9yRWFjaChrID0+IGxvY2FsU3RvcmFnZS5yZW1vdmVJdGVtKGspKTtcbiAgICAgIGxvY2F0aW9uLnJlbG9hZCgpO1xuICAgIH1cbiAgfTtcblxuICByZXR1cm4gYnRuO1xufVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0zIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG5tdXRhYmxlIG9rX3Jlc3BvbnNlID0gKHJlc3BvbnNlLCBuKSA9PiB7IHJldHVybiBodG1sYExvYWRpbmcuLi5gIH07XG52aWV3b2YgcTEgPSBJbnB1dHMuY2hlY2tib3goXG4gIG5ldyBNYXAoW1xuICAgIFtcIkEgaGlzdG9ncmFtXCIsIDFdLFxuICAgIFtcIkEgYmFycGxvdCB3aXRoIGZpbGwgY29sb3JcIiwgMl0sXG4gICAgW1wiQSBoZWF0bWFwXCIsIDNdLFxuICAgIFtcIkEgZG90cGxvdFwiLCA0XSxcbiAgICBbXCJTaWRlLWJ5LXNpZGUgYm94cGxvdHNcIiwgNV1cbiAgXSksXG4gIHt2YWx1ZTogSlNPTi5wYXJzZShsb2NhbFN0b3JhZ2UuZ2V0SXRlbShcInExX3NlbGVjdGVkX3Q0ZVwiKSA/PyBcIltdXCIpID8/IFtdfVxuKTtcblxue1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInExX3NlbGVjdGVkX3Q0ZVwiLCBKU09OLnN0cmluZ2lmeShxMSkpO1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInExX2NvcnJlY3RfdDRlXCIsIFwiMiwzXCIpO1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInExX3Jlc3VsdF90NGVcIiwgKCFxMSB8fCBxMS5sZW5ndGggPT09IDApID8gXCJ1bmF0dGVtcHRlZFwiIDogKHExLnRvU3RyaW5nKCkgPT09IFwiMiwzXCIgPyBcImNvcnJlY3RcIiA6IFwiaW5jb3JyZWN0XCIpKTtcbn1cbm9rX2NoZWNrYm94KHExLCBcIjIsM1wiKTtcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtNCIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ilxudmlld29mIHEyID0gSW5wdXRzLnJhZGlvKFxuICBuZXcgTWFwKFtcbiAgICBbXCIxXCIsIDFdLFxuICAgIFtcIjEyXCIsIDJdLFxuICAgIFtcIjIzNFwiLCAzXSxcbiAgICBbXCIyNDVcIiwgNF0sXG4gICAgW1wiMjU3NFwiLCA1XVxuICBdKSxcbiAge3ZhbHVlOiBKU09OLnBhcnNlKGxvY2FsU3RvcmFnZS5nZXRJdGVtKFwicTJfc2VsZWN0ZWRfdDRlXCIpID8/IFwibnVsbFwiKX1cbik7XG5cbntcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxMl9zZWxlY3RlZF90NGVcIiwgSlNPTi5zdHJpbmdpZnkocTIpKTtcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxMl9jb3JyZWN0X3Q0ZVwiLCBcIjJcIik7XG4gIGxvY2FsU3RvcmFnZS5zZXRJdGVtKFwicTJfcmVzdWx0X3Q0ZVwiLCBxMiA9PT0gbnVsbCA/IFwidW5hdHRlbXB0ZWRcIiA6IChxMiA9PSAyID8gXCJjb3JyZWN0XCIgOiBcImluY29ycmVjdFwiKSk7XG59XG5va19yZXNwb25zZShxMiwgXCIyXCIpO1xuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC01IiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG52aWV3b2YgcTMgPSBJbnB1dHMucmFkaW8oXG4gIG5ldyBNYXAoW1xuICAgIFtcIjFcIiwgMV0sXG4gICAgW1wiMTJcIiwgMl0sXG4gICAgW1wiMjM0XCIsIDNdLFxuICAgIFtcIjI0NVwiLCA0XSxcbiAgICBbXCIyNTc0XCIsIDVdXG4gIF0pLFxuICB7dmFsdWU6IEpTT04ucGFyc2UobG9jYWxTdG9yYWdlLmdldEl0ZW0oXCJxM19zZWxlY3RlZF90NGVcIikgPz8gXCJudWxsXCIpfVxuKTtcblxue1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInEzX3NlbGVjdGVkX3Q0ZVwiLCBKU09OLnN0cmluZ2lmeShxMykpO1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInEzX2NvcnJlY3RfdDRlXCIsIFwiM1wiKTtcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxM19yZXN1bHRfdDRlXCIsIHEzID09PSBudWxsID8gXCJ1bmF0dGVtcHRlZFwiIDogKHEzID09IDMgPyBcImNvcnJlY3RcIiA6IFwiaW5jb3JyZWN0XCIpKTtcbn1cbm9rX3Jlc3BvbnNlKHEzLCBcIjNcIik7XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTYiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbnZpZXdvZiBxNCA9IElucHV0cy5jaGVja2JveChcbiAgbmV3IE1hcChbXG4gICAgW1wibWFudWZhY3R1cmVyXCIsIDFdLFxuICAgIFtcIm1vZGVsXCIsIDJdLFxuICAgIFtcImRpc3BsIChkaXNwbGFjZW1lbnQpXCIsIDNdLFxuICAgIFtcImN5bCAoY3lsaW5kZXJzKVwiLCA0XSxcbiAgICBbXCJ0cmFucyAodHJhbnNtaXNzaW9uIHR5cGUpXCIsIDVdLFxuICAgIFtcInllYXJcIiwgNl0sXG4gICAgW1wiZHJ2IChkcml2ZSB0eXBlKVwiLCA3XSxcbiAgICBbXCJjdHkgKGNpdHkgZnVlbCBlY29ub215KVwiLCA4XSxcbiAgICBbXCJod3kgKGhpZ2h3YXkgZnVlbCBlY29ub215KVwiLCA5XSxcbiAgICBbXCJmbCAoZnVlbCB0eXBlKVwiLCAxMF0sXG4gICAgW1wiY2xhc3MgKHZlaGljbGUgY2xhc3MpXCIsIDExXSxcbiAgICBbXCJ0cmFuczIgKGF1dG8vbWFudWFsIHRyYW5zbWlzc2lvbilcIiwgMTJdXG4gIF0pLFxuICB7dmFsdWU6IEpTT04ucGFyc2UobG9jYWxTdG9yYWdlLmdldEl0ZW0oXCJxNF9zZWxlY3RlZF90NGVcIikgPz8gXCJbXVwiKSA/PyBbXX1cbik7XG5cbntcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxNF9zZWxlY3RlZF90NGVcIiwgSlNPTi5zdHJpbmdpZnkocTQpKTtcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxNF9jb3JyZWN0X3Q0ZVwiLCBcIjMsNCw2LDgsOVwiKTtcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxNF9yZXN1bHRfdDRlXCIsICghcTQgfHwgcTQubGVuZ3RoID09PSAwKSA/IFwidW5hdHRlbXB0ZWRcIiA6IChxNC50b1N0cmluZygpID09PSBcIjMsNCw2LDgsOVwiID8gXCJjb3JyZWN0XCIgOiBcImluY29ycmVjdFwiKSk7XG59XG5va19jaGVja2JveChxNCwgXCIzLDQsNiw4LDlcIik7XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTciLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbnZpZXdvZiBxX2hpc3QgPSBJbnB1dHMuY2hlY2tib3goXG4gIG5ldyBNYXAoW1xuICAgIFtcIlRoZSBkaXN0cmlidXRpb24gaXMgcm91Z2hseSBzeW1tZXRyaWMgd2l0aCBubyBhcHBhcmVudCBvdXRsaWVycy5cIiwgMV0sXG4gICAgW1wiVGhlIGRpc3RyaWJ1dGlvbiBpcyBza2V3ZWQgcmlnaHQsIHdpdGggbW9zdCB2ZWhpY2xlcyBhY2hpZXZpbmcgbW9kZXJhdGUgaGlnaHdheSBNUEcgYW5kIGEgZmV3IGFjaGlldmluZyB2ZXJ5IGhpZ2ggdmFsdWVzLlwiLCAyXSxcbiAgICBbXCJUaGUgZGlzdHJpYnV0aW9uIGlzIHNrZXdlZCBsZWZ0LCB3aXRoIG1vc3QgdmVoaWNsZXMgYWNoaWV2aW5nIGhpZ2ggaGlnaHdheSBNUEcgYW5kIGEgZmV3IGFjaGlldmluZyB2ZXJ5IGxvdyB2YWx1ZXMuXCIsIDNdLFxuICAgIFtcIlRoZSBkaXN0cmlidXRpb24gaXMgYmltb2RhbCwgd2l0aCB0d28gZGlzdGluY3QgcGVha3MuXCIsIDRdXG4gIF0pLFxuICB7dmFsdWU6IEpTT04ucGFyc2UobG9jYWxTdG9yYWdlLmdldEl0ZW0oXCJxX2hpc3Rfc2VsZWN0ZWRfdDRlXCIpID8/IFwiW11cIikgPz8gW119XG4pO1xuXG57XG4gIGxvY2FsU3RvcmFnZS5zZXRJdGVtKFwicV9oaXN0X3NlbGVjdGVkX3Q0ZVwiLCBKU09OLnN0cmluZ2lmeShxX2hpc3QpKTtcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxX2hpc3RfY29ycmVjdF90NGVcIiwgXCIyXCIpO1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInFfaGlzdF9yZXN1bHRfdDRlXCIsIHFfaGlzdCA9PT0gbnVsbCA/IFwidW5hdHRlbXB0ZWRcIiA6IChxX2hpc3QudG9TdHJpbmcgPT09IFwiMiw0XCIgPyBcImNvcnJlY3RcIiA6IFwiaW5jb3JyZWN0XCIpKTtcbn1cbm9rX2NoZWNrYm94KHFfaGlzdCwgXCIyLDRcIik7XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTgiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbnZpZXdvZiBxNSA9IElucHV0cy5yYWRpbyhcbiAgbmV3IE1hcChbXG4gICAgW1wiSGlnaHdheSBtaWxlcyBwZXIgZ2FsbG9uIGFuZCBlbmdpbmUgZGlzcGxhY2VtZW50IGFyZSBpbmRlcGVuZGVudC5cIiwgMV0sXG4gICAgW1wiSGlnaHdheSBtaWxlcyBwZXIgZ2FsbG9uIGFuZCBlbmdpbmUgZGlzcGxhY2VtZW50IGFyZSBhc3NvY2lhdGVkLlwiLCAyXSxcbiAgICBbXCJJdCBpcyBpbXBvc3NpYmxlIHRvIHRlbGwgd2hldGhlciB0aGUgdmFyaWFibGVzIGFyZSBhc3NvY2lhdGVkIG9yIGluZGVwZW5kZW50LlwiLCAzXSxcbiAgICBbXCJIaWdod2F5IG1pbGVzIHBlciBnYWxsb24gYW5kIGVuZ2luZSBkaXNwbGFjZW1lbnQgYXJlIGJvdGggaW5kZXBlbmRlbnQgYW5kIGFzc29jaWF0ZWQuXCIsIDRdXG4gIF0pLFxuICB7dmFsdWU6IEpTT04ucGFyc2UobG9jYWxTdG9yYWdlLmdldEl0ZW0oXCJxNV9zZWxlY3RlZF90NGVcIikgPz8gXCJudWxsXCIpfVxuKTtcblxue1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInE1X3NlbGVjdGVkX3Q0ZVwiLCBKU09OLnN0cmluZ2lmeShxNSkpO1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInE1X2NvcnJlY3RfdDRlXCIsIFwiMlwiKTtcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxNV9yZXN1bHRfdDRlXCIsIHE1ID09PSBudWxsID8gXCJ1bmF0dGVtcHRlZFwiIDogKHE1ID09IDIgPyBcImNvcnJlY3RcIiA6IFwiaW5jb3JyZWN0XCIpKTtcbn1cbm9rX3Jlc3BvbnNlKHE1LCBcIjJcIik7XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTkiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbnZpZXdvZiBxNiA9IElucHV0cy5yYWRpbyhcbiAgbmV3IE1hcChbXG4gICAgW1wiRW5naW5lIGRpc3BsYWNlbWVudCBhbmQgaGlnaHdheSBtaWxlcyBwZXIgZ2FsbG9uIHNoYXJlIGEgbmVnYXRpdmUsIGxpbmVhciByZWxhdGlvbnNoaXAuXCIsIDFdLFxuICAgIFtcIkVuZ2luZSBkaXNwbGFjZW1lbnQgYW5kIGhpZ2h3YXkgbWlsZXMgcGVyIGdhbGxvbiBzaGFyZSBhIHBvc2l0aXZlLCBsaW5lYXIgcmVsYXRpb25zaGlwLlwiLCAyXSxcbiAgICBbXCJFbmdpbmUgZGlzcGxhY2VtZW50IGFuZCBoaWdod2F5IG1pbGVzIHBlciBnYWxsb24gc2hhcmUgYSBuZWdhdGl2ZSwgbm9uLWxpbmVhciByZWxhdGlvbnNoaXAuXCIsIDNdLFxuICAgIFtcIkVuZ2luZSBkaXNwbGFjZW1lbnQgYW5kIGhpZ2h3YXkgbWlsZXMgcGVyIGdhbGxvbiBzaGFyZSBhIHBvc2l0aXZlLCBub24tbGluZWFyIHJlbGF0aW9uc2hpcC5cIiwgNF1cbiAgXSksXG4gIHt2YWx1ZTogSlNPTi5wYXJzZShsb2NhbFN0b3JhZ2UuZ2V0SXRlbShcInE2X3NlbGVjdGVkX3Q0ZVwiKSA/PyBcIm51bGxcIil9XG4pO1xuXG57XG4gIGxvY2FsU3RvcmFnZS5zZXRJdGVtKFwicTZfc2VsZWN0ZWRfdDRlXCIsIEpTT04uc3RyaW5naWZ5KHE2KSk7XG4gIGxvY2FsU3RvcmFnZS5zZXRJdGVtKFwicTZfY29ycmVjdF90NGVcIiwgXCIzXCIpO1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInE2X3Jlc3VsdF90NGVcIiwgcTYgPT09IG51bGwgPyBcInVuYXR0ZW1wdGVkXCIgOiAocTYgPT0gMyA/IFwiY29ycmVjdFwiIDogXCJpbmNvcnJlY3RcIikpO1xufVxub2tfcmVzcG9uc2UocTYsIFwiM1wiKTtcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMTAiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbnZpZXdvZiBxNyA9IElucHV0cy5yYWRpbyhcbiAgbmV3IE1hcChbXG4gICAgW1wiR2VuZXJhbGx5LCBlbmdpbmVzIHdpdGggaGlnaGVyIGRpc3BsYWNlbWVudCBhcmUgYXNzb2NpYXRlZCB3aXRoIGxvd2VyIGF2ZXJhZ2UgaGlnaHdheSBtaWxlcyBwZXIgZ2FsbG9uIHJhdGluZ3MuXCIsIDFdLFxuICAgIFtcIkdlbmVyYWxseSwgZW5naW5lcyB3aXRoIGhpZ2hlciBkaXNwbGFjZW1lbnQgYXJlIGFzc29jaWF0ZWQgd2l0aCBoaWdoZXIgYXZlcmFnZSBoaWdod2F5IG1pbGVzIHBlciBnYWxsb24gcmF0aW5ncy5cIiwgMl0sXG4gICAgW1wiSGlnaGVyIGVuZ2luZSBkaXNwbGFjZW1lbnQgY2F1c2VzIGxvd2VyIGF2ZXJhZ2UgaGlnaHdheSBtaWxlcyBwZXIgZ2FsbG9uIHJhdGluZ3MuXCIsIDNdLFxuICAgIFtcIkVuZ2luZSBkaXNwbGFjZW1lbnQgY2F1c2VzIGhpZ2hlciBhdmVyYWdlIGhpZ2h3YXkgbWlsZXMgcGVyIGdhbGxvbiByYXRpbmdzLlwiLCA0XVxuICBdKSxcbiAge3ZhbHVlOiBKU09OLnBhcnNlKGxvY2FsU3RvcmFnZS5nZXRJdGVtKFwicTdfc2VsZWN0ZWRfdDRlXCIpID8/IFwibnVsbFwiKX1cbik7XG5cbntcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxN19zZWxlY3RlZF90NGVcIiwgSlNPTi5zdHJpbmdpZnkocTcpKTtcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxN19jb3JyZWN0X3Q0ZVwiLCBcIjFcIik7XG4gIGxvY2FsU3RvcmFnZS5zZXRJdGVtKFwicTdfcmVzdWx0X3Q0ZVwiLCBxNyA9PT0gbnVsbCA/IFwidW5hdHRlbXB0ZWRcIiA6IChxNyA9PSAxID8gXCJjb3JyZWN0XCIgOiBcImluY29ycmVjdFwiKSk7XG59XG5va19yZXNwb25zZShxNywgXCIxXCIpO1xuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0xMSIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ilxudmlld29mIHFfY3R5X2Rpc3BsID0gSW5wdXRzLnJhZGlvKFxuICBuZXcgTWFwKFtcbiAgICBbXCJDaXR5IGZ1ZWwgZWNvbm9teSB0ZW5kcyB0byBpbmNyZWFzZSBhcyBlbmdpbmUgZGlzcGxhY2VtZW50IGluY3JlYXNlcy5cIiwgMV0sXG4gICAgW1wiQ2l0eSBmdWVsIGVjb25vbXkgdGVuZHMgdG8gZGVjcmVhc2UgYXMgZW5naW5lIGRpc3BsYWNlbWVudCBpbmNyZWFzZXMuXCIsIDJdLFxuICAgIFtcIlRoZXJlIGlzIG5vIGNsZWFyIHJlbGF0aW9uc2hpcCBiZXR3ZWVuIGNpdHkgZnVlbCBlY29ub215IGFuZCBlbmdpbmUgZGlzcGxhY2VtZW50LlwiLCAzXSxcbiAgICBbXCJDaXR5IGZ1ZWwgZWNvbm9teSBhbmQgZW5naW5lIGRpc3BsYWNlbWVudCBhcmUgcGVyZmVjdGx5IGxpbmVhcmx5IHJlbGF0ZWQuXCIsIDRdXG4gIF0pLFxuICB7dmFsdWU6IEpTT04ucGFyc2UobG9jYWxTdG9yYWdlLmdldEl0ZW0oXCJxX2N0eV9kaXNwbF9zZWxlY3RlZF90NGVcIikgPz8gXCJudWxsXCIpfVxuKTtcblxue1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInFfY3R5X2Rpc3BsX3NlbGVjdGVkX3Q0ZVwiLCBKU09OLnN0cmluZ2lmeShxX2N0eV9kaXNwbCkpO1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInFfY3R5X2Rpc3BsX2NvcnJlY3RfdDRlXCIsIFwiMlwiKTtcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxX2N0eV9kaXNwbF9yZXN1bHRfdDRlXCIsIHFfY3R5X2Rpc3BsID09PSBudWxsID8gXCJ1bmF0dGVtcHRlZFwiIDogKHFfY3R5X2Rpc3BsID09IDIgPyBcImNvcnJlY3RcIiA6IFwiaW5jb3JyZWN0XCIpKTtcbn1cbm9rX3Jlc3BvbnNlKHFfY3R5X2Rpc3BsLCBcIjJcIik7XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTEyIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG52aWV3b2YgcV9ib3hwbG90ID0gSW5wdXRzLnJhZGlvKFxuICBuZXcgTWFwKFtcbiAgICBbXCI0IGN5bGluZGVyc1wiLCAxXSxcbiAgICBbXCI1IGN5bGluZGVyc1wiLCAyXSxcbiAgICBbXCI2IGN5bGluZGVyc1wiLCAzXSxcbiAgICBbXCI4IGN5bGluZGVyc1wiLCA0XVxuICBdKSxcbiAge3ZhbHVlOiBKU09OLnBhcnNlKGxvY2FsU3RvcmFnZS5nZXRJdGVtKFwicV9ib3hwbG90X3NlbGVjdGVkX3Q0ZVwiKSA/PyBcIm51bGxcIil9XG4pO1xuXG57XG4gIGxvY2FsU3RvcmFnZS5zZXRJdGVtKFwicV9ib3hwbG90X3NlbGVjdGVkX3Q0ZVwiLCBKU09OLnN0cmluZ2lmeShxX2JveHBsb3QpKTtcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxX2JveHBsb3RfY29ycmVjdF90NGVcIiwgXCIxXCIpO1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInFfYm94cGxvdF9yZXN1bHRfdDRlXCIsIHFfYm94cGxvdCA9PT0gbnVsbCA/IFwidW5hdHRlbXB0ZWRcIiA6IChxX2JveHBsb3QgPT0gMSA/IFwiY29ycmVjdFwiIDogXCJpbmNvcnJlY3RcIikpO1xufVxub2tfcmVzcG9uc2UocV9ib3hwbG90LCBcIjFcIik7XG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXQiLCJjZWxsTmFtZSI6Im9qcy1jZWxsLTEzIiwiaW5saW5lIjpmYWxzZSwic291cmNlIjoiXG52aWV3b2YgcTggPSBJbnB1dHMucmFkaW8oXG4gIG5ldyBNYXAoW1xuICAgIFtcIlRyaWNrIHF1ZXN0aW9uIC0tIGEgc2NhdHRlcnBsb3QgaXMgYWx3YXlzIGFwcHJvcHJpYXRlLlwiLCAxXSxcbiAgICBbXCJBdCBsZWFzdCBvbmUgb2YgdGhlIHR3byB2YXJpYWJsZXMgaXMgbm90IG51bWVyaWNhbC5cIiwgMl0sXG4gICAgW1wiQSBzY2F0dGVycGxvdCB3b3VsZCBiZSBva2F5IGJ1dCB0aGVyZSBhcmUgYmV0dGVyIG9wdGlvbnMuXCIsIDNdLFxuICAgIFtcIlRoZXJlIGlzbid0IGVub3VnaCBkYXRhIGZvciBhIHNjYXR0ZXJwbG90LlwiLCA0XVxuICBdKSxcbiAge3ZhbHVlOiBKU09OLnBhcnNlKGxvY2FsU3RvcmFnZS5nZXRJdGVtKFwicThfc2VsZWN0ZWRfdDRlXCIpID8/IFwibnVsbFwiKX1cbik7XG5cbntcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxOF9zZWxlY3RlZF90NGVcIiwgSlNPTi5zdHJpbmdpZnkocTgpKTtcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxOF9jb3JyZWN0X3Q0ZVwiLCBcIjJcIik7XG4gIGxvY2FsU3RvcmFnZS5zZXRJdGVtKFwicThfcmVzdWx0X3Q0ZVwiLCBxOCA9PT0gbnVsbCA/IFwidW5hdHRlbXB0ZWRcIiA6IChxOCA9PSAyID8gXCJjb3JyZWN0XCIgOiBcImluY29ycmVjdFwiKSk7XG59XG5va19yZXNwb25zZShxOCwgXCIyXCIpO1xuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0xNCIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ilxudmlld29mIHE5ID0gSW5wdXRzLmNoZWNrYm94KFxuICBuZXcgTWFwKFtcbiAgICBbXCJBIGhpc3RvZ3JhbVwiLCAxXSxcbiAgICBbXCJBIHNpZGUtYnktc2lkZSBib3hwbG90XCIsIDJdLFxuICAgIFtcIkEgYmFyIGNoYXJ0IHdpdGggZmlsbCBjb2xvclwiLCAzXSxcbiAgICBbXCJBIGhlYXRtYXBcIiwgNF1cbiAgXSksXG4gIHt2YWx1ZTogSlNPTi5wYXJzZShsb2NhbFN0b3JhZ2UuZ2V0SXRlbShcInE5X3NlbGVjdGVkX3Q0ZVwiKSA/PyBcIltdXCIpID8/IFtdfVxuKTtcblxue1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInE5X3NlbGVjdGVkX3Q0ZVwiLCBKU09OLnN0cmluZ2lmeShxOSkpO1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInE5X2NvcnJlY3RfdDRlXCIsIFwiMyw0XCIpO1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInE5X3Jlc3VsdF90NGVcIiwgKCFxOSB8fCBxOS5sZW5ndGggPT09IDApID8gXCJ1bmF0dGVtcHRlZFwiIDogKHE5LnRvU3RyaW5nKCkgPT09IFwiMyw0XCIgPyBcImNvcnJlY3RcIiA6IFwiaW5jb3JyZWN0XCIpKTtcbn1cbm9rX2NoZWNrYm94KHE5LCBcIjMsNFwiKTtcbiJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldCIsImNlbGxOYW1lIjoib2pzLWNlbGwtMTUiLCJpbmxpbmUiOmZhbHNlLCJzb3VyY2UiOiJcbnZpZXdvZiBxX3N0YWNrZWRiYXIgPSBJbnB1dHMucmFkaW8oXG4gIG5ldyBNYXAoW1xuICAgIFtcImNvbXBhY3RcIiwgMV0sXG4gICAgW1wibWlkc2l6ZVwiLCAyXSxcbiAgICBbXCJwaWNrdXBcIiwgM10sXG4gICAgW1wic3ViY29tcGFjdFwiLCA0XSxcbiAgICBbXCJzdXZcIiwgNV1cbiAgXSksXG4gIHt2YWx1ZTogSlNPTi5wYXJzZShsb2NhbFN0b3JhZ2UuZ2V0SXRlbShcInFfc3RhY2tlZGJhcl9zZWxlY3RlZF90NGVcIikgPz8gXCJudWxsXCIpfVxuKTtcblxue1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInFfc3RhY2tlZGJhcl9zZWxlY3RlZF90NGVcIiwgSlNPTi5zdHJpbmdpZnkocV9zdGFja2VkYmFyKSk7XG4gIGxvY2FsU3RvcmFnZS5zZXRJdGVtKFwicV9zdGFja2VkYmFyX2NvcnJlY3RfdDRlXCIsIFwiM1wiKTtcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxX3N0YWNrZWRiYXJfcmVzdWx0X3Q0ZVwiLCBxX3N0YWNrZWRiYXIgPT09IG51bGwgPyBcInVuYXR0ZW1wdGVkXCIgOiAocV9zdGFja2VkYmFyID09IDMgPyBcImNvcnJlY3RcIiA6IFwiaW5jb3JyZWN0XCIpKTtcbn1cbm9rX3Jlc3BvbnNlKHFfc3RhY2tlZGJhciwgXCIzXCIpO1xuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0xNiIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6Ilxudmlld29mIHExMCA9IElucHV0cy5yYWRpbyhcbiAgbmV3IE1hcChbXG4gICAgW1wiRnJvbnQtd2hlZWwgZHJpdmUgdmVoaWNsZXMgbWFrZSB1cCBhIGxhcmdlciBwcm9wb3J0aW9uIG9mIGF1dG9tYXRpYyB0cmFuc21pc3Npb25zIHRoYW4gb2YgbWFudWFsIHRyYW5zbWlzc2lvbnMuXCIsIDFdLFxuICAgIFtcIkZyb250LXdoZWVsIGRyaXZlIHZlaGljbGVzIG1ha2UgdXAgYSBsYXJnZXIgcHJvcG9ydGlvbiBvZiBtYW51YWwgdHJhbnNtaXNzaW9ucyB0aGFuIG9mIGF1dG9tYXRpYyB0cmFuc21pc3Npb25zLlwiLCAyXSxcbiAgICBbXCJSZWFyLXdoZWVsIGRyaXZlIHZlaGljbGVzIG1ha2UgdXAgYSBsYXJnZXIgcHJvcG9ydGlvbiBvZiBtYW51YWwgdHJhbnNtaXNzaW9ucyB0aGFuIG9mIGF1dG9tYXRpYyB0cmFuc21pc3Npb25zLlwiLCAzXSxcbiAgICBbXCJUaGUgZGlzdHJpYnV0aW9uIG9mIGRyaXZlIHR5cGVzIGlzIGlkZW50aWNhbCBiZXR3ZWVuIG1hbnVhbCBhbmQgYXV0b21hdGljIHRyYW5zbWlzc2lvbiB2ZWhpY2xlcy5cIiwgNF1cbiAgXSksXG4gIHt2YWx1ZTogSlNPTi5wYXJzZShsb2NhbFN0b3JhZ2UuZ2V0SXRlbShcInExMF9zZWxlY3RlZF90NGVcIikgPz8gXCJudWxsXCIpfVxuKTtcblxue1xuICBsb2NhbFN0b3JhZ2Uuc2V0SXRlbShcInExMF9zZWxlY3RlZF90NGVcIiwgSlNPTi5zdHJpbmdpZnkocTEwKSk7XG4gIGxvY2FsU3RvcmFnZS5zZXRJdGVtKFwicTEwX2NvcnJlY3RfdDRlXCIsIFwiMlwiKTtcbiAgbG9jYWxTdG9yYWdlLnNldEl0ZW0oXCJxMTBfcmVzdWx0X3Q0ZVwiLCBxMTAgPT09IG51bGwgPyBcInVuYXR0ZW1wdGVkXCIgOiAocTEwID09IDIgPyBcImNvcnJlY3RcIiA6IFwiaW5jb3JyZWN0XCIpKTtcbn1cbm9rX3Jlc3BvbnNlKHExMCwgXCIyXCIpO1xuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0xNyIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6IlxuZnVuY3Rpb24gdG9CYXNlNjQoc3RyKSB7XG4gIHJldHVybiBidG9hKHVuZXNjYXBlKGVuY29kZVVSSUNvbXBvbmVudChzdHIpKSk7XG59XG5cbnF1ZXN0aW9uX2hhc2ggPSB7XG4gIHExOyBxMjsgcTM7IHE0OyBxNTsgcTY7IHE3OyBxODsgcTk7IHExMDsgcV9jdHlfZGlzcGw7IHFfYm94cGxvdDsgcV9zdGFja2VkYmFyOyBxX2hpc3Q7XG4gIFxuICBjb25zdCByZXN1bHRzID0ge1xuICAgIG5vdGVib29rOiBcIlRvcGljIDQ6IERhdGEgVmlzdWFsaXphdGlvblwiLFxuICAgIHR5cGU6IFwicXVlc3Rpb25zXCIsXG4gICAgdGltZXN0YW1wOiBuZXcgRGF0ZSgpLnRvSVNPU3RyaW5nKCksXG4gICAgcXVlc3Rpb25zOiB7XG4gICAgICBxMV9iZXR0ZXJfcGxvdDoge1xuICAgICAgICBzZWxlY3RlZDogcTEgPz8gW10sXG4gICAgICAgIGNvcnJlY3RfYW5zd2VyOiBcIjIsM1wiLFxuICAgICAgICByZXN1bHQ6ICghcTEgfHwgcTEubGVuZ3RoID09PSAwKSA/IFwidW5hdHRlbXB0ZWRcIiA6IChxMS50b1N0cmluZygpID09PSBcIjIsM1wiID8gXCJjb3JyZWN0XCIgOiBcImluY29ycmVjdFwiKVxuICAgICAgfSxcbiAgICAgIHEyX3ZhcmlhYmxlczoge1xuICAgICAgICBzZWxlY3RlZDogcTIsXG4gICAgICAgIGNvcnJlY3RfYW5zd2VyOiBcIjJcIixcbiAgICAgICAgcmVzdWx0OiBxMiA9PT0gbnVsbCA/IFwidW5hdHRlbXB0ZWRcIiA6IChxMiA9PSAyID8gXCJjb3JyZWN0XCIgOiBcImluY29ycmVjdFwiKVxuICAgICAgfSxcbiAgICAgIHEzX29ic2VydmF0aW9uczoge1xuICAgICAgICBzZWxlY3RlZDogcTMsXG4gICAgICAgIGNvcnJlY3RfYW5zd2VyOiBcIjNcIixcbiAgICAgICAgcmVzdWx0OiBxMyA9PT0gbnVsbCA/IFwidW5hdHRlbXB0ZWRcIiA6IChxMyA9PSAzID8gXCJjb3JyZWN0XCIgOiBcImluY29ycmVjdFwiKVxuICAgICAgfSxcbiAgICAgIHE0X251bWVyaWNhbF92YXJpYWJsZXM6IHtcbiAgICAgICAgc2VsZWN0ZWQ6IHE0ID8/IFtdLFxuICAgICAgICBjb3JyZWN0X2Fuc3dlcjogXCIzLDQsNiw4LDlcIixcbiAgICAgICAgcmVzdWx0OiAoIXE0IHx8IHE0Lmxlbmd0aCA9PT0gMCkgPyBcInVuYXR0ZW1wdGVkXCIgOiAocTQudG9TdHJpbmcoKSA9PT0gXCIzLDQsNiw4LDlcIiA/IFwiY29ycmVjdFwiIDogXCJpbmNvcnJlY3RcIilcbiAgICAgIH0sXG4gICAgICBxX2hpc3Rfc2hhcGU6IHtcbiAgICAgICAgc2VsZWN0ZWQ6IHFfaGlzdCA/PyBbXSxcbiAgICAgICAgY29ycmVjdF9hbnN3ZXI6IFwiMiw0XCIsXG4gICAgICAgIHJlc3VsdDogKCFxX2hpc3QgfHwgcV9oaXN0Lmxlbmd0aCA9PT0gMCkgPyBcInVuYXR0ZW1wdGVkXCIgOiAocV9oaXN0LnRvU3RyaW5nKCkgPT09IFwiMiw0XCIgPyBcImNvcnJlY3RcIiA6IFwiaW5jb3JyZWN0XCIpXG4gICAgICB9LFxuICAgICAgcTVfcmVhZGluZ19wbG90XzE6IHtcbiAgICAgICAgc2VsZWN0ZWQ6IHE1LFxuICAgICAgICBjb3JyZWN0X2Fuc3dlcjogXCIyXCIsXG4gICAgICAgIHJlc3VsdDogcTUgPT09IG51bGwgPyBcInVuYXR0ZW1wdGVkXCIgOiAocTUgPT0gMiA/IFwiY29ycmVjdFwiIDogXCJpbmNvcnJlY3RcIilcbiAgICAgIH0sXG4gICAgICBxNl9yZWFkaW5nX3Bsb3RfMjoge1xuICAgICAgICBzZWxlY3RlZDogcTYsXG4gICAgICAgIGNvcnJlY3RfYW5zd2VyOiBcIjNcIixcbiAgICAgICAgcmVzdWx0OiBxNiA9PT0gbnVsbCA/IFwidW5hdHRlbXB0ZWRcIiA6IChxNiA9PSAzID8gXCJjb3JyZWN0XCIgOiBcImluY29ycmVjdFwiKVxuICAgICAgfSxcbiAgICAgIHE3X3JlYWRpbmdfcGxvdF8zOiB7XG4gICAgICAgIHNlbGVjdGVkOiBxNyxcbiAgICAgICAgY29ycmVjdF9hbnN3ZXI6IFwiMVwiLFxuICAgICAgICByZXN1bHQ6IHE3ID09PSBudWxsID8gXCJ1bmF0dGVtcHRlZFwiIDogKHE3ID09IDEgPyBcImNvcnJlY3RcIiA6IFwiaW5jb3JyZWN0XCIpXG4gICAgICB9LFxuICAgICAgcV9jdHlfZGlzcGxfc2NhdHRlcjoge1xuICAgICAgICBzZWxlY3RlZDogcV9jdHlfZGlzcGwsXG4gICAgICAgIGNvcnJlY3RfYW5zd2VyOiBcIjJcIixcbiAgICAgICAgcmVzdWx0OiBxX2N0eV9kaXNwbCA9PT0gbnVsbCA/IFwidW5hdHRlbXB0ZWRcIiA6IChxX2N0eV9kaXNwbCA9PSAyID8gXCJjb3JyZWN0XCIgOiBcImluY29ycmVjdFwiKVxuICAgICAgfSxcbiAgICAgIHFfYm94cGxvdF9jeWxpbmRlcnM6IHtcbiAgICAgICAgc2VsZWN0ZWQ6IHFfYm94cGxvdCxcbiAgICAgICAgY29ycmVjdF9hbnN3ZXI6IFwiMVwiLFxuICAgICAgICByZXN1bHQ6IHFfYm94cGxvdCA9PT0gbnVsbCA/IFwidW5hdHRlbXB0ZWRcIiA6IChxX2JveHBsb3QgPT0gMSA/IFwiY29ycmVjdFwiIDogXCJpbmNvcnJlY3RcIilcbiAgICAgIH0sXG4gICAgICBxOF9hcHByb3ByaWF0ZV9wbG90c18xOiB7XG4gICAgICAgIHNlbGVjdGVkOiBxOCxcbiAgICAgICAgY29ycmVjdF9hbnN3ZXI6IFwiMlwiLFxuICAgICAgICByZXN1bHQ6IHE4ID09PSBudWxsID8gXCJ1bmF0dGVtcHRlZFwiIDogKHE4ID09IDIgPyBcImNvcnJlY3RcIiA6IFwiaW5jb3JyZWN0XCIpXG4gICAgICB9LFxuICAgICAgcTlfYXBwcm9wcmlhdGVfcGxvdHNfMjoge1xuICAgICAgICBzZWxlY3RlZDogcTkgPz8gW10sXG4gICAgICAgIGNvcnJlY3RfYW5zd2VyOiBcIjMsNFwiLFxuICAgICAgICByZXN1bHQ6ICghcTkgfHwgcTkubGVuZ3RoID09PSAwKSA/IFwidW5hdHRlbXB0ZWRcIiA6IChxOS50b1N0cmluZygpID09PSBcIjMsNFwiID8gXCJjb3JyZWN0XCIgOiBcImluY29ycmVjdFwiKVxuICAgICAgfSxcbiAgICAgIHFfc3RhY2tlZGJhcl9kcnY6IHtcbiAgICAgICAgc2VsZWN0ZWQ6IHFfc3RhY2tlZGJhcixcbiAgICAgICAgY29ycmVjdF9hbnN3ZXI6IFwiM1wiLFxuICAgICAgICByZXN1bHQ6IHFfc3RhY2tlZGJhciA9PT0gbnVsbCA/IFwidW5hdHRlbXB0ZWRcIiA6IChxX3N0YWNrZWRiYXIgPT0gMyA/IFwiY29ycmVjdFwiIDogXCJpbmNvcnJlY3RcIilcbiAgICAgIH0sXG4gICAgICBxMTBfMTAwcGN0X3N0YWNrZWQ6IHtcbiAgICAgICAgc2VsZWN0ZWQ6IHExMCxcbiAgICAgICAgY29ycmVjdF9hbnN3ZXI6IFwiMlwiLFxuICAgICAgICByZXN1bHQ6IHExMCA9PT0gbnVsbCA/IFwidW5hdHRlbXB0ZWRcIiA6IChxMTAgPT0gMiA/IFwiY29ycmVjdFwiIDogXCJpbmNvcnJlY3RcIilcbiAgICAgIH1cbiAgICB9XG4gIH07XG4gIFxuICByZXR1cm4gdG9CYXNlNjQoSlNPTi5zdHJpbmdpZnkocmVzdWx0cykpO1xufVxuIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0IiwiY2VsbE5hbWUiOiJvanMtY2VsbC0xOCIsImlubGluZSI6ZmFsc2UsInNvdXJjZSI6IlxuaHRtbGA8ZGl2IHN0eWxlPVwiZm9udC1mYW1pbHk6IG1vbm9zcGFjZTsgZm9udC1zaXplOiAwLjg1ZW07IGJhY2tncm91bmQ6ICNmNWY1ZjU7IHBhZGRpbmc6IDEycHg7IGJvcmRlci1yYWRpdXM6IDZweDsgd29yZC1icmVhazogYnJlYWstYWxsOyBib3JkZXI6IDFweCBzb2xpZCAjZGRkOyB1c2VyLXNlbGVjdDogYWxsOyBjdXJzb3I6IHBvaW50ZXI7XCIgb25jbGljaz1cIm5hdmlnYXRvci5jbGlwYm9hcmQud3JpdGVUZXh0KHRoaXMuaW5uZXJUZXh0KVwiPlxuICAke3F1ZXN0aW9uX2hhc2h9XG48L2Rpdj5cbjxwIHN0eWxlPVwibWFyZ2luLXRvcDogOHB4OyBmb250LXNpemU6IDAuOWVtOyBjb2xvcjogIzU1NTtcIj5cbiAgQ2xpY2sgdGhlIGJveCB0byBjb3B5IHRvIGNsaXBib2FyZC5cbjwvcD5gXG4ifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6InNoaW55SW5wdXQoJ3ExJykifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6InNoaW55SW5wdXQoJ3EyJykifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6InNoaW55SW5wdXQoJ3EzJykifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6InNoaW55SW5wdXQoJ3E0JykifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6InNoaW55SW5wdXQoJ3FfaGlzdCcpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdxNScpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdxNicpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdxNycpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdxX2N0eV9kaXNwbCcpIn0seyJtZXRob2ROYW1lIjoiaW50ZXJwcmV0UXVpZXQiLCJzb3VyY2UiOiJzaGlueUlucHV0KCdxX2JveHBsb3QnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgncTgnKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgncTknKSJ9LHsibWV0aG9kTmFtZSI6ImludGVycHJldFF1aWV0Iiwic291cmNlIjoic2hpbnlJbnB1dCgncV9zdGFja2VkYmFyJykifSx7Im1ldGhvZE5hbWUiOiJpbnRlcnByZXRRdWlldCIsInNvdXJjZSI6InNoaW55SW5wdXQoJ3ExMCcpIn1dfQ==
+</script>
+<script type="module">
+if (window.location.protocol === "file:") { alert("The OJS runtime does not work with file:// URLs. Please use a web server to view this document."); }
+window._ojs.paths.runtimeToDoc = "../../..";
+window._ojs.paths.runtimeToRoot = "../../..";
+window._ojs.paths.docToRoot = "";
+window._ojs.selfContained = false;
+window._ojs.runtime.interpretFromScriptTags();
+</script>
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+
+</body></html>

@@ -340,7 +340,7 @@ ggplot(NULL, aes(c(-3, 3))) +
 Unlike the binomial distribution, where the distinction between *at least* and *more than* required careful adjustment, the probability that a continuous variable $X$ takes on any prescribed value exactly is $0$ (that is, $\mathbb{P}\left[X = k\right] = 0$). This means there is no difference between $\mathbb{P}\left[X \leq k\right]$ and $\mathbb{P}\left[X < k\right]$. Similarly, there is no difference between $\mathbb{P}\left[X \geq k\right]$ and $\mathbb{P}\left[X > k\right]$.
 :::
 
-Sometimes it is useful to be able to estimate probabilities or to estimate the proportion of a population that falls into a range, as long as the population is nearly normal. A convenient rule of thumb is the *Empirical Rule*.
+Sometimes it is useful to be able to estimate probabilities or to estimate the proportion of a population that falls into a range, as long as the population is nearly normal. A convenient set of rough estimates come from the *Empirical Rule*.
 
 :::{.callout-tip}
 ## The Empirical Rule

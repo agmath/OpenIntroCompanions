@@ -13,7 +13,7 @@ format:
         - jsonlite
         - base64enc
       cell-options: 
-        persist: true
+        persist: false
     live:
       show-solutions: true
 ---

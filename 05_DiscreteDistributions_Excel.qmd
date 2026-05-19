@@ -1173,7 +1173,7 @@ The hash below encodes your responses to the multiple choice questions in this a
 
 function buildQuestionResults() {
   return {
-    notebook: "Topic 5: Discrete Probability Distributions (Excel, Static)",
+    notebook: "Topic 5: Discrete Probability Distributions (Spreadsheets, Static)",
     type: "questions",
     timestamp: new Date().toISOString(),
     questions: {
@@ -1294,3 +1294,5 @@ cat(hash)
 ## Looking Ahead
 
 The next activity introduces the **normal distribution** — a continuous probability distribution that underpins much of classical statistical inference. Our focus will be on learning to compute probabilities and percentiles from this important distribution.
+:::
+

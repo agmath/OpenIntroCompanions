@@ -129,8 +129,10 @@ Use the interactive code cell below to paste the hash generated using the `Exerc
 ```{webr}
 exercise_hash <- ""
 
+processed_exercises <- process_exercises(exercise_hash)
+
 #Item-by-Item
-process_exercises(exercise_hash) |>
+processed_exercises |>
   kable() |>
   kable_styling(bootstrap_options = c("striped", "hover"))
 

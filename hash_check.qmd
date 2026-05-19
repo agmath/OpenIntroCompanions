@@ -102,7 +102,7 @@ process_exercises <- function(hash){
 
 ### Question and Checkbox Hash Check
 
-Use the interactive code cell below to paste the hash from the `Question Hash` box near the end of the activity between the quotes (`""`) . One the hash is pasted in, click the `Run Code` button. If you are an instructor using this grading interface, then you'll need to paste in the hashes one student at a time from your collection mechanism.
+Use the interactive code cell below to paste the hash from the `Question Hash` box near the end of the activity between the quotes (`""`) in line 1. Once the hash is pasted in, click the `Run Code` button. If you are an instructor using this grading interface, then you'll need to paste in the hashes one student at a time from your collection mechanism.
 
 ```{webr}
 question_hash <- ""
@@ -124,7 +124,7 @@ processed_questions |>
 
 ### Exercise (Code Cell) Hash Check
 
-Use the interactive code cell below to paste the hash generated using the `Exercise Hash` box near the end of the activity between the quotes (`""`). If you are an instructor using this grading interface, then you'll need to paste in the hashes one student at a time from your collection mechanism. 
+Use the interactive code cell below to paste the hash generated using the `Exercise Hash` box near the end of the activity between the quotes (`""`) in line 1. Once the hash is pasted in, click the `Run Code` button. If you are an instructor using this grading interface, then you'll need to paste in the hashes one student at a time from your collection mechanism. 
 
 ```{webr}
 exercise_hash <- ""

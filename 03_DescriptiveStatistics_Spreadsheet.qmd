@@ -256,7 +256,7 @@ A spreadsheet having numerical values populated into cells without any context/l
 For example, if you calculated this average in cell `F4`, then typing a meaningful label like **avg_samp1** into cell `F3` or `E4` helps anyone viewing your spreadsheet (including future you) understand what is being done.
 :::
 
-Spreadsheets make computing means and medians straightforward because they have many built-in functions that do so. You can compute the mean of a range of values using `AVERAGE()` and the median using `MEDIAN()`. For example, because the Sample Two values are in cells `B2:B9` of the sheet you are working on, you could type `=AVERAGE(B2:B9)` to get the mean of Sample Two.
+Spreadsheets make computing means and medians straightforward because they have built-in functions that do so. You can compute the mean of a range of values using `AVERAGE()` and the median using `MEDIAN()`. For example, because the Sample Two values are in cells `B2:B9` of the sheet you are working on, you could type `=AVERAGE(B2:B9)` to get the mean of Sample Two.
 
 2. Use `AVERAGE()` to compute the mean of `Sample_Three`. Enter your result below.
 
@@ -270,7 +270,7 @@ Spreadsheets make computing means and medians straightforward because they have 
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-In the linked spreadsheet, find the column containing Sample Three values. Click a blank cell and type `=AVERAGE(` followed by the range of Sample Three values, then `)`.
+In the linked spreadsheet, find the column containing Sample Three values. Click a blank cell and type `=AVERAGE(` range containing Sample Three values `)`.
 
 :::
 :::
@@ -972,7 +972,7 @@ cat(hash)
 | Sample standard deviation | `=STDEV(range)` |
 | First quartile ($Q_1$) | `=QUARTILE(range, 1)` |
 | Third quartile ($Q_3$) | `=QUARTILE(range, 3)` |
-| Interquartile range | `=QUARTILE(range, 3) - QUARTILE(range, 1)` |
+| Interquartile range (IQR) | `=QUARTILE(range, 3) - QUARTILE(range, 1)` |
 | Frequency / relative frequency table | Pivot table (Insert → Pivot table) |
 
 :::

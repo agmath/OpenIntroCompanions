@@ -102,24 +102,42 @@ process_exercises <- function(hash){
 
 ### Question and Checkbox Hash Check
 
-Use the interactive code cell below to paste in the hash from the `Question Hash` box near the end of the activity. If you are an instructor using this grading interface, then you'll need to paste in the hashes one student at a time from your collection mechanism.
+Use the interactive code cell below to paste the hash from the `Question Hash` box near the end of the activity between the quotes (`""`) . One the hash is pasted in, click the `Run Code` button. If you are an instructor using this grading interface, then you'll need to paste in the hashes one student at a time from your collection mechanism.
 
 ```{webr}
 question_hash <- ""
 
-process_questions(question_hash) |>
+processed_questions <- process_questions(question_hash) 
+
+#Item-by-Item
+processed_questions |>
+  kable() |>
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+#Results Summary
+processed_questions |>
+  count(result) |>
+  mutate(prop = n/sum(n)) |>
   kable() |>
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```
 
 ### Exercise (Code Cell) Hash Check
 
-Use the interactive code cell below to paste in the hash generate using the `Exercise Hash` box near the end of the activity. If you are an instructor using this grading interface, then you'll need to paste in the hashes one student at a time from your collection mechanism. 
+Use the interactive code cell below to paste the hash generated using the `Exercise Hash` box near the end of the activity between the quotes (`""`). If you are an instructor using this grading interface, then you'll need to paste in the hashes one student at a time from your collection mechanism. 
 
 ```{webr}
 exercise_hash <- ""
 
+#Item-by-Item
 process_exercises(exercise_hash) |>
+  kable() |>
+  kable_styling(bootstrap_options = c("striped", "hover"))
+
+#Results Summary
+processed_exercises |>
+  count(result) |>
+  mutate(prop = n/sum(n)) |>
   kable() |>
   kable_styling(bootstrap_options = c("striped", "hover"))
 ```

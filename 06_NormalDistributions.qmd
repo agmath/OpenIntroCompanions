@@ -704,11 +704,12 @@ We can use $z$-scores as a common unit for comparing observations from completel
 
 **Method 2:** We can compute the *percentile* corresponding to Bob's SAT score and the *percentile* corresponding to Sally's ACT score.
 
-**Definition (percentile):** Given an observation $x$ from a population, the ***percentile*** corresponding to $x$ is the proportion of the population which falls below $x$.
+**Definition (percentile):** Given an observation $x$ from a population, the ***percentile*** corresponding to $x$ is the proportion of the population which falls at or below $x$.
+
+In the images below, Bob's percentile is shown as the shaded area in the distribution on the left, while Sally's is shown in the distribution on the right.
 
 ::::{.columns}
 :::{.column width="50%"}
-Bob's percentile corresponds to the shaded area in the distribution below.
 
 ```{r}
 #| echo: false
@@ -732,9 +733,10 @@ ggplot(NULL, aes(c(500, 1600))) +
                      labels = c(expression(mu == 1068), "Bob")) +
   theme(axis.text.x = element_text(size = 12))
 ```
+
 :::
+
 :::{.column width="50%"}
-Sally's percentile corresponds to the shaded area in the distribution below.
 
 ```{r}
 #| echo: false

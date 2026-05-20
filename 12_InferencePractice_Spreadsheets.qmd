@@ -1,0 +1,1678 @@
+---
+title: "Topic 12: Inference Practice (Spreadsheets)"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        .exercise-editor-body { max-height: 300px; overflow-y: auto; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - ggplot2
+        - gradethis
+        - jsonlite
+        - base64enc
+      cell-options:
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(dplyr)
+library(ggplot2)
+library(jsonlite)
+library(base64enc)
+
+theme_set(theme_bw(base_size = 12))
+
+exercise_results <- list(
+  notebook        = "Topic 12: Inference Practice (Spreadsheets)",
+  try_it_2_se     = "unattempted",
+  try_it_2_ts     = "unattempted",
+  try_it_2_pvalue = "unattempted"
+)
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+:::{.callout-note}
+## About
+
+In this activity, we are introduced to a decision tree document for determining how to compute the standard error component of a confidence interval or test statistic. We are also provided with a general framework for approaching hypothesis testing and confidence interval applications, and we practice with three scaffolded examples.
+
+```{ojs}
+//| echo: false
+
+{
+  const btn = html`<button style="
+    background: #436b95;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  ">🔄 Reset My Responses</button>`;
+
+  btn.onclick = () => {
+    if (confirm('Reset all responses for this activity? This cannot be undone.')) {
+      Object.keys(localStorage)
+        .filter(k => k.endsWith('_selected_t12e') || k.endsWith('_correct_t12e') || k.endsWith('_result_t12e'))
+        .forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  };
+
+  return btn;
+}
+```
+
+*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting answer entry cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
+
+:::
+
+:::{.callout-note}
+## Using a Spreadsheet Program
+There are times throughout this activity where you'll be asked to do work inside of your favorite spreadsheet program.
+
++ If you are a Google Sheets user, [open a blank Google Sheet](https://sheets.new){target="_blank"}
++ If you are an Excel user, open an empty workbook on your computer or [create a blank workbook in Excel online](https://office.live.com/start/Excel.aspx)
+:::
+
+## Inference Practice
+
+In the Topic 11 activity you learned about statistical inference — hypothesis tests and confidence intervals — for categorical variables. In this activity we'll continue where we left off. You'll start with a video explaining the [*Standard Error Decision Tree*](www/StdErrorDecisionTree.pdf){target="_blank"}, and then move on to a few practice problems.
+
+## A Tour of the Decision Tree
+
+From this point on you'll make heavy use of the [*Standard Error Decision Tree*](www/StdErrorDecisionTree.pdf){target="_blank"}. The tree may look intimidating, but it contains most of what you'll need for what remains in our introductory course. Let's start with a tour.
+
+```{=html}
+<center>
+<iframe width="560" height="315" src="https://www.youtube.com/embed/5bAylfMIArg?start=16" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+</center>
+```
+
+## Practice Problems
+
+This section contains three practice problems. Be sure to note any questions you have or trouble you run into. You might also check back with the Topic 11 activity to revisit the videos from Dr. Diez and Dr. McClintock Pileggi, which discussed approaches similar to the ones required for these problems. The links below contain detailed versions of the general strategies for our inference tasks — keep them handy!
+
++ [General Strategy for Conducting a Hypothesis Test](www/HTgeneral.pdf){target="_blank"}
++ [General Strategy for Computing a Confidence Interval](www/CIgeneral.pdf){target="_blank"}
+
+---
+
+**Try It 1a:** The result of a poll was that 48% of 331 randomly sampled Americans who decide not to go to college were forced into that decision because they cannot afford it. Construct a 90% confidence interval for the proportion of non college educated Americans who decided not to go to college because they cannot afford it, and interpret the result in context.
+
+Use your spreadsheet for any necessary computations. Do future-you a favor and label your cells so you can follow your own work.
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a, Part I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.radio(
+  new Map([
+    ["Compute a probability.", 1],
+    ["Find a required sample size.", 2],
+    ["Construct a confidence interval.", 3],
+    ["Conduct a hypothesis test.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q1_selected_t12e", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t12e", "3");
+  localStorage.setItem("q1_result_t12e", q1 === null ? "unattempted" : (q1 == 3 ? "correct" : "incorrect"));
+}
+ok_response(q1, "3");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+Re-read the problem statement. What is being asked for — a probability, a range of plausible values, a yes/no claim decision, or a sample size?
+
+:::{.callout-note collapse="true"}
+## Hint 2
+
+The problem says "construct a 90% confidence interval." Open the [General Strategy for Computing a Confidence Interval](www/CIgeneral.pdf){target="_blank"} and work through the steps.
+:::
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a, Part II
+
+The point estimate is:
+
+```{ojs}
+//| echo: false
+
+viewof q2 = Inputs.radio(
+  new Map([
+    ["48", 1],
+    ["331", 2],
+    ["0.48", 3],
+    ["0.145", 4],
+    ["159", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q2_selected_t12e", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t12e", "3");
+  localStorage.setItem("q2_result_t12e", q2 === null ? "unattempted" : (q2 == 3 ? "correct" : "incorrect"));
+}
+ok_response(q2, "3");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+The point estimate is your best single guess at the true population proportion. It comes from the sample data.
+
+:::{.callout-note collapse="true"}
+## Hint 2 (Solved)
+
+48% of the 331 sampled Americans said they could not afford college. As a decimal, that is 0.48.
+:::
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a, Part III
+
+The standard error formula is:
+
+```{ojs}
+//| echo: false
+
+viewof q3 = Inputs.radio(
+  new Map([
+    ["SE = s/sqrt(n)", 1],
+    ["SE = σ/sqrt(n)", 2],
+    ["SE = sqrt(p(1-p)/n)", 3],
+    ["SE = sqrt(p1(1-p1)/n1 + p2(1-p2)/n2)", 4],
+    ["SE = sqrt(s1²/n1 + s2²/n2)", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q3_selected_t12e", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t12e", "3");
+  localStorage.setItem("q3_result_t12e", q3 === null ? "unattempted" : (q3 == 3 ? "correct" : "incorrect"));
+}
+ok_response(q3, "3");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+Consult the [*Standard Error Decision Tree*](www/StdErrorDecisionTree.pdf){target="_blank"}.
+
+:::{.callout-note collapse="true"}
+## Hint 2
+
+Starting from the top of the tree, are we working with means ($\mu$) or proportions ($p$)?
+
+:::{.callout-note collapse="true"}
+## Hint 3
+
+The question being asked to participants is "*Did you make the choice not to attend college because you couldn't afford to do so?*". This is a "yes/no" question that will sort participants into categories. We measure the size of a group with a proportion ($p$).
+
+Now how many populations/groups are we comparing?
+
+:::{.callout-note collapse="true"}
+## Hint 4 (Solved)
+
+We're on the proportions ($p$) side of the tree and we have just a single population/group/sample -- all Americans who have chosen not to go to college. What is the formula for the standard error ($S_E$) in this situation?
+
+:::
+:::
+:::
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a, Part IV
+
+The standard error (rounded to four decimal places) is:
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.radio(
+  new Map([
+    ["0.0008", 1],
+    ["0.0052", 2],
+    ["0.0275", 3],
+    ["0.0721", 4],
+    ["undefined", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q4_selected_t12e", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t12e", "3");
+  localStorage.setItem("q4_result_t12e", q4 === null ? "unattempted" : (q4 == 3 ? "correct" : "incorrect"));
+}
+ok_response(q4, "3");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+The standard error formula is $S_E = \sqrt{p(1-p)/n}$. Here $p = 0.48$ and $n = 331$. Use `SQRT()` in your spreadsheet.
+
+:::{.callout-note collapse="true"}
+## Hint 2
+
+Find a blank cell and type `=SQRT(___*(1-___)/___)` with the blanks filled in by the appropriate values.
+
+:::{.callout-note collapse="true"}
+## Hint 3 (Solved)
+
+In your spreadsheet, type `=SQRT(0.48*(1-0.48)/331)` and press Enter. Round to four decimal places.
+:::
+:::
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a, Part V
+
+The distribution to be used is:
+
+```{ojs}
+//| echo: false
+
+viewof q5 = Inputs.radio(
+  new Map([
+    ["Normal.", 1],
+    ["t-distribution with df = n - 1.", 2],
+    ["t-distribution with df = min(n1-1, n2-1).", 3],
+    ["t-distribution with df = n_diff - 1.", 4],
+    ["We should not use either distribution.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q5_selected_t12e", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t12e", "1");
+  localStorage.setItem("q5_result_t12e", q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q5, "1");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+We've only encountered the *normal distribution* so far. There are other times where the tree will point us to different distributions. We'll encounter those over the next several activities.
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a, Part VI
+
+The desired level of confidence is:
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["0.90%", 1],
+    ["90%", 2],
+    ["95%", 3],
+    ["98%", 4],
+    ["99%", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q6_selected_t12e", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t12e", "2");
+  localStorage.setItem("q6_result_t12e", q6 === null ? "unattempted" : (q6 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q6, "2");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+Check the scenario description.
+
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a, Part VII
+
+The critical value is:
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["1.65", 1],
+    ["1.96", 2],
+    ["2.00", 3],
+    ["2.33", 4],
+    ["2.58", 5],
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q7_selected_t12e", JSON.stringify(q7));
+  localStorage.setItem("q7_correct_t12e", "1");
+  localStorage.setItem("q7_result_t12e", q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q7, "1");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+The critical value for common confidence levels is shown at the top of the Standard Error Decision Tree, and also in the table from the Topic 11 activity.
+
+:::{.callout-note collapse="true"}
+## Hint 2
+
+On the tree, the critical values are next to each of the four most common confidence levels. The critical values are under the heading $z_{\alpha/2}$.
+
+:::
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a, Part VIII
+
+The correct expression for computing the confidence interval is:
+
+```{ojs}
+//| echo: false
+
+viewof q8 = Inputs.radio(
+  new Map([
+    ["0.0275 ± (1.65 · 0.48)", 1],
+    ["1.65 ± (0.48 · 0.0275)", 2],
+    ["48 ± (1.65 · 0.0275)", 3],
+    ["48 ± (1.65 · 0.48)", 4],
+    ["0.48 ± (1.65 · 0.0275)", 5],
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q8_selected_t12e", JSON.stringify(q8));
+  localStorage.setItem("q8_correct_t12e", "5");
+  localStorage.setItem("q8_result_t12e", q8 === null ? "unattempted" : (q8 == 5 ? "correct" : "incorrect"));
+}
+ok_response(q8, "5");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+The confidence interval formula is $(\text{point estimate}) \pm (\text{critical value}) \cdot S_E$. Which values fill each role here?
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a, Part IX
+
+The correct lower and upper bounds for the confidence interval are:
+
+```{ojs}
+//| echo: false
+
+viewof q9 = Inputs.radio(
+  new Map([
+    ["-0.0322 and 0.0586", 1],
+    ["0.0322 and 0.0586", 2],
+    ["0.38 and 0.58", 3],
+    ["0.4346 and 0.5254", 4],
+    ["1.17 and 2.13", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q9_selected_t12e", JSON.stringify(q9));
+  localStorage.setItem("q9_correct_t12e", "4");
+  localStorage.setItem("q9_result_t12e", q9 === null ? "unattempted" : (q9 == 4 ? "correct" : "incorrect"));
+}
+ok_response(q9, "4");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+Use two separate cells in your spreadsheet — one for the lower bound and one for the upper bound.
+
+:::{.callout-note collapse="true"}
+## Hint 2
+
+The lower bound subtracts the margin of error from the point estimate; the upper bound adds it. The margin of error is the critical value multiplied by the standard error. That is,  ($\left(\text{critical value}\right)\cdot S_E$).
+
+:::{.callout-note collapse="true"}
+## Hint 3
+
+In your spreadsheet, type `=0.48-(1.65*0.0275)` for the lower bound and `=0.48+(1.65*0.0275)` for the upper bound and press Enter on each.
+
+:::{.callout-note collapse="true"}
+## Hint 4 (Solved)
+
+Lower bound: `=0.48-(1.65*0.0275)` → approximately 0.4346.
+
+Upper bound: `=0.48+(1.65*0.0275)` → approximately 0.5254.
+:::
+:::
+:::
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a, Part X
+
+The correct interpretation of this confidence interval is:
+
+```{ojs}
+//| echo: false
+
+viewof q10 = Inputs.radio(
+  new Map([
+    ["Of all Americans who choose not to attend college, we are 90% confident that the true proportion making that choice because they cannot afford it is between 43.46% and 52.54%.", 1],
+    ["We are 90% confident that between 43.46% and 52.54% of Americans choose not to go to college.", 2],
+    ["We are 90% confident that the sample proportion of Americans choosing not to go to college because they cannot afford it is between 43.46% and 52.54%.", 3],
+    ["There is a 90% chance that the proportion of Americans choosing not to go to college because they cannot afford it is between 43.46% and 52.54%.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q10_selected_t12e", JSON.stringify(q10));
+  localStorage.setItem("q10_correct_t12e", "1");
+  localStorage.setItem("q10_result_t12e", q10 === null ? "unattempted" : (q10 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q10, "1");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+A confidence interval captures a *population parameter* — not a sample statistic.
+
+:::{.callout-note collapse="true"}
+## Hint 2
+
+Find the correct interpretation template at the bottom of the [*General Strategy for Constructing a Confidence Interval* document](www/CIgeneral.pdf){target="_blank"}
+
+:::{.callout-note collapse="true"}
+## Hint 3
+
+The correct template is: "We are [XX]% confident that the true [population parameter] is between [lower] and [upper]."
+
+:::{.callout-note collapse="true"}
+## Hint 4 (Solved)
+
+Fill in the bracketed ("[]") components with the appropriate items given your scenario.
+
+:::
+:::
+:::
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1a, Part XI
+
+Does your interval suggest that a *majority* of Americans choosing not to go to college have made that choice because they cannot afford it?
+
+```{ojs}
+//| echo: false
+
+viewof q11 = Inputs.radio(
+  new Map([
+    ["Yes. The confidence interval results in proportions above 50%.", 1],
+    ["No. The confidence interval contains proportions both above and below 50%.", 2],
+    ["No. It actually shows that a minority make this choice for this reason because the confidence interval contains proportions below 50%.", 3],
+    ["It is impossible to say, since a different sample would result in a different confidence interval.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q11_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q11_selected_t12e", JSON.stringify(q11));
+  localStorage.setItem("q11_correct_t12e", "2");
+  localStorage.setItem("q11_result_t12e", q11 === null ? "unattempted" : (q11 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q11, "2");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+A majority would mean the proportion exceeds 50% (0.50). 
+
+:::{.callout-note collapse="true"}
+## Hint 2
+
+Look at your confidence interval bounds. Are proportions of 50% or lower *plausible*?
+
+:::{.callout-note collapse="true"}
+## Hint 3 (Solved)
+
+The interval contains population proportions above 50%, but also proportions below 50%. Since proportions below 50% are plausible, the interval does ***not*** suggest that a *majority* of Americans choosing not to go to college are making that choice because they cannot afford it.
+
+It could be a *majority* but it could also be a *minority*.
+
+:::
+:::
+:::
+
+:::
+
+---
+
+**Try It 1b:** Consider the same scenario. Suppose we wanted the margin of error for the 90% confidence interval to be about 1.5%. How large of a sample would you recommend?
+
+Use your spreadsheet for any necessary computations.
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1b, Part I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+viewof q12 = Inputs.radio(
+  new Map([
+    ["Compute a confidence interval.", 1],
+    ["Conduct a hypothesis test.", 2],
+    ["Compute a probability.", 3],
+    ["Find a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q12_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q12_selected_t12e", JSON.stringify(q12));
+  localStorage.setItem("q12_correct_t12e", "4");
+  localStorage.setItem("q12_result_t12e", q12 === null ? "unattempted" : (q12 == 4 ? "correct" : "incorrect"));
+}
+ok_response(q12, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1b, Part II
+
+The value of $z_{\alpha/2}$ is:
+
+```{ojs}
+//| echo: false
+
+viewof q13 = Inputs.radio(
+  new Map([
+    ["1.65", 1],
+    ["1.96", 2],
+    ["2.33", 3],
+    ["2.58", 4],
+    ["90", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q13_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q13_selected_t12e", JSON.stringify(q13));
+  localStorage.setItem("q13_correct_t12e", "1");
+  localStorage.setItem("q13_result_t12e", q13 === null ? "unattempted" : (q13 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q13, "1");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+There are two formulas for calculating required sample size on the [*Standard Error Decision Tree* document](www/StdErrorDecisionTree.pdf){target="_blank"}, can you find them?
+
+:::{.callout-note collapse="true"}
+## Hint 2
+
+The sample size formula for a proportion is $n \geq \left(\frac{z_{\alpha/2}}{M_E}\right)^2 p(1-p)$. 
+
+:::{.callout-note collapse="true"}
+## Hint 3
+
+The value $z_{\alpha/2}$ is the critical value corresponding to the desired confidence level. What confidence level is requested?
+
+:::{.callout-note collapse="true"}
+## Hint 4 (Solved)
+
+As a reminder, you can find the critical value in the small table in the top-center of the decision tree document. The critical value corresponding to 90% confidence is 1.65.
+
+:::
+:::
+:::
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1b, Part III
+
+The value of the margin of error ($M_E$) is:
+
+```{ojs}
+//| echo: false
+
+viewof q14 = Inputs.radio(
+  new Map([
+    ["1.5", 1],
+    ["0.9", 2],
+    ["90", 3],
+    ["0.015", 4],
+    ["0.1", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q14_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q14_selected_t12e", JSON.stringify(q14));
+  localStorage.setItem("q14_correct_t12e", "4");
+  localStorage.setItem("q14_result_t12e", q14 === null ? "unattempted" : (q14 == 4 ? "correct" : "incorrect"));
+}
+ok_response(q14, "4");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+The problem states a desired margin of error of 1.5%. Be careful about units — proportions in our formula are expressed as decimals, not percentages.
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1b, Part IV
+
+The value of $p$ (the estimate for the proportion) should be:
+
+```{ojs}
+//| echo: false
+
+viewof q15 = Inputs.radio(
+  new Map([
+    ["0.48", 1],
+    ["0.50", 2],
+    ["331", 3],
+    ["50", 4],
+    ["48", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q15_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q15_selected_t12e", JSON.stringify(q15));
+  localStorage.setItem("q15_correct_t12e", "1");
+  localStorage.setItem("q15_result_t12e", q15 === null ? "unattempted" : (q15 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q15, "1");
+```
+
+:::
+
+:::{.callout-note}
+## Why Not Use p = 0.50?
+
+Using $p = 0.50$ is a conservative choice that maximizes the required sample size — it's appropriate when we have no prior information about the proportion. Here, we have a sample estimate of 0.48, so we use that instead. Using 0.50 would have led us to recommend a slightly larger sample than necessary.
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 1b, Part V
+
+The required sample size is:
+
+```{ojs}
+//| echo: false
+
+viewof q16 = Inputs.radio(
+  new Map([
+    ["28", 1],
+    ["331", 2],
+    ["3,020", 3],
+    ["3,021", 4],
+    ["3,020.16", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q16_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q16_selected_t12e", JSON.stringify(q16));
+  localStorage.setItem("q16_correct_t12e", "4");
+  localStorage.setItem("q16_result_t12e", q16 === null ? "unattempted" : (q16 == 4 ? "correct" : "incorrect"));
+}
+ok_response(q16, "4");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+The sample size formula for a proportion is $n \geq \left(\frac{z_{\alpha/2}}{M_E}\right)^2 p(1-p)$. 
+
+:::{.callout-note collapse="true"}
+## Hint 2
+
+Find a blank cell in your spreadsheet and type `=((___/___))^2*(___)*(1 - ___)`, filling in the blanks with the appropriate values.
+
+:::{.callout-note collapse="true"}
+## Hint 3
+
+The final two blanks are filled in by our best guess at the population proportion ($p$). So that partial formula is: `=((___/___))^2*(0.48)*(1 - 0.48)`.
+
+How are the first two blanks filled in?
+
+:::{.callout-note collapse="true"}
+## Hint 4
+
+The first two blanks make up the fraction. This is the *critical value* (`1.65`) divided by the desired *margin of error* (`0.015`). In your spreadsheet, type `=((1.65/0.015)^2)*0.48*(1-0.48)` and press Enter.
+
+:::{.callout-note collapse="true"}
+## Hint 5
+
+Can you sample a fraction of a person? Think about whether you should round up or round down.
+
+:::{.callout-note collapse="true"}
+## Hint 6 (Solved)
+
+The formula gives approximately 3,020.16. Always round *up* to the nearest whole number when determining a required sample size — rounding down would fail to achieve the desired margin of error. The answer is 3,021.
+
+:::
+:::
+:::
+:::
+:::
+:::
+
+:::
+
+---
+
+**Try It 2:** A USA Today/Gallup poll conducted between 2010 and 2011 asked a group of unemployed and underemployed Americans if they had major problems in their relationships with a spouse or close family member as a result of their employment situation. There were 27% of the 1,145 unemployed respondents and 25% of the 675 underemployed respondents who said they had experienced major relationship problems. Conduct a test to determine whether an association exists between the presence of relationship problems and employment status (unemployed vs. underemployed). Use $\alpha = 0.05$.
+
+Use your spreadsheet for all calculations. You'll encounter three graded cells among the series of questions below which will check your computed values. Enter the result from your spreadsheet into each cell and press Run Code.
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2, Part I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+viewof q17 = Inputs.radio(
+  new Map([
+    ["Compute a confidence interval.", 1],
+    ["Conduct a hypothesis test.", 2],
+    ["Compute a probability.", 3],
+    ["Find a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q17_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q17_selected_t12e", JSON.stringify(q17));
+  localStorage.setItem("q17_correct_t12e", "2");
+  localStorage.setItem("q17_result_t12e", q17 === null ? "unattempted" : (q17 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q17, "2");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+The problem asks whether an "association exists" — it is asking you to evaluate a statistical claim. Which type of inference task does that correspond to?
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2, Part II
+
+The hypotheses associated with this test are:
+
+```{ojs}
+//| echo: false
+
+viewof q18 = Inputs.radio(
+  new Map([
+    ["H₀: p_unemployed − p_underemployed = 0, Hₐ: p_unemployed − p_underemployed ≠ 0", 1],
+    ["H₀: p_unemployed − p_underemployed = 0, Hₐ: p_unemployed − p_underemployed > 0", 2],
+    ["H₀: p_unemployed − p_underemployed = 0, Hₐ: p_unemployed − p_underemployed < 0", 3],
+    ["H₀: p_unemployed = 0.27 and p_underemployed = 0.25, Hₐ: p_unemployed ≠ 0.27 or p_underemployed ≠ 0.25", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q18_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q18_selected_t12e", JSON.stringify(q18));
+  localStorage.setItem("q18_correct_t12e", "1");
+  localStorage.setItem("q18_result_t12e", q18 === null ? "unattempted" : (q18 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q18, "1");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+How many groups/populations are being compared here?
+
+:::{.callout-note collapse="true"}
+## Hint 2
+
+We're comparing two populations (those who are unemployed and those who are underemployed). Are the responses to the question they're being asked best summarized using a mean ($\mu$) or a proportion ($p$)?
+
+:::{.callout-note collapse="true"}
+## Hint 3
+
+The question "*Have you experienced relationship problems with a spouse or a close family member as a result of your employment situation?*" results in a yes/no response. This sorts participants into categories. We summarize categorical variables via *proportions*.
+
+:::{.callout-note collapse="true"}
+## Hint 4
+
+The null hypothesis ($H_0$) is the skeptical claim -- "there's nothing to see here", while the alternative hypothesis ($H_a$) is the claim being tested.
+
+:::{.callout-note collapse="true"}
+## Hint 5 (Solved)
+
+The null hypothesis is that the proportions across the two groups are equal (there is no association) between the presence of relationship problems due to employment and the employment status itself. The alternative is that there is an association -- the proportions are not the same across the two groups.
+
+:::
+:::
+:::
+:::
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2, Part III
+
+The null value is:
+
+```{ojs}
+//| echo: false
+
+viewof q19 = Inputs.radio(
+  new Map([
+    ["0", 1],
+    ["0.02", 2],
+    ["0.25", 3],
+    ["0.27", 4],
+    ["0.50", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q19_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q19_selected_t12e", JSON.stringify(q19));
+  localStorage.setItem("q19_correct_t12e", "1");
+  localStorage.setItem("q19_result_t12e", q19 === null ? "unattempted" : (q19 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q19, "1");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+The null hypothesis is the ***expected*** difference in the sample proportions if the null hypothesis is true.
+
+:::{.callout-note collapse="true"}
+## Hint 2 (Solved)
+
+The null value is the number on the right-hand side of the equals sign in the null hypothesis $H_0$.
+
+:::
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2, Part IV
+
+The point estimate is:
+
+```{ojs}
+//| echo: false
+
+viewof q20 = Inputs.radio(
+  new Map([
+    ["0", 1],
+    ["0.02", 2],
+    ["0.25", 3],
+    ["0.27", 4],
+    ["0.50", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q20_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q20_selected_t12e", JSON.stringify(q20));
+  localStorage.setItem("q20_correct_t12e", "2");
+  localStorage.setItem("q20_result_t12e", q20 === null ? "unattempted" : (q20 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q20, "2");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+The point estimate is the "sample version" of the expression on the left-hand side of the null hypothesis. 
+
+:::{.callout-note collapse="true"}
+## Hint 2
+
+Since $H_0$ involves $p_{\text{unemployed}} - p_{\text{underemployed}}$, the point estimate is $\hat{p}_{\text{unemployed}} - \hat{p}_{\text{underemployed}}$.
+
+:::{.callout-note collapse="true"}
+## Hint 3 (Solved)
+
+$\hat{p}_{\text{unemployed}} - \hat{p}_{\text{underemployed}} = 0.27 - 0.25 = 0.02$.
+
+:::
+:::
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2, Part V
+
+How many groups are being compared in this study?
+
+```{ojs}
+//| echo: false
+
+viewof q21 = Inputs.radio(
+  new Map([
+    ["Just one group.", 1],
+    ["Two groups.", 2],
+    ["Three or more groups.", 3],
+    ["1,820 groups.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q21_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q21_selected_t12e", JSON.stringify(q21));
+  localStorage.setItem("q21_correct_t12e", "2");
+  localStorage.setItem("q21_result_t12e", q21 === null ? "unattempted" : (q21 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q21, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2, Part VI
+
+The standard error formula is:
+
+```{ojs}
+//| echo: false
+
+viewof q22 = Inputs.radio(
+  new Map([
+    ["SE = sqrt(p(1-p)/n)", 1],
+    ["SE = s/sqrt(n)", 2],
+    ["SE = σ/sqrt(n)", 3],
+    ["SE = sqrt(p1(1-p1)/n1 + p2(1-p2)/n2)", 4],
+    ["SE = sqrt(s1²/n1 + s2²/n2)", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q22_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q22_selected_t12e", JSON.stringify(q22));
+  localStorage.setItem("q22_correct_t12e", "4");
+  localStorage.setItem("q22_result_t12e", q22 === null ? "unattempted" : (q22 == 4 ? "correct" : "incorrect"));
+}
+ok_response(q22, "4");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+Start at the top of the decision tree. What side are we on, *proportions* ($p$) or *means* ($\mu$)?
+
+:::{.callout-note collapse="true"}
+## Hint 2
+
+We're working with proportions here, so we're on the left side of the tree. How many groups/populations are we comparing?
+
+:::{.callout-note collapse="true"}
+## Hint 3
+
+We're comparing two groups. What is the formula for the *standard error* in this situation?
+
+:::{.callout-note collapse="true"}
+## Hint 4 (Solved)
+
+The standard error is $\displaystyle{S_E = \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}}$.
+
+:::
+:::
+:::
+:::
+
+:::
+
+Now compute the standard error in your spreadsheet and enter your result below. If you do any rounding during intermediate steps, carry at least five decimal places.
+
+```{webr}
+#| exercise: try-it-2-se
+# Enter your answer / result here
+
+```
+
+:::{.hint exercise="try-it-2-se"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+The standard error formula for comparing two proportions is:
+$$S_E = \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}$$
+
+In your spreadsheet, use `SQRT()` with two terms added inside it.
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-se"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The standard error formula for comparing two proportions is:
+$$S_E = \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}$$
+
+Here $p_1 = 0.27$, $n_1 = 1145$, $p_2 = 0.25$, and $n_2 = 675$. 
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-se"}
+:::{.callout-note collapse="false"}
+## Hint 3 (Solved)
+
+The standard error formula for comparing two proportions is:
+$$S_E = \sqrt{\frac{p_1(1-p_1)}{n_1} + \frac{p_2(1-p_2)}{n_2}}$$
+
+In your spreadsheet, type `=SQRT((0.27*(1-0.27)/1145)+(0.25*(1-0.25)/675))` and press Enter.
+
+:::
+:::
+
+```{webr}
+#| exercise: try-it-2-se
+#| solution: true
+
+sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
+```
+
+```{webr}
+#| exercise: try-it-2-se
+#| check: true
+
+exercise_results$try_it_2_se <<- "fail"
+gradethis::grade_this({
+  if (abs(.result - sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))) < 0.0005) {
+    exercise_results$try_it_2_se <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-tip}
+## Breaking Up Complex Calculations
+
+The calculation of the standard error above is difficult because of how much grouping you need to do with parentheses. It can be beneficial to break the calculation up -- use a blank cell to calculate the first fraction $\displaystyle{\frac{p_1\left(1 - p_1\right)}{n_1}}$, another blank cell for the second fraction $\displaystyle{\frac{p_2\left(1 - p_2\right)}{n_2}}$, and then a third blank cell to calculate the square root of the sum of those two values.
+:::
+
+Now compute the test statistic in your spreadsheet and enter your result below.
+
+```{webr}
+#| exercise: try-it-2-ts
+# Enter your answer / result here
+
+```
+
+:::{.hint exercise="try-it-2-ts"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+The test statistic formula is:
+$$\text{test statistic} = \frac{(\text{point estimate}) - (\text{null value})}{S_E}$$
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-ts"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The test statistic formula is:
+$$\text{test statistic} = \frac{(\text{point estimate}) - (\text{null value})}{S_E}$$
+
+You have all three ingredients: point estimate (`0.02`), null value (`0`), and the standard error you just computed (~`0.0212`).
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-ts"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+The test statistic formula is:
+$$\text{test statistic} = \frac{(\text{point estimate}) - (\text{null value})}{S_E}$$
+
+In your spreadsheet, type `=(0.02-0)/0.0212` and press Enter.
+
+:::
+:::
+
+```{webr}
+#| exercise: try-it-2-ts
+#| solution: true
+
+se <- sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
+(0.27 - 0.25) / se
+```
+
+```{webr}
+#| exercise: try-it-2-ts
+#| check: true
+
+exercise_results$try_it_2_ts <<- "fail"
+gradethis::grade_this({
+  se <- sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
+  if (abs(.result - (0.02 / se)) < 0.005) {
+    exercise_results$try_it_2_ts <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2, Part VII
+
+The distribution to be used is:
+
+```{ojs}
+//| echo: false
+
+viewof q23 = Inputs.radio(
+  new Map([
+    ["Normal.", 1],
+    ["t-distribution with df = n - 1.", 2],
+    ["t-distribution with df = min(n1-1, n2-1).", 3],
+    ["t-distribution with df = n_diff - 1.", 4],
+    ["We should not use either distribution.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q23_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q23_selected_t12e", JSON.stringify(q23));
+  localStorage.setItem("q23_correct_t12e", "1");
+  localStorage.setItem("q23_result_t12e", q23 === null ? "unattempted" : (q23 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q23, "1");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+We've still only encountered the *normal distribution* for inference. That's the one for now. As a reminder, we'll encounter other distributions as we work our way into different parts of the decision tree through the coming activities.
+
+:::
+
+:::
+
+Now compute the $p$-value in your spreadsheet and enter your result below.
+
+```{webr}
+#| exercise: try-it-2-pvalue
+# Enter your answer / result here
+
+```
+
+:::{.hint exercise="try-it-2-pvalue"}
+:::{.callout-note collapse="false"}
+## Hint 1
+
+The alternative hypothesis uses $\neq$, making this a two-tailed test. That means we calculate the area in one tail and multiply by 2.
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-pvalue"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+The alternative hypothesis uses $\neq$, making this a two-tailed test. That means we calculate the area in one tail and multiply by 2. Since our test statistic is positive, the relevant tail is the upper (right) tail.
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-pvalue"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
+The alternative hypothesis uses $\neq$, making this a two-tailed test. That means we calculate the area in one tail and multiply by 2. Since our test statistic is positive, the relevant tail is the upper (right) tail.
+
+Calculating the area in the upper tail requires using `1 - NORM.DIST()`.
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-pvalue"}
+:::{.callout-note collapse="false"}
+## Hint 4
+
+The alternative hypothesis uses $\neq$, making this a two-tailed test. That means we calculate the area in one tail and multiply by 2. Since our test statistic is positive, the relevant tail is the upper (right) tail.
+
+Because of this, we'll calculate the $p$-value in an empty cell by typing `=2*(1 - NORM.DIST(___, ___, ___, TRUE))`, where the first blank is the boundary value (*test statistic*). After using the test statistic formula, we're on the *standard normal distribution*, so the second blank is 0 and the third blank is 1.
+
+:::
+:::
+
+:::{.hint exercise="try-it-2-pvalue"}
+:::{.callout-note collapse="false"}
+## Hint 5 (Solved)
+
+Using an empty cell, the $p$-value is `=2*(1 - NORM.DIST(0.9434, 0, 1, TRUE))`.
+
+:::
+:::
+
+```{webr}
+#| exercise: try-it-2-pvalue
+#| solution: true
+
+se <- sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
+z  <- (0.27 - 0.25) / se
+2 * (1 - pnorm(abs(z)))
+```
+
+```{webr}
+#| exercise: try-it-2-pvalue
+#| check: true
+
+exercise_results$try_it_2_pvalue <<- "fail"
+gradethis::grade_this({
+  se <- sqrt((0.27 * 0.73 / 1145) + (0.25 * 0.75 / 675))
+  z  <- (0.27 - 0.25) / se
+  if (abs(.result - 2 * (1 - pnorm(abs(z)))) < 0.003) {
+    exercise_results$try_it_2_pvalue <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2, Part VIII
+
+The result of the test is:
+
+```{ojs}
+//| echo: false
+
+viewof q24 = Inputs.radio(
+  new Map([
+    ["Since p < α, we reject the null hypothesis and accept the alternative.", 1],
+    ["Since p < α, we fail to reject the null hypothesis.", 2],
+    ["Since p ≥ α, we do not have enough evidence to reject the null hypothesis.", 3],
+    ["Since p ≥ α, we accept the null hypothesis.", 4],
+    ["It is impossible to determine.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q24_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q24_selected_t12e", JSON.stringify(q24));
+  localStorage.setItem("q24_correct_t12e", "3");
+  localStorage.setItem("q24_result_t12e", q24 === null ? "unattempted" : (q24 == 3 ? "correct" : "incorrect"));
+}
+ok_response(q24, "3");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+Compare your computed $p$-value to $\alpha = 0.05$. Is the $p$-value smaller than $\alpha$, or larger?
+
+:::{.callout-note collapse="true"}
+## Hint 2
+
+If the $p$-value is at least as large as $\alpha$, our observed data would not be very surprising under the null hypothesis. What does that mean for our decision?
+
+:::{.callout-note collapse="true"}
+## Hint 3
+
+If our data is not very surprising under the null hypothesis, then *maybe* it was generated from a reality where that null hypothesis is true.
+
+:::{.callout-note collapse="true"}
+## Hint 4 (Solved)
+
+We don't have evidence to support rejecting the null hypothesis here, but we can't accept the null hypothesis either.
+
+:::
+:::
+:::
+:::
+
+:::
+
+:::{.callout-caution}
+## Check Your Understanding: Try It 2 — IX
+
+The result of the test stated in context means that:
+
+```{ojs}
+//| echo: false
+
+viewof q25 = Inputs.radio(
+  new Map([
+    ["The sample data proved there is no association between relationship problems and employment status.", 1],
+    ["The sample data did not provide significant evidence to suggest an association between relationship problems and employment status.", 2],
+    ["The sample data provided significant evidence of a greater frequency of relationship trouble among the unemployed.", 3],
+    ["Sample data cannot be used to test claims about a population.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q25_selected_t12e") ?? "null")}
+);
+
+{
+  localStorage.setItem("q25_selected_t12e", JSON.stringify(q25));
+  localStorage.setItem("q25_correct_t12e", "2");
+  localStorage.setItem("q25_result_t12e", q25 === null ? "unattempted" : (q25 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q25, "2");
+```
+
+:::{.callout-note collapse="true"}
+## Hint 1
+
+Failing to reject the null hypothesis is not the same as proving it true. What can we say — and what can we not say — based on the test result?
+:::
+
+:::
+
+Good work through these practice problems! Remember to download or print copies of the [*Standard Error Decision Tree*](www/StdErrorDecisionTree.pdf){target="_blank"}, the [*General Strategy for Conducting a Hypothesis Test*](www/HTgeneral.pdf){target="_blank"}, and the [*General Strategy for Constructing a Confidence Interval*](www/CIgeneral.pdf){target="_blank"}. You'll refer back to these documents often as you gain familiarity and confidence with statistical inference.
+
+## Submit
+
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested.
+
+:::{.callout-warning}
+## Question Hash
+
+The hash below encodes your responses to the multiple choice and checkbox questions in this activity.
+
+```{ojs}
+//| echo: false
+
+function buildQuestionResults() {
+  return {
+    notebook: "Topic 12: Inference Practice (Spreadsheets)",
+    type: "questions",
+    timestamp: new Date().toISOString(),
+    questions: {
+      q1_try1a_inference_type: {
+        selected: q1,
+        correct_answer: "3",
+        result: q1 === null ? "unattempted" : (q1 == 3 ? "correct" : "incorrect")
+      },
+      q2_try1a_point_estimate: {
+        selected: q2,
+        correct_answer: "3",
+        result: q2 === null ? "unattempted" : (q2 == 3 ? "correct" : "incorrect")
+      },
+      q3_try1a_se_formula: {
+        selected: q3,
+        correct_answer: "3",
+        result: q3 === null ? "unattempted" : (q3 == 3 ? "correct" : "incorrect")
+      },
+      q4_try1a_se_value: {
+        selected: q4,
+        correct_answer: "3",
+        result: q4 === null ? "unattempted" : (q4 == 3 ? "correct" : "incorrect")
+      },
+      q5_try1a_distribution: {
+        selected: q5,
+        correct_answer: "1",
+        result: q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect")
+      },
+      q6_try1a_confidence_level: {
+        selected: q6,
+        correct_answer: "2",
+        result: q6 === null ? "unattempted" : (q6 == 2 ? "correct" : "incorrect")
+      },
+      q7_try1a_critical_value: {
+        selected: q7,
+        correct_answer: "1",
+        result: q7 === null ? "unattempted" : (q7 == 1 ? "correct" : "incorrect")
+      },
+      q8_try1a_ci_expression: {
+        selected: q8,
+        correct_answer: "5",
+        result: q8 === null ? "unattempted" : (q8 == 5 ? "correct" : "incorrect")
+      },
+      q9_try1a_ci_bounds: {
+        selected: q9,
+        correct_answer: "4",
+        result: q9 === null ? "unattempted" : (q9 == 4 ? "correct" : "incorrect")
+      },
+      q10_try1a_ci_interpretation: {
+        selected: q10,
+        correct_answer: "1",
+        result: q10 === null ? "unattempted" : (q10 == 1 ? "correct" : "incorrect")
+      },
+      q11_try1a_majority: {
+        selected: q11,
+        correct_answer: "2",
+        result: q11 === null ? "unattempted" : (q11 == 2 ? "correct" : "incorrect")
+      },
+      q12_try1b_inference_type: {
+        selected: q12,
+        correct_answer: "4",
+        result: q12 === null ? "unattempted" : (q12 == 4 ? "correct" : "incorrect")
+      },
+      q13_try1b_critical_value: {
+        selected: q13,
+        correct_answer: "1",
+        result: q13 === null ? "unattempted" : (q13 == 1 ? "correct" : "incorrect")
+      },
+      q14_try1b_margin_of_error: {
+        selected: q14,
+        correct_answer: "4",
+        result: q14 === null ? "unattempted" : (q14 == 4 ? "correct" : "incorrect")
+      },
+      q15_try1b_p_value: {
+        selected: q15,
+        correct_answer: "1",
+        result: q15 === null ? "unattempted" : (q15 == 1 ? "correct" : "incorrect")
+      },
+      q16_try1b_sample_size: {
+        selected: q16,
+        correct_answer: "4",
+        result: q16 === null ? "unattempted" : (q16 == 4 ? "correct" : "incorrect")
+      },
+      q17_try2_inference_type: {
+        selected: q17,
+        correct_answer: "2",
+        result: q17 === null ? "unattempted" : (q17 == 2 ? "correct" : "incorrect")
+      },
+      q18_try2_hypotheses: {
+        selected: q18,
+        correct_answer: "1",
+        result: q18 === null ? "unattempted" : (q18 == 1 ? "correct" : "incorrect")
+      },
+      q19_try2_null_value: {
+        selected: q19,
+        correct_answer: "1",
+        result: q19 === null ? "unattempted" : (q19 == 1 ? "correct" : "incorrect")
+      },
+      q20_try2_point_estimate: {
+        selected: q20,
+        correct_answer: "2",
+        result: q20 === null ? "unattempted" : (q20 == 2 ? "correct" : "incorrect")
+      },
+      q21_try2_num_groups: {
+        selected: q21,
+        correct_answer: "2",
+        result: q21 === null ? "unattempted" : (q21 == 2 ? "correct" : "incorrect")
+      },
+      q22_try2_se_formula: {
+        selected: q22,
+        correct_answer: "4",
+        result: q22 === null ? "unattempted" : (q22 == 4 ? "correct" : "incorrect")
+      },
+      q23_try2_distribution: {
+        selected: q23,
+        correct_answer: "1",
+        result: q23 === null ? "unattempted" : (q23 == 1 ? "correct" : "incorrect")
+      },
+      q24_try2_test_result: {
+        selected: q24,
+        correct_answer: "3",
+        result: q24 === null ? "unattempted" : (q24 == 3 ? "correct" : "incorrect")
+      },
+      q25_try2_context_conclusion: {
+        selected: q25,
+        correct_answer: "2",
+        result: q25 === null ? "unattempted" : (q25 == 2 ? "correct" : "incorrect")
+      }
+    }
+  };
+}
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+question_hash = {
+  q1; q2; q3; q4; q5; q6; q7; q8; q9; q10; q11; q12; q13;
+  q14; q15; q16; q17; q18; q19; q20; q21; q22; q23; q24; q25;
+  return toBase64(JSON.stringify(buildQuestionResults()));
+}
+```
+
+```{ojs}
+//| echo: false
+
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and enter your answer in each graded exercise cell before generating the hash below, to ensure your most recent results are recorded.
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
+
+:::
+
+## Summary
+
+:::{.callout-tip}
+## Main Takeaways
+
++ The **Standard Error Decision Tree** is your primary reference for identifying which standard error formula applies to a given inference problem. You walk through the tree by asking and answering a series of questions about your inference scenario.
++ **Confidence intervals** and **hypothesis tests** follow a structured process. The general strategy documents walk you through each step — lean on them until you are comfortable with the procedures.
++ **Sample size planning** allows you to determine how large a sample is needed to achieve a desired margin of error before data collection begins. Using a prior estimate of the proportion (when available) gives a more efficient answer than defaulting to $p = 0.50$. In a spreadsheet, use `=((z/ME)^2)*p*(1-p)` and always round up to the nearest whole number.
++ **Two-proportion hypothesis tests** compare the *difference* in proportions across two groups. The null hypothesis is typically that the difference is zero, and the standard error formula accounts for both groups' sample sizes and proportions. In a spreadsheet: `=SQRT((p1*(1-p1)/n1)+(p2*(1-p2)/n2))`.
++ For the **two-tailed p-value**, remember that we need to account for both the lower- and upper-tail areas. This is most easily handled by doubling a single tail area. Be sure to draw a picture to help you determine whether you can use `=2*NORM.DIST()` or if you need `=2*(1 - NORM.DIST())`.
++ When a **$p$-value exceeds $\alpha$**, we do not have sufficient evidence to reject the null hypothesis — but this is not the same as proving the null is true. Absence of evidence is not evidence of absence.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+The inference framework you've been practicing here will carry forward unchanged throughout the rest of our course. What will change is the specific standard error formula and distribution used, depending on whether you're working with proportions or means and one, two, or more than two groups. The decision tree will guide you through identifying the appropriate standard error formula and distribution. In the coming activities, we'll explore more of the tree, but our general approaches to inference tasks will remain consistent.
+:::

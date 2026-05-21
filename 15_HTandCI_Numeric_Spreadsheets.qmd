@@ -2363,9 +2363,9 @@ Great work through all of that — and I hope you found the application to sente
 
 + **The $t$-distributions are a family of penalized normal distributions** parameterized by *degrees of freedom*. As degrees of freedom increase, the $t$-distribution becomes closer to the normal distribution.
 + **Use the $t$-distribution any time you use a sample standard deviation** ($s$) as a substitute for the population standard deviation ($\sigma$) in the standard error formula.
-+ In your spreadsheet, use only two functions for $t$-distribution work:
-  + **`=T.DIST(q, df, TRUE)`** — area to the **left** of boundary value `q`. Works for any sign of `q`. Use `=1-T.DIST(...)` for right-tail areas and `=2*T.DIST(...)` for two-tailed $p$-values when the test statistic is negative.
-  + **`=T.INV(p, df)`** — boundary value for which the area to the left is `p`. Use `=T.INV(0.975, df)` for the critical value of a 95% CI, for example.
++ We have two functions for $t$-distribution work that you can use in your spreadsheets:
+  + **`=T.DIST(q, df, TRUE)`** will return the area to the **left** of boundary value `q`. Continue drawing a picture and having the picture guide you through how to use `T.DIST()` to calculate the area you want.
+  + **`=T.INV(p, df)`** provides the boundary value for which the area to the left is `p`. Use `=T.INV(0.975, df)` for the critical value of a 95% CI, for example.
 
 + **For a single mean**, the standard error is $S_E = s/\sqrt{n}$ and the degrees of freedom is $n - 1$.
 + **For comparing two independent means**, the standard error is $S_E = \sqrt{s_1^2/n_1 + s_2^2/n_2}$ and the degrees of freedom is $\min\{n_1 - 1, n_2 - 1\}$.

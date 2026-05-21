@@ -1,0 +1,1614 @@
+---
+title: "Topic 16: Inference Practice (Part B)"
+format: 
+  live-html:
+    include-in-header:
+      text: |
+        <style>
+        .btn-exercise-solution { display: none !important; }
+        .exercise-editor-body { max-height: 300px; overflow-y: auto; }
+        </style>
+    webr:
+      packages:
+        - dplyr
+        - ggplot2
+        - gradethis
+        - jsonlite
+        - base64enc
+      cell-options:
+        persist: true
+    live:
+      show-solutions: true
+---
+
+{{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+{{< include ./_extensions/r-wasm/live/_gradethis.qmd >}}
+
+```{webr}
+#| edit: false
+#| output: false
+#| define:
+#|   - ok_response
+
+library(htmltools)
+ok_response <- function(response, n) {
+  if (is.na(response)) div(HTML("You haven't answered yet."), style = "color: purple")
+  else if (response == n) div(HTML("Correct ✓"), style = "color: green")
+  else div(HTML("Incorrect ✗"), style = "color: red")
+}
+```
+
+```{webr}
+#| context: setup
+#| echo: false
+#| output: false
+
+library(dplyr)
+library(ggplot2)
+library(jsonlite)
+library(base64enc)
+
+theme_set(theme_bw(base_size = 12))
+
+exercise_results <- list(
+  notebook    = "Topic 16: Inference Practice (Part B)",
+  prob5_3     = "unattempted",
+  prob5_4     = "unattempted",
+  prob5_5     = "unattempted",
+  prob5_6     = "unattempted",
+  prob6_6     = "unattempted",
+  prob6_7     = "unattempted",
+  prob6_8     = "unattempted",
+  prob6_9     = "unattempted",
+  prob6_10    = "unattempted",
+  prob7_7     = "unattempted",
+  prob7_8     = "unattempted",
+  prob7_9     = "unattempted",
+  prob7_10    = "unattempted",
+  prob7_11    = "unattempted",
+  prob8_8     = "unattempted",
+  prob8_9     = "unattempted",
+  prob8_10    = "unattempted",
+  prob8_11    = "unattempted",
+  prob8_12    = "unattempted"
+)
+```
+
+```{r setup, include=FALSE}
+library(dplyr)
+library(ggplot2)
+
+theme_set(theme_bw(base_size = 12))
+```
+
+:::{.callout-note}
+## About
+
+This is a continuation of the Topic 16 (Part A) activity. This second of three practice notebooks contains four more scaffolded inference problems — Problems 5 through 8. No new content is introduced.
+
+```{ojs}
+//| echo: false
+
+{
+  const btn = html`<button style="
+    background: #436b95;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+  ">🔄 Reset My Responses</button>`;
+
+  btn.onclick = () => {
+    if (confirm('Reset all responses for this activity? This cannot be undone.')) {
+      Object.keys(localStorage)
+        .filter(k => k.endsWith('_selected_t16b') || k.endsWith('_correct_t16b') || k.endsWith('_result_t16b'))
+        .forEach(k => localStorage.removeItem(k));
+      location.reload();
+    }
+  };
+
+  return btn;
+}
+```
+
+
+*Note.* The button above resets multiple choice and checkbox questions. Currently, resetting code cells must be done manually via hitting the *Start Over* button on each individual interactive cell.
+
+:::
+
+## Inference Practice
+
+This activity continues where Part A left off. For convenience, the reference documents are linked here:
+
++ [*Standard Error Decision Tree*](https://agmath.github.io/SiteFiles/StdErrorDecisionTree.pdf){target="_blank"}
++ [*General Strategy for Confidence Intervals*](https://agmath.github.io/SiteFiles/CIgeneral.pdf){target="_blank"}
++ [*General Strategy for Hypothesis Tests*](https://agmath.github.io/SiteFiles/HTgeneral.pdf){target="_blank"}
+
+For any problems involving hypothesis tests, assume $\alpha = 0.05$ unless otherwise stated.
+
+:::{.callout-important}
+## No Hints
+
+There are no hints included in this activity. Use the reference documents linked above and your previous notebooks to guide you.
+:::
+
+---
+
+## Problem 5
+
+A pollster working for Pete Buttigieg is interested in identifying the proportion of registered Democrats planning to vote in the NH primary for whom Mayor Pete is their first or second choice candidate. If the pollster wants to estimate this proportion to within one percentage point at 95% confidence, how many voters should be included in a sample if data from a focus group suggests that the proportion is near 42%?
+
+:::{.callout-caution}
+## Problem 5, Part I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+mutable ok_response = (response, n) => { return html`Loading...` };
+viewof q1 = Inputs.radio(
+  new Map([
+    ["Compute a probability.", 1],
+    ["Construct a confidence interval.", 2],
+    ["Conduct a hypothesis test.", 3],
+    ["Find a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q1_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q1_selected_t16b", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t16b", "4");
+  localStorage.setItem("q1_result_t16b", q1 === null ? "unattempted" : (q1 == 4 ? "correct" : "incorrect"));
+}
+ok_response(q1, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 5, Part II
+
+The parameter the pollster is attempting to measure is a:
+
+```{ojs}
+//| echo: false
+
+viewof q2 = Inputs.radio(
+  new Map([
+    ["Population mean.", 1],
+    ["Population proportion.", 2],
+    ["Sample mean.", 3],
+    ["Sample proportion.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q2_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q2_selected_t16b", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t16b", "2");
+  localStorage.setItem("q2_result_t16b", q2 === null ? "unattempted" : (q2 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q2, "2");
+```
+
+:::
+
+Use the code block below to input or compute the desired margin of error.
+
+```{webr}
+#| exercise: prob5-3
+______
+```
+
+```{webr}
+#| exercise: prob5-3
+#| solution: true
+
+0.01
+```
+
+```{webr}
+#| exercise: prob5-3
+#| check: true
+
+exercise_results$prob5_3 <<- "fail"
+gradethis::grade_this({
+  if (.result == 0.01) {
+    exercise_results$prob5_3 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the critical value ($z_{\alpha/2}$) for a 95% confidence level.
+
+```{webr}
+#| exercise: prob5-4
+______
+```
+
+```{webr}
+#| exercise: prob5-4
+#| solution: true
+
+qnorm(0.975)
+```
+
+```{webr}
+#| exercise: prob5-4
+#| check: true
+
+exercise_results$prob5_4 <<- "fail"
+gradethis::grade_this({
+  if (abs(.result - qnorm(0.975)) < 0.01) {
+    exercise_results$prob5_4 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to input the value of $p$ to be used in the sample size calculation.
+
+```{webr}
+#| exercise: prob5-5
+______
+```
+
+```{webr}
+#| exercise: prob5-5
+#| solution: true
+
+0.42
+```
+
+```{webr}
+#| exercise: prob5-5
+#| check: true
+
+exercise_results$prob5_5 <<- "fail"
+gradethis::grade_this({
+  if (.result == 0.42) {
+    exercise_results$prob5_5 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the minimum required sample size.
+
+```{webr}
+#| exercise: prob5-6
+______
+```
+
+```{webr}
+#| exercise: prob5-6
+#| solution: true
+
+ceiling((qnorm(0.975) / 0.01)^2 * 0.42 * (1 - 0.42))
+```
+
+```{webr}
+#| exercise: prob5-6
+#| check: true
+
+exercise_results$prob5_6 <<- "fail"
+gradethis::grade_this({
+  required <- ceiling((qnorm(0.975) / 0.01)^2 * 0.42 * (1 - 0.42))
+  if (abs(.result - required) < 10 && .result == ceiling(.result)) {
+    exercise_results$prob5_6 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-tip}
+## Reminder: Always Round Up
+
+Did you remember to round your answer up to the nearest whole number? Rounding down results in either a loss of confidence or an increased margin of error, violating the stated requirements for the estimate.
+:::
+
+---
+
+## Problem 6
+
+A Gallup poll surveyed 1,000 randomly sampled Greeks in 2011 and found that 25% of them said they would rate their lives poorly enough to be considered suffering. Construct a 95% confidence interval for the true proportion of Greeks who are suffering.
+
+:::{.callout-caution}
+## Problem 6, Part I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+viewof q3 = Inputs.radio(
+  new Map([
+    ["Compute a probability.", 1],
+    ["Construct a confidence interval.", 2],
+    ["Conduct a hypothesis test.", 3],
+    ["Find a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q3_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q3_selected_t16b", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t16b", "2");
+  localStorage.setItem("q3_result_t16b", q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q3, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 6, Part II
+
+What is the desired level of confidence?
+
+```{ojs}
+//| echo: false
+
+viewof q4 = Inputs.radio(
+  new Map([
+    ["90%", 1],
+    ["95%", 2],
+    ["98%", 3],
+    ["99%", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q4_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q4_selected_t16b", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t16b", "2");
+  localStorage.setItem("q4_result_t16b", q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q4, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 6, Part III
+
+Is your confidence interval being built to capture a mean ($\mu$), a proportion ($p$), or something else?
+
+```{ojs}
+//| echo: false
+
+viewof q5 = Inputs.radio(
+  new Map([
+    ["A mean or difference in means.", 1],
+    ["A proportion or difference in proportions.", 2],
+    ["Something else altogether.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q5_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q5_selected_t16b", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t16b", "2");
+  localStorage.setItem("q5_result_t16b", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q5, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 6, Part IV
+
+Does the population parameter belong to a single group or is it a comparison of multiple groups?
+
+```{ojs}
+//| echo: false
+
+viewof q6 = Inputs.radio(
+  new Map([
+    ["The population parameter belongs to a single group.", 1],
+    ["The population parameter involves a comparison of two groups.", 2],
+    ["The population parameter involves a comparison of more than two groups.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q6_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q6_selected_t16b", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t16b", "1");
+  localStorage.setItem("q6_result_t16b", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q6, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 6, Part V
+
+Which standard error formula should be used?
+
+```{ojs}
+//| echo: false
+
+viewof q7 = Inputs.radio(
+  new Map([
+    ["SE = σ/sqrt(n)", 1],
+    ["SE = s/sqrt(n)", 2],
+    ["SE = sqrt(s1²/n1 + s2²/n2)", 3],
+    ["SE = sqrt(p(1-p)/n)", 4],
+    ["SE = sqrt(p1(1-p1)/n1 + p2(1-p2)/n2)", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q7_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q7_selected_t16b", JSON.stringify(q7));
+  localStorage.setItem("q7_correct_t16b", "4");
+  localStorage.setItem("q7_result_t16b", q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect"));
+}
+ok_response(q7, "4");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 6, Part VI
+
+Which distribution should be used to identify the critical value?
+
+```{ojs}
+//| echo: false
+
+viewof q8 = Inputs.radio(
+  new Map([
+    ["The normal distribution.", 1],
+    ["The t-distribution with df = n - 1.", 2],
+    ["The t-distribution with df = min(n1-1, n2-1).", 3],
+    ["The t-distribution with df = n_diff - 1.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q8_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q8_selected_t16b", JSON.stringify(q8));
+  localStorage.setItem("q8_correct_t16b", "1");
+  localStorage.setItem("q8_result_t16b", q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q8, "1");
+```
+
+:::
+
+Use the code block below to compute the critical value.
+
+```{webr}
+#| exercise: prob6-6
+______
+```
+
+```{webr}
+#| exercise: prob6-6
+#| solution: true
+
+qnorm(0.975)
+```
+
+```{webr}
+#| exercise: prob6-6
+#| check: true
+
+exercise_results$prob6_6 <<- "fail"
+gradethis::grade_this({
+  if (abs(abs(.result) - qnorm(0.975)) < 0.01) {
+    exercise_results$prob6_6 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the point estimate.
+
+```{webr}
+#| exercise: prob6-7
+______
+```
+
+```{webr}
+#| exercise: prob6-7
+#| solution: true
+
+0.25
+```
+
+```{webr}
+#| exercise: prob6-7
+#| check: true
+
+exercise_results$prob6_7 <<- "fail"
+gradethis::grade_this({
+  if (.result == 0.25) {
+    exercise_results$prob6_7 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the standard error.
+
+```{webr}
+#| exercise: prob6-8
+______
+```
+
+```{webr}
+#| exercise: prob6-8
+#| solution: true
+
+sqrt(0.25 * (1 - 0.25) / 1000)
+```
+
+```{webr}
+#| exercise: prob6-8
+#| check: true
+
+exercise_results$prob6_8 <<- "fail"
+gradethis::grade_this({
+  if (abs(.result - sqrt(0.25 * 0.75 / 1000)) < 0.0005) {
+    exercise_results$prob6_8 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the lower bound of the confidence interval.
+
+```{webr}
+#| exercise: prob6-9
+______
+```
+
+```{webr}
+#| exercise: prob6-9
+#| solution: true
+
+0.25 - qnorm(0.975) * sqrt(0.25 * 0.75 / 1000)
+```
+
+```{webr}
+#| exercise: prob6-9
+#| check: true
+
+exercise_results$prob6_9 <<- "fail"
+gradethis::grade_this({
+  if (abs(.result - (0.25 - qnorm(0.975) * sqrt(0.25 * 0.75 / 1000))) < 0.0005) {
+    exercise_results$prob6_9 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the upper bound of the confidence interval.
+
+```{webr}
+#| exercise: prob6-10
+______
+```
+
+```{webr}
+#| exercise: prob6-10
+#| solution: true
+
+0.25 + qnorm(0.975) * sqrt(0.25 * 0.75 / 1000)
+```
+
+```{webr}
+#| exercise: prob6-10
+#| check: true
+
+exercise_results$prob6_10 <<- "fail"
+gradethis::grade_this({
+  if (abs(.result - (0.25 + qnorm(0.975) * sqrt(0.25 * 0.75 / 1000))) < 0.0005) {
+    exercise_results$prob6_10 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Problem 6, Part VII
+
+The correct interpretation of this confidence interval is:
+
+```{ojs}
+//| echo: false
+
+viewof q9 = Inputs.radio(
+  new Map([
+    ["There is a 95% chance the true proportion of Greeks who would describe their quality of life as poor enough to be considered 'suffering' falls between the lower and upper bounds calculated.", 1],
+    ["95% of Greeks would describe their quality of life as poor enough to be considered 'suffering'.", 2],
+    ["We are 95% confident that the sample proportion of Greeks who would describe their quality of life as poor enough to be considered 'suffering' falls between the lower and upper bounds calculated.", 3],
+    ["We are 95% confident that the true proportion of Greeks who would describe their quality of life as poor enough to be considered 'suffering' is between the lower and upper bounds calculated.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q9_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q9_selected_t16b", JSON.stringify(q9));
+  localStorage.setItem("q9_correct_t16b", "4");
+  localStorage.setItem("q9_result_t16b", q9 === null ? "unattempted" : (q9 == 4 ? "correct" : "incorrect"));
+}
+ok_response(q9, "4");
+```
+
+:::
+
+---
+
+## Problem 7
+
+A "social experiment" conducted by a TV program questioned what people do when they see a very angry father upset with his child about their poor athletic performance. On two different occasions at the same restaurant, a father and child were depicted — in one scenario the child was a son and in the other a daughter. The table below shows how many restaurant diners were present under each scenario and whether or not they intervened.
+
+| | Son | Daughter | Total |
+|:---|:---:|:---:|:---:|
+| **Intervened** | 15 | 25 | 40 |
+| **No Action** | 25 | 20 | 45 |
+| **Total** | 40 | 45 | 85 |
+
+Conduct a hypothesis test to determine whether there is evidence to suggest that the proportion of individuals willing to intervene is dependent on the gender of the child.
+
+:::{.callout-caution}
+## Problem 7, Part I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+viewof q10 = Inputs.radio(
+  new Map([
+    ["Compute a probability.", 1],
+    ["Construct a confidence interval.", 2],
+    ["Conduct a hypothesis test.", 3],
+    ["Find a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q10_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q10_selected_t16b", JSON.stringify(q10));
+  localStorage.setItem("q10_correct_t16b", "3");
+  localStorage.setItem("q10_result_t16b", q10 === null ? "unattempted" : (q10 == 3 ? "correct" : "incorrect"));
+}
+ok_response(q10, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 7, Part II
+
+What is the level of significance associated with this test?
+
+```{ojs}
+//| echo: false
+
+viewof q11 = Inputs.radio(
+  new Map([
+    ["α = 0.01", 1],
+    ["α = 0.05", 2],
+    ["α = 0.10", 3],
+    ["The p-value.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q11_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q11_selected_t16b", JSON.stringify(q11));
+  localStorage.setItem("q11_correct_t16b", "2");
+  localStorage.setItem("q11_result_t16b", q11 === null ? "unattempted" : (q11 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q11, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 7, Part III
+
+Does this hypothesis test involve testing a statement about a mean ($\mu$), a proportion ($p$), or something else?
+
+```{ojs}
+//| echo: false
+
+viewof q12 = Inputs.radio(
+  new Map([
+    ["One or more means.", 1],
+    ["One or more proportions.", 2],
+    ["Something else altogether.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q12_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q12_selected_t16b", JSON.stringify(q12));
+  localStorage.setItem("q12_correct_t16b", "2");
+  localStorage.setItem("q12_result_t16b", q12 === null ? "unattempted" : (q12 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q12, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 7, Part IV
+
+How many groups are being compared in this test?
+
+```{ojs}
+//| echo: false
+
+viewof q13 = Inputs.radio(
+  new Map([
+    ["The test involves only a single group.", 1],
+    ["The test compares two groups.", 2],
+    ["The test compares more than two groups.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q13_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q13_selected_t16b", JSON.stringify(q13));
+  localStorage.setItem("q13_correct_t16b", "2");
+  localStorage.setItem("q13_result_t16b", q13 === null ? "unattempted" : (q13 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q13, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 7, Part V
+
+Which of the following are the hypotheses associated with this test?
+
+```{ojs}
+//| echo: false
+
+viewof q14 = Inputs.radio(
+  new Map([
+    ["H₀: p_son − p_daughter = 0; Hₐ: p_son − p_daughter ≠ 0", 1],
+    ["H₀: p_son − p_daughter = 0; Hₐ: p_son − p_daughter > 0", 2],
+    ["H₀: p_son − p_daughter = 0; Hₐ: p_son − p_daughter < 0", 3],
+    ["H₀: p_son ≠ p_daughter; Hₐ: p_son = p_daughter", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q14_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q14_selected_t16b", JSON.stringify(q14));
+  localStorage.setItem("q14_correct_t16b", "1");
+  localStorage.setItem("q14_result_t16b", q14 === null ? "unattempted" : (q14 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q14, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 7, Part VI
+
+Which standard error formula should be used?
+
+```{ojs}
+//| echo: false
+
+viewof q15 = Inputs.radio(
+  new Map([
+    ["SE = σ/sqrt(n)", 1],
+    ["SE = s/sqrt(n)", 2],
+    ["SE = sqrt(s1²/n1 + s2²/n2)", 3],
+    ["SE = sqrt(p(1-p)/n)", 4],
+    ["SE = sqrt(p1(1-p1)/n1 + p2(1-p2)/n2)", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q15_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q15_selected_t16b", JSON.stringify(q15));
+  localStorage.setItem("q15_correct_t16b", "5");
+  localStorage.setItem("q15_result_t16b", q15 === null ? "unattempted" : (q15 == 5 ? "correct" : "incorrect"));
+}
+ok_response(q15, "5");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 7, Part VII
+
+Which distribution does the test statistic follow?
+
+```{ojs}
+//| echo: false
+
+viewof q16 = Inputs.radio(
+  new Map([
+    ["The normal distribution.", 1],
+    ["The t-distribution with df = n - 1.", 2],
+    ["The t-distribution with df = min(n1-1, n2-1).", 3],
+    ["The t-distribution with df = n_diff - 1.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q16_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q16_selected_t16b", JSON.stringify(q16));
+  localStorage.setItem("q16_correct_t16b", "1");
+  localStorage.setItem("q16_result_t16b", q16 === null ? "unattempted" : (q16 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q16, "1");
+```
+
+:::
+
+Use the code block below to compute the point estimate.
+
+```{webr}
+#| exercise: prob7-7
+______
+```
+
+```{webr}
+#| exercise: prob7-7
+#| solution: true
+
+(15/40) - (25/45)
+```
+
+```{webr}
+#| exercise: prob7-7
+#| check: true
+
+exercise_results$prob7_7 <<- "fail"
+gradethis::grade_this({
+  if (abs(abs(.result) - abs((15/40) - (25/45))) < 0.005) {
+    exercise_results$prob7_7 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the null value.
+
+```{webr}
+#| exercise: prob7-8
+______
+```
+
+```{webr}
+#| exercise: prob7-8
+#| solution: true
+
+0
+```
+
+```{webr}
+#| exercise: prob7-8
+#| check: true
+
+exercise_results$prob7_8 <<- "fail"
+gradethis::grade_this({
+  if (.result == 0) {
+    exercise_results$prob7_8 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the standard error.
+
+```{webr}
+#| exercise: prob7-9
+______
+```
+
+```{webr}
+#| exercise: prob7-9
+#| solution: true
+
+sqrt(((15/40) * (1 - 15/40) / 40) + ((25/45) * (1 - 25/45) / 45))
+```
+
+```{webr}
+#| exercise: prob7-9
+#| check: true
+
+exercise_results$prob7_9 <<- "fail"
+gradethis::grade_this({
+  se <- sqrt(((15/40) * (1 - 15/40) / 40) + ((25/45) * (1 - 25/45) / 45))
+  if (abs(.result - se) < 0.0005) {
+    exercise_results$prob7_9 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the test statistic.
+
+```{webr}
+#| exercise: prob7-10
+______
+```
+
+```{webr}
+#| exercise: prob7-10
+#| solution: true
+
+se <- sqrt(((15/40) * (1 - 15/40) / 40) + ((25/45) * (1 - 25/45) / 45))
+((15/40) - (25/45)) / se
+```
+
+```{webr}
+#| exercise: prob7-10
+#| check: true
+
+exercise_results$prob7_10 <<- "fail"
+gradethis::grade_this({
+  se <- sqrt(((15/40) * (1 - 15/40) / 40) + ((25/45) * (1 - 25/45) / 45))
+  ts <- ((15/40) - (25/45)) / se
+  if (abs(abs(.result) - abs(ts)) < 0.01) {
+    exercise_results$prob7_10 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the $p$-value.
+
+```{webr}
+#| exercise: prob7-11
+______
+```
+
+```{webr}
+#| exercise: prob7-11
+#| solution: true
+
+se <- sqrt(((15/40) * (1 - 15/40) / 40) + ((25/45) * (1 - 25/45) / 45))
+ts <- ((15/40) - (25/45)) / se
+2 * (1 - pnorm(abs(ts)))
+```
+
+```{webr}
+#| exercise: prob7-11
+#| check: true
+
+exercise_results$prob7_11 <<- "fail"
+gradethis::grade_this({
+  se <- sqrt(((15/40) * (1 - 15/40) / 40) + ((25/45) * (1 - 25/45) / 45))
+  ts <- ((15/40) - (25/45)) / se
+  pval <- 2 * (1 - pnorm(abs(ts)))
+  if (abs(.result - pval) < 0.001) {
+    exercise_results$prob7_11 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Problem 7, Part VIII
+
+What is the result of the test?
+
+```{ojs}
+//| echo: false
+
+viewof q17 = Inputs.radio(
+  new Map([
+    ["Since p < α, we reject the null hypothesis and accept the alternative hypothesis.", 1],
+    ["Since p < α, we fail to reject the null hypothesis.", 2],
+    ["Since p ≥ α, we do not have enough evidence to reject the null hypothesis.", 3],
+    ["Since p ≥ α, we accept the null hypothesis.", 4],
+    ["It is impossible to determine.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q17_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q17_selected_t16b", JSON.stringify(q17));
+  localStorage.setItem("q17_correct_t16b", "3");
+  localStorage.setItem("q17_result_t16b", q17 === null ? "unattempted" : (q17 == 3 ? "correct" : "incorrect"));
+}
+ok_response(q17, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 7, Part IX
+
+The result of the test means that:
+
+```{ojs}
+//| echo: false
+
+viewof q18 = Inputs.radio(
+  new Map([
+    ["The sample data proved that there is no difference in the proportion of diners willing to intervene based on the gender of the child.", 1],
+    ["The sample data did not provide significant evidence to suggest that there is a difference in the proportion of diners willing to intervene based on the gender of the child.", 2],
+    ["The sample data provided significant evidence to suggest a difference in the proportion of diners willing to intervene based on the gender of the child.", 3],
+    ["The sample data provided significant evidence to suggest a difference in the sample proportion of diners willing to intervene based on the gender of the child.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q18_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q18_selected_t16b", JSON.stringify(q18));
+  localStorage.setItem("q18_correct_t16b", "2");
+  localStorage.setItem("q18_result_t16b", q18 === null ? "unattempted" : (q18 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q18, "2");
+```
+
+:::
+
+---
+
+## Problem 8
+
+A University has a policy that its sports teams require no more than 15 hours per week of time commitment from players during the off-season. A random survey of 12 players from the University's Quidditch team during the Fall Semester (Quidditch is a Spring sport) resulted in a mean of 15.25 hours per week of Quidditch-related activity, with a standard deviation of 1 hour. Is there evidence to suggest that the University Quidditch coach is not following University policy? Use $\alpha = 0.10$.
+
+:::{.callout-caution}
+## Problem 8, Part I
+
+To answer the question as asked, we should:
+
+```{ojs}
+//| echo: false
+
+viewof q19 = Inputs.radio(
+  new Map([
+    ["Compute a probability.", 1],
+    ["Construct a confidence interval.", 2],
+    ["Conduct a hypothesis test.", 3],
+    ["Find a required sample size.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q19_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q19_selected_t16b", JSON.stringify(q19));
+  localStorage.setItem("q19_correct_t16b", "3");
+  localStorage.setItem("q19_result_t16b", q19 === null ? "unattempted" : (q19 == 3 ? "correct" : "incorrect"));
+}
+ok_response(q19, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 8, Part II
+
+What is the level of significance associated with this test?
+
+```{ojs}
+//| echo: false
+
+viewof q20 = Inputs.radio(
+  new Map([
+    ["α = 0.01", 1],
+    ["α = 0.05", 2],
+    ["α = 0.10", 3],
+    ["The p-value.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q20_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q20_selected_t16b", JSON.stringify(q20));
+  localStorage.setItem("q20_correct_t16b", "3");
+  localStorage.setItem("q20_result_t16b", q20 === null ? "unattempted" : (q20 == 3 ? "correct" : "incorrect"));
+}
+ok_response(q20, "3");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 8, Part III
+
+Does this hypothesis test involve testing a statement about a mean ($\mu$), a proportion ($p$), or something else?
+
+```{ojs}
+//| echo: false
+
+viewof q21 = Inputs.radio(
+  new Map([
+    ["One or more means.", 1],
+    ["One or more proportions.", 2],
+    ["Something else altogether.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q21_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q21_selected_t16b", JSON.stringify(q21));
+  localStorage.setItem("q21_correct_t16b", "1");
+  localStorage.setItem("q21_result_t16b", q21 === null ? "unattempted" : (q21 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q21, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 8, Part IV
+
+How many groups are being compared in this test?
+
+```{ojs}
+//| echo: false
+
+viewof q22 = Inputs.radio(
+  new Map([
+    ["The test involves only a single group.", 1],
+    ["The test compares two groups.", 2],
+    ["The test compares more than two groups.", 3]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q22_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q22_selected_t16b", JSON.stringify(q22));
+  localStorage.setItem("q22_correct_t16b", "1");
+  localStorage.setItem("q22_result_t16b", q22 === null ? "unattempted" : (q22 == 1 ? "correct" : "incorrect"));
+}
+ok_response(q22, "1");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 8, Part V
+
+Which of the following are the hypotheses associated with this test?
+
+```{ojs}
+//| echo: false
+
+viewof q23 = Inputs.radio(
+  new Map([
+    ["H₀: μ = 15; Hₐ: μ ≠ 15", 1],
+    ["H₀: μ = 15; Hₐ: μ > 15", 2],
+    ["H₀: μ = 15; Hₐ: μ < 15", 3],
+    ["H₀: μ = 15.25; Hₐ: μ < 15.25", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q23_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q23_selected_t16b", JSON.stringify(q23));
+  localStorage.setItem("q23_correct_t16b", "2");
+  localStorage.setItem("q23_result_t16b", q23 === null ? "unattempted" : (q23 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q23, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 8, Part VI
+
+Do we know the population standard deviation ($\sigma$) for hours spent on Quidditch?
+
+```{ojs}
+//| echo: false
+
+viewof q24 = Inputs.radio(
+  new Map([
+    ["Yes, the population standard deviation is known.", 1],
+    ["No, the population standard deviation is not known.", 2]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q24_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q24_selected_t16b", JSON.stringify(q24));
+  localStorage.setItem("q24_correct_t16b", "2");
+  localStorage.setItem("q24_result_t16b", q24 === null ? "unattempted" : (q24 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q24, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 8, Part VII
+
+Which standard error formula should be used?
+
+```{ojs}
+//| echo: false
+
+viewof q25 = Inputs.radio(
+  new Map([
+    ["SE = σ/sqrt(n)", 1],
+    ["SE = s/sqrt(n)", 2],
+    ["SE = sqrt(s1²/n1 + s2²/n2)", 3],
+    ["SE = sqrt(p(1-p)/n)", 4],
+    ["SE = sqrt(p1(1-p1)/n1 + p2(1-p2)/n2)", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q25_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q25_selected_t16b", JSON.stringify(q25));
+  localStorage.setItem("q25_correct_t16b", "2");
+  localStorage.setItem("q25_result_t16b", q25 === null ? "unattempted" : (q25 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q25, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 8, Part VIII
+
+Which distribution does the test statistic follow?
+
+```{ojs}
+//| echo: false
+
+viewof q26 = Inputs.radio(
+  new Map([
+    ["The normal distribution.", 1],
+    ["The t-distribution with df = n - 1.", 2],
+    ["The t-distribution with df = min(n1-1, n2-1).", 3],
+    ["The t-distribution with df = n_diff - 1.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q26_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q26_selected_t16b", JSON.stringify(q26));
+  localStorage.setItem("q26_correct_t16b", "2");
+  localStorage.setItem("q26_result_t16b", q26 === null ? "unattempted" : (q26 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q26, "2");
+```
+
+:::
+
+Use the code block below to compute the point estimate.
+
+```{webr}
+#| exercise: prob8-8
+______
+```
+
+```{webr}
+#| exercise: prob8-8
+#| solution: true
+
+15.25
+```
+
+```{webr}
+#| exercise: prob8-8
+#| check: true
+
+exercise_results$prob8_8 <<- "fail"
+gradethis::grade_this({
+  if (abs(.result) == 15.25) {
+    exercise_results$prob8_8 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the null value.
+
+```{webr}
+#| exercise: prob8-9
+______
+```
+
+```{webr}
+#| exercise: prob8-9
+#| solution: true
+
+15
+```
+
+```{webr}
+#| exercise: prob8-9
+#| check: true
+
+exercise_results$prob8_9 <<- "fail"
+gradethis::grade_this({
+  if (.result == 15) {
+    exercise_results$prob8_9 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the standard error.
+
+```{webr}
+#| exercise: prob8-10
+______
+```
+
+```{webr}
+#| exercise: prob8-10
+#| solution: true
+
+1 / sqrt(12)
+```
+
+```{webr}
+#| exercise: prob8-10
+#| check: true
+
+exercise_results$prob8_10 <<- "fail"
+gradethis::grade_this({
+  if (abs(.result - 1/sqrt(12)) < 0.01) {
+    exercise_results$prob8_10 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the test statistic.
+
+```{webr}
+#| exercise: prob8-11
+______
+```
+
+```{webr}
+#| exercise: prob8-11
+#| solution: true
+
+(15.25 - 15) / (1 / sqrt(12))
+```
+
+```{webr}
+#| exercise: prob8-11
+#| check: true
+
+exercise_results$prob8_11 <<- "fail"
+gradethis::grade_this({
+  ts <- (15.25 - 15) / (1 / sqrt(12))
+  if (abs(.result - ts) < 0.01) {
+    exercise_results$prob8_11 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+Use the code block below to compute the $p$-value.
+
+```{webr}
+#| exercise: prob8-12
+______
+```
+
+```{webr}
+#| exercise: prob8-12
+#| solution: true
+
+ts <- (15.25 - 15) / (1 / sqrt(12))
+1 - pt(ts, df = 11)
+```
+
+```{webr}
+#| exercise: prob8-12
+#| check: true
+
+exercise_results$prob8_12 <<- "fail"
+gradethis::grade_this({
+  ts <- (15.25 - 15) / (1 / sqrt(12))
+  pval <- 1 - pt(ts, df = 11)
+  if (abs(.result - pval) < 0.0015) {
+    exercise_results$prob8_12 <<- "pass"
+    pass(random_praise())
+  }
+  fail(random_encouragement())
+})
+```
+
+:::{.callout-caution}
+## Problem 8, Part IX
+
+What is the result of the test?
+
+```{ojs}
+//| echo: false
+
+viewof q27 = Inputs.radio(
+  new Map([
+    ["Since p ≥ α, we accept the null hypothesis.", 1],
+    ["Since p ≥ α, we do not have enough evidence to reject the null hypothesis.", 2],
+    ["Since p < α, we reject the null hypothesis and accept the alternative hypothesis.", 3],
+    ["Since p < α, we fail to reject the null hypothesis.", 4],
+    ["It is impossible to determine.", 5]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q27_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q27_selected_t16b", JSON.stringify(q27));
+  localStorage.setItem("q27_correct_t16b", "2");
+  localStorage.setItem("q27_result_t16b", q27 === null ? "unattempted" : (q27 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q27, "2");
+```
+
+:::
+
+:::{.callout-caution}
+## Problem 8, Part X
+
+The result of the test means that:
+
+```{ojs}
+//| echo: false
+
+viewof q28 = Inputs.radio(
+  new Map([
+    ["The sample data proved that the University Quidditch coach is violating the off-season time commitment policy.", 1],
+    ["The sample data did not provide significant evidence to suggest that the University Quidditch coach is violating the off-season time commitment policy.", 2],
+    ["The sample data proved that the University Quidditch coach is not violating the off-season time commitment policy.", 3],
+    ["The sample data provided significant evidence to suggest that the University Quidditch coach is violating the off-season time commitment policy.", 4]
+  ]),
+  {value: JSON.parse(localStorage.getItem("q28_selected_t16b") ?? "null")}
+);
+
+{
+  localStorage.setItem("q28_selected_t16b", JSON.stringify(q28));
+  localStorage.setItem("q28_correct_t16b", "2");
+  localStorage.setItem("q28_result_t16b", q28 === null ? "unattempted" : (q28 == 2 ? "correct" : "incorrect"));
+}
+ok_response(q28, "2");
+```
+
+:::
+
+## Submit
+
+If you are part of a course with an instructor who is grading your work on these activities, please copy and submit ***both*** of the hashes below using the method your instructor has requested.
+
+:::{.callout-warning}
+## Question Hash
+
+The hash below encodes your responses to the multiple choice questions in this activity.
+
+```{ojs}
+//| echo: false
+
+function buildQuestionResults() {
+  return {
+    notebook: "Topic 16: Inference Practice (Part B)",
+    type: "questions",
+    timestamp: new Date().toISOString(),
+    questions: {
+      q1_prob5_inference_type: { selected: q1, correct_answer: "4", result: q1 === null ? "unattempted" : (q1 == 4 ? "correct" : "incorrect") },
+      q2_prob5_parameter_type: { selected: q2, correct_answer: "2", result: q2 === null ? "unattempted" : (q2 == 2 ? "correct" : "incorrect") },
+      q3_prob6_inference_type: { selected: q3, correct_answer: "2", result: q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect") },
+      q4_prob6_confidence_level: { selected: q4, correct_answer: "2", result: q4 === null ? "unattempted" : (q4 == 2 ? "correct" : "incorrect") },
+      q5_prob6_parameter_type: { selected: q5, correct_answer: "2", result: q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect") },
+      q6_prob6_num_groups: { selected: q6, correct_answer: "1", result: q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect") },
+      q7_prob6_se_formula: { selected: q7, correct_answer: "4", result: q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect") },
+      q8_prob6_distribution: { selected: q8, correct_answer: "1", result: q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect") },
+      q9_prob6_interpretation: { selected: q9, correct_answer: "4", result: q9 === null ? "unattempted" : (q9 == 4 ? "correct" : "incorrect") },
+      q10_prob7_inference_type: { selected: q10, correct_answer: "3", result: q10 === null ? "unattempted" : (q10 == 3 ? "correct" : "incorrect") },
+      q11_prob7_significance_level: { selected: q11, correct_answer: "2", result: q11 === null ? "unattempted" : (q11 == 2 ? "correct" : "incorrect") },
+      q12_prob7_parameter_type: { selected: q12, correct_answer: "2", result: q12 === null ? "unattempted" : (q12 == 2 ? "correct" : "incorrect") },
+      q13_prob7_num_groups: { selected: q13, correct_answer: "2", result: q13 === null ? "unattempted" : (q13 == 2 ? "correct" : "incorrect") },
+      q14_prob7_hypotheses: { selected: q14, correct_answer: "1", result: q14 === null ? "unattempted" : (q14 == 1 ? "correct" : "incorrect") },
+      q15_prob7_se_formula: { selected: q15, correct_answer: "5", result: q15 === null ? "unattempted" : (q15 == 5 ? "correct" : "incorrect") },
+      q16_prob7_distribution: { selected: q16, correct_answer: "1", result: q16 === null ? "unattempted" : (q16 == 1 ? "correct" : "incorrect") },
+      q17_prob7_test_result: { selected: q17, correct_answer: "3", result: q17 === null ? "unattempted" : (q17 == 3 ? "correct" : "incorrect") },
+      q18_prob7_conclusion: { selected: q18, correct_answer: "2", result: q18 === null ? "unattempted" : (q18 == 2 ? "correct" : "incorrect") },
+      q19_prob8_inference_type: { selected: q19, correct_answer: "3", result: q19 === null ? "unattempted" : (q19 == 3 ? "correct" : "incorrect") },
+      q20_prob8_significance_level: { selected: q20, correct_answer: "3", result: q20 === null ? "unattempted" : (q20 == 3 ? "correct" : "incorrect") },
+      q21_prob8_parameter_type: { selected: q21, correct_answer: "1", result: q21 === null ? "unattempted" : (q21 == 1 ? "correct" : "incorrect") },
+      q22_prob8_num_groups: { selected: q22, correct_answer: "1", result: q22 === null ? "unattempted" : (q22 == 1 ? "correct" : "incorrect") },
+      q23_prob8_hypotheses: { selected: q23, correct_answer: "2", result: q23 === null ? "unattempted" : (q23 == 2 ? "correct" : "incorrect") },
+      q24_prob8_pop_sd_known: { selected: q24, correct_answer: "2", result: q24 === null ? "unattempted" : (q24 == 2 ? "correct" : "incorrect") },
+      q25_prob8_se_formula: { selected: q25, correct_answer: "2", result: q25 === null ? "unattempted" : (q25 == 2 ? "correct" : "incorrect") },
+      q26_prob8_distribution: { selected: q26, correct_answer: "2", result: q26 === null ? "unattempted" : (q26 == 2 ? "correct" : "incorrect") },
+      q27_prob8_test_result: { selected: q27, correct_answer: "2", result: q27 === null ? "unattempted" : (q27 == 2 ? "correct" : "incorrect") },
+      q28_prob8_conclusion: { selected: q28, correct_answer: "2", result: q28 === null ? "unattempted" : (q28 == 2 ? "correct" : "incorrect") }
+    }
+  };
+}
+
+function toBase64(str) {
+  return btoa(unescape(encodeURIComponent(str)));
+}
+
+question_hash = {
+  q1; q2; q3; q4; q5; q6; q7; q8; q9; q10; q11; q12; q13; q14;
+  q15; q16; q17; q18; q19; q20; q21; q22; q23; q24; q25; q26; q27; q28;
+  return toBase64(JSON.stringify(buildQuestionResults()));
+}
+```
+
+```{ojs}
+//| echo: false
+
+html`<div style="font-family: monospace; font-size: 0.85em; background: #f5f5f5; padding: 12px; border-radius: 6px; word-break: break-all; border: 1px solid #ddd; user-select: all; cursor: pointer;" onclick="navigator.clipboard.writeText(this.innerText)">
+  ${question_hash}
+</div>
+<p style="margin-top: 8px; font-size: 0.9em; color: #555;">
+  Click the box to copy to clipboard.
+</p>`
+```
+
+:::
+
+:::{.callout-warning}
+## Exercise Hash
+
+Click the button below to generate your exercise submission code. This hash encodes your work on the graded code exercises in this activity.
+
+You must have attempted the graded exercises before clicking — clicking generates a snapshot of your current results. If you have completed the activity over multiple sessions, please go back through and hit the *Run Code* button on each graded exercise before generating the hash below, to ensure your most recent results are recorded.
+
+```{webr}
+#| exercise: generate-exercise-hash
+#| caption: "Generate Exercise Code"
+
+exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
+exercise_results$type <- "exercises"
+
+hash <- base64encode(charToRaw(toJSON(exercise_results, auto_unbox = TRUE)))
+cat(hash)
+```
+
+:::
+
+## Summary
+
+:::{.callout-tip}
+## Main Takeaways
+
+Problems 5–8 introduced a few additional scenarios worth remembering:
+
++ **Sample size planning** requires rounding up — always. Rounding down means either the confidence level or the margin of error requirement is violated.
++ **When no prior estimate of $p$ is available**, use $p = 0.5$ as a conservative worst-case choice. When a prior estimate exists, use it — it gives a more efficient (smaller) required sample size.
++ **Two-proportion tests use the normal distribution** for the test statistic since we are working with sample proportions, not means.
++ **Single-group tests for a mean** use the $t$-distribution when $\sigma$ is unknown — which is almost always.
+:::
+
+:::{.callout-tip}
+## Looking Ahead
+
+Part C contains the final four problems — Problems 9 through 12. The scaffolding remains but there are no safety nets. You're nearly there!
+:::

@@ -102,36 +102,37 @@ Through these workbooks you'll be interacting with data using spreadsheet softwa
 
 ## Why Excel / Google Sheets?
 
-You might be asking why we are using a spreadsheet program rather than a dedicated statistics package or a programming language. Consider the following points.
+You might be asking why we are using a spreadsheet program rather than a handheld calculator, dedicated statistics package, or a programming language. Consider the following points.
 
++ A handheld calculator would help you with solving problems to pass a class, but **isn't practical** for applications in the real world.
 + Spreadsheets are **ubiquitous**. Excel is installed on the vast majority of workplace computers, and Google Sheets is freely available to anyone with a Google account. You are unlikely to find yourself in a context — academic or professional — where a spreadsheet tool is unavailable.
 + **No installation or setup is required.** Unlike programming languages, you can open a spreadsheet and start entering data immediately. This makes it easy to explore ideas quickly.
 + Spreadsheets are **visual and interactive**. You can see your data, your formulas, and your results all at once. Being able to *see* your data can make it easier to work with.
-+ **Most of the statistical ideas in this course** — means, standard deviations, proportions, confidence intervals, hypothesis tests — can be computed directly in a spreadsheet using built-in functions, without writing a single line of traditional code.
++ Most of the statistical ideas in this course — means, standard deviations, proportions, confidence intervals, hypothesis tests — **can be computed directly in a spreadsheet** using built-in functions, without writing a single line of traditional code.
 
-That said, spreadsheets do have limitations. They are not ideal for very large datasets, complex automation, or reproducible research pipelines. They are also not transparent, in that they can hide flawed components of an analysis behind a cell that will remain undiscovered unless a reviewer intentionally investigates the formula behind the cell (here's [a fairly famous example from the field of economics](https://theconversation.com/the-reinhart-rogoff-error-or-how-not-to-excel-at-economics-13646){target="_blank"}). As you advance in your studies or career you may encounter situations where a programming language is the better tool. For now, though, a spreadsheet is an excellent environment for learning and practicing statistics.
+That said, spreadsheets do have limitations. They are not ideal for very large datasets, complex automation, or reproducible research pipelines. They are also not transparent, because they can hide flawed components of an analysis behind a cell that will remain undiscovered unless a reviewer intentionally investigates the formula behind the cell (here's [a fairly famous example from the field of economics](https://theconversation.com/the-reinhart-rogoff-error-or-how-not-to-excel-at-economics-13646){target="_blank"}). As you advance in your studies or career you may encounter situations where a programming language is the better tool. For now, though, a spreadsheet is an excellent environment for learning and practicing statistics.
 
 ## A Few Warnings
 
 Working in a spreadsheet can occasionally be frustrating. Here are a few things to watch out for.
 
 + **Spelling and capitalization count in function names.** If you get an error, check your spelling first.
-+ **Every formula must begin with "`=`".** If you type `SQRT(9)` without the equals sign, the spreadsheet treats it as plain text rather than a calculation.
++ **Every formula must begin with an equal sign (`=`).** If you type `SQRT(9)` without the equals sign, the spreadsheet treats it as plain text rather than a calculation.
 + **Be careful with cell references.** If you move or delete a cell that another formula refers to, your results may change unexpectedly. We will discuss this more when we get to *relative reference* and *absolute reference*.
 + **Ask for help when you need it.** Both Excel and Google Sheets have built-in help — you can search for any function name directly in the help menu. Online resources like the [Microsoft Support site](https://support.microsoft.com/en-us/excel){target="_blank"} and [Google Sheets Help](https://support.google.com/docs/topic/9054603){target="_blank"} are excellent references.
 + If you find yourself frustrated, take a break. A fresh set of eyes can often reveal an error that was hiding from you.
 
 ## Getting Oriented: The Spreadsheet Interface
 
-Before we start calculating, let's make sure you are comfortable with the basic layout of a spreadsheet.
+Before we start calculating, let's make sure you are comfortable with the basic layout of a spreadsheet. Have your spreadsheet open with you while you work through the rest of this activity.
 
 :::{.callout-tip}
 ## Key Parts of the Spreadsheet Interface
 
 + **Cells** are the individual boxes that make up the grid. Each cell has an address made up of a column letter and a row number — for example, **A1** is the cell in the first column, first row.
-+ **Columns** run vertically and are labeled with letters (A, B, C, …).
-+ **Rows** run horizontally and are labeled with numbers (1, 2, 3, …).
-+ **The formula bar** sits above the grid and shows the contents of whichever cell is currently selected. When a cell contains a formula, the formula bar shows the formula (e.g. `=2+3`) even though the cell itself displays the result (e.g. `5`).
++ **Columns** run vertically and are labeled with letters (A, B, C, $\cdots$).
++ **Rows** run horizontally and are labeled with numbers (1, 2, 3, $\cdots$).
++ **The formula bar** starts with an $fx$ and sits above the grid and shows the contents of whichever cell is currently selected. When a cell contains a formula, the formula bar shows the formula (e.g. `=2+3`) even though the cell itself displays the result (e.g. `5`).
 + **The Name Box** is the small box to the left of the formula bar that shows the address of the selected cell (e.g. `A1`). You can also click it and type a cell address to navigate directly to that cell.
 :::
 
@@ -247,7 +248,7 @@ gradethis::grade_this({
 })
 ```
 
-Spreadsheets also have many built-in functions for operations beyond simple arithmetic. For example, the `SQRT()` function will calculate the square root of a number. Typing "`=SQRT(16)`" into a cell and hitting the return key will result in the value `4` being displayed in that cell. We'll encounter more built-in functions throughout the coming activities.
+Spreadsheets also have many built-in functions for operations beyond simple arithmetic. For example, the `SQRT()` function will calculate the square root of a number. Typing `=SQRT(16)` into a cell and hitting the return key will result in the value `4` being displayed in that cell. We'll encounter more built-in functions throughout the coming activities.
 
 ### Grouping with Parentheses
 
@@ -370,7 +371,7 @@ gradethis::grade_this({
 
 ### Relative and Absolute Cell References
 
-When you copy a formula from one cell to another, the spreadsheet *adjusts* the cell references automatically. For example, if cell **C1** contains `=B1*2` and you copy that formula down to **C2**, it becomes `=B2*2`. This is called a **relative reference** — the reference shifts to match the new position.
+When you copy a formula from one cell to another, the spreadsheet *adjusts* the cell references automatically. For example, if cell **C1** contains `=B1*2` and you copy that formula down to **C2**, it becomes `=B2*2` (try it!). This is called a **relative reference** — the reference shifts to match the new position.
 
 Sometimes, however, you want a reference to *stay fixed* no matter where you copy the formula. This is called an **absolute reference** and is written by adding dollar signs: `$B$1` always refers to cell B1, regardless of where the formula is copied.
 
@@ -437,7 +438,7 @@ gradethis::grade_this({
 })
 ```
 
-Note that if you click into the cell **D2** and drag the solid square in the lower-right corner of the cell down, you'll get the results of the same calculation over and over again. If you try this same thing, but omit the dollar signs from both references to the cell `D1` in your formula, you'll see that the cell reference locations update and the results of your formula change from one row to the next. Don't forget to update the formulas in the cells below `D2` by clicking and dragging again.
+Note that if you click into the cell **D2** and drag the solid indicator in the lower-right corner of the cell down to cells below, you'll get the results of the same calculation over and over again. If you try this same thing, but omit the dollar signs from both references to the cell `D1` in your formula, you'll see that the cell reference locations update and the results of your formula change from one row to the next. Don't forget to update the formulas in the cells below `D2` by clicking and dragging again.
 
 ## Working with Ranges and Lists of Values
 
@@ -488,8 +489,8 @@ Check out the data table containing data on 53,940 diamonds in the tab labeled `
 A few useful keyboard shortcuts for working with data tables:
 
 + **Ctrl + End** (Windows) or **Cmd + End** (Mac) — jump to the last cell containing data, giving you a quick sense of how large the table is.
-+ **Ctrl + Arrow key** — jump to the last non-empty cell in the current direction.
-+ **Ctrl + Shift + End** — select from the current cell to the last data cell (useful for selecting an entire table quickly).
++ **Ctrl + Arrow key** (Windows) or **Cmd + Arrow key** (Mac) — jump to the last non-empty cell in the current direction.
++ **Ctrl + Shift + End** (Windows) or **Cmd + Shift + End** (Mac) — select from the current cell to the last data cell (useful for selecting an entire table quickly).
 + Clicking a **column header letter** (e.g. the "A" above the grid) selects the entire column.
 + Clicking a **row number** selects the entire row.
 :::

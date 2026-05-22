@@ -164,7 +164,7 @@ Note, much of this notebook is inspired by [Chapter 3 of R for Data Science](htt
 * Graphics need adjectives (attributes attached to the visualized data, called `aesthetics`)
 * Graphics need context (a title, scales, axes, legends, etc.)
 
-In this workbook we explore `ggplot2` and think about graphics in terms of their layered grammar. 
+In this workbook we explore `{ggplot2}` and think about graphics in terms of their layered grammar. 
 
 **A Note on Plots:** Choosing an appropriate plot is extremely important in data visualization. Some plots don't make sense for certain variable types. For example, a scatterplot in the case of two-categorical predictors is quite a silly choice -- the only thing this plot tells us is that every combination of fuel type and engine brand exists in our dataset. We have no idea which combinations are most or least popular. 
 
@@ -1263,7 +1263,7 @@ mpg |>
        title = "Distribution of Transmission Types")
 ```
 
-From the plot above we can tell that there are about twice as many vehicles in our dataset with automatic transmissions as there are with manual transmissions. Create a similar plot below, which fills the bars by the `drv` variable.
+From the plot above we can tell that there are about twice as many vehicles in our dataset with automatic transmissions as there are with manual transmissions. Create a similar plot below, which fills the bars by the `drv` variable. Include the same title and axis labels as the plot above has.
 
 ```{webr}
 #| exercise: trans2-fill-class
@@ -1607,6 +1607,7 @@ data_frame_name |>
 ```
 
 + **Aesthetics** (`aes()`) map variables from your data to visual properties of the plot (position, color, fill, size, shape). Properties that don't depend on the data go *outside* `aes()`.
+    + The plot type (geom type) determines which aesthetics are required and available.
 + **Additional dimensions** can be added via color, fill, size, shape, or faceting — but more information in a single plot can make it harder to read. Sometimes separate faceted plots communicate more clearly than a single dense plot.
 + **Mosaic plots** are a powerful choice for two categorical variables — they simultaneously convey both the marginal distributions and the conditional distributions within each group.
 :::

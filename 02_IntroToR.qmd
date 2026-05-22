@@ -279,7 +279,6 @@ Use the code block below to experiment.
 #| exercise: simple-operations
 #| eval: true
 #| caption: Ungraded, Exploration Only
-
 #As you've seen, we can use R to add, subtract,
 #multiply, and divide
 
@@ -355,7 +354,7 @@ gradethis::grade_this({
 })
 ```
 
-R has built in functions to handle operations like the square root (`sqrt()`), logarithm (`log()`), etc. Google is your friend here -- if you need to carry out an operation, do a quick internet search to discover how you can call it in R.
+R has built in functions to handle operations like the square root (`sqrt()`), logarithm (`log()`), etc. A web search can be helpful here -- if you need to carry out an operation, do a quick internet search to discover how you can call it in R.
 
 We can also piece together more complicated expressions in R by making use of parentheses `()` for grouping. Beware that none of the other brackets (square brackets or curly braces) may be used for grouping since they have special meaning in R -- we'll see them in action later in our course. For now, use the code block below to evaluate $\displaystyle{\frac{54 - 50}{8/\sqrt{20}}}$.
 
@@ -455,7 +454,6 @@ Add parentheses to the expression below so that it evaluates to `1`.
 ```{webr}
 #| exercise: parens-exercise
 #| eval: true
-
 8 - 6 / 2 + 5*3*4 - 12
 ```
 
@@ -539,7 +537,6 @@ In R we can define objects via the `<-` operator. For example, we can define the
 ```{webr}
 #| exercise: redefine
 #| eval: true
-
 x <- 4
 ```
 
@@ -735,7 +732,7 @@ numVec1 + numVec2
 numVec1 + numVec3
 ```
 
-While we are unlikely to encounter these issues in our course, it is worth calling out here.
+While we are unlikely to encounter these issues in our course, it is still worth calling out here.
 :::
 
 ## Data Frames
@@ -757,7 +754,6 @@ We can call a column of a dataframe in several different ways. For example, `dia
 ```{webr}
 #| exercise: column-access
 #| eval: true
-
 diamonds |>
   select(cut)
 ```

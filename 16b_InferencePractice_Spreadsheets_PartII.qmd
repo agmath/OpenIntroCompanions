@@ -123,7 +123,7 @@ This is a continuation of the Topic 16 (Part A) activity. This second of three p
 All calculations in this activity should be done in your spreadsheet. Open a blank sheet now and keep it alongside this activity — label each calculation clearly so you can follow your own work.
 
 + If you are a Google Sheets user, [open a blank Google Sheet](https://sheets.new){target="_blank"}
-+ If you are an Excel user, open an empty workbook on your computer or [create a blank workbook in Excel online](https://office.live.com/start/Excel.aspx)
++ If you are an Excel user, open an empty workbook on your computer or [create a blank workbook in Excel online](https://office.live.com/start/Excel.aspx){target="_blank"}
 :::
 
 ## Inference Practice

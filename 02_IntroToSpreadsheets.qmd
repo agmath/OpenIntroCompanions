@@ -538,7 +538,7 @@ cat(hash)
 :::{.callout-tip}
 ## Main Takeaways
 
-+ A spreadsheet is organized as a grid of **cells**, each identified by a column letter and row number (e.g. **B3**). Columns are variables, rows are observations.
++ A spreadsheet is organized as a grid of **cells**, each identified by a column letter and row number (e.g. **B3**).
 + Every **formula** begins with `=`. Without it, the spreadsheet treats your input as plain text.
 + Spreadsheets follow standard **order of operations** — use parentheses `()` to control grouping, just as you would in any mathematical expression.
 + **Built-in functions** like `SQRT()`, `AVERAGE()`, `SUM()`, and `STDEV()` allow you to carry out complex calculations without writing them from scratch.
@@ -547,7 +547,7 @@ cat(hash)
   + **Absolute references** (e.g. `$B$1`) stay fixed when copied — use these for constants shared across many formulas.
 + A **range** (e.g. `A1:A6`) refers to a block of cells and is the spreadsheet equivalent of a list or vector of values.
 + A **data table** in a spreadsheet has the properties that columns are variables, rows are observations, and the first row contains column headers.
-+ Spreadsheets are powerful and accessible, but require care — silent errors from shifted references or accidentally expanded ranges are common pitfalls.
++ Spreadsheets are powerful and accessible, but require care — silent errors from shifted references or accidentally expanded ranges are common pitfalls that can result in erroneous values.
 :::
 
 :::{.callout-tip}

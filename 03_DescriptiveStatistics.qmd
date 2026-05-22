@@ -368,10 +368,11 @@ gradethis::grade_this({
 })
 ```
 
-3. Use the `median()` function and the code block below to compute the median of each of the samples and then answer the question that follows. (*Note.* There are several ways to obtain the medians, so this code block won't evaluate you as correct/incorrect.)
+3. Use the `median()` function and the code block below to compute the median of each of the samples and then answer the question that follows.
 
 ```{webr}
 #| exercise: find-medians
+#| caption: Ungraded, Exploratory Only
 ______
 ```
 
@@ -577,7 +578,6 @@ The following code block finds the mean and median for `Worker A` — execute th
 
 ```{webr}
 #| exercise: my-data
-
 mean(c(23, 24, 25, 26, 27))
 median(c(23, 24, 25, 26, 27))
 ```
@@ -819,7 +819,6 @@ In R we can easily compute the standard deviation with the function `sd()`, and 
 ```{webr}
 #| exercise: compute-sd-iqr
 #| caption: Ungraded, Exploration Only
-
 print("Standard Deviations:")
 samples |>
   summarize_all(sd)
@@ -971,7 +970,6 @@ We can pipe our data frame into the `count()` function with the column we'd like
 ```{webr}
 #| exercise: summarize-cut
 #| caption: Ungraded, Exploration Only
-
 cutSamples |>
   count(Sample_One)
 

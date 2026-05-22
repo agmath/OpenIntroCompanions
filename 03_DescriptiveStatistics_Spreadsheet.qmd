@@ -797,20 +797,20 @@ The most flexible way to produce frequency and relative frequency summaries in a
 **In Google Sheets:**
 
 1. Click anywhere inside your data (for example, the Sample One cut column, including its header).
-2. Go to **Insert → Pivot table**. Choose to place it in a new sheet or an existing sheet.
+2. Go to **Insert → Pivot table**. Choose to place it in a new sheet.
 3. In the Pivot table editor on the right:
    - Under **Rows**, click **Add** and select your column (e.g. `Sample_One`).
    - Under **Values**, click **Add**, select the same column, and set **Summarize by** to `COUNTA`.
 4. Your pivot table now shows the count of each cut category.
-5. To add a relative frequency column, click a blank cell next to your pivot table and divide each count by the total: for example, if the counts are in cells `B2:B6`, then type the formula `=B2/SUM(B$2:B$6)`. Use an absolute row reference on the `SUM` range so it doesn't shift when you fill the formula down.
+5. To add a relative frequency column, click a blank cell next to your pivot table and divide each count by the total: for example, if the counts are in cells `B2:B5` and the grand total is in cell `B6`, then type the formula `=B2/SUM(B$2:B$5)` or `=B2/$B$6`. Use an absolute row reference on the denominator so it doesn't shift when you fill the formula down.
 
 **In Excel:**
 
 1. Click anywhere inside your data.
-2. Go to **Insert → PivotTable**. Choose where to place it and click **OK**.
+2. Go to **Insert → PivotTable**. Confirm that you want to place the table in a new sheet and click **OK**.
 3. In the PivotTable Fields pane, drag your column name (e.g. `Sample_One`) to both the **Rows** area and the **Values** area.
 4. The Values area will default to `Count of Sample_One` — that is what you want.
-5. To add a relative frequency column, click a blank cell next to your pivot table and divide each count by the total: for example, if the counts are in cells `B2:B6`, then type the formula `=B2/SUM(B$2:B$6)`. Use an absolute row reference on the `SUM` range so it doesn't shift when you fill the formula down.
+5. To add a relative frequency column, click a blank cell next to your pivot table and divide each count by the total: for example, if the counts are in cells `B2:B5` and the grand total is in cell `B6`, then type the formula `=B2/SUM(B$2:B$5)` or `=B2/$B$6`. Use an absolute row reference on the denominator so it doesn't shift when you fill the formula down.
 :::
 
 **Try it now.** Go back to your spreadsheet and create a pivot table summarizing the cut categories in `Sample_One`. Then add a relative frequency column. Repeat for `Sample_Two` and `Sample_Three` and compare the distributions across samples.
@@ -848,8 +848,6 @@ p4 <- ggplot(data = diamonds) +
 
 (p1 + p2) / (p3 + p4)
 ```
-
-We'll see how to create plots like these in the next activity.
 
 ## Submit
 
@@ -977,11 +975,15 @@ cat(hash)
 
 :::
 
+<!--
+
 :::{.callout-tip}
 ## Looking Ahead
 
 In the next activity we'll shift from summarizing data numerically to visualizing it. We'll learn how to construct histograms, boxplots, and bar charts. In addition to syntax and structure, you'll develop intuition for choosing the right visualization for a given variable type(s) and question.
 :::
+
+-->
 
 ---
 

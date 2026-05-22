@@ -203,6 +203,14 @@ ok_checkbox(q1, "3,4,5");
 
 :::
 
+:::{.callout-tip}
+## The `month` Variable as Non-Numeric
+
+The `month` variable being non-numeric here may have tripped you up. It's better to consider `month` as categorical with ordered categories (sometimes called an *ordinal* variable). This is because June (month 6) is not $3\times$ February (month 2). Additionally, December (month 12) is not very far apart from January (month 1), as their encodings would suggest.
+
+There are transformations that would allow us to encode `month` as numeric, but they're beyond the scope of this activity.
+:::
+
 :::{.callout-caution}
 ## Check Your Understanding: Categorical Variables
 
@@ -598,11 +606,13 @@ A variation on clustering is called ***two-stage*** or ***multi-stage*** samplin
 
 ::::
 
-The ***convenience sample*** is the most commonly used sampling method. Unfortunately, it is also the worst. When researchers sample from individuals they have "easy access" to, they are conducting a convenience sample. There are always hidden biases in these samples. [Here's a famous example](https://youtu.be/JwZo28RKdvU){target="_blank"} in which the Literary Digest incorrectly predicted a landslide victory for Alf Landon over FDR in the 1936 US Presidential Election. In addition, much of the error in predicting the results of the 2016 presidential election may be attributable to convenience sampling.
+The ***convenience sample*** is the most commonly used sampling method. Unfortunately, it is also the worst. When researchers sample from individuals they have "easy access" to, they are conducting a convenience sample. There are always hidden biases in these samples. [Here's a famous example](https://youtu.be/JwZo28RKdvU){target="_blank"} in which the Literary Digest incorrectly predicted a landslide victory for Alf Landon over FDR in the 1936 US Presidential Election. 
+
+In addition to other issues such as *under-representation* and *non-response bias*, the 2016 presidential election highlights how relying on non-representative samples, including convenience samples, can lead to inaccurate inferences.
 
 ## Experimental Design
 
-**Experiment versus Observational Study**: Beyond just sampling, there are multiple methods for collecting data. We can just *observe* what happens naturally (without manipulating any conditions) or we can run an *experiment*. In experiments we manipulate one or more conditions, utilizing a control and treatment group(s). The advantage to an experiment is that we can infer cause and effect relationships (this is extremely important in medical studies), but in observational studies we can only discuss an association between variables.
+**Experiment versus Observational Study**: Beyond just sampling, there are multiple methods for collecting data. We can just *observe* what happens naturally (without manipulating any conditions) or we can run an *experiment*. In experiments, we manipulate one or more conditions, utilizing a control group and at least one treatment group. The advantage to an experiment is that we can infer cause and effect relationships (this is extremely important in medical studies), but in observational studies we can only discuss an association between variables.
 
 **Explanatory versus Response Variables**: Typically in statistics we will identify a question (a claim about a response variable) with respect to a population. We will take a representative sample of that population and collect observed responses as well as observations on other variables (perhaps age, level of formal education, political affiliation, etc). These additional variables are called *explanatory variables*. In general, explanatory variables are variables which we expect *may be associated with* the response variable.
 

@@ -106,7 +106,7 @@ This activity provides an introduction to discrete probability, including basic 
   btn.onclick = () => {
     if (confirm('Reset all responses for this activity? This cannot be undone.')) {
       Object.keys(localStorage)
-        .filter(k => k.endsWith('_selected_t5') || k.endsWith('_correct_t5') || k.endsWith('_result_t5'))
+        .filter(k => k.endsWith('_selected_t5e') || k.endsWith('_correct_t5e') || k.endsWith('_result_t5e'))
         .forEach(k => localStorage.removeItem(k));
       location.reload();
     }
@@ -143,7 +143,7 @@ There are entire courses devoted to probability -- we will only cover probabilit
 **Activity Objectives:** After completing this workbook you should be able to:
 
 + Define, discuss, and interpret the probability of an event as its likelihood.
-+ Apply fundamental counting principles and the notion of independence to compute the probability associated with the occurrence of a sequence of events.
++ Apply fundamental counting principles and the notion of independence to compute the probability associated with the occurrence of a sequence of independent events.
 + Use the definition of binomial experiments to identify scenarios to which the binomial distribution can be applied. 
 + Apply the binomial distribution in appropriate scenarios to find probabilities associated with specified outcomes using spreadsheet software.
 + Given a binomial experiment, compute the expected number of successful outcomes as well as the standard deviation for number of successes.
@@ -175,13 +175,13 @@ viewof q1 = Inputs.radio(
     ["5 / 6", 6],
     ["6 / 6", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected_t5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected_t5e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q1_selected_t5", JSON.stringify(q1));
-  localStorage.setItem("q1_correct_t5", "2");
-  localStorage.setItem("q1_result_t5", q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q1_selected_t5e", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t5e", "2");
+  localStorage.setItem("q1_result_t5e", q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q1, "2");
 ```
@@ -206,13 +206,13 @@ viewof q2 = Inputs.radio(
     ["5 / 6", 6],
     ["6 / 6", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected_t5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q2_selected_t5e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q2_selected_t5", JSON.stringify(q2));
-  localStorage.setItem("q2_correct_t5", "4");
-  localStorage.setItem("q2_result_t5", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q2_selected_t5e", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t5e", "4");
+  localStorage.setItem("q2_result_t5e", q2 === null ? "unattempted" : (q2 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q2, "4");
 ```
@@ -232,13 +232,13 @@ viewof q3 = Inputs.radio(
     ["The probability of rolling a total of two.", 1],
     ["The probability of rolling a total of five.", 2]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected_t5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected_t5e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q3_selected_t5", JSON.stringify(q3));
-  localStorage.setItem("q3_correct_t5", "2");
-  localStorage.setItem("q3_result_t5", q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q3_selected_t5e", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t5e", "2");
+  localStorage.setItem("q3_result_t5e", q3 === null ? "unattempted" : (q3 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q3, "2");
 ```
@@ -273,13 +273,13 @@ viewof q4 = Inputs.radio(
     ["5 / 6", 6],
     ["6 / 6", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected_t5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected_t5e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q4_selected_t5", JSON.stringify(q4));
-  localStorage.setItem("q4_correct_t5", "6");
-  localStorage.setItem("q4_result_t5", q4 === null ? "unattempted" : (q4 == 6 ? "correct" : "incorrect"));
+  localStorage.setItem("q4_selected_t5e", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t5e", "6");
+  localStorage.setItem("q4_result_t5e", q4 === null ? "unattempted" : (q4 == 6 ? "correct" : "incorrect"));
 }
 ok_response(q4, "6");
 ```
@@ -300,13 +300,13 @@ viewof q5 = Inputs.radio(
     ["1 / 2", 2],
     ["2 / 2", 3]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5_selected_t5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected_t5e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q5_selected_t5", JSON.stringify(q5));
-  localStorage.setItem("q5_correct_t5", "2");
-  localStorage.setItem("q5_result_t5", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q5_selected_t5e", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t5e", "2");
+  localStorage.setItem("q5_result_t5e", q5 === null ? "unattempted" : (q5 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q5, "2");
 ```
@@ -328,7 +328,9 @@ Use your spreadsheet to compute the probability that in a single roll of a fair 
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Use the probabilities you identified in the two questions above. You can multiply values together in a spreadsheet cell by typing `=` followed by the values separated by `*`. For example, typing `=(1/4)*(1/3)` and pressing Enter gives the product of those two fractions.
+Use the probabilities you identified in the two questions above. You can multiply values together in a spreadsheet cell by typing `=` followed by the values separated by `*`. 
+
+As an example, typing `=(1/4)*(1/3)` and pressing Enter gives the product of those two fractions.
 
 :::
 :::
@@ -346,7 +348,16 @@ The flip of a coin and roll of a fair die are independent events, so we can mult
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-In a blank cell, type `=(5/6)*(1/2)` and press Enter. The result is the probability of rolling at least a two **and** flipping tails.
+In a blank cell, type `=(___)*(___)` -- filling in the blanks with your probabilities -- and press Enter. The result is the probability of rolling at least a two **and** flipping tails.
+
+:::
+:::
+
+:::{.hint exercise="prob-a-and-b"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+You can obtain the probability by typing `=(5/6)*(1/2)` in an empty cell on your spreadsheet and pressing Enter. The result is the probability of rolling at least a two **and** flipping tails.
 
 :::
 :::
@@ -394,13 +405,13 @@ viewof q6 = Inputs.radio(
     ["0.80", 6],
     ["1", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6_selected_t5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected_t5e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q6_selected_t5", JSON.stringify(q6));
-  localStorage.setItem("q6_correct_t5", "3");
-  localStorage.setItem("q6_result_t5", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q6_selected_t5e", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t5e", "3");
+  localStorage.setItem("q6_result_t5e", q6 === null ? "unattempted" : (q6 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q6, "3");
 ```
@@ -426,13 +437,13 @@ viewof q7 = Inputs.radio(
     ["0.998", 7],
     ["1", 8]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7_selected_t5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected_t5e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q7_selected_t5", JSON.stringify(q7));
-  localStorage.setItem("q7_correct_t5", "2");
-  localStorage.setItem("q7_result_t5", q7 === null ? "unattempted" : (q7 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q7_selected_t5e", JSON.stringify(q7));
+  localStorage.setItem("q7_correct_t5e", "2");
+  localStorage.setItem("q7_result_t5e", q7 === null ? "unattempted" : (q7 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q7, "2");
 ```
@@ -476,13 +487,13 @@ viewof q8 = Inputs.radio(
     ["0.998", 7],
     ["1", 8]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8_selected_t5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected_t5e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q8_selected_t5", JSON.stringify(q8));
-  localStorage.setItem("q8_correct_t5", "5");
-  localStorage.setItem("q8_result_t5", q8 === null ? "unattempted" : (q8 == 5 ? "correct" : "incorrect"));
+  localStorage.setItem("q8_selected_t5e", JSON.stringify(q8));
+  localStorage.setItem("q8_correct_t5e", "5");
+  localStorage.setItem("q8_result_t5e", q8 === null ? "unattempted" : (q8 == 5 ? "correct" : "incorrect"));
 }
 ok_response(q8, "5");
 ```
@@ -524,13 +535,13 @@ viewof q9 = Inputs.radio(
     ["0.20", 5],
     ["1.2", 6]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9_selected_t5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q9_selected_t5e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q9_selected_t5", JSON.stringify(q9));
-  localStorage.setItem("q9_correct_t5", "3");
-  localStorage.setItem("q9_result_t5", q9 === null ? "unattempted" : (q9 == 3 ? "correct" : "incorrect"));
+  localStorage.setItem("q9_selected_t5e", JSON.stringify(q9));
+  localStorage.setItem("q9_correct_t5e", "3");
+  localStorage.setItem("q9_result_t5e", q9 === null ? "unattempted" : (q9 == 3 ? "correct" : "incorrect"));
 }
 ok_response(q9, "3");
 ```
@@ -583,13 +594,13 @@ viewof q10 = Inputs.radio(
     ["0.64", 7],
     ["None of These", 8]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10_selected_t5") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q10_selected_t5e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q10_selected_t5", JSON.stringify(q10));
-  localStorage.setItem("q10_correct_t5", "8");
-  localStorage.setItem("q10_result_t5", q10 === null ? "unattempted" : (q10 == 8 ? "correct" : "incorrect"));
+  localStorage.setItem("q10_selected_t5e", JSON.stringify(q10));
+  localStorage.setItem("q10_correct_t5e", "8");
+  localStorage.setItem("q10_result_t5e", q10 === null ? "unattempted" : (q10 == 8 ? "correct" : "incorrect"));
 }
 ok_response(q10, "8");
 ```
@@ -625,7 +636,7 @@ The `BINOM.DIST()` function takes four arguments, in order:
 3. **Probability of success** ($p$) — the probability of success on a single trial
 4. **Cumulative** — use `FALSE` for *exactly* $k$ successes; use `TRUE` for *at most* $k$ successes
 
-For example, `=BINOM.DIST(2, 7, 0.5, FALSE)` gives the probability of *exactly* 2 heads in 7 coin flips.
+For example, `=BINOM.DIST(2, 7, 0.5, FALSE)` gives the probability of *exactly* 2 heads in 7 coin flips (since the probability of flipping heads is 0.50).
 :::
 
 :::{.callout-tip}
@@ -919,7 +930,7 @@ You want to subtract the probability of outcomes that are *too small* — that i
 :::{.callout-note collapse="false"}
 ## Hint 4
 
-The attempt `=1 - BINOM.DIST(11, 18, 0.34, TRUE)` is wrong — why? It removes the probability of at most 11 students, leaving only the probability of 12 or more. We wanted 11 or more.
+The attempt `=1 - BINOM.DIST(11, 18, 0.34, TRUE)` is wrong — why?
 
 :::
 :::
@@ -927,6 +938,15 @@ The attempt `=1 - BINOM.DIST(11, 18, 0.34, TRUE)` is wrong — why? It removes t
 :::{.hint exercise="binom-assignments-ex4"}
 :::{.callout-note collapse="false"}
 ## Hint 5
+
+The attempt `=1 - BINOM.DIST(11, 18, 0.34, TRUE)` is wrong — why? It removes the probability of at most 11 students, leaving only the probability of 12 or more. We wanted 11 or more.
+
+:::
+:::
+
+:::{.hint exercise="binom-assignments-ex4"}
+:::{.callout-note collapse="false"}
+## Hint 6 (Solved)
 
 Use `10` as the first argument instead. In your spreadsheet, type `=1 - BINOM.DIST(10, 18, 0.34, TRUE)` and press Enter.
 
@@ -1283,8 +1303,8 @@ cat(hash)
 + If $A$ and $B$ are **independent events**, then $\mathbb{P}[A \text{ and } B] = \mathbb{P}[A] \cdot \mathbb{P}[B]$.
 + A **binomial experiment** satisfies: (1) $n$ repeated trials, (2) each trial has two possible outcomes, and (3) trials are independent with constant probability of success $p$.
 + If $X$ counts successes in a binomial experiment with $n$ trials and success probability $p$, use `BINOM.DIST()` in your spreadsheet:
-  + `=BINOM.DIST(k, n, p, FALSE)` — probability of **exactly** $k$ successes
-  + `=BINOM.DIST(k, n, p, TRUE)` — probability of **at most** $k$ successes
+  + `=BINOM.DIST(k, n, p, FALSE)` — gives the probability of **exactly** $k$ successes
+  + `=BINOM.DIST(k, n, p, TRUE)` — gives the probability of **at most** $k$ successes
   + Draw a picture to help you see how to combine these to handle "at least", "more than", or "between" scenarios. These two forms of `BINOM.DIST()` are sufficient to handle any binomial probability scenario — the challenge is identifying how to combine them.
 + The **expected number** of successes is $\mathbb{E}[X] = n \cdot p$.
 + The **standard deviation** of number of successes is $s_X = \sqrt{n \cdot p \cdot (1 - p)}$. Use `=SQRT(n * p * (1 - p))` in your spreadsheet.

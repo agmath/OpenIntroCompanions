@@ -53,7 +53,7 @@ library(ggplot2)
 library(gradethis)
 library(patchwork)
 
-theme_set(theme_bw())
+theme_set(theme_bw(base_size = 10))
 
 set.seed(241)
 
@@ -170,7 +170,7 @@ This activity covers working with normally distributed data, including the calcu
   btn.onclick = () => {
     if (confirm('Reset all responses for this activity? This cannot be undone.')) {
       Object.keys(localStorage)
-        .filter(k => k.endsWith('_selected_t6') || k.endsWith('_correct_t6') || k.endsWith('_result_t6'))
+        .filter(k => k.endsWith('_selected_t6e') || k.endsWith('_correct_t6e') || k.endsWith('_result_t6e'))
         .forEach(k => localStorage.removeItem(k));
       location.reload();
     }
@@ -368,7 +368,7 @@ ggplot(NULL, aes(c(-3, 3))) +
 Unlike the binomial distribution, where the distinction between *at least* and *more than* required careful adjustment, the probability that a continuous variable $X$ takes on any prescribed value exactly is $0$ (that is, $\mathbb{P}\left[X = k\right] = 0$). This means there is no difference between $\mathbb{P}\left[X \leq k\right]$ and $\mathbb{P}\left[X < k\right]$. Similarly, there is no difference between $\mathbb{P}\left[X \geq k\right]$ and $\mathbb{P}\left[X > k\right]$.
 :::
 
-Sometimes it is useful to be able to estimate probabilities or to estimate the proportion of a population that falls into a range, as long as the population is nearly normal. A convenient set of rough estimates come from the *Empirical Rule*.
+Sometimes it is useful to be able to estimate probabilities or to estimate the proportion of a population that falls into a range. As long as the population is nearly normal, a convenient set of rough estimates come from the *Empirical Rule*.
 
 :::{.callout-tip}
 ## The Empirical Rule
@@ -399,13 +399,13 @@ viewof q1 = Inputs.radio(
     ["Nearly 100%", 4],
     ["It is impossible to tell", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q1_selected_t6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q1_selected_t6e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q1_selected_t6", JSON.stringify(q1));
-  localStorage.setItem("q1_correct_t6", "2");
-  localStorage.setItem("q1_result_t6", q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect"));
+  localStorage.setItem("q1_selected_t6e", JSON.stringify(q1));
+  localStorage.setItem("q1_correct_t6e", "2");
+  localStorage.setItem("q1_result_t6e", q1 === null ? "unattempted" : (q1 == 2 ? "correct" : "incorrect"));
 }
 ok_response(q1, "2");
 ```
@@ -430,13 +430,13 @@ viewof q2 = Inputs.checkbox(
     ["95", 6],
     ["100", 7]
   ]),
-  {value: JSON.parse(localStorage.getItem("q2_selected_t6") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q2_selected_t6e") ?? "[]") ?? []}
 );
 
 {
-  localStorage.setItem("q2_selected_t6", JSON.stringify(q2));
-  localStorage.setItem("q2_correct_t6", "3,6");
-  localStorage.setItem("q2_result_t6", (!q2 || q2.length === 0) ? "unattempted" : (q2.toString() === "3,6" ? "correct" : "incorrect"));
+  localStorage.setItem("q2_selected_t6e", JSON.stringify(q2));
+  localStorage.setItem("q2_correct_t6e", "3,6");
+  localStorage.setItem("q2_result_t6e", (!q2 || q2.length === 0) ? "unattempted" : (q2.toString() === "3,6" ? "correct" : "incorrect"));
 }
 ok_checkbox(q2, "3,6");
 ```
@@ -464,7 +464,7 @@ An observation's $z$-score is simply the number of standard deviations it falls 
 
 The $z$-score formula is simply arithmetic — no special spreadsheet function is required. In a blank cell, type `=` followed by the formula $(x - \mu) / \sigma$ using the appropriate values.
 
-For example, to compute Bob's $z$-score, type `=(1400-1068)/210` and press Enter. Compute Sally's $z$-score the same way using her ACT score (31), the ACT mean (20.8), and the ACT standard deviation (5.8).
+For example, to compute Bob's $z$-score, find an empty cell, type `=(1400-1068)/210` into it, and press Enter. Compute Sally's $z$-score the same way using her ACT score (31), the ACT mean (20.8), and the ACT standard deviation (5.8).
 
 Be sure to label each result so you remember which $z$-score belongs to which student.
 :::
@@ -485,13 +485,13 @@ viewof q3 = Inputs.radio(
     ["1.76", 4],
     ["-1.76", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q3_selected_t6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q3_selected_t6e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q3_selected_t6", JSON.stringify(q3));
-  localStorage.setItem("q3_correct_t6", "1");
-  localStorage.setItem("q3_result_t6", q3 === null ? "unattempted" : (q3 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q3_selected_t6e", JSON.stringify(q3));
+  localStorage.setItem("q3_correct_t6e", "1");
+  localStorage.setItem("q3_result_t6e", q3 === null ? "unattempted" : (q3 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q3, "1");
 ```
@@ -514,13 +514,13 @@ viewof q4 = Inputs.radio(
     ["1.76", 4],
     ["-1.76", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q4_selected_t6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q4_selected_t6e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q4_selected_t6", JSON.stringify(q4));
-  localStorage.setItem("q4_correct_t6", "4");
-  localStorage.setItem("q4_result_t6", q4 === null ? "unattempted" : (q4 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q4_selected_t6e", JSON.stringify(q4));
+  localStorage.setItem("q4_correct_t6e", "4");
+  localStorage.setItem("q4_result_t6e", q4 === null ? "unattempted" : (q4 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q4, "4");
 ```
@@ -542,13 +542,13 @@ viewof q5 = Inputs.radio(
     ["Bob, since his score was 1400 and Sally's score was only 31.", 3],
     ["Bob, since the SAT had a larger standard deviation it is a harder exam.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q5_selected_t6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q5_selected_t6e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q5_selected_t6", JSON.stringify(q5));
-  localStorage.setItem("q5_correct_t6", "1");
-  localStorage.setItem("q5_result_t6", q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q5_selected_t6e", JSON.stringify(q5));
+  localStorage.setItem("q5_correct_t6e", "1");
+  localStorage.setItem("q5_result_t6e", q5 === null ? "unattempted" : (q5 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q5, "1");
 ```
@@ -635,7 +635,7 @@ In Excel and Google Sheets, the `NORM.DIST()` function computes the area to the 
 1. The boundary value ($q$)
 2. The mean of the distribution ($\mu$)
 3. The standard deviation ($\sigma$)
-4. `TRUE` — this tells the function to return the cumulative (area) result rather than the height of the curve (you'll **always** use `TRUE` as the last argument to `NORM.DIST()`)
+4. `TRUE` — this tells the function to return the cumulative probability/area rather than the height of the density curve (you'll **always** use `TRUE` as the last argument to `NORM.DIST()`)
 
 So if $X\sim N\left(\mu, \sigma\right)$, then $\mathbb{P}\left[X\leq q\right] \approx$ `=NORM.DIST(q, mean, sd, TRUE)`.
 
@@ -660,13 +660,13 @@ viewof q6 = Inputs.radio(
     ["0.9608", 4],
     ["0.0392", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q6_selected_t6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q6_selected_t6e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q6_selected_t6", JSON.stringify(q6));
-  localStorage.setItem("q6_correct_t6", "1");
-  localStorage.setItem("q6_result_t6", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q6_selected_t6e", JSON.stringify(q6));
+  localStorage.setItem("q6_correct_t6e", "1");
+  localStorage.setItem("q6_result_t6e", q6 === null ? "unattempted" : (q6 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q6, "1");
 ```
@@ -689,13 +689,13 @@ viewof q7 = Inputs.radio(
     ["0.9607", 4],
     ["0.0392", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q7_selected_t6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q7_selected_t6e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q7_selected_t6", JSON.stringify(q7));
-  localStorage.setItem("q7_correct_t6", "4");
-  localStorage.setItem("q7_result_t6", q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect"));
+  localStorage.setItem("q7_selected_t6e", JSON.stringify(q7));
+  localStorage.setItem("q7_correct_t6e", "4");
+  localStorage.setItem("q7_result_t6e", q7 === null ? "unattempted" : (q7 == 4 ? "correct" : "incorrect"));
 }
 ok_response(q7, "4");
 ```
@@ -717,13 +717,13 @@ viewof q8 = Inputs.radio(
     ["Bob, since he scored closer to the mean.", 3],
     ["Bob, since his percentile score was so high even though the standard deviation on the SAT was so large.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q8_selected_t6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q8_selected_t6e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q8_selected_t6", JSON.stringify(q8));
-  localStorage.setItem("q8_correct_t6", "1");
-  localStorage.setItem("q8_result_t6", q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q8_selected_t6e", JSON.stringify(q8));
+  localStorage.setItem("q8_correct_t6e", "1");
+  localStorage.setItem("q8_result_t6e", q8 === null ? "unattempted" : (q8 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q8, "1");
 ```
@@ -759,7 +759,7 @@ In your spreadsheet, compute this probability and enter your result below.
 :::{.callout-note collapse="false"}
 ## Hint 1
 
-Be sure you can answer: "*why does the picture to the right correspond to the probability requested?*" The shaded area is everything to the left of the boundary value — that is exactly what `NORM.DIST()` with `TRUE` computes.
+Be sure you can answer: "*why does the picture to the right correspond to the probability requested?*"
 
 :::
 :::
@@ -768,6 +768,15 @@ Be sure you can answer: "*why does the picture to the right correspond to the pr
 :::{.callout-note collapse="false"}
 ## Hint 2
 
+The shaded area is everything to the left of the boundary value — that is exactly what `NORM.DIST()` with `TRUE` computes.
+
+:::
+:::
+
+:::{.hint exercise="pnorm-ex1"}
+:::{.callout-note collapse="false"}
+## Hint 3
+
 In a blank spreadsheet cell, type `=NORM.DIST(` followed by four arguments separated by commas: the boundary value, the mean, the standard deviation, and `TRUE`. The standard normal distribution has mean 0 and standard deviation 1.
 
 :::
@@ -775,7 +784,7 @@ In a blank spreadsheet cell, type `=NORM.DIST(` followed by four arguments separ
 
 :::{.hint exercise="pnorm-ex1"}
 :::{.callout-note collapse="false"}
-## Hint 3 (Solved)
+## Hint 4 (Solved)
 
 In your spreadsheet, type `=NORM.DIST(___, 0, 1, TRUE)`, where the blank is filled in by `{ojs} boundary1`, and press Enter. Input the result below.
 
@@ -1486,7 +1495,7 @@ ggplot(NULL, aes(c(-3, 3))) +
 
 Recall that SAT scores follow $N\left(\mu = 1068, \sigma = 210\right)$ and ACT scores follow $N\left(\mu = 20.8, \sigma = 5.8\right)$.
 
-**Try It!** In your spreadsheet, use `NORM.INV()` to find the minimum SAT score required to fall in the 95th percentile. Type `=NORM.INV(0.95, 1068, 210)` and press Enter. Then adapt the formula to find the minimum ACT score required to fall into the top 10% of all ACT test takers. Enter your result for the ACT cutoff below.
+**Try It!** In your spreadsheet, you can use `NORM.INV()` to find the minimum SAT score required to fall in the 95th percentile by finding an empty cell and entering `=NORM.INV(0.95, 1068, 210)`. Check the result and then adapt the formula to find the minimum ACT score required to fall into the top 10% of all ACT test takers. Enter your result for the ACT cutoff below.
 
 ```{webr}
 #| exercise: find-percentile
@@ -1560,7 +1569,7 @@ Through this last section you'll work through a set of problems, some of which u
 
 ---
 
-**Practice Problem 1:** The National Vaccine Information Center estimates that 90% of Americans have had chickenpox by the time they reach adulthood. Suppose we take a random sample of `{ojs} chickPoxSampSize` American adults. Answer each of the following:
+**Practice Problem 1:** The National Vaccine Information Center estimates that 90% of Americans have had chickenpox by the time they reach adulthood. Suppose we take a random sample of `{ojs} chickPoxSampSize` American adults. Answer each of the following, making use of your spreadsheet functionality where appropriate.
 
 1. Compute the expected number of adults in our sample who will have had chickenpox. Enter your result below.
 
@@ -1693,13 +1702,13 @@ viewof q9 = Inputs.checkbox(
     ["No. A result like this one is certainly possible.", 4],
     ["No. This result does not fall more than two standard deviations from the expected value.", 5]
   ]),
-  {value: JSON.parse(localStorage.getItem("q9_selected_t6") ?? "[]") ?? []}
+  {value: JSON.parse(localStorage.getItem("q9_selected_t6e") ?? "[]") ?? []}
 );
 
 {
-  localStorage.setItem("q9_selected_t6", JSON.stringify(q9));
-  localStorage.setItem("q9_correct_t6", "1,2");
-  localStorage.setItem("q9_result_t6", (!q9 || q9.length === 0) ? "unattempted" : (q9.toString() === "1,2" ? "correct" : "incorrect"));
+  localStorage.setItem("q9_selected_t6e", JSON.stringify(q9));
+  localStorage.setItem("q9_correct_t6e", "1,2");
+  localStorage.setItem("q9_result_t6e", (!q9 || q9.length === 0) ? "unattempted" : (q9.toString() === "1,2" ? "correct" : "incorrect"));
 }
 ok_checkbox(q9, "1,2");
 ```
@@ -2002,7 +2011,7 @@ The phrase "more than `{ojs} chickPox_between_lo` but less than `{ojs} chickPox_
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-In your spreadsheet, type `=BINOM.DIST(___, ___, 0.90, TRUE) - BINOM.DIST(___, ___, 0.90, TRUE)`, where the second blank is fille by `{ojs} chickPoxSampSize` in both cases. What should you use in place of the first blank inside of each call to `BINOM.DIST()`?
+In your spreadsheet, type `=BINOM.DIST(___, 68, 0.90, TRUE) - BINOM.DIST(___, 68, 0.90, TRUE)`. What should you use in place of the first blank inside of each call to `BINOM.DIST()`?
 
 :::
 :::
@@ -2011,7 +2020,7 @@ In your spreadsheet, type `=BINOM.DIST(___, ___, 0.90, TRUE) - BINOM.DIST(___, _
 :::{.callout-note collapse="false"}
 ## Hint 4 (Solved)
 
-In your spreadsheet, type `=BINOM.DIST(___, ___, 0.90, TRUE) - BINOM.DIST(___, ___, 0.90, TRUE)`, where the second blank is filled in by `{ojs} chickPoxSampSize` in both cases and the first blanks are filled in by `{ojs} Number(chickPox_between_hi) - 1` and `{ojs} chickPox_between_lo`, respectively, and press Enter. Input the result.
+In your spreadsheet, type `=BINOM.DIST(___, 68, 0.90, TRUE) - BINOM.DIST(___, 68, 0.90, TRUE)`Z. The first blanks are filled in by `{ojs} Number(chickPox_between_hi) - 1` and `{ojs} chickPox_between_lo`, respectively, and press Enter. Input the result.
 
 :::
 :::
@@ -2088,7 +2097,7 @@ Sophia scored 157 on the Quantitative Reasoning exam, the mean is 153, and the s
 
 exercise_results$z_score_QR <<- "fail"
 gradethis::grade_this({
-  if (abs(.result - ((157 - 153) / 7.67)) < 0.01) {
+  if (abs(.result - ((157 - 153) / 7.67)) < 0.005) {
     exercise_results$z_score_QR <<- "pass"
     pass(random_praise())
   }
@@ -2126,7 +2135,7 @@ Use the same approach as above. Sophia scored 160 on the Verbal Reasoning exam, 
 
 exercise_results$z_score_VR <<- "fail"
 gradethis::grade_this({
-  if (abs(.result - ((160 - 151) / 7)) < 0.01) {
+  if (abs(.result - ((160 - 151) / 7)) < 0.005) {
     exercise_results$z_score_VR <<- "pass"
     pass(random_praise())
   }
@@ -2149,20 +2158,20 @@ viewof q10 = Inputs.radio(
     ["Sophia scored relatively higher on the Quantitative Reasoning exam since her Quantitative Reasoning z-score was closer to 0.", 3],
     ["It is impossible to tell which exam Sophia performed better on since the means and standard deviations are different.", 4]
   ]),
-  {value: JSON.parse(localStorage.getItem("q10_selected_t6") ?? "null")}
+  {value: JSON.parse(localStorage.getItem("q10_selected_t6e") ?? "null")}
 );
 
 {
-  localStorage.setItem("q10_selected_t6", JSON.stringify(q10));
-  localStorage.setItem("q10_correct_t6", "1");
-  localStorage.setItem("q10_result_t6", q10 === null ? "unattempted" : (q10 == 1 ? "correct" : "incorrect"));
+  localStorage.setItem("q10_selected_t6e", JSON.stringify(q10));
+  localStorage.setItem("q10_correct_t6e", "1");
+  localStorage.setItem("q10_result_t6e", q10 === null ? "unattempted" : (q10 == 1 ? "correct" : "incorrect"));
 }
 ok_response(q10, "1");
 ```
 
 :::
 
-3. Find the proportion of test takers Sophia scored higher than on the Quantitative Reasoning exam (that is, find her percentile). Enter your result below.
+3. Find the proportion of test takers that Sophia scored higher than on the Quantitative Reasoning exam (that is, find her percentile). Enter your result below.
 
 ```{webr}
 #| exercise: GRE-QR-percentile
@@ -2201,7 +2210,7 @@ pnorm(157, 153, 7.67)
 
 exercise_results$GRE_QR_percentile <<- "fail"
 gradethis::grade_this({
-  if (abs(.result - pnorm(157, 153, 7.67)) < 0.001) {
+  if (abs(.result - pnorm(157, 153, 7.67)) < 0.0005) {
     exercise_results$GRE_QR_percentile <<- "pass"
     pass(random_praise())
   }
@@ -2248,7 +2257,7 @@ Sophia's Verbal Reasoning score is 160, the mean is 151, and the standard deviat
 
 exercise_results$GRE_VR_above <<- "fail"
 gradethis::grade_this({
-  if (abs(.result - (1 - pnorm(160, 151, 7))) < 0.001) {
+  if (abs(.result - (1 - pnorm(160, 151, 7))) < 0.0005) {
     exercise_results$GRE_VR_above <<- "pass"
     pass(random_praise())
   }
@@ -2377,11 +2386,11 @@ cat(hash)
 ## Main Takeaways
 
 + A **normal distribution** is bell-shaped and fully described by its mean $\mu$ and standard deviation $\sigma$, written $N(\mu, \sigma)$. Larger $\sigma$ produces a shorter, wider curve; smaller $\sigma$ produces a taller, narrower curve.
-+ The **Empirical Rule**: for data following $N(\mu, \sigma)$, approximately 67% of observations fall within one standard deviation of the mean, 95% within two, and 99.7% within three.
++ The **Empirical Rule** for data following $N(\mu, \sigma)$ states that approximately 67% of observations fall within one standard deviation of the mean, 95% within two, and 99.7% within three.
 + For a continuous distribution, $\mathbb{P}[X = k] = 0$, so there is no distinction between strict ($<$, $>$) and non-strict ($\leq$, $\geq$) inequalities when computing probabilities.
 + A **$z$-score** measures how many standard deviations an observation falls from the mean: $z = (x - \mu)/\sigma$. In a spreadsheet, compute it as `=(x-mean)/sd`. Converting raw observed values to $z$-scores allow comparison across different normal distributions on a common scale.
 + **`=NORM.DIST(q, mean, sd, TRUE)`** returns the area to the **left** of $q$ — that is, $\mathbb{P}[X \leq q]$. For right-tail and two-tail probabilities, draw a picture to inform how to use and combine calls to `NORM.DIST()` in order to find desired probabilities.
-+ **`=NORM.INV(p, mean, sd)`** returns the value $x^*$ such that $\mathbb{P}[X \leq x^*] = p$ — the $p^{th}$ percentile. Remember that $p$ must be the area to the **left** of the desired cutoff.
++ **`=NORM.INV(p, mean, sd)`** returns the value $x^*$ such that $\mathbb{P}[X \leq x^*] = p$. This is called the $p^{th}$ percentile. Remember that $p$ must be the area to the **left** of the desired cutoff.
 + When a scenario involves repeated independent yes/no trials with constant probability, use the **binomial distribution** (`BINOM.DIST()`). When data are approximately normally distributed, use the **normal distribution** (`NORM.DIST()`, `NORM.INV()`).
 :::
 

@@ -55,6 +55,8 @@ library(ggplot2)
 library(gradethis)
 library(patchwork)
 
+theme_set(theme_bw(base_size = 10))
+
 set.seed(241)
 
 boundary1 <- round(runif(1, 0.75, 2), 2)
@@ -354,7 +356,7 @@ ggplot(NULL, aes(c(-3, 3))) +
 Unlike the binomial distribution, where the distinction between *at least* and *more than* required careful adjustment, the probability that a continuous variable $X$ takes on any prescribed value exactly is $0$ (that is, $\mathbb{P}\left[X = k\right] = 0$). This means there is no difference between $\mathbb{P}\left[X \leq k\right]$ and $\mathbb{P}\left[X < k\right]$. Similarly, there is no difference between $\mathbb{P}\left[X \geq k\right]$ and $\mathbb{P}\left[X > k\right]$.
 :::
 
-Sometimes it is useful to be able to estimate probabilities or to estimate the proportion of a population that falls into a range, as long as the population is nearly normal. A convenient set of rough estimates come from the *Empirical Rule*.
+Sometimes it is useful to be able to estimate probabilities or to estimate the proportion of a population that falls into a range. As long as the population is nearly normal, a convenient set of rough estimates come from the *Empirical Rule*.
 
 :::{.callout-tip}
 ## The Empirical Rule
@@ -1071,7 +1073,7 @@ Remembering that the entire area under this normal distribution is 1 and that th
 :::{.callout-note collapse="false"}
 ## Hint 4
 
-Answer this question exactly the way you answered the previous one. The boundary value here is `{ojs} boundary2`, which is negative, but `pnorm()` will always give you the area to the left of your provided boundary value — which is what you want here.
+Answer this question exactly the way you answered the previous one. The boundary value here is `{ojs} boundary2`.The `pnorm()` function will always give you the area to the left of your provided boundary value — which is what you want here.
 
 ```{r}
 #| echo: true
@@ -1820,7 +1822,7 @@ ggplot(NULL, aes(c(-3, 3))) +
 :::{.callout-tip}
 ## Probabilities from Other Normal Distributions
 
-Through the last seven problems you only worked with the *standard normal distribution* — that's the $Z$-distribution, which is $N\left(\mu = 0, \sigma = 1\right)$. We can find probabilities from arbitrary normal distributions using R's `pnorm()` functionality — just supply the appropriate `mean` and `sd` arguments instead of the 0 and 1 we passed earlier.
+Through the last seven problems you only worked with the *standard normal distribution* — that's the $Z$-distribution, which is $N\left(\mu = 0, \sigma = 1\right)$. We can find probabilities from arbitrary normal distributions using R's `pnorm()` functionality — just supply the appropriate `mean` and `sd` arguments instead of the 0 and 1 we used in these problems.
 :::
 
 ## Finding Percentile Cutoffs on a Normal Distribution
@@ -2737,7 +2739,7 @@ ok_response(q10, "1");
 
 :::
 
-3. Find the proportion of test takers Sophia scored higher than on the Quantitative Reasoning exam (that is, find her percentile).
+3. Find the proportion of test takers that Sophia scored higher than on the Quantitative Reasoning exam (that is, find her percentile).
 
 ```{webr}
 #| exercise: GRE-QR-percentile
@@ -3009,11 +3011,11 @@ cat(hash)
 ## Main Takeaways
 
 + A **normal distribution** is bell-shaped and fully described by its mean $\mu$ and standard deviation $\sigma$, written $N(\mu, \sigma)$. Larger $\sigma$ produces a shorter, wider curve; smaller $\sigma$ produces a taller, narrower curve.
-+ The **Empirical Rule**: for data following $N(\mu, \sigma)$, approximately 67% of observations fall within one standard deviation of the mean, 95% within two, and 99.7% within three.
++ The **Empirical Rule** for data following $N(\mu, \sigma)$ states that approximately 67% of observations fall within one standard deviation of the mean, 95% within two, and 99.7% within three.
 + For a continuous distribution, $\mathbb{P}[X = k] = 0$, so there is no distinction between strict and non-strict inequalities. For example, $\mathbb{P}[X \leq k] = \mathbb{P}[X < k]$.
-+ A **$z$-score** measures how many standard deviations an observation falls from the mean: $z = (x - \mu)/\sigma$. $z$-scores allow comparison across different normal distributions on a common scale.
-+ **`pnorm(q, mean, sd)`** returns the area to the **left** of $q$ — that is, $\mathbb{P}[X \leq q]$. For right-tail and two-tail probabilities, use `1 - pnorm(...)` and combinations thereof.
-+ **`qnorm(p, mean, sd)`** returns the value $x^*$ such that $\mathbb{P}[X \leq x^*] = p$ — the $p^{th}$ percentile. Remember that $p$ is the area to the **left** of the desired cutoff.
++ A **$z$-score** measures how many standard deviations an observation falls from the mean: $z = (x - \mu)/\sigma$. Converting raw observed values to $z$-scores allow comparison across different normal distributions on a common scale.
++ **`pnorm(q, mean, sd)`** returns the area to the **left** of $q$ — that is, $\mathbb{P}[X \leq q]$. For right-tail and two-tail probabilities, draw a picture to inform how to use and combine calls to `pnorm()` in order to find desired probabilities.
++ **`qnorm(p, mean, sd)`** returns the value $x^*$ such that $\mathbb{P}[X \leq x^*] = p$. This is called the $p^{th}$ percentile. Remember that $p$ is the area to the **left** of the desired cutoff.
 + When a scenario involves repeated independent yes/no trials with constant probability, use the **binomial distribution** (`dbinom`, `pbinom`). When data are approximately normally distributed, use the **normal distribution** (`pnorm`, `qnorm`).
 :::
 

@@ -117,6 +117,17 @@ This activity covers an introduction to data, variable types (numeric and catego
 
 This is the first of a series of interactive workbooks you'll use to engage with content from introductory statistics. This workbook covers an introduction to data, including some limited background on experimental design and data collection.
 
+**Workbook Objectives:** After completing this workbook, you should be able to:
+
++ Describe the roles of rows and columns in tabular data.
++ Identify variables as being *numerical*, *categorical*, or *unique identifiers*.
++ Determine when two variables are *associated* or *independent*.
++ Describe the difference between *association* and *correlation*.
++ Interpret real-world data.
++ Describe and compare several different sampling strategies including *census*, *simple random sample*, *stratified sample*, *cluster sample*, *multi-stage sample*, and *convenience sample*.
++ Describe the differences between an *observational study* and an *experiment*, and identify a study as being one or the other.
++ Describe and compare the roles of *response variables* versus *explanatory variables*.
+
 ## An Introduction to Data
 
 In this workbook you'll encounter two datasets -- one concerning real estate from King County, WA (`houses`) and another containing prices and attributes of almost 54,000 diamonds (`diamonds`). A few rows of the `houses` data are being shown below in a convenient form where the rows of data represent *records* (sometimes called **observations**), and the columns represent **variables** (sometimes called **features**). Data in this form is sometimes referred to as *tidy*.

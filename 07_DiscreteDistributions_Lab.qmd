@@ -134,7 +134,7 @@ The previous two activities discussed probability distributions. In this seventh
 
 ## Kobe Bryant and the *Hot Hand*
 
-Basketball players who make several baskets in succession are often described as having a *hot hand*. Fans and players have long believed in the *hot hand* phenomenon, which refutes the assumption that each shot is independent of the next. However, a 1985 paper by Gilovich, Vallone, and Tversky collected evidence that contradicted this belief and showed that successive shots are indeed independent events ([link to paper](https://labs.la.utexas.edu/gilden/files/2016/04/Gilo.Vallone.Tversky.pdff){target="_blank"}). This paper started a great controversy that continues to this day, as you can see by searching for *hot hand basketball* on the web.
+Basketball players who make several baskets in succession are often described as having a *hot hand*. Fans and players have long believed in the *hot hand* phenomenon, which refutes the assumption that each shot is independent of the next. However, a 1985 paper by Gilovich, Vallone, and Tversky collected evidence that contradicted this belief and showed that successive shots are indeed independent events -- you can ([check out the paper here](https://labs.la.utexas.edu/gilden/files/2016/04/Gilo.Vallone.Tversky.pdff){target="_blank"}). This paper started a great controversy that continues to this day, as you can see by searching for *hot hand basketball* on the web.
 
 We do not expect to resolve this controversy today. However, in this activity we'll apply one approach to answering questions like this. The goals for the remainder of this activity are to: 
 
@@ -236,7 +236,7 @@ gradethis::grade_this({
 })
 ```
 
-Within the nine shot attempts, there are six streaks, which are separated by a "|" above. Their lengths are one, zero, two, zero, zero, zero (in order of occurrence).
+Within the nine shot attempts, there are six streaks, which are separated by a "|" in the display prior to the code cell above. Those streak lengths are one, zero, two, zero, zero, zero (in order of occurrence).
 
 :::{.callout-caution}
 ## Check Your Understanding: Streak Lengths I
@@ -408,7 +408,7 @@ kobe_streak <- kobe_basket |>
 :::{.callout-note collapse="false"}
 ## Hint 7 (Solved)
 
-Now print out the results with a single line, running `kobe_streak`.
+Now print out the results by typing and running `kobe_streak` on its own line.
 
 ```{r}
 #| echo: true
@@ -709,9 +709,9 @@ To increase the number of simulated flips, edit the `size` parameter.
 :::
 :::
 
-The first argument `c("heads", "tails")` represents the *outcomes* and can be thought of as a hat with two slips of paper in it: one slip says `heads` and the other says `tails`. The function `sample` draws one slip from the hat and tells us if it was a head or a tail.
+The first argument `c("heads", "tails")` represents the possible *outcomes* and can be thought of as a hat with two slips of paper in it: one slip says `heads` and the other says `tails`. The function `sample` draws one slip from the hat and tells us whether it was a head or a tail.
 
-As you've discovered, if you wanted to simulate flipping a fair coin 100 times, you could either run the `sample()` function 100 times or, more simply, adjust the `size` argument, which governs how many flips to simulate. The `replace = TRUE` argument indicates we put the selected slip of paper back in the hat before drawing again). Use the code block below to simulate 100 flips of a fair coin, storing the results in an object called `sim_fair_coin`. Then use `table(sim_fair_coin)` to compute a frequency table for the outcomes — what do you notice?
+As you've discovered, if you wanted to simulate flipping a fair coin 100 times, you could either run the `sample()` function 100 times or, more simply, adjust the `size` argument, which governs how many flips to simulate. The `replace = TRUE` argument indicates that we put the selected slip of paper back in the hat before drawing again). Use the code block below to simulate 100 flips of a fair coin, storing the results in an object called `sim_fair_coin`. Then use `table(sim_fair_coin)` to compute a frequency table for the outcomes — what do you notice?
 
 ```{webr}
 #| exercise: sim-fair-coin
@@ -825,7 +825,7 @@ gradethis::grade_this({
 })
 ```
 
-Since there are only two elements in the *outcomes*, the probability that we "flip" a fair coin and it lands heads is 0.5. Say we're trying to simulate an unfair coin that we know only lands heads 20% of the time. We can adjust for this by adding an argument called `prob`, which provides a vector of two probability weights. Execute the following code cell to simulate this unfair coin.
+Since there are only two elements in the *outcomes*, the probability that we "flip" a fair coin and it lands heads is 0.5. Say we're trying to simulate an unfair coin that we know only lands heads 20% of the time. We can adjust for this by adding an argument called `prob`, which provides a vector of probability weights corresponding to each possible outcome. Execute the following code cell to simulate this unfair coin.
 
 ```{webr}
 #| exercise: sim-unfair-coin
@@ -1179,6 +1179,7 @@ sim_streak
 #| solution: true
 
 sim_streak <- calc_streak(sim_basket)
+sim_streak
 ```
 
 ```{webr}
@@ -1566,5 +1567,5 @@ In this lab you explored the power of computer simulation as a tool for informal
 :::{.callout-tip}
 ## Looking Ahead
 
-In this lab you used simulation *informally* — generating data from a known process and comparing it to observed data by eye. While we won't continue using simulation as our primary tool, the underlying logic carries forward throughout the rest of the course. In the coming activities we'll formalize this process of comparing what we observe to what we'd expect if some assumption were true, and we'll develop rigorous statistical methods for deciding when the difference between the two is large enough to matter. That process — *hypothesis testing* — is one of the most important ideas in all of statistics, and everything you did in this lab was quietly building intuition for it.
+In this lab you used simulation *informally* — generating data from a known process and comparing it to true observed data. While we won't continue using simulation as our primary tool, the underlying logic carries forward throughout the rest of the course. In the coming activities we'll formalize this process of comparing what we observe to what we'd expect if some assumption were true, and we'll develop rigorous statistical methods for deciding when the difference between the two is large enough to matter. That process — *hypothesis testing* — is one of the most important ideas in all of statistics, and everything you did in this lab was quietly building intuition for it.
 :::

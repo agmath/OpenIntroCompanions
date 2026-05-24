@@ -98,7 +98,7 @@ theme_set(theme_bw(base_size = 12))
 :::{.callout-note}
 ## About
 
-In this lab, we examine height and weight data. We explore what is meant by the near-normality assumption, a variety of methods for assessing near-normality, and what the consequences can be when this assumption is violated.
+In this lab, we examine height and weight data. We explore what is meant by the *near-normality* assumption, we work towards assessing normality via a variety of informal methods, and we also investigate what the consequences can be when this assumption is violated.
 
 ```{ojs}
 //| echo: false
@@ -144,7 +144,7 @@ In this activity we'll continue our investigation into the probability distribut
 
 ## The Data
 
-Through this activity we'll be working with measurements of body dimensions. The data is stored in a data frame called `bdims`. The `bdims` data set contains measurements from 247 men and 260 women, most of whom were considered healthy young adults. Please note that this dataset records biological sex as a binary variable — male or female — and does not represent the full spectrum of human body diversity.
+Through this activity we'll be working with measurements of body dimensions. The data is stored in a data frame called `bdims` for you to utilize. The `bdims` data set contains measurements from 247 men and 260 women, most of whom were considered healthy young adults. Please note that this dataset records biological sex as a binary variable — male or female — and does not represent the full spectrum of human body diversity.
 
 Use the `head()` function to take a quick peek at the first few rows of the data.
 
@@ -193,9 +193,15 @@ gradethis::grade_this({
 })
 ```
 
-You'll see that for every observation we have 25 measurements, many of which are either diameters or girths. A complete *data dictionary* (a general description along with definitions of each of the columns/variables) can be found [here at OpenIntro](https://www.openintro.org/book/statdata/?data=bdims){target="_blank"}, but we'll be focusing on just three columns to get started: weight in kg (`wgt`), height in cm (`hgt`), and `sex` (`1` indicates male, `0` indicates female).
+You'll see that for every observation we have 25 measurements, many of which are either diameters or girths. A complete *data dictionary* (a general description along with definitions of each of the columns/variables) can be found [here at OpenIntro](https://www.openintro.org/book/statdata/?data=bdims){target="_blank"}, but we'll be focusing on just three columns in this activity: weight in kg (`wgt`), height in cm (`hgt`), and `sex` (`1` indicates male, `0` indicates female).
 
-Since males and females tend to have different body dimensions, it will be useful to create two additional data sets: one with only men and another with only women. In the `bdims` dataset females are denoted by a 0 in the `sex` column while males are denoted by a 1.
+Since males and females tend to have different body dimensions, it will be useful to create two additional data sets: one with only men and another with only women. Again, in the `bdims` dataset females are denoted by a 0 in the `sex` column while males are denoted by a 1. 
+
+:::{.callout-note}
+## Binary Encodings and Order
+
+The choice to encode females by 0 and males by 1 is made because *f*emale comes before *m*ale, alphabetically. Generally, in the case of binary variables, the first category in alphabetical order is encoded by 0 and the second is encoded by 1. Note, however, that this choice can be (and often is) overridden.
+:::
 
 The code block below is set up to create a dataset `mdims` consisting of only males. Add the code necessary to create a dataset of only females called `fdims`.
 
@@ -246,7 +252,7 @@ fdims <- bdims |>
 :::{.callout-note collapse="false"}
 ## Hint 3 (Solved)
 
-Females are encoded in this data set by the value 0 under the `sex` column. This choice is made because *f*emale comes before *m*ale, alphabetically. Generally, in the case of binary variables, the first category in alphabetical order is encoded by 0 and the second is encoded by 1. Note, however, that this choice can be (and often is) overridden.
+Females are encoded in this data set by the value 0 under the `sex` column. 
 
 ```{r}
 #| echo: true
@@ -575,16 +581,16 @@ No real-world data is exactly normally distributed, but if the data is *close en
 We'll see some additional informal methods for assessing normality throughout this lab activity. Formal methods for assessing normality do exist, but they're left outside the scope of this introductory course.
 :::
 
-You may have been surprised or frustrated that the activity suggests female heights are approximately normally distributed. It is very difficult to assess normality directly from a histogram. Let's dig a bit deeper.
+You may have been surprised or frustrated that the activity suggests that the heights are approximately normally distributed. It is very difficult to assess normality directly from a histogram. Let's dig a bit deeper.
 
 ## Using the Normal Model
 
 In your description of the distributions, did you use words like *bell-shaped* or *normal*? It's tempting to say so when faced with a unimodal, symmetric distribution. Below we will explore two additional methods for assessing how closely our data follows a normal distribution.
 
-To see how accurate that "*approximately normal*" description is, we can plot a normal distribution curve on top of a histogram to see how closely the data follow a normal distribution. The normal curve we use should have the same mean and standard deviation as the data. The code block that follows is preset to do this for the distribution of male heights:
+To see how accurate that "*approximately normal*" description is, we can plot a normal distribution curve on top of a histogram to see how closely the data follow a normal distribution. The normal curve we use should have the same mean and standard deviation as the data. The code block that follows is pre-set to do this for the distribution of male heights. The required steps are:
 
 i. Compute the mean and standard deviation for male heights.
-ii. Plot the relative frequency histogram of male heights (this is what `after_stat(density)` does).
+ii. Plot the *relative* frequency histogram of male heights (this is what `after_stat(density)` does).
 iii. Plot a normal distribution with the same mean and standard deviation as the male heights (this is what `geom_line()` is doing).
 iv. Add a title and descriptive axis labels to the plot.
 
@@ -619,6 +625,15 @@ ggplot() +
 
 Change the code to compute the average and standard deviation of heights for women instead of men.
 
+:::
+:::
+
+:::{.hint exercise="hist-hgt-plus-normal"}
+:::{.callout-note collapse="false"}
+## Hint 2
+
+Change the code to compute the average and standard deviation of heights for women instead of men.
+
 ```{r}
 #| echo: true
 #| eval: false
@@ -637,7 +652,7 @@ fhgtsd <- fdims |>
 
 :::{.hint exercise="hist-hgt-plus-normal"}
 :::{.callout-note collapse="false"}
-## Hint 2
+## Hint 3
 
 Now update the `ggplot()` to use data from `fdims` and the female summary statistics. Update the plot title too.
 
@@ -661,6 +676,39 @@ ggplot() +
                           mean = ___, sd = ___)),
             color = "blue", lwd = 1.25) +
   labs(title = "Distribution of ___ Heights", 
+       x = "Height (cm)", 
+       y = "Proportion")
+```
+
+:::
+:::
+
+:::{.hint exercise="hist-hgt-plus-normal"}
+:::{.callout-note collapse="false"}
+## Hint 4 (Solved)
+
+Now update the `ggplot()` to use data from `fdims` and the female summary statistics. Update the plot title too.
+
+```{r}
+#| echo: true
+#| eval: false
+
+fhgtmean <- fdims |>
+  summarize(avg_height = mean(hgt)) |>
+  pull(avg_height)
+
+fhgtsd <- fdims |>
+  summarize(sd_height = sd(hgt)) |>
+  pull(sd_height)
+
+ggplot() + 
+  geom_histogram(data = fdims,
+                 aes(x = hgt, y = after_stat(density))) + 
+  geom_line(aes(x = seq(140, 200, length.out = 200), 
+                y = dnorm(seq(140, 200, length.out = 200), 
+                          mean = fhgtmean, sd = fhgtsd)),
+            color = "blue", lwd = 1.25) +
+  labs(title = "Distribution of Female Heights", 
        x = "Height (cm)", 
        y = "Proportion")
 ```
@@ -879,7 +927,7 @@ gradethis::grade_this({
 
 Do all of the points fall exactly on the line? How does this plot compare to the probability plot for the real data?
 
-Even better than comparing the original plot to a single plot generated from a normal distribution is to compare it to many more plots using the `qqnormsim()` function, which is a custom function from the `{openintro}` package. The following code block will create eight different Q-Q plots from simulated normal data alongside the Q-Q plot corresponding to our true female heights data. Run the code block to see the result.
+Even better than comparing the original plot of our observed data to a single plot generated from a normal distribution is to compare it to many more plots using the `qqnormsim()` function, which is a custom function from the `{openintro}` package. The following code block will create eight different Q-Q plots from simulated normal data alongside the Q-Q plot corresponding to our true female heights data. Run the code block to see the result.
 
 ```{webr}
 #| exercise: qqnormsim
@@ -906,7 +954,7 @@ Copy and paste the code from the previous code block, but pull the weight column
 #| echo: true
 #| eval: false
 
-qqnormsim(fdims |> pull(___))
+qqnormsim(___, fdims)
 ```
 
 :::
@@ -944,7 +992,7 @@ Okay, so now you have a few tools to *informally* judge whether or not a variabl
 
 It turns out that statisticians know a lot about the normal distribution. Once we decide that a random variable is approximately normal, we can answer all sorts of questions about that variable related to probability. That being said, our conclusions will only be reliable if the assumption we make about the normal model is a reasonable one. We saw that the distribution of female heights was approximately normal, but that the distribution of female weights deviated away from a normal distribution. We'll ask a probability question about each of these variables (height and weight) and see how close our approximated probabilities are to the true empirical probabilities.
 
-**Question 1:** What is the probability that a randomly chosen young adult female is taller than 6 feet (about 182 cm)? Use the code block below to answer this question assuming that female heights are normally distributed, using the `pnorm()` function we were introduced to in the previous activity.
+**Question 1:** What is the probability that a randomly chosen young adult female is taller than 6 feet (about 182 cm)? Use the code block below to answer this question assuming that female heights are normally distributed. Use the `pnorm()` function we were introduced to in a recent activity.
 
 :::{.callout-tip}
 ## Note
@@ -1359,11 +1407,12 @@ Below are the key takeaways and a heads-up regarding why we'll need to remain aw
 :::{.callout-tip}
 ## Main Takeaways
 
-+ **Visual tools help assess normality, but require judgment.** Overlaying a normal curve on a relative frequency histogram gives you a sense of how closely your data follows the normal model, but deciding "close enough" is inherently subjective.
++ **Visual tools help assess normality, but require judgment.** Overlaying a normal curve on a relative frequency histogram gives you a sense of how closely your data follows the normal model, but deciding "close enough" in this way is inherently subjective.
 + **Q-Q plots provide a more sensitive visual check.** A normal Q-Q plot compares the quantiles of your data to the quantiles of a theoretical normal distribution. Points that follow the diagonal line closely suggest approximate normality; systematic deviations suggest otherwise.
 + **Comparing to simulated normal data helps calibrate your judgment.** The `qqnormsim()` function generates Q-Q plots from data known to be normal, giving you a reference for what "close enough" actually looks like in practice.
-+ **The normality assumption has real consequences.** When the assumption is reasonable — as with female heights — theoretical probabilities computed from the normal model agree closely with empirical probabilities. When it is not — as with female weights — the theoretical probabilities can be badly off.
-+ **Always check your assumptions before applying the normal model.** The tools introduced in this lab give you the means to do so. Using the normal model blindly, without verifying approximate normality, can lead to conclusions that simply aren't trustworthy.
+    + If you want to use this function, you'll need to install and load the `{openintro}` library though.
++ **The normality assumption has real consequences.** When the assumption is reasonable — as with female heights — theoretical probabilities computed from the normal model agree closely with empirical probabilities. When it is not — as with female weights — the theoretical probabilities can be quite far off.
++ **Always check your assumptions before applying the normal model.** The tools introduced in this lab give you several informal means to do so. Using the normal model blindly, without verifying approximate normality, can lead to conclusions that simply aren't trustworthy.
 :::
 
 :::{.callout-tip}

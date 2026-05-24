@@ -127,12 +127,12 @@ ii. the sample size.
 :::{.callout-tip}
 ## How to Use The Code Blocks
 
-You'll encounter several large code blocks in this activity. You do not need to understand all of the code in each block — focus on the plots that result each time you run the code, instead. You are invited to change the first few lines of each block (the parameters), and you should do so! You are not expected to modify the remaining code though.
+You'll encounter several large code blocks in this activity. As mentioned earlier, you are not expected to examine or understand the code in each block. Instead, focus on the plots that result each time you run the code. You are invited to change the first few lines of each block (the parameters), and you should do so! You are not expected to modify the remaining code though.
 
-Each time you run a code block, two plots will be displayed. 
+Each time you run a code block, two plots will be displayed.
 
 + Both plots show the resulting approximation of the sampling distribution via a histogram.
-+ The plot on the left overlays a normal distribution whose mean and standard deviation match the population mean.
++ The plot on the left overlays a normal distribution whose mean and standard deviation match the assumed population parameters.
 + The plot on the right overlays a normal distribution whose mean matches the population mean, but whose standard deviation is adjusted according to the Central Limit Theorem.
 :::
 

@@ -851,14 +851,6 @@ $$\bar{X}_n \sim N\left(\mu,~S_E = \frac{\sigma}{\sqrt{n}}\right)$$
 
 **Sample Problem:** Suppose you have a 46 square foot wall which you want to cover with spray paint. The brand of spray paint you plan to use is known to have coverage which is approximately normal, with an average coverage of 10 square feet per can and a standard deviation of 1.5 square feet. Use your spreadsheet to answer the questions that follow.
 
-:::{.callout-tip}
-## Setting Up the Spray Paint Calculations
-
-Open your spreadsheet and use `NORM.DIST()` to compute the probabilities needed below. Recall that `=NORM.DIST(q, mean, sd, TRUE)` returns the area to the left of `q` in a normal distribution with the given mean and standard deviation. For right-tail probabilities, use `=1-NORM.DIST(...)`.
-
-For the third question you will need to apply the Central Limit Theorem. The sampling distribution of the mean coverage across four cans is normal with the same mean (10 sq ft) but a smaller standard deviation — the standard error $S_E = \sigma / \sqrt{n}$. In a spreadsheet formula, you can write this as `1.5/SQRT(4)` directly inside your `NORM.DIST()` call.
-:::
-
 :::{.callout-caution}
 ## Check Your Understanding: Spray Paint I
 
@@ -941,17 +933,17 @@ We want the probability that a single can covers *at least* 11.5 square feet. Dr
 :::{.callout-note collapse="true"}
 ## Hint 2
 
-Your picture should have the right tail (upper tail) of the distribution shaded. How do we find the probability in the upper tail?
+The per-can coverage is approximately normally distributed. Your picture should have the right tail (upper tail) of the distribution shaded. How do we find the probability in the upper tail?
 
 :::{.callout-note collapse="true"}
 ## Hint 3
 
-Use `=1-NORM.DIST(___, ___, ___, TRUE)` in your spreadsheet.
+Use `= 1 - NORM.DIST(___, ___, ___, TRUE)` in your spreadsheet.
 
 :::{.callout-note collapse="true"}
 ## Hint 4 (Solved)
 
-Use `=1-NORM.DIST(___, ___, ___, TRUE)` in your spreadsheet. Fill the first blank with the boundary value (`11.5`), the second with the mean (`10`), and the third with the standard deviation (`1.5`).
+Use `= 1 - NORM.DIST(___, ___, ___, TRUE)` in your spreadsheet. Fill the first blank with the boundary value (`11.5`), the second with the mean (`10`), and the third with the standard deviation (`1.5`).
 
 :::
 :::
@@ -1005,7 +997,7 @@ The mean of the sampling distribution will be the same as the mean of the popula
 :::{.callout-note collapse="true"}
 ## Hint 4 (Solved)
 
-We'll still use `=1 - NORM.DIST(11.5, 10, ___, TRUE)`, but that third blank will be filled in by `1.5/SQRT(4)` because the spread of the sampling distribution is narrower than the spread of the population distribution.
+We'll still use `= 1 - NORM.DIST(11.5, 10, ___, TRUE)`, but that third blank will be filled in by `1.5/SQRT(4)` because the spread of the sampling distribution is narrower than the spread of the population distribution.
 
 :::
 :::
@@ -1215,7 +1207,7 @@ In this activity you discovered one of the most important results in all of stat
 + **This is the Central Limit Theorem (CLT):** For large enough sample sizes, the sampling distribution is approximately normal, regardless of the shape of the population distribution. For normally distributed populations, any sample size works. For skewed populations, larger sample sizes (30 or more for moderate skew) are needed.
 + **Skew increases the required sample size.** The more extreme the skew in the population distribution, the larger the sample size must be before the sampling distribution becomes approximately normal.
 + **The CLT is what makes statistical inference possible.** Because we can predict the shape and spread of the sampling distribution, we can make reliable probability statements about how close a single sample mean is likely to be to the true population mean — even when we only have one sample.
-+ **`=NORM.DIST(q, mean, sd, TRUE)`** computes probabilities from any normal distribution. When applying the CLT, we use the standard error to describe the spread of the distribution. In the case of a mean with known population standard deviation, the standard error is `sd/SQRT(n)`.
++ **` = NORM.DIST(q, mean, sd, TRUE)`** computes probabilities from any normal distribution. When applying the CLT, we use the standard error to describe the spread of the distribution. In the case of a mean with known population standard deviation, the standard error is `sd/SQRT(n)`.
 :::
 
 :::{.callout-tip}

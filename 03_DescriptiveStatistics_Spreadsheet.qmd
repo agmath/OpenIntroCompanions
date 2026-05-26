@@ -171,7 +171,7 @@ There are times throughout this activity where you'll be asked to do work inside
 
 ## Summarizing Numerical (Quantitative) Data
 
-**Recall**: Variables for which computation of measures like the mean (average) or standard deviation are meaningful are numerical variables.
+**Recall**: Numerical variables are those for which measures like the mean (average) or standard deviation are meaningful.
 
 ### Measuring Central Tendency
 

@@ -72,7 +72,7 @@ theme_set(theme_bw(base_size = 12))
 :::{.callout-note}
 ## About
 
-This activity formally introduces confidence intervals and hypothesis tests as tools for statistical inference. We work through two motivating problems — one confidence interval and one hypothesis test — in the context of real survey data about immigration policy.
+This activity formally introduces confidence intervals and hypothesis tests as tools for statistical inference. We work through two motivating scenarios — one requiring the construction of a confidence interval and the other involving a hypothesis test — in the context of real survey data about immigration policy.
 
 ```{ojs}
 //| echo: false
@@ -122,7 +122,7 @@ Our first video discusses *variability in point estimates*. Some of the content 
 </center>
 ```
 
-**An Example:** A June 2020 Pew Research survey revealed that [74% of Americans support offering a path to citizenship](https://www.pewresearch.org/fact-tank/2020/06/17/americans-broadly-support-legal-status-for-immigrants-brought-to-the-u-s-illegally-as-children/){target="_blank"} for undocumented immigrants who were brought to the US illegally as children — often referred to as [DREAMers](https://forumtogether.org/article/dreamers-in-the-united-states-an-overview-of-the-dreamer-community-and-proposed-legislation/){target="_blank"}.
+**Scenario I:** A June 2020 Pew Research survey revealed that [74% of Americans support offering a path to citizenship](https://www.pewresearch.org/fact-tank/2020/06/17/americans-broadly-support-legal-status-for-immigrants-brought-to-the-u-s-illegally-as-children/){target="_blank"} for undocumented immigrants who were brought to the US illegally as children — often referred to as [DREAMers](https://forumtogether.org/article/dreamers-in-the-united-states-an-overview-of-the-dreamer-community-and-proposed-legislation/){target="_blank"}.
 
 We've discussed the impossibility of a true census, so the Pew study did not poll every single American. Instead, they surveyed 9,654 US adults between June 4 and June 10, 2020. You can [find out more about the study logistics here](https://www.pewresearch.org/wp-content/uploads/2020/06/W68-topline_DACA.pdf){target="_blank"} if you are interested. This means that the 74% referenced in the article is the proportion of individuals *from the study* who were in favor of a path to citizenship for the DREAMers.
 
@@ -222,6 +222,7 @@ The code below simulates a random sample of 9,654 individuals for which there is
 
 ```{webr}
 #| exercise: sim-dream-support
+#| caption: Ungraded, Exploratory Only
 
 samp <- sample(c("Support Citizenship", "Do Not Support Citizenship"), 
                size = 9654, 
@@ -824,7 +825,7 @@ Here's one more video from Dr. Shannon McClintock Pileggi introducing the notion
 </center>
 ```
 
-A [2018 poll from NPR](https://www.npr.org/2018/02/06/583402634/npr-poll-2-in-3-support-legal-status-for-dreamers-majority-oppose-building-a-wal){target="_blank"} reported that 65% of Americans supported a path to citizenship for DREAMers. Does the 2020 Pew Research poll provide evidence that support for a pathway to citizenship has grown over the past two years? Use a significance level of $\alpha = 0.05$.
+**Scenario II:** A [2018 poll from NPR](https://www.npr.org/2018/02/06/583402634/npr-poll-2-in-3-support-legal-status-for-dreamers-majority-oppose-building-a-wal){target="_blank"} reported that 65% of Americans supported a path to citizenship for DREAMers. Assume that the 2018 population proportion truly was 65% in support. Does the 2020 Pew Research poll provide evidence that support for a pathway to citizenship has grown over the past two years? Use a significance level of $\alpha = 0.05$.
 
 Use what you learned from Dr. McClintock Pileggi  to answer the following questions and complete the hypothesis test. You can use the code block below for any calculations.
 
@@ -1363,7 +1364,7 @@ Since there were no code cell exercises in this activity, there is no *exercise 
 + A *confidence interval* captures a population parameter with a desired degree of confidence, computed as:
 $$(\text{point estimate}) \pm (\text{critical value}) \cdot S_E$$
 + The **point estimate** is a sample statistic. The **critical value** depends on the desired confidence level. The **standard error** ($S_E$) quantifies the expected variability in the point estimate.
-+ A correct interpretation: *"We are XX% confident that the true [population parameter] lies between [lower bound] and [upper bound]."*
++ A correct interpretation: *"We are [XX]% confident that the true [population parameter] lies between [lower bound] and [upper bound]."*
 + Higher confidence levels require larger critical values, which produce wider intervals.
 
 **On hypothesis tests:**
@@ -1371,7 +1372,7 @@ $$(\text{point estimate}) \pm (\text{critical value}) \cdot S_E$$
 + A *hypothesis test* provides a formal framework for evaluating claims about a population parameter.
 + We begin with a **null hypothesis** ($H_0$) representing the status quo and an **alternative hypothesis** ($H_a$) representing the claim to be tested.
 + We set a **significance level** $\alpha$ — the threshold below which a $p$-value is considered surprising enough to reject $H_0$.
-+ We compute a **test statistic**: $\displaystyle{z = \frac{(\text{point estimate}) - (\text{null value})}{S_E}}$
++ We compute a **test statistic**: $\displaystyle{\text{test statistic} = \frac{(\text{point estimate}) - (\text{null value})}{S_E}}$
 + The **$p$-value** measures the probability of observing a sample at least as favorable to $H_a$ as ours, assuming $H_0$ is true. A $p$-value smaller than $\alpha$ is taken as evidence against $H_0$.
 :::
 

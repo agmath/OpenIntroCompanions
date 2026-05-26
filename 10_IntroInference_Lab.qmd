@@ -610,7 +610,6 @@ Use the code block below to verify your answers about the shapes of the distribu
 #| message: false
 #| warning: false
 #| caption: Ungraded, Exploratory Only
-
 ggplot() + 
   geom_histogram(aes(x = area)) + 
   labs(title = "Histogram of Home Size",
@@ -760,14 +759,13 @@ ggplot() +
 
 ## Taking Samples
 
-In this lab we have access to the entire population, but this is rarely the case in real life. Gathering information on an entire population is often extremely costly or impossible. Because of this, we usually take a sample of the population and use that to understand the properties of the population.
+In this lab we have access to the entire population, but this is rarely the case in real life. Gathering information on an entire population is often extremely costly or impossible. Because of this, we usually take a sample of the population and use that sample data to understand the properties of the population.
 
 If we were interested in estimating the mean living area in Ames based on a sample, we can use the `sample()` function to survey the population. Try running the code in the block below a few times — what happens?
 
 ```{webr}
 #| exercise: samp1
 #| caption: Ungraded, Exploratory Only
-
 samp1 <- sample(area, 50)
 samp1
 ```
@@ -781,7 +779,6 @@ Run the code block below to produce a histogram of all observations in the popul
 #| message: false
 #| warning: false
 #| caption: Ungraded, Exploratory Only
-
 # Take a sample
 samp <- sample(area, 50)
 
@@ -807,7 +804,6 @@ If we're interested in estimating the average living area of homes in Ames using
 ```{webr}
 #| exercise: mean-samp1
 #| caption: Ungraded, Exploratory Only
-
 samp1 <- sample(area, 50)
 mean(samp1)
 ```
@@ -918,7 +914,6 @@ The code below generates 5,000 samples of size 50 and computes the sample mean o
 ```{webr}
 #| exercise: loop
 #| caption: Ungraded, Exploratory Only
-
 sample_means50 <- rep(NA, 5000)
 
 for(i in 1:5000){
@@ -932,12 +927,11 @@ ggplot() +
        x = "Avg Living Area (sq ft)", y = "Count")
 ```
 
-You may notice a warning message about bin width. The following code block shows how to adjust the number of bins using the `bins` argument. Run it to see the difference.
+You may notice a warning message about bin width. The following code block shows how to adjust the number of bins using the `bins` argument. Run it to see the difference and make changes to the number of `bins` if you like. You may also replace the `bins` arguement with `binwidth` if you'd prefer to control how wide each bin range is rather than controlling the number of `bins`.
 
 ```{webr}
 #| exercise: hist-breaks
 #| caption: Ungraded, Exploratory Only
-
 sample_means50 <- rep(NA, 5000)
 
 for(i in 1:5000){
@@ -1087,11 +1081,12 @@ for(i in 1:5000){
 }
 ```
 
-+ **Line 1** initializes a vector of 5,000 `NA` entries called `sample_means50`. This vector will store the results generated within the `for` loop.
-+ **Line 3** calls the `for` loop. It can be read as: *"for every integer `i` from 1 to 5000, run the following lines of code."* The loop runs once when `i = 1`, once when `i = 2`, and so on up to (and including) `i = 5000`.
-+ **Lines 4–5** are the *body* of the loop — the code that runs on every iteration. Each time through, we take a random sample of size 50 from `area`, compute its mean, and store it as the $i^{th}$ element of `sample_means50`.
++ The first line initializes a vector of 5,000 `NA` entries called `sample_means50`. This vector will store the results generated within the `for` loop.
++ The next line sets up the `for` loop. It can be read as: *"for every integer `i` from 1 to 5000, run the following lines of code."* The loop runs once when `i = 1`, once when `i = 2`, and so on up to (and including) `i = 5000`.
++ The indented lines inside of the `for` loop are the *body* of the loop — the code that runs on every iteration. Each time through, we take a random sample of size 50 from `area`, compute its mean, and store it as the $i^{th}$ element of `sample_means50`.
+    + The indentation here is not necessary, but it makes the code more readable. In R, all of the lines of code inside of the curly braces (`{}`) belong to the loop. Other computing languages have different syntax.
 
-To make sure you understand what you've done, build and run a smaller version in the code block below. Initialize a vector of 100 zeros called `sample_means_small`, run a loop that takes a sample of size 50 from `area` and stores the sample mean in `sample_means_small`, iterating from 1 to 100. Print the output by including `sample_means_small` after the loop.
+To make sure you understand what you've done, build and run a smaller version in the code block below. Initialize a vector of 100 *zeros* called `sample_means_small`, run a loop that takes a sample of size 50 from `area` and stores the sample mean in `sample_means_small`, iterating from 1 to 100. Print the output by including `sample_means_small` after the loop.
 
 ```{webr}
 #| exercise: small-loop
@@ -1147,7 +1142,7 @@ ___
 :::{.callout-note collapse="false"}
 ## Hint 3
 
-In the first line, the name of the container will be `sample_means_small`, and it will be initialized by repeating zero 100 times. We can initialize that container with any value we like (`NA` or 0 are natural choices) because they'll just be overwritten shortly.
+In the first line, the name of the container will be `sample_means_small`, and it will be initialized by repeating zero 100 times. We can actually initialize the slots in that container with any value we like (`NA` or 0 are natural choices) because they'll just be overwritten shortly.
 
 ```{r}
 #| echo: true
@@ -1326,7 +1321,7 @@ ok_response(q16, "2");
 
 ## Sample Size and the Sampling Distribution
 
-Now that we have a better understanding of the mechanics of our code, let's return to the reason we used a `for` loop: to compute an approximation for the *sampling distribution*. To get a sense of the effect that sample size has on the sampling distribution, build up two more sampling distributions: one based on a sample size of 10 and another based on a sample size of 100. Call them `sample_means10` and `sample_means100` respectively. The code to create `sample_means50` is pre-populated for reference.
+Now that we have a better understanding of the mechanics of our code, let's return to the reason we used a `for` loop: to compute an approximation for the *sampling distribution*. To get a sense of the effect that sample size has on the sampling distribution, build up two more sampling distributions: one based on a sample size of 10 and another based on a sample size of 100. Call them `sample_means10` and `sample_means100` respectively. The code to create `sample_means50` is pre-populated for reference. Notice that we've returned to drawing 5,000 random samples rather than 100 here.
 
 ```{webr}
 #| exercise: samp10-samp100
@@ -1339,6 +1334,11 @@ for(i in 1:5000){
   samp <- sample(area, 50)
   sample_means50[i] <- mean(samp)
 }
+
+# Samples of 10 houses at a time
+
+# Samples of 100 houses at a time
+
 ```
 
 :::{.hint exercise="samp10-samp100"}
@@ -1359,19 +1359,21 @@ Fill in the blanks for both new objects:
 ```{r}
 #| echo: true
 #| eval: false
-
+# Samples of 50 houses at a time
 sample_means50 <- rep(NA, 5000)
 for(i in 1:5000){
   samp <- sample(area, 50)
   sample_means50[i] <- mean(samp)
 }
 
+# Samples of 10 houses at a time
 ___ <- rep(___, ___)
 for(i in 1:___){
   samp <- sample(area, ___)
   ___[i] <- mean(samp)
 }
 
+# Samples of 100 houses at a time
 ___ <- rep(___, ___)
 for(i in 1:___){
   samp <- sample(area, ___)
@@ -1391,19 +1393,21 @@ Fill in the blanks for `sample_means100` similarly:
 ```{r}
 #| echo: true
 #| eval: false
-
+# Samples of 50 houses at a time
 sample_means50 <- rep(NA, 5000)
 for(i in 1:5000){
   samp <- sample(area, 50)
   sample_means50[i] <- mean(samp)
 }
 
+# Samples of 10 houses at a time
 sample_means10 <- rep(NA, 5000)
 for(i in 1:5000){
   samp <- sample(area, 10)
   sample_means10[i] <- mean(samp)
 }
 
+# Samples of 100 houses at a time
 sample_means100 <- rep(___, ___)
 for(i in 1:___){
   samp <- sample(area, ___)
@@ -1423,19 +1427,21 @@ Fill in the blanks for `sample_means100` similarly:
 ```{r}
 #| echo: true
 #| eval: false
-
+# Samples of 50 houses at a time
 sample_means50 <- rep(NA, 5000)
 for(i in 1:5000){
   samp <- sample(area, 50)
   sample_means50[i] <- mean(samp)
 }
 
+# Samples of 10 houses at a time
 sample_means10 <- rep(NA, 5000)
 for(i in 1:5000){
   samp <- sample(area, 10)
   sample_means10[i] <- mean(samp)
 }
 
+# Samples of 100 houses at a time
 sample_means100 <- rep(NA, 5000)
 for(i in 1:5000){
   samp <- sample(area, 100)
@@ -1493,7 +1499,6 @@ Now that you've created the three sampling distributions, I've done a bit of "be
 #| exercise: plot-samp-dists
 #| setup: true
 #| echo: false
-
 sample_means50  <- rep(NA, 5000)
 sample_means10  <- rep(NA, 5000)
 sample_means100 <- rep(NA, 5000)
@@ -1521,7 +1526,6 @@ sample_means$SampDist <- factor(
 #| message: false
 #| warning: false
 #| caption: Ungraded, Exploratory Only
-
 ggplot(data = sample_means) + 
   geom_histogram(aes(x = SampleMean)) + 
   facet_wrap(~ SampDist, nrow = 3) +
@@ -1586,9 +1590,9 @@ ok_response(q18, "2");
 
 ## Confidence Intervals
 
-Based on a sample, what can we infer about the population? In practice, we'll have just a single sample. In this case, the best estimate of the average living area of houses sold in Ames would be the sample mean $\bar{x}$. That serves as a reasonable *point estimate*, but it would be useful to also communicate how uncertain we are of that estimate. This can be captured by using a *confidence interval*.
+Based on a sample, what can we infer about the population? In practice, we'll have just a single sample. In this case, the best estimate of the average living area of houses sold in Ames would be the sample mean $\bar{x}$. That serves as a reasonable *point estimate*, but it would be useful to also communicate how uncertain we are of that estimate. That uncertainty can be captured by using a *confidence interval*.
 
-We can construct a 95% confidence interval for a population mean by adding and subtracting a certain number of standard errors to the point estimate. For a 95% confidence interval, that number comes from the normal distribution — specifically, the value that cuts off 2.5% in each tail. If you remember the Empirical Rule, you'll recall that approximately 95% of observations fall within two standard deviations of the mean. A more precise value is 1.96, and for now we'll use this as our multiplier.
+We can construct a confidence interval for a population mean by adding and subtracting a certain number of standard errors to the point estimate. That number of standard errors will depend on how confident we want to be that the true population mean is being captured. For a 95% confidence interval, that number is the value that cuts off 2.5% in each tail of the normal distribution. If you remember the *Empirical Rule*, you'll recall that approximately 95% of observations fall within two standard deviations of the mean. A more precise value is 1.96, and we'll use this as our multiplier for now.
 
 :::{.callout-tip}
 ## A Note on 1.96
@@ -1641,21 +1645,19 @@ gradethis::grade_this({
 })
 ```
 
-Run the code below to construct the confidence interval.
+Run the code below to construct the confidence interval. Note that this cell uses a freshly drawn sample — not the one you created above — so your interval here will differ slightly from one you construct with the sample you drew in the previous cell. This is expected. Every random sample produces a somewhat different interval, which is exactly why we talk about *confidence* rather than *certainty*.
 
 ```{webr}
 #| exercise: ci
 #| setup: true
 #| echo: false
 
-set.seed(241)
 samp <- sample(area, 60)
 ```
 
 ```{webr}
 #| exercise: ci
 #| caption: Ungraded, Exploratory Only
-
 # Calculate the sample mean
 sample_mean <- mean(samp)
 
@@ -1778,12 +1780,11 @@ The claim in the box above can be difficult to grasp. We'll use visuals to clari
 3. Repeat steps 1 and 2 one hundred times.
 4. Use these stored statistics to calculate many confidence intervals.
 
-Read the code below — does it make sense to you? What do you think the result will be? Once you think you know, run the code block and see if you were right. Run it multiple times and observe what changes. What do the red highlighted intervals indicate? About how many red intervals do you observe on average?
+Read the code below — does it make sense to you? What do you think the result will be? Once you think you know, run the code block and see if you were right. Run it multiple times and observe what changes. That dashed vertical line through the center of the stack of confidence intervals is at the true population mean (1499.69 square feet). What do the red highlighted intervals indicate? About how many red intervals do you observe on average?
 
 ```{webr}
 #| exercise: lots-of-ci
 #| caption: Ungraded, Exploratory Only
-
 samp_mean <- rep(NA, 100)
 samp_sd   <- rep(NA, 100)
 n <- 60
@@ -1963,7 +1964,6 @@ You must have attempted the graded exercises before clicking — clicking genera
 ```{webr}
 #| exercise: generate-exercise-hash
 #| caption: "Generate Exercise Code"
-
 exercise_results$timestamp <- format(Sys.time(), "%Y-%m-%dT%H:%M:%SZ", tz = "UTC")
 exercise_results$type <- "exercises"
 
@@ -1982,9 +1982,9 @@ In this activity you connected the abstract machinery of the Central Limit Theor
 
 + **Sample statistics are point estimates for population parameters.** The sample mean $\bar{x}$ is our best single guess for the population mean $\mu$, but we must acknowledge that the estimate $\bar{x}$ will vary from sample to sample.
 + **The sampling distribution describes that variability.** By simulating many samples and computing each mean, we can see how much our estimate is likely to fluctuate — and that fluctuation decreases as sample size grows.
-+ **Larger samples produce more precise estimates.** The standard error $S_E = s/\sqrt{n}$ quantifies this — as $n$ increases, $S_E$ decreases, and our sampling distribution narrows.
-+ **A confidence interval quantifies our uncertainty.** A 95% confidence interval is constructed as $\bar{x} \pm 1.96 \times S_E$. Rather than a single point estimate, it gives a range of plausible values for the population mean.
-+ **"95% confident" has a specific meaning.** If we repeated the sampling process many times and built a confidence interval each time, approximately 95% of those intervals would contain the true population mean. Any single interval either contains the true mean or it doesn't — we just don't know which.
++ **Larger samples produce more precise estimates.** The standard error $S_E = s/\sqrt{n}$ quantifies this. As $n$ increases, $S_E$ decreases, and our sampling distribution narrows.
++ **A confidence interval quantifies our uncertainty.** A confidence interval for a population mean is constructed as $\bar{x} \pm \left(\text{critical value}\right) \times S_E$, where the *critical value* is the number of standard errors we move away from the sample mean (we used 1.96 in this activity to approximate 95% confidence). Rather than a single point estimate, a confidence interval gives a range of plausible values for the population mean.
++ **"95% confident" has a specific meaning.** If we repeated the sampling process many times and built a confidence interval after each, approximately 95% of those intervals would contain the true population mean. Any single interval either contains the true mean or it doesn't — we just don't know which.
 + **The `for` loop is a powerful tool for simulation.** It allowed us to build entire sampling distributions and collections of confidence intervals that would be impossibly tedious to construct by hand.
 :::
 

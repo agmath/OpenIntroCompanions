@@ -6,6 +6,13 @@ format:
       text: |
         <style>
         .btn-exercise-solution { display: none !important; }
+        .exercise-editor-btn-run-code .btn-label-exercise-editor {
+          font-size: 0;
+        }
+        .exercise-editor-btn-run-code .btn-label-exercise-editor::after {
+          content: "Submit Answer";
+          font-size: 1rem;
+        }
         </style>
     webr:
       packages:

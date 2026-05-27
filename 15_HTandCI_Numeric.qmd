@@ -194,7 +194,7 @@ While watching the walkthrough video you probably noticed that the side of the d
 
 ## What Does the $t$-Distribution Look Like?
 
-The videos above have helped us identify scenarios where we should utilize a $t$-distribution instead of the standard normal ($z$) distribution. There is a simple rule to follow: **any time we use a sample standard deviation as a proxy for the population standard deviation in our estimate for the standard error, we should use a $t$-distribution**.
+The videos above have helped us identify scenarios where we should utilize a $t$-distribution instead of the standard normal ($z$) distribution. There is a simple rule to follow to help you decide which distribution to use: **any time we use a sample standard deviation as a proxy for the population standard deviation in our estimate for the standard error, we should use a $t$-distribution**.
 
 The plot below shows the standard normal distribution in **black**, a $t$-distribution with 3 degrees of freedom in **red**, and a $t$-distribution with 12 degrees of freedom in **blue**.
 
@@ -641,7 +641,7 @@ We'll work with a [dataset on Federal Sentencing from the Southern District of N
 
 ---
 
-### Question 1: Confidence Interval for Average Sentence Length
+### Task 1: Confidence Interval for Average Sentence Length
 
 Construct a 95% confidence interval for the average sentence length for a drug-related conviction in the Southern District of New York State.
 
@@ -1138,7 +1138,7 @@ gradethis::grade_this({
 :::{.callout-tip}
 ## A Note on the Critical Value
 
-With so many observations, the correct critical value differed very little from 1.96 (the value obtained from the normal distribution). Remember that the critical values on the Standard Error Decision Tree are for the normal distribution only. Any time we use a sample standard deviation as a stand-in for the population standard deviation, we should use `qt()` — this will make a real difference when sample sizes are smaller.
+With so many observations, the correct critical value differed very little from 1.96 (the value obtained from the normal distribution). Remember that the critical values on the Standard Error Decision Tree are for the normal distribution only. Any time we use a sample standard deviation as a stand-in for the population standard deviation, we should use `qt()` — this will make a larger difference when sample sizes are smaller.
 :::
 
 Use the code block below to compute the lower bound of the 95% confidence interval.
@@ -1399,7 +1399,7 @@ ok_response(q6, "2");
 
 ---
 
-### Question 2: Hypothesis Test for Difference in Sentence Lengths
+### Task 2: Hypothesis Test for Difference in Sentence Lengths
 
 Conduct a hypothesis test at the $\alpha = 0.10$ level of significance to determine whether the sample data provides significant evidence that the average sentence length for white offenders and the average sentence length for non-white offenders differs for drug-related cases in the Southern District of New York State.
 
@@ -1553,7 +1553,7 @@ viewof q12 = Inputs.radio(
   new Map([
     ["Yes, we can compute the population standard deviation from the data using sd().", 1],
     ["Yes, we are provided the population standard deviation.", 2],
-    ["No — sd() gives us sample standard deviations, not population standard deviations.", 3]
+    ["No — sd() would help us find the sample standard deviation, not the population standard deviation.", 3]
   ]),
   {value: JSON.parse(localStorage.getItem("q12_selected_t15") ?? "null")}
 );
@@ -2728,15 +2728,10 @@ Great work through all of that — and I hope you found the application to sente
 ## Main Takeaways
 
 + **The $t$-distributions are a family of penalized normal distributions** parameterized by *degrees of freedom*. As degrees of freedom increase, the $t$-distribution becomes closer to the normal distribution.
-
 + **Use the $t$-distribution any time you use a sample standard deviation** ($s$) as a substitute for the population standard deviation ($\sigma$) in the standard error formula. The functions `pt()` and `qt()` work exactly like `pnorm()` and `qnorm()`, but for the $t$-distribution.
-
 + **For a single mean**, the standard error is $S_E = s/\sqrt{n}$ and the degrees of freedom is $n - 1$.
-
 + **For comparing two independent means**, the standard error is $S_E = \sqrt{s_1^2/n_1 + s_2^2/n_2}$ and the degrees of freedom is $\min\{n_1 - 1, n_2 - 1\}$.
-
 + **The confidence interval and hypothesis test formulas are the same** as before — what changes is the standard error formula and the distribution used for the critical value or $p$-value.
-
 + **Statistical significance does not imply proof.** Our finding of a significant difference in sentence lengths is evidence that warrants further investigation — it does not prove racial bias, nor does it tell us the direction of the difference without examining the point estimate.
 :::
 

@@ -139,12 +139,12 @@ This section contains three practice problems. Be sure to note any questions you
 
 ---
 
-**Try It 1a:** The result of a poll was that 48% of 331 randomly sampled Americans who decide not to go to college were forced into that decision because they cannot afford it. Construct a 90% confidence interval for the proportion of non college educated Americans who decided not to go to college because they cannot afford it, and interpret the result in context.
+**Scenario 1a:** The result of a poll was that 48% of 331 randomly sampled Americans who decided not to go to college were forced into that decision because they cannot afford it. Construct a 90% confidence interval for the proportion of non college educated Americans who decided not to go to college because they cannot afford it, and interpret the result in context.
 
 Use your spreadsheet for any necessary computations. Do future-you a favor and label your cells so you can follow your own work.
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part I
+## Check Your Understanding: Scenario 1a, Part I
 
 To answer the question as asked, we should:
 
@@ -185,7 +185,7 @@ The problem says "construct a 90% confidence interval." Open the [General Strate
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part II
+## Check Your Understanding: Scenario 1a, Part II
 
 The point estimate is:
 
@@ -226,7 +226,7 @@ The point estimate is your best single guess at the true population proportion. 
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part III
+## Check Your Understanding: Scenario 1a, Part III
 
 The standard error formula is:
 
@@ -282,7 +282,7 @@ We're on the proportions ($p$) side of the tree and we have just a single popula
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part IV
+## Check Your Understanding: Scenario 1a, Part IV
 
 The standard error (rounded to four decimal places) is:
 
@@ -329,7 +329,7 @@ In your spreadsheet, type `=SQRT(0.48*(1-0.48)/331)` and press Enter. Round to f
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part V
+## Check Your Understanding: Scenario 1a, Part V
 
 The distribution to be used is:
 
@@ -364,7 +364,7 @@ We've only encountered the *normal distribution* so far. There are other times w
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part VI
+## Check Your Understanding: Scenario 1a, Part VI
 
 The desired level of confidence is:
 
@@ -400,7 +400,7 @@ Check the scenario description.
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part VII
+## Check Your Understanding: Scenario 1a, Part VII
 
 The critical value is:
 
@@ -442,7 +442,7 @@ On the tree, the critical values are next to each of the four most common confid
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part VIII
+## Check Your Understanding: Scenario 1a, Part VIII
 
 The correct expression for computing the confidence interval is:
 
@@ -477,7 +477,7 @@ The confidence interval formula is $(\text{point estimate}) \pm (\text{critical 
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part IX
+## Check Your Understanding: Scenario 1a, Part IX
 
 The correct lower and upper bounds for the confidence interval are:
 
@@ -532,7 +532,7 @@ Upper bound: `=0.48+(1.65*0.0275)` → approximately 0.5254.
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part X
+## Check Your Understanding: Scenario 1a, Part X
 
 The correct interpretation of this confidence interval is:
 
@@ -573,10 +573,16 @@ Find the correct interpretation template at the bottom of the [*General Strategy
 The correct template is: "We are [XX]% confident that the true [population parameter] is between [lower] and [upper]."
 
 :::{.callout-note collapse="true"}
-## Hint 4 (Solved)
+## Hint 4
 
 Fill in the bracketed ("[]") components with the appropriate items given your scenario.
 
+:::{.callout-note collapse="true"}
+## Hint 5
+
+The sample wasn't representative of all Americans. There was another restriction -- *all Americans who chose not to go to college...*. Make sure you include this restriction in your interpretation.
+
+:::
 :::
 :::
 :::
@@ -585,7 +591,7 @@ Fill in the bracketed ("[]") components with the appropriate items given your sc
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part XI
+## Check Your Understanding: Scenario 1a, Part XI
 
 Does your interval suggest that a *majority* of Americans choosing not to go to college have made that choice because they cannot afford it?
 
@@ -635,12 +641,12 @@ It could be a *majority* but it could also be a *minority*.
 
 ---
 
-**Try It 1b:** Consider the same scenario. Suppose we wanted the margin of error for the 90% confidence interval to be about 1.5%. How large of a sample would you recommend?
+**Scenario 1b:** Consider the same scenario. Suppose we wanted the margin of error for the 90% confidence interval to be about 1.5%. How large of a sample would you recommend?
 
 Use your spreadsheet for any necessary computations.
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b, Part I
+## Check Your Understanding: Scenario 1b, Part I
 
 To answer the question as asked, we should:
 
@@ -668,7 +674,7 @@ ok_response(q12, "4");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b, Part II
+## Check Your Understanding: Scenario 1b, Part II
 
 The value of $z_{\alpha/2}$ is:
 
@@ -722,7 +728,7 @@ As a reminder, you can find the critical value in the small table in the top-cen
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b, Part III
+## Check Your Understanding: Scenario 1b, Part III
 
 The value of the margin of error ($M_E$) is:
 
@@ -757,7 +763,7 @@ The problem states a desired margin of error of 1.5%. Be careful about units —
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b, Part IV
+## Check Your Understanding: Scenario 1b, Part IV
 
 The value of $p$ (the estimate for the proportion) should be:
 
@@ -792,7 +798,7 @@ Using $p = 0.50$ is a conservative choice that maximizes the required sample siz
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b, Part V
+## Check Your Understanding: Scenario 1b, Part V
 
 The required sample size is:
 
@@ -861,12 +867,12 @@ The formula gives approximately 3,020.16. Always round *up* to the nearest whole
 
 ---
 
-**Try It 2:** A USA Today/Gallup poll conducted between 2010 and 2011 asked a group of unemployed and underemployed Americans if they had major problems in their relationships with a spouse or close family member as a result of their employment situation. There were 27% of the 1,145 unemployed respondents and 25% of the 675 underemployed respondents who said they had experienced major relationship problems. Conduct a test to determine whether an association exists between the presence of relationship problems and employment status (unemployed vs. underemployed). Use $\alpha = 0.05$.
+**Scenario 2:** A USA Today/Gallup poll conducted between 2010 and 2011 asked a group of unemployed and underemployed Americans if they had major problems in their relationships with a spouse or close family member as a result of their employment situation. There were 27% of the 1,145 unemployed respondents and 25% of the 675 underemployed respondents who said they had experienced major relationship problems due to their employment. Conduct a test to determine whether an association exists between the presence of relationship problems and employment status (unemployed vs. underemployed). Use $\alpha = 0.05$.
 
-Use your spreadsheet for all calculations. You'll encounter three graded cells among the series of questions below which will check your computed values. Enter the result from your spreadsheet into each cell and press Run Code.
+Use your spreadsheet for all calculations. You'll encounter three graded cells among the series of questions below which will check your computed values. Enter the result from your spreadsheet into each cell and press Submit Answer.
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part I
+## Check Your Understanding: Scenario 2, Part I
 
 To answer the question as asked, we should:
 
@@ -894,13 +900,13 @@ ok_response(q17, "2");
 :::{.callout-note collapse="true"}
 ## Hint 1
 
-The problem asks whether an "association exists" — it is asking you to evaluate a statistical claim. Which type of inference task does that correspond to?
+The problem asks whether an "association exists". You're being asked to evaluate a statistical claim. Which type of inference task does that correspond to?
 :::
 
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part II
+## Check Your Understanding: Scenario 2, Part II
 
 The hypotheses associated with this test are:
 
@@ -948,7 +954,7 @@ The null hypothesis ($H_0$) is the skeptical claim -- "there's nothing to see he
 :::{.callout-note collapse="true"}
 ## Hint 5 (Solved)
 
-The null hypothesis is that the proportions across the two groups are equal (there is no association) between the presence of relationship problems due to employment and the employment status itself. The alternative is that there is an association -- the proportions are not the same across the two groups.
+The null hypothesis is that the proportions across the two groups are equal. There is no association between the presence of relationship problems due to employment and the employment status itself. The alternative is that there is an association -- the proportions are not the same across the two groups.
 
 :::
 :::
@@ -959,7 +965,7 @@ The null hypothesis is that the proportions across the two groups are equal (the
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part III
+## Check Your Understanding: Scenario 2, Part III
 
 The null value is:
 
@@ -988,7 +994,7 @@ ok_response(q19, "1");
 :::{.callout-note collapse="true"}
 ## Hint 1
 
-The null hypothesis is the ***expected*** difference in the sample proportions if the null hypothesis is true.
+The null value is the ***expected*** difference in the sample proportions if the null hypothesis is true.
 
 :::{.callout-note collapse="true"}
 ## Hint 2 (Solved)
@@ -1001,7 +1007,7 @@ The null value is the number on the right-hand side of the equals sign in the nu
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part IV
+## Check Your Understanding: Scenario 2, Part IV
 
 The point estimate is:
 
@@ -1049,7 +1055,7 @@ $\hat{p}_{\text{unemployed}} - \hat{p}_{\text{underemployed}} = 0.27 - 0.25 = 0.
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part V
+## Check Your Understanding: Scenario 2, Part V
 
 How many groups are being compared in this study?
 
@@ -1077,7 +1083,7 @@ ok_response(q21, "2");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part VI
+## Check Your Understanding: Scenario 2, Part VI
 
 The standard error formula is:
 
@@ -1267,7 +1273,7 @@ gradethis::grade_this({
 ```
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part VII
+## Check Your Understanding: Scenario 2, Part VII
 
 The distribution to be used is:
 
@@ -1385,7 +1391,7 @@ gradethis::grade_this({
 ```
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part VIII
+## Check Your Understanding: Scenario 2, Part VIII
 
 The result of the test is:
 
@@ -1439,7 +1445,7 @@ We don't have evidence to support rejecting the null hypothesis here, but we can
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2 — IX
+## Check Your Understanding: Scenario 2 — IX
 
 The result of the test stated in context means that:
 
@@ -1673,7 +1679,7 @@ cat(hash)
 + The **Standard Error Decision Tree** is your primary reference for identifying which standard error formula applies to a given inference problem. You walk through the tree by asking and answering a series of questions about your inference scenario.
 + **Confidence intervals** and **hypothesis tests** follow a structured process. The general strategy documents walk you through each step — lean on them until you are comfortable with the procedures.
 + **Sample size planning** allows you to determine how large a sample is needed to achieve a desired margin of error before data collection begins. Using a prior estimate of the proportion (when available) gives a more efficient answer than defaulting to $p = 0.50$. In a spreadsheet, use `=((z/ME)^2)*p*(1-p)` and always round up to the nearest whole number.
-+ **Two-proportion hypothesis tests** compare the *difference* in proportions across two groups. The null hypothesis is typically that the difference is zero, and the standard error formula accounts for both groups' sample sizes and proportions. In a spreadsheet: `=SQRT((p1*(1-p1)/n1)+(p2*(1-p2)/n2))`.
++ **Two-proportion hypothesis tests** compare the *difference* in proportions across two groups. The null hypothesis is typically that the difference is zero, and the standard error formula accounts for both groups' sample sizes and proportions.
 + For the **two-tailed p-value**, remember that we need to account for both the lower- and upper-tail areas. This is most easily handled by doubling a single tail area. Be sure to draw a picture to help you determine whether you can use `=2*NORM.DIST()` or if you need `=2*(1 - NORM.DIST())`.
 + When a **$p$-value exceeds $\alpha$**, we do not have sufficient evidence to reject the null hypothesis — but this is not the same as proving the null is true. Absence of evidence is not evidence of absence.
 :::

@@ -125,7 +125,7 @@ This section contains three practice problems. Be sure to note any questions you
 
 ---
 
-**Try It 1a:** The result of a poll was that 48% of 331 randomly sampled Americans who decide not to go to college were forced into that decision because they cannot afford it. Construct a 90% confidence interval for the proportion of non college educated Americans who decided not to go to college because they cannot afford it, and interpret the result in context.
+**Scenario 1a:** The result of a poll was that 48% of 331 randomly sampled Americans who decided not to go to college were forced into that decision because they cannot afford it. Construct a 90% confidence interval for the proportion of non college educated Americans who decided not to go to college because they cannot afford it, and interpret the result in context.
 
 Use the code block below for any necessary computations.
 
@@ -266,7 +266,7 @@ se <- sqrt(0.48*(1 - 0.48)/331)
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part I
+## Check Your Understanding: Scenario 1a, Part I
 
 To answer the question as asked, we should:
 
@@ -295,7 +295,7 @@ ok_response(q1, "3");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part II
+## Check Your Understanding: Scenario 1a, Part II
 
 The point estimate is:
 
@@ -324,7 +324,7 @@ ok_response(q2, "3");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part III
+## Check Your Understanding: Scenario 1a, Part III
 
 The standard error formula is:
 
@@ -353,7 +353,7 @@ ok_response(q3, "3");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part IV
+## Check Your Understanding: Scenario 1a, Part IV
 
 The standard error (rounded to four decimal places) is:
 
@@ -382,7 +382,7 @@ ok_response(q4, "3");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part V
+## Check Your Understanding: Scenario 1a, Part V
 
 The distribution to be used is:
 
@@ -411,7 +411,7 @@ ok_response(q5, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part VI
+## Check Your Understanding: Scenario 1a, Part VI
 
 The desired level of confidence is:
 
@@ -440,7 +440,7 @@ ok_response(q6, "2");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part VII
+## Check Your Understanding: Scenario 1a, Part VII
 
 The critical value is:
 
@@ -469,7 +469,7 @@ ok_response(q7, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part VIII
+## Check Your Understanding: Scenario 1a, Part VIII
 
 The correct expression for computing the confidence interval is:
 
@@ -498,7 +498,7 @@ ok_response(q8, "5");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part IX
+## Check Your Understanding: Scenario 1a, Part IX
 
 The correct lower and upper bounds for the confidence interval are:
 
@@ -527,7 +527,7 @@ ok_response(q9, "4");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part X
+## Check Your Understanding: Scenario 1a, Part X
 
 The correct interpretation of this confidence interval is:
 
@@ -555,7 +555,7 @@ ok_response(q10, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1a, Part XI
+## Check Your Understanding: Scenario 1a, Part XI
 
 Does this your interval suggest that a *majority* of Americans choosing not to go to college have made that choice because they cannot afford it?
 
@@ -584,7 +584,7 @@ ok_response(q11, "2");
 
 ---
 
-**Try It 1b:** Consider the same scenario. Suppose we wanted the margin of error for the 90% confidence interval to be about 1.5%. How large of a sample would you recommend?
+**Scenario 1b:** Consider the same scenario. Suppose we wanted the margin of error for the 90% confidence interval to be about 1.5%. How large of a sample would you recommend?
 
 Use the code block below for any necessary computations.
 
@@ -728,7 +728,7 @@ Round up to the nearest whole number — you can never sample a fraction of a pe
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b, Part I
+## Check Your Understanding: Scenario 1b, Part I
 
 To answer the question as asked, we should:
 
@@ -756,7 +756,7 @@ ok_response(q12, "4");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b, Part II
+## Check Your Understanding: Scenario 1b, Part II
 
 The value of $z_{\alpha/2}$ is:
 
@@ -785,7 +785,7 @@ ok_response(q13, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b, Part III
+## Check Your Understanding: Scenario 1b, Part III
 
 The value of the margin of error ($M_E$) is:
 
@@ -814,7 +814,7 @@ ok_response(q14, "4");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b, Part IV
+## Check Your Understanding: Scenario 1b, Part IV
 
 The value of $p$ (the estimate for the proportion) should be:
 
@@ -849,7 +849,7 @@ Using $p = 0.50$ is a conservative choice that maximizes the required sample siz
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 1b, Part V
+## Check Your Understanding: Scenario 1b, Part V
 
 The required sample size is:
 
@@ -879,7 +879,7 @@ ok_response(q16, "4");
 
 ---
 
-**Try It 2:** A USA Today/Gallup poll conducted between 2010 and 2011 asked a group of unemployed and underemployed Americans if they had major problems in their relationships with a spouse or close family member as a result of their employment situation. There were 27% of the 1,145 unemployed respondents and 25% of the 675 underemployed respondents who said they had experienced major relationship problems. Conduct a test to determine whether an association exists between the presence of relationship problems and employment status (unemployed vs. underemployed). Use $\alpha = 0.05$.
+**Scenario 2:** A USA Today/Gallup poll conducted between 2010 and 2011 asked a group of unemployed and underemployed Americans if they had major problems in their relationships with a spouse or close family member as a result of their employment situation. There were 27% of the 1,145 unemployed respondents and 25% of the 675 underemployed respondents who said they had experienced major relationship problems due to their employment. Conduct a test to determine whether an association exists between the presence of relationship problems and employment status (unemployed vs. underemployed). Use $\alpha = 0.05$.
 
 Use the code block below for any necessary computations.
 
@@ -1027,7 +1027,7 @@ $$S_E = \sqrt{\frac{p1\left(1 - p_1\right)}{n_1} + \frac{p_2\left(1 - p_2\right)
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part I
+## Check Your Understanding: Scenario 2, Part I
 
 To answer the question as asked, we should:
 
@@ -1055,7 +1055,7 @@ ok_response(q17, "2");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part II
+## Check Your Understanding: Scenario 2, Part II
 
 The hypotheses associated with this test are:
 
@@ -1083,7 +1083,7 @@ ok_response(q18, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part III
+## Check Your Understanding: Scenario 2, Part III
 
 The null value is:
 
@@ -1112,7 +1112,7 @@ ok_response(q19, "1");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part IV
+## Check Your Understanding: Scenario 2, Part IV
 
 The point estimate is:
 
@@ -1141,7 +1141,7 @@ ok_response(q20, "2");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part V
+## Check Your Understanding: Scenario 2, Part V
 
 How many groups are being compared in this study?
 
@@ -1169,7 +1169,7 @@ ok_response(q21, "2");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part VI
+## Check Your Understanding: Scenario 2, Part VI
 
 The standard error formula is:
 
@@ -1417,7 +1417,7 @@ gradethis::grade_this({
 ```
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part VII
+## Check Your Understanding: Scenario 2, Part VII
 
 The distribution to be used is:
 
@@ -1605,7 +1605,7 @@ gradethis::grade_this({
 ```
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2, Part VIII
+## Check Your Understanding: Scenario 2, Part VIII
 
 The result of the test is:
 
@@ -1634,7 +1634,7 @@ ok_response(q24, "3");
 :::
 
 :::{.callout-caution}
-## Check Your Understanding: Try It 2 — IX
+## Check Your Understanding: Scenario 2 — IX
 
 The result of the test stated in context means that:
 

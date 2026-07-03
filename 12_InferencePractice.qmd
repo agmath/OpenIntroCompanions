@@ -1661,6 +1661,14 @@ ok_response(q25, "2");
 
 :::
 
+:::{.callout-tip}
+## On Pooling Proportions
+
+The null hypothesis for this scenario assumed that the two group proportions $p_1$ and $p_2$ were equal. We ignored this fact in our estimate for the standard error. A better approach would be to *pool* the proportions $\displaystyle{p_{\text{pooled}} = \frac{p_1\cdot n_1 + p_2\cdot n_2}{n_1 + n_2}}$ and then calculated the standard error as $\displaystyle{S_E = \sqrt{p_{\text{pooled}}\left(1 - p_{\text{pooled}}\right)\left(\frac{1}{n_1} + \frac{1}{n_2}\right)}}$.
+
+Note that this pooling approach is indeed better because it accurately reflects the assumption made in the null hypothesis for the test. That being said, we leave pooling proportions out of scope for this activity series at this time.
+:::
+
 Good work through these practice problems! Remember to download or print copies of the [*Standard Error Decision Tree*](www/StdErrorDecisionTree.pdf){target="_blank"}, the [*General Strategy for Conducting a Hypothesis Test*](www/HTgeneral.pdf){target="_blank"}, and the [*General Strategy for Constructing a Confidence Interval*](www/CIgeneral.pdf){target="_blank"}. You'll refer back to these documents often as you gain familiarity and confidence with statistical inference.
 
 ## Submit

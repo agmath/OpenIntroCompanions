@@ -288,6 +288,7 @@ If a numerical variable has very few levels, you may be better off treating it a
 #| echo: false
 #| eval: true
 #| results: false
+#| fig-alt: "Three-panel figure. Top-Left panel: A scatter plot of diamond prices against carat weight -- as carat weight increases, price generally increases in a non-linear fashion. Top-Right panel: A scatter plot of carat weight against diamond depth -- there does not seem to be a pattern in the organization of the points. Bottom panel: A scatter plot of diamond width against diamond length, each in millimeters -- the vast majority of the points in the plot lie along a slightly upward sloping line."
 
 p1 <- diamonds %>% 
   ggplot() + 
@@ -430,6 +431,7 @@ We can also identify whether an association exists between variables when one or
 #| message: false
 #| warning: false
 #| results: false
+#| fig-alt: "Two-panel figure comparing home price and exterior covering by waterfront status. Left panel: boxplot of price (log scale) for non-waterfront versus waterfront homes. Non-waterfront homes have a lower median price, around $400,000, with a tight interquartile range and many high-value outliers extending above $3,000,000. Waterfront homes have a notably higher median price, around $1,300,000, with less spread and fewer extreme outliers. Right panel: stacked bar chart of the proportion of exterior covering type (brick, shingles, vinyl siding, or missing) for non-waterfront and waterfront homes. The two distributions are nearly identical, with vinyl siding making up roughly 70% of homes in both groups, followed by smaller shares of brick and shingles."
 
 housesSubset <- housesSubset %>%
   mutate(
@@ -517,6 +519,7 @@ If we could sample every object in a population we would be taking a ***census**
 #| label: census
 #| echo: false
 #| eval: true
+#| fig-alt: "A scatterplot of randomly positioned points in space, representing a population. All points are colored orange, indicating that they are all included in the sample. When all elements of the population are sampled, it is called a Census."
 
 pop <- tibble(
   x = sample(1:100, 100, replace = TRUE), 
@@ -552,6 +555,7 @@ The ***simple random sample*** is the GOLD STANDARD in statistics. We randomly s
 #| label: simple-random-sample
 #| echo: false
 #| eval: true
+#| fig-alt: "Another scatterplot representing a hypothetical population. This time, the majority of points are colored blue and only about 10% are colored orange. The orange points are selected randomly for inclusion in a sample. This picture represents the results of taking a simple random sample."
 
 pop$samp <- sample(0:1, 100, prob = c(0.9,0.10), replace = TRUE)
 pop$samp <- as.factor(pop$samp)
@@ -582,7 +586,7 @@ The ***stratified sample*** is used to ensure that we include representatives of
 
 :::{.column width=40%}
 
-![](images/Stratified.png)
+![](images/Stratified.png){fig-alt="Another scatterplot representing a hypothetical population, but this time observations only exist within six (6) circles labeled stratum. Within each of the stratum, the majority of points are colored blue and a small random sample is colored orange. This image shows the results of taking a stratified sample."}
 
 :::
 
@@ -600,7 +604,7 @@ A variation on clustering is called ***two-stage*** or ***multi-stage*** samplin
 
 :::{.column width=40%}
 
-![](images/cluster.png)
+![](images/cluster.png){fig-alt="A scatterplot representing a hypothetical population, where observations exist within nine circles, each representing a cluster. A random sample of the clusters is selected, outlined in orange, and then within each selected cluster a random sample of observations is taken and colored orange; the remaining observations are blue. This picture shows the results of a multi-stage cluster sample. Those elements of the population included in the sample are orange, while those excluded are blue."}
 
 :::
 

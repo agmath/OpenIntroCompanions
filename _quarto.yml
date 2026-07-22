@@ -1,0 +1,10 @@
+project:
+  type: default
+
+format:
+  live-html:
+    css: styles.css
+    include-after-body: a11y-new-tab.html
+    filters:
+      - at: post-render
+        path: heading-fix.lua

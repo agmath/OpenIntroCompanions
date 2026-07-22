@@ -1,0 +1,12 @@
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+  document.querySelectorAll('a[target="_blank"]').forEach(function (link) {
+    if (!link.querySelector(".visually-hidden")) {
+      var note = document.createElement("span");
+      note.className = "visually-hidden";
+      note.textContent = " (opens in a new tab)";
+      link.appendChild(note);
+    }
+  });
+});
+</script>

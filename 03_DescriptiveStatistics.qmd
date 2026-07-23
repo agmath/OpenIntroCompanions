@@ -790,6 +790,7 @@ The two plots below are a histogram (left) and a boxplot (right), each showing t
 #| message: false
 #| warning: false
 #| results: false
+#| fig-alt: "Two-panel figure showing the distribution of diamond carat weight. Left panel: histogram of carat, strongly right-skewed, with most values concentrated between about 0.2 and 1.5 carats and a tall peak just under 0.5 carats; a small number of diamonds extend out past 3 carats. Right panel: boxplot of the same carat data, oriented horizontally, showing a compact box between roughly 0.4 and 1.0 carats with numerous outliers extending as far as 5 carats. Both panels include a highlighted vertical reference line at approximately 0.8 carats, marking the mean."
 
 p1 <- ggplot(data = diamonds) +
   geom_histogram(mapping = aes(x = carat)) +
@@ -998,6 +999,7 @@ Below, we can see the distributions of diamond `cut` from `Sample_Three` (left) 
 #| message: false
 #| warning: false
 #| results: false
+#| fig-alt: "Four-panel figure comparing diamond cut type in a small sample versus the full population. Top-left: bar chart of counts in an 8-diamond sample -- 1 Fair, 2 Good, 1 Very Good, 2 Premium, 2 Ideal. Top-right: bar chart of counts in the full population, increasing steadily from about 1,500 Fair diamonds to about 21,500 Ideal diamonds, with Ideal the most common cut by a wide margin. Bottom-left: the same sample data shown as proportions, ranging from 0.125 for Fair and Very Good up to 0.25 for Good, Premium, and Ideal. Bottom-right: the same population data as proportions, showing a clear increasing trend from about 3% Fair up to about 40% Ideal."
 
 p1 <- ggplot(data = cutSamples) +
   geom_bar(mapping = aes(x = Sample_Three)) +

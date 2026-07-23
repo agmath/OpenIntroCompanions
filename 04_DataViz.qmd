@@ -173,6 +173,7 @@ In this workbook we explore `{ggplot2}` and think about graphics in terms of the
 #| eval: true
 #| fig.height: 2.25
 #| fig.width: 2.25
+#| fig-alt: "A scatterplot of Engine Brand (E1, E2, E3) against Fuel Type (F1, F2), with one point at every combination of the two categories. Because both variables are categorical, the plot only shows that each combination exists -- it conveys no information about how common each combination is, making it an ineffective way to visualize this data."
 
 data |> 
   ggplot() + 
@@ -430,6 +431,7 @@ The code below creates a plot of highway miles per gallon (`hwy`) against engine
 #| message: false
 #| warning: false
 #| results: false
+#| fig-alt: "Scatterplot of highway fuel economy (hwy) against engine displacement (displ). The relationship is negative -- as engine displacement increases, highway mpg tends to decrease, though the points are fairly spread out rather than tightly clustered. A few cars with small engines (around 2 liters) stand out with unusually high highway mpg, above 40, well above the surrounding points. One car near 4.7 liters has an unusually low highway mpg, around 12, well below the general trend at that displacement. Several vehicles with large engines (between 5 and 7 liters) have miles per gallon ratings far above the other vehicles in this range."
 
 mpg |> 
   ggplot() + 
@@ -1253,6 +1255,7 @@ Run the code below to see the plot.
 
 ```{webr}
 #| exercise: engineer-trans2
+#| fig-alt: "Bar chart of the count of vehicles by transmission type. Automatic transmissions are about twice as common as manual, with roughly 157 automatic vehicles compared to about 77 manual vehicles."
 
 mpg |>
   mutate(trans2 = str_sub(trans, 1, -5)) |>
@@ -1460,6 +1463,7 @@ Great! But the problem now is that we've lost the idea that there are more autom
 ```{r}
 #| echo: true
 #| eval: true
+#| fig-alt: "Mosaic plot showing drive type by transmission type, where bar width represents the proportion of vehicles with each transmission and segment height represents the proportion of each drive type within that transmission. The auto column is about twice as wide as the manual column, reflecting that automatics are roughly twice as common overall. Within automatic transmissions, about 47% are 4-wheel drive, 42% are front-wheel drive, and about 11% are rear-wheel drive. Within manual transmissions, front-wheel drive is more common at about 53%, 4-wheel drive drops to about 36%, and rear-wheel drive is similar at about 12%. The main pattern is that manual transmissions skew more toward front-wheel drive and less toward 4-wheel drive compared to automatics, while rear-wheel drive is roughly equally rare in both."
 
 mpg |>
   mutate(trans2 = str_sub(trans, 1, -5)) |>

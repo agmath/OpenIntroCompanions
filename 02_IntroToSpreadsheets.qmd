@@ -447,6 +447,12 @@ gradethis::grade_this({
 
 Note that if you click into the cell **D2** and drag the solid indicator in the lower-right corner of the cell down to cells below, you'll get the results of the same calculation over and over again. If you try this same thing, but omit the dollar signs from both references to the cell `D1` in your formula, you'll see that the cell reference locations update and the results of your formula change from one row to the next. Don't forget to update the formulas in the cells below `D2` by clicking and dragging again.
 
+:::{.callout-important}
+## Circular References
+
+A *circular reference* occurs when a formula refers to the cell it's typed into (e.g., using `E9` in a formula written in cell `E9` itself). Excel can't resolve this because it would need to calculate the cell's value to calculate the cell's value, so it throws an error instead of looping forever.
+:::
+
 ## Working with Ranges and Lists of Values
 
 In a spreadsheet, a **range** is a rectangular block of cells identified by its top-left and bottom-right corners, separated by a colon. For example, `A1:A6` refers to the six cells from A1 down to A6, and `A1:C3` refers to a 3×3 block.
@@ -477,7 +483,7 @@ For example, if cell **B1** contains `=AVERAGE(A1:A6)` and you copy it to **C1**
 
 The fix is the same as before: use absolute references (`$A$1:$A$6`) when the range should stay fixed as you copy the formula, and relative references when you want it to shift. 
 
-Additionally, you may choose to anchor only the columns or only the rows. For example, using typing `SUM(A$1:A$6)` in cell **D1** and then pasting the formula into cell **E2**, the formula in **E2** would read `SUM(B$1:B$6)`. The column is shifted, but the rows are not.
+Additionally, you may choose to anchor only the columns or only the rows. For example, typing `SUM(A$1:A$6)` in cell **D1** and then pasting the formula into cell **E2**, the formula in **E2** would read `SUM(B$1:B$6)`. The column is shifted, but the rows are not.
 :::
 
 ## Data Tables in a Spreadsheet

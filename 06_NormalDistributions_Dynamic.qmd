@@ -347,7 +347,7 @@ Sometimes it is useful to be able to estimate probabilities or to estimate the p
 
 If $X\sim N\left(\mu, \sigma\right)$, then
 
-+ $\mathbb{P}\left[\mu - \sigma \leq X\leq \mu + \sigma\right] \approx 0.67$ — that is, about 67% of observations lie within one standard deviation of the mean.
++ $\mathbb{P}\left[\mu - \sigma \leq X\leq \mu + \sigma\right] \approx 0.68$ — that is, about 68% of observations lie within one standard deviation of the mean.
 + $\mathbb{P}\left[\mu - 2\sigma \leq X\leq \mu + 2\sigma\right] \approx 0.95$ — that is, about 95% of observations lie within two standard deviations of the mean.
 + $\mathbb{P}\left[\mu - 3\sigma \leq X\leq \mu + 3\sigma\right] \approx 0.997$ — that is, about 99.7% of observations lie within three standard deviations of the mean.
 :::
@@ -366,7 +366,7 @@ mutable ok_response = (response, n) => { return html`Loading...` };
 viewof q1 = Inputs.radio(
   new Map([
     ["50%", 1],
-    ["67%", 2],
+    ["68%", 2],
     ["95%", 3],
     ["Nearly 100%", 4],
     ["It is impossible to tell", 5]
@@ -2837,7 +2837,7 @@ Nice job working through this activity. Your hard work here will pay off as we m
 ## Main Takeaways
 
 + A **normal distribution** is bell-shaped and fully described by its mean $\mu$ and standard deviation $\sigma$, written $N(\mu, \sigma)$. Larger $\sigma$ produces a shorter, wider curve; smaller $\sigma$ produces a taller, narrower curve.
-+ The **Empirical Rule**: for data following $N(\mu, \sigma)$, approximately 67% of observations fall within one standard deviation of the mean, 95% within two, and 99.7% within three.
++ The **Empirical Rule**: for data following $N(\mu, \sigma)$, approximately 68% of observations fall within one standard deviation of the mean, 95% within two, and 99.7% within three.
 + For a continuous distribution, $\mathbb{P}[X = k] = 0$, so there is no distinction between strict and non-strict inequalities. For example, $\mathbb{P}[X \leq k] = \mathbb{P}[X < k]$.
 + A **$z$-score** measures how many standard deviations an observation falls from the mean: $z = (x - \mu)/\sigma$. $z$-scores allow comparison across different normal distributions on a common scale.
 + **`pnorm(q, mean, sd)`** returns the area to the **left** of $q$ — that is, $\mathbb{P}[X \leq q]$. For right-tail and two-tail probabilities, use `1 - pnorm(...)` and combinations thereof.

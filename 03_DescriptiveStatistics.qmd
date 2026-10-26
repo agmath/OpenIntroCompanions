@@ -187,7 +187,7 @@ This activity builds off of what we learned in the Topic 1 and Topic 2 activitie
 
   * The **median** is the *middle value* for a set of observations. To compute the median, list the numbers in ascending order and find the number or numbers in the middle of the list. In the case that there is a single middle number, that is the median. In the case where there are two middle numbers, we take the *mean* of those two.
 
-**Example**: The following are three random samples of carat values from the *diamonds* dataset.
+**Example**: The following are three random samples of carat values from the *diamonds* dataset. This small dataset has been stored as a data frame with the name `samples`.
 
 ```{r}
 #| echo: false
@@ -198,7 +198,7 @@ samples |>
   kable_styling(bootstrap_options = c("hover", "striped"))
 ```
 
-1. Use the code block below to compute the mean of `Sample_One`.
+1. Use the code block below to compute the mean of `Sample_One`. Note that you haven't been shown any special functionality just yet -- use R as a calculator to calculate the mean using addition and division.
 
 ```{webr}
 #| exercise: mean-sample-one
@@ -274,7 +274,7 @@ gradethis::grade_this({
 })
 ```
 
-In R we can easily compute the means and medians for our samples or for the entire data set! You might remember from our most recent notebook that the `$` operator can be used to access an entire column of a data frame. I've stored the samples in a data frame called `samples`. R includes a function `mean()` for computing the mean of a list of numbers and a function `median()` for computing the median. The following methods both compute the `mean()` of `Sample_Two`.
+In R we can easily compute the means and medians for our samples or for the entire data set! You might remember from our most recent notebook that the `$` operator can be used to access an entire column of a data frame. As a reminder, I've stored the samples in a data frame called `samples`. R includes a function `mean()` for computing the mean of a list of numbers and a function `median()` for computing the median. The following methods both compute the `mean()` of `Sample_Two`.
 
 ```{r}
 #| echo: true
